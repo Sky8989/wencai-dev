@@ -1,6 +1,7 @@
 package com.sftc.ssm.service;
 
-import com.sftc.ssm.model.Address;
+import com.sftc.web.model.Address;
+import com.sftc.web.service.UserService;
 import junit.framework.TestCase;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

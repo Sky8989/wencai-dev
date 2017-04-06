@@ -1,4 +1,4 @@
-import com.sftc.ssm.model.Address;
+import com.sftc.web.model.Address;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
