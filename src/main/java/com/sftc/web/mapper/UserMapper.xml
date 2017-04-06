@@ -7,7 +7,7 @@
     <insert id="addAddress" parameterType="Address" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO address (province, city, block, houseNumber,phone,name,addressTap,userId) VALUES
         ('11','11','11','11','11','11','11',1)
-
+ac
     </insert>
 
     <!--
