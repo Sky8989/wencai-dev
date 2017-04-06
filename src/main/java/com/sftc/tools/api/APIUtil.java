@@ -6,7 +6,7 @@ package com.sftc.tools.api;
  * @author _KeMing
  * @version 1.0
  * @Package com.sftc.ssm.tools.api
- * @Description:
+ * @Description: API封装工具类
  * @date 2017/4/6
  * @Time 下午5:46
  */

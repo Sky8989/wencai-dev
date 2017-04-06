@@ -8,6 +8,20 @@
     <name>tcsu Maven Webapp</name>
     <url>http://maven.apache.org</url>
 
+    <build>
+        <finalName>tcsu</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
     <properties>
         <spring.version>4.0.2.RELEASE</spring.version>
         <mybatis.version>3.2.6</mybatis.version>
@@ -149,7 +163,4 @@
             <version>1.9</version>
         </dependency>
     </dependencies>
-    <build>
-        <finalName>tcsu</finalName>
-    </build>
 </project>

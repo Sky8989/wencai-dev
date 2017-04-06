@@ -1,6 +1,6 @@
 package com.sftc.web.service;
 
-import com.sftc.web.model.Address;
+import com.sftc.tools.api.APIResponse;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,5 +13,5 @@ import com.sftc.web.model.Address;
  */
 public interface UserService {
 
-    public void addAddress(Address address);
+    APIResponse login(String phone);
 }

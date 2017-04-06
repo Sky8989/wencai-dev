@@ -3,7 +3,13 @@ package com.sftc.web.model;
 import java.sql.Date;
 
 /**
- * Created by Administrator on 2017/4/6.
+ * Created by IntelliJ IDEA.
+ *
+ * @version 1.0
+ * @Package com.sftc.ssm.pojo
+ * @Description: 评价类
+ * @date 17/4/1
+ * @Time 下午9:00
  */
 public class CouponApplicationForm {
     private int id;

@@ -1,9 +1,11 @@
 package com.sftc.web.service.impl;
 
+import com.sftc.tools.api.*;
 import com.sftc.web.mapper.UserMapper;
-import com.sftc.web.model.Address;
+import com.sftc.web.model.User;
 import com.sftc.web.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,16 +16,22 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @date 17/4/1
  * @Time 下午9:34
  */
+// @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-
+    @Resource
     private UserMapper userMapper;
 
-
-
-    public void addAddress(Address address) {
-        userMapper.addAddress(address);
-        System.out.print(address.getId());
+    public APIResponse login(String phone) {
+        APIStatus status = APIStatus.SUCCESS;
+        User user = userMapper.findUserById(phone);
+        System.out.println(user.getName());
+        if (user == null)
+            status = APIStatus.USER_NOT_EXIST;
+        // } else {
+        //     status = APIStatus.USER_FAIL;
+        // }
+        return APIUtil.getResponse(status.getState(), status.getMessage(),
+                status.equals(APIStatus.SUCCESS) ? user : null);
     }
 }

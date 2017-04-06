@@ -1,10 +1,11 @@
 package com.sftc.web.controller;
 
-import com.sftc.web.model.User;
-import com.sftc.tools.api.*;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.web.service.UserService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,14 +20,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class TestController {
 
-    @RequestMapping("test")
-    public
+    @Resource
+    private UserService userService;
+
+    @RequestMapping(value = "test")
     @ResponseBody
     APIResponse test() throws Exception {
-        User user = new User();
-        user.setId(1);
-        user.setName("傻逼");
-        user.setEmail("222@qq.com");
-        return APIUtil.getResponse(APIStatus.SUCCESS.getState(), APIStatus.SUCCESS.getMessage(), user);
+        return userService.login("23");
     }
 }
