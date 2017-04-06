@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
         <typeAliases>
-                <package name="com.sftc.ssm.pojo"/>
+                <package name="com.sftc.ssm.model"/>
 
         </typeAliases>
 

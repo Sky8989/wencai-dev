@@ -1,7 +1,7 @@
 package com.sftc.ssm.controller;
 
 import com.sftc.ssm.model.User;
-import com.sftc.ssm.tools.APIUtils;
+import com.sftc.ssm.tools.api.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,11 +20,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class TestController {
 
     @RequestMapping("test")
-    public @ResponseBody APIUtils test() throws Exception {
+    public
+    @ResponseBody
+    APIResponse test() throws Exception {
         User user = new User();
+        user.setId(1);
         user.setName("傻逼");
         user.setEmail("222@qq.com");
-        APIUtils apiUtils = new APIUtils("ca", "00002", user);
-        return apiUtils;
+        return APIUtil.getResponse(APIStatus.SUCCESS.getState(), APIStatus.SUCCESS.getMessage(), user);
     }
 }
