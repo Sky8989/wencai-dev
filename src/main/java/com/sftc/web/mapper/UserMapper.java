@@ -4,5 +4,5 @@ import com.sftc.web.model.User;
 
 public interface UserMapper {
 
-    public User findUserById(String phone);
+    public User selectUserByLogin(User user);
 }

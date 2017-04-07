@@ -1,6 +1,7 @@
 package com.sftc.web.service;
 
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.User;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,5 +14,8 @@ import com.sftc.tools.api.APIResponse;
  */
 public interface UserService {
 
-    APIResponse login(String phone);
+    /*
+     * 登录
+     */
+    APIResponse login(User users);
 }

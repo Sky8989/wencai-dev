@@ -1,9 +1,12 @@
 package com.sftc.web.controller;
 
 import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.md5.MD5Util;
+import com.sftc.web.model.User;
 import com.sftc.web.service.UserService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 
@@ -18,7 +21,7 @@ import javax.annotation.Resource;
  * @Time 下午10:45
  */
 @Controller
-public class TestController {
+public class TestController extends AbstractBasicController {
 
     @Resource
     private UserService userService;
@@ -26,6 +29,6 @@ public class TestController {
     @RequestMapping(value = "test")
     @ResponseBody
     APIResponse test() throws Exception {
-        return userService.login("23");
+        return userService.login(new User("skm", MD5Util.MD5("123")));
     }
 }

@@ -1,5 +1,7 @@
 package com.sftc.web.model;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import java.util.List;
 
 /**
@@ -11,11 +13,12 @@ import java.util.List;
  * @date 17/4/1
  * @Time 下午9:00
  */
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class User {
 
     private int id;
     // 用户姓名
-    private String name;
+    private String username;
     //用户密码
     private String password;
 
@@ -26,6 +29,13 @@ public class User {
     private List<Contact> concatList;
     private List<OpinionFeedback> opinionFeedbackList;
 
+    public User() {}
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public int getId() {
         return id;
     }
@@ -34,15 +44,21 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
+    public String getPassword() {
+        return password;
+    }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getOpenId() {
         return openId;
@@ -82,13 +98,5 @@ public class User {
 
     public void setOpinionFeedbackList(List<OpinionFeedback> opinionFeedbackList) {
         this.opinionFeedbackList = opinionFeedbackList;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

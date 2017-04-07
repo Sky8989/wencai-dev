@@ -1,11 +1,8 @@
 package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
-import com.sftc.web.mapper.UserMapper;
 import com.sftc.web.model.User;
 import com.sftc.web.service.UserService;
-
-import javax.annotation.Resource;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,21 +14,19 @@ import javax.annotation.Resource;
  * @Time 下午9:34
  */
 // @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends AbstractBasicService implements UserService {
 
-    @Resource
-    private UserMapper userMapper;
-
-    public APIResponse login(String phone) {
-        APIStatus status = APIStatus.SUCCESS;
-        User user = userMapper.findUserById(phone);
-        System.out.println(user.getName());
-        if (user == null)
+    public APIResponse login(User users) {
+        String password = users.getPassword();
+        users = userMapper.selectUserByLogin(users);
+        if (users == null) {
             status = APIStatus.USER_NOT_EXIST;
-        // } else {
-        //     status = APIStatus.USER_FAIL;
-        // }
+        } else {
+            if (!password.equals(users.getPassword())) {
+                status = APIStatus.USER_FAIL;
+            }
+        }
         return APIUtil.getResponse(status.getState(), status.getMessage(),
-                status.equals(APIStatus.SUCCESS) ? user : null);
+                status.equals(APIStatus.SUCCESS) ? users : null);
     }
 }
