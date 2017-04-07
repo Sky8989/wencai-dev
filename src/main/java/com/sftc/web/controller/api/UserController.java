@@ -1,6 +1,11 @@
 package com.sftc.web.controller.api;
 
+import com.sftc.tools.api.APIResponse;
+import com.sftc.web.controller.AbstractBasicController;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,5 +18,12 @@ import org.springframework.stereotype.Controller;
  * @Time 上午8:50
  */
 @Controller
-public class UserController {
+@RequestMapping("/user")
+public class UserController extends AbstractBasicController {
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST, headers = "api-version=1")
+    @ResponseBody
+    APIResponse login(HttpServletRequest request) throws Exception {
+        return userService.login(request);
+    }
 }

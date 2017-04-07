@@ -14,11 +14,11 @@ public class APIUtil {
 
     private APIResponse response;
 
-    public static APIResponse getResponse(String status, String message, Object obj) {
+    public static APIResponse getResponse(APIStatus apiStatus, Object obj) {
         APIResponse apiResponse = APIResponse.getInstance();
-        apiResponse.setState(status);
-        apiResponse.setMessage(message);
-        apiResponse.setData(obj);
+        apiResponse.setState(apiStatus.getState());
+        apiResponse.setMessage(apiStatus.getMessage());
+        apiResponse.setData(apiStatus == APIStatus.SUCCESS ? obj : null);
         return apiResponse;
     }
 }

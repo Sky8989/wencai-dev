@@ -1,6 +1,9 @@
 package com.sftc.web.controller;
 
+import com.sftc.web.service.UserService;
 import org.springframework.stereotype.Controller;
+
+import javax.annotation.Resource;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,4 +17,7 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 public abstract class AbstractBasicController {
+
+    @Resource
+    protected UserService userService;
 }
