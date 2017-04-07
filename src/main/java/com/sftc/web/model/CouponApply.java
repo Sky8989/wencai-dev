@@ -11,7 +11,7 @@ import java.sql.Date;
  * @date 17/4/1
  * @Time 下午9:00
  */
-public class CouponApplicationForm {
+public class CouponApply {
     private int id;
     //优惠券内容
     private String activityContent;

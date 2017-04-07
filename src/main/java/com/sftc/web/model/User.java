@@ -1,6 +1,5 @@
 package com.sftc.web.model;
 
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -19,28 +18,7 @@ public class User {
     private String name;
     //用户密码
     private String password;
-    // 用户头像
-    private String icon;
-    // 用户邮箱
-    private String email;
-    // 用户微信
-    private String wechat;
-    // 用户生日
-    private Date birthday;
-    // 纪念日
-    private Date anniversaries;
-    // 公司
-    private String company;
-    // 部门
-    private String department;
-    // 职位
-    private String position;
-    // 备注
-    private String remark;
-    // 个人标签
-    private String label;
-    // 所在地
-    private String location;
+
     private String openId;
 
     private List<Order> userList;
@@ -64,93 +42,7 @@ public class User {
         this.name = name;
     }
 
-    public String getIcon() {
-        return icon;
-    }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getWechat() {
-        return wechat;
-    }
-
-    public void setWechat(String wechat) {
-        this.wechat = wechat;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
-    public Date getAnniversaries() {
-        return anniversaries;
-    }
-
-    public void setAnniversaries(Date anniversaries) {
-        this.anniversaries = anniversaries;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     public String getOpenId() {
         return openId;
