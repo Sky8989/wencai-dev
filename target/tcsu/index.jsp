@@ -11,6 +11,10 @@
     <title></title>
 </head>
 <body>
-    无
+<form action="${pageContext.request.contextPath}/user/login" method="post">
+    <input type="text" name="username" /><br/>
+    <input type="password" name="password" /><br/>
+    <input type="submit" value="login" />
+</form>
 </body>
 </html>

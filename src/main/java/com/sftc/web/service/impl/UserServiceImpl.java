@@ -18,11 +18,13 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class UserServiceImpl extends AbstractBasicService implements UserService {
 
+
+
     public APIResponse login(HttpServletRequest request) {
         String username = request.getParameter("username");
         String password = MD5Util.MD5(request.getParameter("password"));
         User user = new User(username, password);
-        user = userMapper.selectUserByLogin(user);
+        user = userMapper.selectUserByLogin(user.getUsername());
         if (user == null) {
             status = APIStatus.USER_NOT_EXIST;
         } else {

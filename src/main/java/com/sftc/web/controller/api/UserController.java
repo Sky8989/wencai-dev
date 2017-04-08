@@ -17,12 +17,12 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2017/4/7
  * @Time 上午8:50
  */
+@RequestMapping("user")
 @Controller
-@RequestMapping("/user")
 public class UserController extends AbstractBasicController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST, headers = "api-version=1")
-    @ResponseBody
+    public @ResponseBody
     APIResponse login(HttpServletRequest request) throws Exception {
         return userService.login(request);
     }

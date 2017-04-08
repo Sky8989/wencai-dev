@@ -4,5 +4,5 @@ import com.sftc.web.model.User;
 
 public interface UserMapper {
 
-    public User selectUserByLogin(User user);
+    public User selectUserByLogin(String username);
 }
