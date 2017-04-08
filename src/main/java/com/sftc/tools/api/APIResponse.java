@@ -17,7 +17,7 @@ public class APIResponse {
 
     private String state;
     private String message;
-    private Object data;
+    private Object result;
 
     public String getMessage() {
         return message;
@@ -27,8 +27,8 @@ public class APIResponse {
         return state;
     }
 
-    public Object getData() {
-        return data;
+    public Object getResult() {
+        return result;
     }
 
     public void setState(String state) {
@@ -39,8 +39,8 @@ public class APIResponse {
         this.message = message;
     }
 
-    public void setData(Object data) {
-        this.data = data;
+    public void setResult(Object result) {
+        this.result = result;
     }
 
     private static class APIResponseHolder {

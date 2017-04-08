@@ -1,5 +1,6 @@
 package com.sftc.web.model;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * @date 17/4/1
  * @Time 下午9:00
  */
+@JsonIgnoreProperties("password")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class User {
 

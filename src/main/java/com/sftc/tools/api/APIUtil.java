@@ -18,7 +18,7 @@ public class APIUtil {
         APIResponse apiResponse = APIResponse.getInstance();
         apiResponse.setState(apiStatus.getState());
         apiResponse.setMessage(apiStatus.getMessage());
-        apiResponse.setData(apiStatus == APIStatus.SUCCESS ? obj : null);
+        apiResponse.setResult(apiStatus == APIStatus.SUCCESS ? obj : null);
         return apiResponse;
     }
 }
