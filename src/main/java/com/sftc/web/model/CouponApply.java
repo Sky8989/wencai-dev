@@ -12,39 +12,40 @@ import java.sql.Date;
  * @Time 下午9:00
  */
 public class CouponApply {
+
     private int id;
-    //优惠券内容
-    private String activityContent;
-    //优惠券属性
-    private String couponAttribute;
-    //优惠券码
-    private String couponCode;
-    //立减
+    // 优惠券内容
+    private String activity_content;
+    // 优惠券属性
+    private String coupon_attribute;
+    // 优惠券码
+    private String coupon_code;
+    // 立减
     private double minus;
-    //折扣
+    // 折扣
     private double disount;
-    //优惠券人数上限
-    private int upperLimit;
-    //优惠券使用范围
-    private String couponUseRange;
-    //优惠券开始时间
-    private Date couponStartTime;
-    //优惠券结束时间
-    private Date couponEndTime;
-    //是否与别的优惠券并行使用
-    private String isConcurrentUse;
-    //是否针对首次下单的用户
-    private String isfirstOrderUser;
-    //针对哪种支付方式的用户
-    private String paymentMethodUser;
-    //针对哪种标签的用户
-    private String couponLabelUse;
-    //同一个账户使用的次数
-    private int vaildUseNumber;
-    //审核状态
-    private String checkState;
-    //用户id
-    private int userId ;
+    // 优惠券人数上限
+    private int upper_limit;
+    // 优惠券使用范围
+    private String coupon_use_range;
+    // 优惠券开始时间
+    private Date coupon_start_time;
+    // 优惠券结束时间
+    private Date coupon_end_time;
+    // 是否与别的优惠券并行使用
+    private String is_concurrent_use;
+    // 是否针对首次下单的用户
+    private String is_first_order_user;
+    // 针对哪种支付方式的用户
+    private String payment_method_user;
+    // 针对哪种标签的用户
+    private String coupon_label_use;
+    // 同一个账户使用的次数
+    private int vaild_use_number;
+    // 审核状态
+    private String check_state;
+    // 优惠券类型
+    private String coupon_type;
 
     public int getId() {
         return id;
@@ -54,28 +55,28 @@ public class CouponApply {
         this.id = id;
     }
 
-    public String getActivityContent() {
-        return activityContent;
+    public String getActivity_content() {
+        return activity_content;
     }
 
-    public void setActivityContent(String activityContent) {
-        this.activityContent = activityContent;
+    public void setActivity_content(String activity_content) {
+        this.activity_content = activity_content;
     }
 
-    public String getCouponAttribute() {
-        return couponAttribute;
+    public String getCoupon_attribute() {
+        return coupon_attribute;
     }
 
-    public void setCouponAttribute(String couponAttribute) {
-        this.couponAttribute = couponAttribute;
+    public void setCoupon_attribute(String coupon_attribute) {
+        this.coupon_attribute = coupon_attribute;
     }
 
-    public String getCouponCode() {
-        return couponCode;
+    public String getCoupon_code() {
+        return coupon_code;
     }
 
-    public void setCouponCode(String couponCode) {
-        this.couponCode = couponCode;
+    public void setCoupon_code(String coupon_code) {
+        this.coupon_code = coupon_code;
     }
 
     public double getMinus() {
@@ -94,91 +95,91 @@ public class CouponApply {
         this.disount = disount;
     }
 
-    public int getUpperLimit() {
-        return upperLimit;
+    public int getUpper_limit() {
+        return upper_limit;
     }
 
-    public void setUpperLimit(int upperLimit) {
-        this.upperLimit = upperLimit;
+    public void setUpper_limit(int upper_limit) {
+        this.upper_limit = upper_limit;
     }
 
-    public String getCouponUseRange() {
-        return couponUseRange;
+    public String getCoupon_use_range() {
+        return coupon_use_range;
     }
 
-    public void setCouponUseRange(String couponUseRange) {
-        this.couponUseRange = couponUseRange;
+    public void setCoupon_use_range(String coupon_use_range) {
+        this.coupon_use_range = coupon_use_range;
     }
 
-    public Date getCouponStartTime() {
-        return couponStartTime;
+    public Date getCoupon_start_time() {
+        return coupon_start_time;
     }
 
-    public void setCouponStartTime(Date couponStartTime) {
-        this.couponStartTime = couponStartTime;
+    public void setCoupon_start_time(Date coupon_start_time) {
+        this.coupon_start_time = coupon_start_time;
     }
 
-    public Date getCouponEndTime() {
-        return couponEndTime;
+    public Date getCoupon_end_time() {
+        return coupon_end_time;
     }
 
-    public void setCouponEndTime(Date couponEndTime) {
-        this.couponEndTime = couponEndTime;
+    public void setCoupon_end_time(Date coupon_end_time) {
+        this.coupon_end_time = coupon_end_time;
     }
 
-    public String getIsConcurrentUse() {
-        return isConcurrentUse;
+    public String getIs_concurrent_use() {
+        return is_concurrent_use;
     }
 
-    public void setIsConcurrentUse(String isConcurrentUse) {
-        this.isConcurrentUse = isConcurrentUse;
+    public void setIs_concurrent_use(String is_concurrent_use) {
+        this.is_concurrent_use = is_concurrent_use;
     }
 
-    public String getIsfirstOrderUser() {
-        return isfirstOrderUser;
+    public String getIs_first_order_user() {
+        return is_first_order_user;
     }
 
-    public void setIsfirstOrderUser(String isfirstOrderUser) {
-        this.isfirstOrderUser = isfirstOrderUser;
+    public void setIs_first_order_user(String is_first_order_user) {
+        this.is_first_order_user = is_first_order_user;
     }
 
-    public String getPaymentMethodUser() {
-        return paymentMethodUser;
+    public String getPayment_method_user() {
+        return payment_method_user;
     }
 
-    public void setPaymentMethodUser(String paymentMethodUser) {
-        this.paymentMethodUser = paymentMethodUser;
+    public void setPayment_method_user(String payment_method_user) {
+        this.payment_method_user = payment_method_user;
     }
 
-    public String getCouponLabelUse() {
-        return couponLabelUse;
+    public String getCoupon_label_use() {
+        return coupon_label_use;
     }
 
-    public void setCouponLabelUse(String couponLabelUse) {
-        this.couponLabelUse = couponLabelUse;
+    public void setCoupon_label_use(String coupon_label_use) {
+        this.coupon_label_use = coupon_label_use;
     }
 
-    public int getVaildUseNumber() {
-        return vaildUseNumber;
+    public int getVaild_use_number() {
+        return vaild_use_number;
     }
 
-    public void setVaildUseNumber(int vaildUseNumber) {
-        this.vaildUseNumber = vaildUseNumber;
+    public void setVaild_use_number(int vaild_use_number) {
+        this.vaild_use_number = vaild_use_number;
     }
 
-    public String getCheckState() {
-        return checkState;
+    public String getCheck_state() {
+        return check_state;
     }
 
-    public void setCheckState(String checkState) {
-        this.checkState = checkState;
+    public void setCheck_state(String check_state) {
+        this.check_state = check_state;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getCoupon_type() {
+        return coupon_type;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setCoupon_type(String coupon_type) {
+        this.coupon_type = coupon_type;
     }
 }

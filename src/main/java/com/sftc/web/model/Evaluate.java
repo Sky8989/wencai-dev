@@ -13,19 +13,59 @@ public class Evaluate {
 
     private int id;
     // 评价留言
-    private String evaluateMessage;
+    private String evaluate_message;
     // 服务速度等级
-    private int serviceSpeedLevel;
+    private int service_speed_level;
     //上门速度等级
-    private int visitSpeedLevel;
+    private int visit_speed_level;
     //派送速度等级
-    private int sendSpeedLevel;
+    private int send_speed_level;
     // 评价人的用户id
     private User user;
-    private int userId;
+    private int user_id;
     // 评价的是哪一个订单
     private Order order;
-    private int orderId;
+    private int order_id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getEvaluate_message() {
+        return evaluate_message;
+    }
+
+    public void setEvaluate_message(String evaluate_message) {
+        this.evaluate_message = evaluate_message;
+    }
+
+    public int getService_speed_level() {
+        return service_speed_level;
+    }
+
+    public void setService_speed_level(int service_speed_level) {
+        this.service_speed_level = service_speed_level;
+    }
+
+    public int getVisit_speed_level() {
+        return visit_speed_level;
+    }
+
+    public void setVisit_speed_level(int visit_speed_level) {
+        this.visit_speed_level = visit_speed_level;
+    }
+
+    public int getSend_speed_level() {
+        return send_speed_level;
+    }
+
+    public void setSend_speed_level(int send_speed_level) {
+        this.send_speed_level = send_speed_level;
+    }
 
     public User getUser() {
         return user;
@@ -33,6 +73,14 @@ public class Evaluate {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     public Order getOrder() {
@@ -43,59 +91,11 @@ public class Evaluate {
         this.order = order;
     }
 
-    public int getId() {
-        return id;
+    public int getOrder_id() {
+        return order_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getEvaluateMessage() {
-        return evaluateMessage;
-    }
-
-    public void setEvaluateMessage(String evaluateMessage) {
-        this.evaluateMessage = evaluateMessage;
-    }
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
-
-    public int getServiceSpeedLevel() {
-        return serviceSpeedLevel;
-    }
-
-    public void setServiceSpeedLevel(int serviceSpeedLevel) {
-        this.serviceSpeedLevel = serviceSpeedLevel;
-    }
-
-    public int getVisitSpeedLevel() {
-        return visitSpeedLevel;
-    }
-
-    public void setVisitSpeedLevel(int visitSpeedLevel) {
-        this.visitSpeedLevel = visitSpeedLevel;
-    }
-
-    public int getSendSpeedLevel() {
-        return sendSpeedLevel;
-    }
-
-    public void setSendSpeedLevel(int sendSpeedLevel) {
-        this.sendSpeedLevel = sendSpeedLevel;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setOrder_id(int order_id) {
+        this.order_id = order_id;
     }
 }

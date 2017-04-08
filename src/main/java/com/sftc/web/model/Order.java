@@ -16,25 +16,25 @@ public class Order {
 
     private int id ;
     // 订单编号
-    private String orderNumber;
+    private String order_number;
     // 订单状态
     private String state;
     // 下单时间
-    private Date orderTime;
+    private Date order_time;
     // 支付时间
-    private Date payTime;
+    private Date pay_time;
     // 付款方式
-    private String paymentMethod;
+    private String payment_method;
     //运费
-    private double commodityPrice;
+    private double commodity_price;
     // 寄件人id(根据用户表id)
     private User user;
-    private int userId;
+    private int user_id;
     // 地址表id
     private Address address;
-    private int senderAddressId;
+    private int sender_address_id;
     // 地址表id
-    private int getterAddressId;
+    private int getter_address_id;
     private List<Commodity> commodityList;
 
     public int getId() {
@@ -45,12 +45,12 @@ public class Order {
         this.id = id;
     }
 
-    public String getOrderNumber() {
-        return orderNumber;
+    public String getOrder_number() {
+        return order_number;
     }
 
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
+    public void setOrder_number(String order_number) {
+        this.order_number = order_number;
     }
 
     public String getState() {
@@ -61,28 +61,36 @@ public class Order {
         this.state = state;
     }
 
-    public Date getOrderTime() {
-        return orderTime;
+    public Date getOrder_time() {
+        return order_time;
     }
 
-    public void setOrderTime(Date orderTime) {
-        this.orderTime = orderTime;
+    public void setOrder_time(Date order_time) {
+        this.order_time = order_time;
     }
 
-    public Date getPayTime() {
-        return payTime;
+    public Date getPay_time() {
+        return pay_time;
     }
 
-    public void setPayTime(Date payTime) {
-        this.payTime = payTime;
+    public void setPay_time(Date pay_time) {
+        this.pay_time = pay_time;
     }
 
-    public String getPaymentMethod() {
-        return paymentMethod;
+    public String getPayment_method() {
+        return payment_method;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
+    public void setPayment_method(String payment_method) {
+        this.payment_method = payment_method;
+    }
+
+    public double getCommodity_price() {
+        return commodity_price;
+    }
+
+    public void setCommodity_price(double commodity_price) {
+        this.commodity_price = commodity_price;
     }
 
     public User getUser() {
@@ -93,20 +101,12 @@ public class Order {
         this.user = user;
     }
 
-    public double getCommodityPrice() {
-        return commodityPrice;
+    public int getUser_id() {
+        return user_id;
     }
 
-    public void setCommodityPrice(double commodityPrice) {
-        this.commodityPrice = commodityPrice;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     public Address getAddress() {
@@ -117,20 +117,20 @@ public class Order {
         this.address = address;
     }
 
-    public int getSenderAddressId() {
-        return senderAddressId;
+    public int getSender_address_id() {
+        return sender_address_id;
     }
 
-    public void setSenderAddressId(int senderAddressId) {
-        this.senderAddressId = senderAddressId;
+    public void setSender_address_id(int sender_address_id) {
+        this.sender_address_id = sender_address_id;
     }
 
-    public int getGetterAddressId() {
-        return getterAddressId;
+    public int getGetter_address_id() {
+        return getter_address_id;
     }
 
-    public void setGetterAddressId(int getterAddressId) {
-        this.getterAddressId = getterAddressId;
+    public void setGetter_address_id(int getter_address_id) {
+        this.getter_address_id = getter_address_id;
     }
 
     public List<Commodity> getCommodityList() {

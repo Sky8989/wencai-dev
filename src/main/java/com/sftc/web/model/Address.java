@@ -21,33 +21,19 @@ public class Address {
     // 小区
     private String block;
     // 楼层号或门派号
-    private String houseNumber;
+    private String house_number;
     // 电话
     private String phone;
     // 收件人姓名
     private String name;
     // 地址标记（寄还是收）
-    private String addressTap;
+    private String address_tap;
     // 所属的用户
     private User user;
-    private int userId;
+    private int user_id;
     private List<Order> orderList;
 
     public Address() {
-    }
-
-    public Address(String province, String city, String block, String houseNumber,
-                   String phone, String name, String addressTap, int userId) {
-
-
-        this.province = province;
-        this.city = city;
-        this.block = block;
-        this.houseNumber = houseNumber;
-        this.phone = phone;
-        this.name = name;
-        this.addressTap = addressTap;
-        this.userId = userId;
     }
 
     public int getId() {
@@ -82,12 +68,12 @@ public class Address {
         this.block = block;
     }
 
-    public String getHouseNumber() {
-        return houseNumber;
+    public String getHouse_number() {
+        return house_number;
     }
 
-    public void setHouseNumber(String houseNumber) {
-        this.houseNumber = houseNumber;
+    public void setHouse_number(String house_number) {
+        this.house_number = house_number;
     }
 
     public String getPhone() {
@@ -106,20 +92,28 @@ public class Address {
         this.name = name;
     }
 
-    public String getAddressTap() {
-        return addressTap;
+    public String getAddress_tap() {
+        return address_tap;
     }
 
-    public void setAddressTap(String addressTap) {
-        this.addressTap = addressTap;
+    public void setAddress_tap(String address_tap) {
+        this.address_tap = address_tap;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     public List<Order> getOrderList() {

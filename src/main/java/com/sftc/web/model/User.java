@@ -22,7 +22,7 @@ public class User {
     //用户密码
     private String password;
 
-    private String openId;
+    private String open_id;
 
     private List<Order> userList;
     private List<Address> addressList;
@@ -60,12 +60,12 @@ public class User {
         this.password = password;
     }
 
-    public String getOpenId() {
-        return openId;
+    public String getOpen_id() {
+        return open_id;
     }
 
-    public void setOpenId(String openId) {
-        this.openId = openId;
+    public void setOpen_id(String open_id) {
+        this.open_id = open_id;
     }
 
     public List<Order> getUserList() {

@@ -13,25 +13,17 @@ public class Commodity {
 
     private int id ;
     // 商品名称
-    private String commodityName;
+    private String commodity_name;
     // 商品重量
-    private double commodityWeight;
+    private double commodity_weight;
     // 商品图片
-    private String commodityPhoto;
+    private String commodity_photo;
     // 商品描述
-    private String commodityInstruction;
+    private String commodity_instruction;
     // 所属的订单
     private Order order;
     //所属订单ID
-    private int orderId;
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
+    private int order_id;
 
     public int getId() {
         return id;
@@ -41,36 +33,36 @@ public class Commodity {
         this.id = id;
     }
 
-    public String getCommodityName() {
-        return commodityName;
+    public String getCommodity_name() {
+        return commodity_name;
     }
 
-    public void setCommodityName(String commodityName) {
-        this.commodityName = commodityName;
+    public void setCommodity_name(String commodity_name) {
+        this.commodity_name = commodity_name;
     }
 
-    public double getCommodityWeight() {
-        return commodityWeight;
+    public double getCommodity_weight() {
+        return commodity_weight;
     }
 
-    public void setCommodityWeight(double commodityWeight) {
-        this.commodityWeight = commodityWeight;
+    public void setCommodity_weight(double commodity_weight) {
+        this.commodity_weight = commodity_weight;
     }
 
-    public String getCommodityPhoto() {
-        return commodityPhoto;
+    public String getCommodity_photo() {
+        return commodity_photo;
     }
 
-    public void setCommodityPhoto(String commodityPhoto) {
-        this.commodityPhoto = commodityPhoto;
+    public void setCommodity_photo(String commodity_photo) {
+        this.commodity_photo = commodity_photo;
     }
 
-    public String getCommodityInstruction() {
-        return commodityInstruction;
+    public String getCommodity_instruction() {
+        return commodity_instruction;
     }
 
-    public void setCommodityInstruction(String commodityInstruction) {
-        this.commodityInstruction = commodityInstruction;
+    public void setCommodity_instruction(String commodity_instruction) {
+        this.commodity_instruction = commodity_instruction;
     }
 
     public Order getOrder() {
@@ -79,5 +71,13 @@ public class Commodity {
 
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    public int getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(int order_id) {
+        this.order_id = order_id;
     }
 }

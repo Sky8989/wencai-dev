@@ -16,7 +16,7 @@ public class OpinionFeedback {
     private String feedback;
     // 反馈意见的用户
     private User user;
-    private int userId;
+    private int user_id;
 
     public int getId() {
         return id;
@@ -42,11 +42,11 @@ public class OpinionFeedback {
         this.user = user;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getUser_id() {
+        return user_id;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 }

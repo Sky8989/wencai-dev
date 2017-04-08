@@ -40,7 +40,7 @@ public class Contact {
     private String label;
     // 所在地
     private String location;
-    private int userId;
+    private int user_id;
 
     public int getId() {
         return id;
@@ -154,11 +154,11 @@ public class Contact {
         this.phone = phone;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getUser_id() {
+        return user_id;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 }

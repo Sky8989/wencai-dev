@@ -13,12 +13,12 @@ public class CancelOrder {
 
     private int id;
     // 取消原因
-    private String cancelReason;
+    private String cancel_reason;
     // 问题描述
-    private String questionDescribe;
+    private String question_describe;
     // 取消的订单id
     private Order order;
-    private int orderId;
+    private int order_id;
 
     public int getId() {
         return id;
@@ -28,35 +28,35 @@ public class CancelOrder {
         this.id = id;
     }
 
-    public String getCancelReason() {
-        return cancelReason;
+    public String getCancel_reason() {
+        return cancel_reason;
     }
 
-    public void setCancelReason(String cancelReason) {
-        this.cancelReason = cancelReason;
+    public void setCancel_reason(String cancel_reason) {
+        this.cancel_reason = cancel_reason;
     }
 
-    public String getQuestionDescribe() {
-        return questionDescribe;
+    public String getQuestion_describe() {
+        return question_describe;
     }
 
-    public void setQuestionDescribe(String questionDescribe) {
-        this.questionDescribe = questionDescribe;
+    public void setQuestion_describe(String question_describe) {
+        this.question_describe = question_describe;
     }
 
     public Order getOrder() {
         return order;
     }
 
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
-
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    public int getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(int order_id) {
+        this.order_id = order_id;
     }
 }

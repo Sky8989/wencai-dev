@@ -13,15 +13,15 @@ public class Coupon {
 
     private int id;
     // 优惠券状态(是否使用)
-    private int couponState;
+    private int coupon_state;
     // 优惠券获得者
     private User user;
-    private  int userId;
+    private  int user_id;
     // 用在哪个订单
     private Order order;
-    private int orderId;
+    private int order_id;
     //同一个账户使用的有效次数
-    private int vaildUseNumber;
+    private int vaild_use_number;
 
     public User getUser() {
         return user;
@@ -47,37 +47,35 @@ public class Coupon {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getCoupon_state() {
+        return coupon_state;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setCoupon_state(int coupon_state) {
+        this.coupon_state = coupon_state;
     }
 
-    public int getOrderId() {
-        return orderId;
+    public int getUser_id() {
+        return user_id;
     }
 
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
-    public int getVaildUseNumber() {
-        return vaildUseNumber;
+    public int getOrder_id() {
+        return order_id;
     }
 
-    public void setVaildUseNumber(int vaildUseNumber) {
-        this.vaildUseNumber = vaildUseNumber;
+    public void setOrder_id(int order_id) {
+        this.order_id = order_id;
     }
 
-    public int getCouponState() {
-        return couponState;
+    public int getVaild_use_number() {
+        return vaild_use_number;
     }
 
-    public void setCouponState(int couponState) {
-        this.couponState = couponState;
+    public void setVaild_use_number(int vaild_use_number) {
+        this.vaild_use_number = vaild_use_number;
     }
-
-
 }
