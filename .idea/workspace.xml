@@ -2,42 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3664a542-4952-4a0c-9b48-0f877de1bcc0" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/Address.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/AddressMapper.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/Address.xml" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/AddressMapper.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/CancelOrder.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/OrderCancelMapper.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/CancelOrder.xml" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/OrderCancelMapper.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/Commodity.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/CommodityMapper.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/Commodity.xml" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/CommodityMapper.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/Contact.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/UserContactMapper.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/Contact.xml" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/UserContactMapper.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/Coupon.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/CouponMapper.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/Coupon.xml" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/CouponMapper.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/CouponApply.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/CouponApplyMapper.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/CouponApply.xml" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/CouponApplyMapper.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/Evaluate.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/EvaluateMapper.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/Evaluate.xml" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/EvaluateMapper.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/OpinionFeedback.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/OpinionFeedbackMapper.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/OpinionFeedback.xml" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/OpinionFeedbackMapper.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/OrderMapper.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/OrderMapperMapper.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/OrderMapper.xml" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/OrderMapperMapper.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/CancelOrder.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/OrderCancel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/Contact.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/UserContact.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/service/CancelOrderService.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/service/OrderCancelService.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/service/ContactService.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/service/UserContactService.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/service/impl/CancelOrderServiceImpl.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/service/impl/OrderCancelServiceImpl.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/service/impl/ContactServiceImpl.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/service/impl/UserContactServiceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/UserMapper.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/UserMapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/UserMapper.xml" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/UserMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/Address.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/Address.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/Commodity.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/Commodity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/Coupon.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/Coupon.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/CouponApply.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/CouponApply.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/Evaluate.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/Evaluate.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/OpinionFeedback.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/OpinionFeedback.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/Order.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/Order.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/User.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/User.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/service/impl/UserServiceImpl.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/service/impl/UserServiceImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/UserContact.java" afterPath="$PROJECT_DIR$/src/main/java/com/sftc/web/model/UserContact.java" />
     </list>
     <ignored path="Sf_TCSY.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -59,7 +24,23 @@
     <favorites_list name="Sf_TCSY" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="UserContact.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/sftc/web/model/UserContact.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="530">
+              <caret line="79" column="8" selection-start-line="79" selection-start-column="8" selection-end-line="79" selection-end-column="41" />
+              <folding>
+                <element signature="e#1305#1306#0" expanded="true" />
+                <element signature="e#1340#1341#0" expanded="true" />
+                <element signature="e#1396#1397#0" expanded="true" />
+                <element signature="e#1444#1445#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -119,7 +100,6 @@
         <option value="$PROJECT_DIR$/src/main/java/com/sftc/tools/api/APIUtil.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/sftc/tools/api/APIResponse.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/sftc/tools/api/Girl.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/sftc/web/model/UserContact.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/sftc/web/model/OrderCancel.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/sftc/web/model/Order.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/sftc/web/model/OpinionFeedback.java" />
@@ -133,6 +113,7 @@
         <option value="$PROJECT_DIR$/src/main/java/com/sftc/web/mapper/TokenMapper.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/sftc/web/service/TokenService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/sftc/web/service/impl/TokenServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/sftc/web/model/UserContact.java" />
       </list>
     </option>
   </component>
@@ -1315,7 +1296,7 @@
       <workItem from="1491525309233" duration="4232000" />
       <workItem from="1491569911981" duration="6793000" />
       <workItem from="1491670864412" duration="1271000" />
-      <workItem from="1491890532437" duration="3946000" />
+      <workItem from="1491890532437" duration="4245000" />
     </task>
     <servers />
   </component>
@@ -1325,7 +1306,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="65153000" />
+    <option name="totallyTimeSpent" value="65452000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
@@ -1650,32 +1631,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/sftc/web/model/UserContact.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1392">
-          <caret line="74" column="33" selection-start-line="74" selection-start-column="33" selection-end-line="74" selection-end-column="33" />
-          <folding>
-            <element signature="e#1328#1329#0" expanded="true" />
-            <element signature="e#1376#1377#0" expanded="true" />
-            <element signature="e#1416#1417#0" expanded="true" />
-            <element signature="e#1456#1457#0" expanded="true" />
-            <element signature="e#1492#1493#0" expanded="true" />
-            <element signature="e#1550#1551#0" expanded="true" />
-            <element signature="e#1600#1601#0" expanded="true" />
-            <element signature="e#2840#2841#0" expanded="true" />
-            <element signature="e#2878#2879#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/sftc/web/model/User.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="22" column="19" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/sftc/web/model/Order.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1248">
@@ -1910,6 +1865,27 @@
         <state relative-caret-position="336">
           <caret line="14" column="52" selection-start-line="14" selection-start-column="52" selection-end-line="14" selection-end-column="52" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/sftc/web/model/User.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="22" column="27" selection-start-line="22" selection-start-column="27" selection-end-line="22" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/sftc/web/model/UserContact.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="530">
+          <caret line="79" column="8" selection-start-line="79" selection-start-column="8" selection-end-line="79" selection-end-column="41" />
+          <folding>
+            <element signature="e#1305#1306#0" expanded="true" />
+            <element signature="e#1340#1341#0" expanded="true" />
+            <element signature="e#1396#1397#0" expanded="true" />
+            <element signature="e#1444#1445#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

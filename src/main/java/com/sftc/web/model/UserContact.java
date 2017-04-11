@@ -23,7 +23,7 @@ public class UserContact {
     // 用户微信
     private String wechat;
     // 用户生日
-    private String birthday;
+    private String gmt_birthday;
     // 纪念日
     private String anniversaries;
     // 公司
@@ -72,12 +72,12 @@ public class UserContact {
         this.wechat = wechat;
     }
 
-    public String getBirthday() {
-        return birthday;
+    public String getGmt_birthday() {
+        return gmt_birthday;
     }
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
+    public void setGmt_birthday(String gmt_birthday) {
+        this.gmt_birthday = gmt_birthday;
     }
 
     public String getAnniversaries() {
