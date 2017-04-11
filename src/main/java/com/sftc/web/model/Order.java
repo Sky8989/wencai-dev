@@ -1,6 +1,5 @@
 package com.sftc.web.model;
 
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -20,13 +19,13 @@ public class Order {
     // 订单状态
     private String state;
     // 下单时间
-    private Date order_time;
+    private String gmt_order_create;
     // 支付时间
-    private Date pay_time;
+    private String gmt_pay_create;
     // 付款方式
-    private String payment_method;
+    private String pay_method;
     //运费
-    private double commodity_price;
+    private double freight;
     // 寄件人id(根据用户表id)
     private User user;
     private int user_id;
@@ -61,36 +60,36 @@ public class Order {
         this.state = state;
     }
 
-    public Date getOrder_time() {
-        return order_time;
+    public String getGmt_order_create() {
+        return gmt_order_create;
     }
 
-    public void setOrder_time(Date order_time) {
-        this.order_time = order_time;
+    public void setGmt_order_create(String gmt_order_create) {
+        this.gmt_order_create = gmt_order_create;
     }
 
-    public Date getPay_time() {
-        return pay_time;
+    public String getGmt_pay_create() {
+        return gmt_pay_create;
     }
 
-    public void setPay_time(Date pay_time) {
-        this.pay_time = pay_time;
+    public void setGmt_pay_create(String gmt_pay_create) {
+        this.gmt_pay_create = gmt_pay_create;
     }
 
-    public String getPayment_method() {
-        return payment_method;
+    public String getPay_method() {
+        return pay_method;
     }
 
-    public void setPayment_method(String payment_method) {
-        this.payment_method = payment_method;
+    public void setPay_method(String pay_method) {
+        this.pay_method = pay_method;
     }
 
-    public double getCommodity_price() {
-        return commodity_price;
+    public double getFreight() {
+        return freight;
     }
 
-    public void setCommodity_price(double commodity_price) {
-        this.commodity_price = commodity_price;
+    public void setFreight(double freight) {
+        this.freight = freight;
     }
 
     public User getUser() {

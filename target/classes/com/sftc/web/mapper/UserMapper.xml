@@ -5,6 +5,6 @@
 <mapper namespace="com.sftc.web.mapper.UserMapper">
 
     <select id="selectUserByLogin" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
-        select * from user where username=#{username}
+        select * from user where user_phone=#{user_phone}
     </select>
 </mapper>

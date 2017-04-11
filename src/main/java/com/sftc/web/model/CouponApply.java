@@ -1,7 +1,5 @@
 package com.sftc.web.model;
 
-import java.sql.Date;
-
 /**
  * Created by IntelliJ IDEA.
  *
@@ -20,6 +18,8 @@ public class CouponApply {
     private String coupon_attribute;
     // 优惠券码
     private String coupon_code;
+    // 优惠券类型
+    private String coupon_type;
     // 立减
     private double minus;
     // 折扣
@@ -27,25 +27,23 @@ public class CouponApply {
     // 优惠券人数上限
     private int upper_limit;
     // 优惠券使用范围
-    private String coupon_use_range;
+    private String use_coupon_scope;
     // 优惠券开始时间
-    private Date coupon_start_time;
+    private String gmt_start_create;
     // 优惠券结束时间
-    private Date coupon_end_time;
+    private String gmt_expiry_create;
     // 是否与别的优惠券并行使用
     private String is_concurrent_use;
     // 是否针对首次下单的用户
     private String is_first_order_user;
     // 针对哪种支付方式的用户
-    private String payment_method_user;
+    private String use_pay_method;
     // 针对哪种标签的用户
-    private String coupon_label_use;
+    private String use_coupon_label;
     // 同一个账户使用的次数
-    private int vaild_use_number;
+    private int use_vaild_number;
     // 审核状态
     private String check_state;
-    // 优惠券类型
-    private String coupon_type;
 
     public int getId() {
         return id;
@@ -79,6 +77,14 @@ public class CouponApply {
         this.coupon_code = coupon_code;
     }
 
+    public String getCoupon_type() {
+        return coupon_type;
+    }
+
+    public void setCoupon_type(String coupon_type) {
+        this.coupon_type = coupon_type;
+    }
+
     public double getMinus() {
         return minus;
     }
@@ -103,28 +109,28 @@ public class CouponApply {
         this.upper_limit = upper_limit;
     }
 
-    public String getCoupon_use_range() {
-        return coupon_use_range;
+    public String getUse_coupon_scope() {
+        return use_coupon_scope;
     }
 
-    public void setCoupon_use_range(String coupon_use_range) {
-        this.coupon_use_range = coupon_use_range;
+    public void setUse_coupon_scope(String use_coupon_scope) {
+        this.use_coupon_scope = use_coupon_scope;
     }
 
-    public Date getCoupon_start_time() {
-        return coupon_start_time;
+    public String getGmt_start_create() {
+        return gmt_start_create;
     }
 
-    public void setCoupon_start_time(Date coupon_start_time) {
-        this.coupon_start_time = coupon_start_time;
+    public void setGmt_start_create(String gmt_start_create) {
+        this.gmt_start_create = gmt_start_create;
     }
 
-    public Date getCoupon_end_time() {
-        return coupon_end_time;
+    public String getGmt_expiry_create() {
+        return gmt_expiry_create;
     }
 
-    public void setCoupon_end_time(Date coupon_end_time) {
-        this.coupon_end_time = coupon_end_time;
+    public void setGmt_expiry_create(String gmt_expiry_create) {
+        this.gmt_expiry_create = gmt_expiry_create;
     }
 
     public String getIs_concurrent_use() {
@@ -143,28 +149,28 @@ public class CouponApply {
         this.is_first_order_user = is_first_order_user;
     }
 
-    public String getPayment_method_user() {
-        return payment_method_user;
+    public String getUse_pay_method() {
+        return use_pay_method;
     }
 
-    public void setPayment_method_user(String payment_method_user) {
-        this.payment_method_user = payment_method_user;
+    public void setUse_pay_method(String use_pay_method) {
+        this.use_pay_method = use_pay_method;
     }
 
-    public String getCoupon_label_use() {
-        return coupon_label_use;
+    public String getUse_coupon_label() {
+        return use_coupon_label;
     }
 
-    public void setCoupon_label_use(String coupon_label_use) {
-        this.coupon_label_use = coupon_label_use;
+    public void setUse_coupon_label(String use_coupon_label) {
+        this.use_coupon_label = use_coupon_label;
     }
 
-    public int getVaild_use_number() {
-        return vaild_use_number;
+    public int getUse_vaild_number() {
+        return use_vaild_number;
     }
 
-    public void setVaild_use_number(int vaild_use_number) {
-        this.vaild_use_number = vaild_use_number;
+    public void setUse_vaild_number(int use_vaild_number) {
+        this.use_vaild_number = use_vaild_number;
     }
 
     public String getCheck_state() {
@@ -173,13 +179,5 @@ public class CouponApply {
 
     public void setCheck_state(String check_state) {
         this.check_state = check_state;
-    }
-
-    public String getCoupon_type() {
-        return coupon_type;
-    }
-
-    public void setCoupon_type(String coupon_type) {
-        this.coupon_type = coupon_type;
     }
 }

@@ -14,6 +14,8 @@ public class OpinionFeedback {
     private int id;
     // 意见反馈
     private String feedback;
+    // 反馈时间
+    private String gmt_create;
     // 反馈意见的用户
     private User user;
     private int user_id;
@@ -32,6 +34,14 @@ public class OpinionFeedback {
 
     public void setFeedback(String feedback) {
         this.feedback = feedback;
+    }
+
+    public String getGmt_create() {
+        return gmt_create;
+    }
+
+    public void setGmt_create(String gmt_create) {
+        this.gmt_create = gmt_create;
     }
 
     public User getUser() {

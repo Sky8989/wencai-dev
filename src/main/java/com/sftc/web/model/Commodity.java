@@ -19,7 +19,7 @@ public class Commodity {
     // 商品图片
     private String commodity_photo;
     // 商品描述
-    private String commodity_instruction;
+    private String commodity_describe;
     // 所属的订单
     private Order order;
     //所属订单ID
@@ -57,12 +57,12 @@ public class Commodity {
         this.commodity_photo = commodity_photo;
     }
 
-    public String getCommodity_instruction() {
-        return commodity_instruction;
+    public String getCommodity_describe() {
+        return commodity_describe;
     }
 
-    public void setCommodity_instruction(String commodity_instruction) {
-        this.commodity_instruction = commodity_instruction;
+    public void setCommodity_describe(String commodity_describe) {
+        this.commodity_describe = commodity_describe;
     }
 
     public Order getOrder() {

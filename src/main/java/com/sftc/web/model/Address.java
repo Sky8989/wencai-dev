@@ -27,7 +27,7 @@ public class Address {
     // 收件人姓名
     private String name;
     // 地址标记（寄还是收）
-    private String address_tap;
+    private String label;
     // 所属的用户
     private User user;
     private int user_id;
@@ -92,12 +92,12 @@ public class Address {
         this.name = name;
     }
 
-    public String getAddress_tap() {
-        return address_tap;
+    public String getLabel() {
+        return label;
     }
 
-    public void setAddress_tap(String address_tap) {
-        this.address_tap = address_tap;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public User getUser() {

@@ -1,8 +1,5 @@
 package com.sftc.web.model;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 import java.util.List;
 
 /**
@@ -14,28 +11,27 @@ import java.util.List;
  * @date 17/4/1
  * @Time 下午9:00
  */
-@JsonIgnoreProperties("password")
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+
 public class User {
 
     private int id;
-    // 用户姓名
-    private String username;
-    //用户密码
-    private String password;
-
+    // 登陆用手机号
+    private String user_phone;
+    // 密码
+    private transient String user_password;
+    // 微信端保存的openid
     private String open_id;
 
     private List<Order> userList;
     private List<Address> addressList;
-    private List<Contact> concatList;
+    private List<UserContact> concatList;
     private List<OpinionFeedback> opinionFeedbackList;
 
     public User() {}
 
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public User(String user_phone, String user_password) {
+        this.user_phone = user_phone;
+        this.user_password = user_password;
     }
 
     public int getId() {
@@ -46,20 +42,20 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUser_phone() {
+        return user_phone;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUser_phone(String user_phone) {
+        this.user_phone = user_phone;
     }
 
-    public String getPassword() {
-        return password;
+    public String getUser_password() {
+        return user_password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUser_password(String user_password) {
+        this.user_password = user_password;
     }
 
     public String getOpen_id() {
@@ -86,11 +82,11 @@ public class User {
         this.addressList = addressList;
     }
 
-    public List<Contact> getConcatList() {
+    public List<UserContact> getConcatList() {
         return concatList;
     }
 
-    public void setConcatList(List<Contact> concatList) {
+    public void setConcatList(List<UserContact> concatList) {
         this.concatList = concatList;
     }
 

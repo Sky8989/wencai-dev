@@ -13,13 +13,15 @@ public class Evaluate {
 
     private int id;
     // 评价留言
-    private String evaluate_message;
+    private String message;
     // 服务速度等级
-    private int service_speed_level;
-    //上门速度等级
-    private int visit_speed_level;
-    //派送速度等级
-    private int send_speed_level;
+    private int speed_service_level;
+    // 上门速度等级
+    private int speed_visit_level;
+    // 派送速度等级
+    private int speed_send_level;
+    // 评价时间
+    private String gmt_create;
     // 评价人的用户id
     private User user;
     private int user_id;
@@ -35,36 +37,44 @@ public class Evaluate {
         this.id = id;
     }
 
-    public String getEvaluate_message() {
-        return evaluate_message;
+    public String getMessage() {
+        return message;
     }
 
-    public void setEvaluate_message(String evaluate_message) {
-        this.evaluate_message = evaluate_message;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public int getService_speed_level() {
-        return service_speed_level;
+    public int getSpeed_service_level() {
+        return speed_service_level;
     }
 
-    public void setService_speed_level(int service_speed_level) {
-        this.service_speed_level = service_speed_level;
+    public void setSpeed_service_level(int speed_service_level) {
+        this.speed_service_level = speed_service_level;
     }
 
-    public int getVisit_speed_level() {
-        return visit_speed_level;
+    public int getSpeed_visit_level() {
+        return speed_visit_level;
     }
 
-    public void setVisit_speed_level(int visit_speed_level) {
-        this.visit_speed_level = visit_speed_level;
+    public void setSpeed_visit_level(int speed_visit_level) {
+        this.speed_visit_level = speed_visit_level;
     }
 
-    public int getSend_speed_level() {
-        return send_speed_level;
+    public int getSpeed_send_level() {
+        return speed_send_level;
     }
 
-    public void setSend_speed_level(int send_speed_level) {
-        this.send_speed_level = send_speed_level;
+    public void setSpeed_send_level(int speed_send_level) {
+        this.speed_send_level = speed_send_level;
+    }
+
+    public String getGmt_create() {
+        return gmt_create;
+    }
+
+    public void setGmt_create(String gmt_create) {
+        this.gmt_create = gmt_create;
     }
 
     public User getUser() {
