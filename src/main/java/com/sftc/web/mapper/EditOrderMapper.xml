@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sftc.web.mapper.EditOrderMapper">
+    <insert id="editOrder" parameterType="com.sftc.web.model.EditOrder">
+        insert into edit_order (userName,postalCode,provinceName,
+                     cityName,countyName,detailInfo,nationalCode,telNumber)
+                     values (#{userName},#{postalCode},#{provinceName},#{cityName},
+                     #{countyName},#{detailInfo},#{nationalCode},#{telNumber});
+    </insert>
+</mapper>

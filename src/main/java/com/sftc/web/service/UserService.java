@@ -20,5 +20,5 @@ public interface UserService {
      * @param request 获取请求参数
      * @return
      */
-    APIResponse login(HttpServletRequest request);
+    APIResponse loginUser(HttpServletRequest request);
 }

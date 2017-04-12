@@ -1,5 +1,9 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIResponse;
+
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -11,4 +15,6 @@ package com.sftc.web.service;
  * @Time 下午3:36
  */
 public interface EditOrderService {
+
+    APIResponse insertOrder(HttpServletRequest request);
 }

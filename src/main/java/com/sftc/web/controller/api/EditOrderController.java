@@ -1,8 +1,12 @@
 package com.sftc.web.controller.api;
 
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.service.EditOrderService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,9 +22,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("edit")
 public class EditOrderController {
 
+    @Resource
+    private EditOrderService editOrderService;
+
     @RequestMapping(value = "/order", method = {RequestMethod.GET, RequestMethod.POST}, headers = "api-version=1")
     public @ResponseBody
-    APIResponse editOrder() {
-        
+    APIResponse editOrder(HttpServletRequest request) {
+        return editOrderService.insertOrder(request);
     }
 }

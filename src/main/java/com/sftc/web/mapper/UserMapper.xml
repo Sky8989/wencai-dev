@@ -5,6 +5,20 @@
 <mapper namespace="com.sftc.web.mapper.UserMapper">
 
     <select id="selectUserByLogin" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
-        select * from sftc_user where user_phone=#{user_phone}
+        select * from sftc_user
+        where
+         <if test="user_phone!=null">
+             user_phone=#{user_phone}
+         </if>
+         <if test="open_id!=null">
+             open_id=#{open_id}
+         </if>
     </select>
+
+    <insert id="insertOpenid" parameterType="java.lang.String">
+        insert into sftc_user
+        (open_id)
+        values
+        (#{open_id})
+    </insert>
 </mapper>

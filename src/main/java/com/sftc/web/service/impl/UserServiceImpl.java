@@ -18,9 +18,10 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class UserServiceImpl extends AbstractBasicService implements UserService {
 
+    private static String AUTHORIZATION_URL = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
 
-
-    public APIResponse login(HttpServletRequest request) {
+    @Override
+    public APIResponse loginUser(HttpServletRequest request) {
         String user_phone = request.getParameter("user_phone");
         String user_password = MD5Util.MD5(request.getParameter("user_password"));
         User user = new User(user_phone, user_password);
