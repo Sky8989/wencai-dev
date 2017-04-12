@@ -40,7 +40,7 @@
         </element>
       </element>
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/target/tcsu/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="C:\Users\Administrator\Desktop\顺丰数据设计新\新建文件夹\target/MANIFEST.MF" />
       </element>
       <element id="javaee-facet-resources" facet="SF_TCSY/web/Web" />
     </root>
