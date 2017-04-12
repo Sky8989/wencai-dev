@@ -21,14 +21,14 @@ public class UserServiceImpl extends AbstractBasicService implements UserService
 
 
     public APIResponse login(HttpServletRequest request) {
-        String username = request.getParameter("username");
-        String password = MD5Util.MD5(request.getParameter("password"));
-        User user = new User(username, password);
+        String user_phone = request.getParameter("user_phone");
+        String user_password = MD5Util.MD5(request.getParameter("user_password"));
+        User user = new User(user_phone, user_password);
         user = userMapper.selectUserByLogin(user.getUser_phone());
         if (user == null) {
             status = APIStatus.USER_NOT_EXIST;
         } else {
-            if (!password.equals(user.getUser_password())) {
+            if (!user_password.equals(user.getUser_password())) {
                 status = APIStatus.USER_FAIL;
             }
         }
