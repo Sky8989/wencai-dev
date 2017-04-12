@@ -5,88 +5,76 @@ package com.sftc.web.model;
  */
 public class EditOrder {
     private int id;
-    private String userName;
-    private String postalCode;
-    private String provinceName;
-    private String cityName;
-    private String countyName;
-    private String detailInfo;
-    private String nationlCode;
-    private String telNumber;
+    private String user_name;
+    private String postal_code;
+    private String province_name;
+    private String city_name;
+    private String county_name;
+    private String detail_info;
+    private String national_code;
+    private String tel_number;
 
-    public EditOrder(String userName, String postalCode, String provinceName,
-                     String cityName, String countyName, String detailInfo, String nationlCode, String telNumber) {
-        this.userName = userName;
-        this.postalCode = postalCode;
-        this.provinceName = provinceName;
-        this.cityName = cityName;
-        this.countyName = countyName;
-        this.detailInfo = detailInfo;
-        this.nationlCode = nationlCode;
-        this.telNumber = telNumber;
+    public String getUser_name() {
+        return user_name;
     }
 
-    public String getUserName() {
-        return userName;
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public String getPostal_code() {
+        return postal_code;
     }
 
-    public String getPostalCode() {
-        return postalCode;
+    public void setPostal_code(String postal_code) {
+        this.postal_code = postal_code;
     }
 
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
+    public String getProvince_name() {
+        return province_name;
     }
 
-    public String getProvinceName() {
-        return provinceName;
+    public void setProvince_name(String province_name) {
+        this.province_name = province_name;
     }
 
-    public void setProvinceName(String provinceName) {
-        this.provinceName = provinceName;
+    public String getCity_name() {
+        return city_name;
     }
 
-    public String getCityName() {
-        return cityName;
+    public void setCity_name(String city_name) {
+        this.city_name = city_name;
     }
 
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
+    public String getCounty_name() {
+        return county_name;
     }
 
-    public String getCountyName() {
-        return countyName;
+    public void setCounty_name(String county_name) {
+        this.county_name = county_name;
     }
 
-    public void setCountyName(String countyName) {
-        this.countyName = countyName;
+    public String getDetail_info() {
+        return detail_info;
     }
 
-    public String getDetailInfo() {
-        return detailInfo;
+    public void setDetail_info(String detail_info) {
+        this.detail_info = detail_info;
     }
 
-    public void setDetailInfo(String detailInfo) {
-        this.detailInfo = detailInfo;
+    public String getNational_code() {
+        return national_code;
     }
 
-    public String getNationlCode() {
-        return nationlCode;
+    public void setNational_code(String national_code) {
+        this.national_code = national_code;
     }
 
-    public void setNationlCode(String nationlCode) {
-        this.nationlCode = nationlCode;
+    public String getTel_number() {
+        return tel_number;
     }
 
-    public String getTelNumber() {
-        return telNumber;
-    }
-
-    public void setTelNumber(String telNumber) {
-        this.telNumber = telNumber;
+    public void setTel_number(String tel_number) {
+        this.tel_number = tel_number;
     }
 }
