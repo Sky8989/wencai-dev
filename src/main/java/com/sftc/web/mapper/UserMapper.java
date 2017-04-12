@@ -4,5 +4,7 @@ import com.sftc.web.model.User;
 
 public interface UserMapper {
 
-    public User selectUserByLogin(String phone);
+    public User selectUserByLogin(User user);
+
+    public void insertOpenid(String open_id);
 }

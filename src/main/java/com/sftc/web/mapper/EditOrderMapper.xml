@@ -9,4 +9,8 @@
                      values (#{userName},#{postalCode},#{provinceName},#{cityName},
                      #{countyName},#{detailInfo},#{nationalCode},#{telNumber});
     </insert>
+
+    <select id="selectOrderById" parameterType="int" resultType="com.sftc.web.model.EditOrder">
+        select * from edit_order where id=#{id}
+    </select>
 </mapper>

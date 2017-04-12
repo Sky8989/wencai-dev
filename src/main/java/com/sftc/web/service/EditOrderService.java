@@ -17,4 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 public interface EditOrderService {
 
     APIResponse insertOrder(HttpServletRequest request);
+
+    APIResponse selectOrder(HttpServletRequest request);
 }

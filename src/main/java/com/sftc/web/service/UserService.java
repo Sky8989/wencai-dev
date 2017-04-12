@@ -20,5 +20,5 @@ public interface UserService {
      * @param request 获取请求参数
      * @return
      */
-    APIResponse loginUser(HttpServletRequest request);
+    APIResponse login(HttpServletRequest request) throws Exception;
 }

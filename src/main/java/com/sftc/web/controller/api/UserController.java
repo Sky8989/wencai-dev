@@ -24,6 +24,6 @@ public class UserController extends AbstractBasicController {
     @RequestMapping(value = "/login", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
     APIResponse login(HttpServletRequest request) throws Exception {
-        return userService.loginUser(request);
+        return userService.login(request);
     }
 }

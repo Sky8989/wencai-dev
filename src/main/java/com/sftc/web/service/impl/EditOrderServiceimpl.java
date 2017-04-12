@@ -38,4 +38,14 @@ public class EditOrderServiceimpl extends AbstractBasicService implements EditOr
         }
         return APIUtil.getResponse(status, null);
     }
+
+    @Override
+    public APIResponse selectOrder(HttpServletRequest request) {
+        int id = Integer.parseInt(request.getParameter("id"));
+        EditOrder editOrder = editOrderMapper.selectOrderById(id);
+        if (editOrder == null) {
+            status = APIStatus.FAIL;
+        }
+        return APIUtil.getResponse(status, editOrder);
+    }
 }

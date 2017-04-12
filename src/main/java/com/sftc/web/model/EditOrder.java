@@ -26,6 +26,8 @@ public class EditOrder {
         this.telNumber = telNumber;
     }
 
+    public EditOrder() {}
+
     public String getUserName() {
         return userName;
     }
