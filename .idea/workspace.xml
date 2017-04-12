@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3664a542-4952-4a0c-9b48-0f877de1bcc0" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SF_TCSY.iml" afterPath="$PROJECT_DIR$/SF_TCSY.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/SF_TCSY_war_exploded.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/SF_TCSY_war_exploded.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Sf_TCSY.iws" />
@@ -1259,7 +1256,7 @@
       <workItem from="1491670864412" duration="1271000" />
       <workItem from="1491890532437" duration="4245000" />
       <workItem from="1491978940908" duration="3794000" />
-      <workItem from="1491982861844" duration="179000" />
+      <workItem from="1491982861844" duration="264000" />
     </task>
     <servers />
   </component>
@@ -1269,10 +1266,10 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="69425000" />
+    <option name="totallyTimeSpent" value="69510000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1552" height="842" extended-state="6" />
+    <frame x="-8" y="-8" width="1552" height="842" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
