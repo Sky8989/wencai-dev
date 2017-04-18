@@ -4,6 +4,7 @@ import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
 import com.sftc.web.model.User;
 import com.sftc.web.service.UserService;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,16 +17,19 @@ import javax.servlet.http.HttpServletRequest;
  * @date 17/4/1
  * @Time 下午9:34
  */
+@Service
 public class UserServiceImpl extends AbstractBasicService implements UserService {
 
     private static String AUTHORIZATION_URL = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
 
     @Override
     public APIResponse login(HttpServletRequest request) throws Exception {
+        APIStatus status = APIStatus.SUCCESS;
         String user_phone = request.getParameter("user_phone");
         String user_password = MD5Util.MD5(request.getParameter("user_password"));
         String open_id = request.getParameter("open_id");
         User user = null;
+        // 判断通过微信进行登录
         if (open_id != null) {
             user.setOpen_id(open_id);
             user = userMapper.selectUserByLogin(user);
@@ -36,6 +40,7 @@ public class UserServiceImpl extends AbstractBasicService implements UserService
             } else {
                 status = APIStatus.FAIL;
             }
+            // 判断通过普通用户输入手机号密码登录
         } else if (user_phone != null && user_password != null) {
             user = new User(user_phone, user_password);
             user = userMapper.selectUserByLogin(user);

@@ -1,6 +1,5 @@
 package com.sftc.web.service.impl;
 
-import com.sftc.tools.api.APIStatus;
 import com.sftc.web.mapper.UserMapper;
 
 import javax.annotation.Resource;
@@ -19,6 +18,4 @@ public abstract class AbstractBasicService {
 
     @Resource
     protected UserMapper userMapper;
-
-    APIStatus status = APIStatus.SUCCESS;
 }
