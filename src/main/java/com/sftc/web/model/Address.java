@@ -19,9 +19,9 @@ public class Address {
     // 城市
     private String city;
     // 小区
-    private String block;
+    private String district;
     // 楼层号或门派号
-    private String house_number;
+    private String detail;
     // 电话
     private String phone;
     // 收件人姓名
@@ -60,20 +60,20 @@ public class Address {
         this.city = city;
     }
 
-    public String getBlock() {
-        return block;
+    public String getDistrict() {
+        return district;
     }
 
-    public void setBlock(String block) {
-        this.block = block;
+    public void setDistrict(String district) {
+        this.district = district;
     }
 
-    public String getHouse_number() {
-        return house_number;
+    public String getDetail() {
+        return detail;
     }
 
-    public void setHouse_number(String house_number) {
-        this.house_number = house_number;
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     public String getPhone() {

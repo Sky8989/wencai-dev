@@ -31,6 +31,10 @@ public class User {
 
     public User() {}
 
+    public User(String user_phone) {
+        this.user_phone = user_phone;
+    }
+
     public User(String user_phone, String user_password) {
         this.user_phone = user_phone;
         this.user_password = user_password;
