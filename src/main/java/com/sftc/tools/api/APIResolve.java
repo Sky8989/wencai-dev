@@ -1,11 +1,11 @@
 package com.sftc.tools.api;
 
 import com.google.gson.Gson;
+import com.sftc.web.model.wechat.WechatUser;
 import org.apache.commons.io.IOUtils;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,18 +19,18 @@ import java.util.Map;
  */
 public class APIResolve {
 
-    public static String getJson(String apiUrl, String key) {
+    public static WechatUser getJson(String apiUrl) {
         String value = null;
+        WechatUser wechatUser = null;
         try {
             URL url = new URL(apiUrl);
             InputStream inputStream = url.openConnection().getInputStream();
             String json = IOUtils.toString(inputStream);
             Gson gson = new Gson();
-            Map<String, String> maps = gson.fromJson(json, Map.class);
-            value = maps.get(key);
+            wechatUser = gson.fromJson(json, WechatUser.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return value;
+        return wechatUser;
     }
 }

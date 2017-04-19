@@ -3,6 +3,7 @@ package com.sftc.web.service.impl;
 import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
 import com.sftc.web.model.User;
+import com.sftc.web.model.wechat.WechatUser;
 import com.sftc.web.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -24,22 +25,27 @@ public class UserServiceImpl extends AbstractBasicService implements UserService
         APIStatus status = APIStatus.SUCCESS;
         String user_phone = (String) request.getParameter("user_phone");
         String user_password = MD5Util.MD5((String) request.getParameter("user_password"));
-        String open_id = (String) request.getParameter("open_id");
+        String js_code = (String) request.getParameter("js_code");
         User user = null;
+        WechatUser wechatUser = null;
         // 判断通过微信进行登录
-        if (open_id != null) {
-            user.setOpen_id(open_id);
-            user = userMapper.selectUserByLogin(user);
-            if (user == null) {
-                AUTHORIZATION_URL = AUTHORIZATION_URL.replace("JSCODE", open_id);
-                open_id = APIResolve.getJson(AUTHORIZATION_URL, "openid");
-                userMapper.insertOpenid(open_id);
+        if (js_code != null) {
+            AUTHORIZATION_URL = AUTHORIZATION_URL.replace("JSCODE", js_code);
+            wechatUser = APIResolve.getJson(AUTHORIZATION_URL);
+            if (wechatUser.getOpenid() != null) {
+                user = userMapper.selectUserByOpenid(wechatUser.getOpenid());
+                if (user == null) {
+                    userMapper.insertOpenid(wechatUser.getOpenid());
+                }
             } else {
-                // status = APIStatus.FAIL;
+                status = APIStatus.WECHAT_ERR;
+                status.setState(wechatUser.getErrcode().toString());
+                status.setMessage(wechatUser.getErrmsg());
             }
+
             // 判断通过普通用户输入手机号密码登录
         } else if (user_phone != null && user_password != null) {
-            user = userMapper.selectUserByLogin(new User(user_phone));
+            user = userMapper.selectUserByPhone(user_phone);
             if (user == null) {
                 status = APIStatus.USER_NOT_EXIST;
             } else {
