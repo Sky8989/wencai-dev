@@ -1,6 +1,7 @@
 package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.APIStatus;
+import com.sftc.web.mapper.EditOrderMapper;
 import com.sftc.web.mapper.UserMapper;
 
 import javax.annotation.Resource;
@@ -19,6 +20,9 @@ public abstract class AbstractBasicService {
 
     @Resource
     protected UserMapper userMapper;
+
+    @Resource
+    protected EditOrderMapper editOrderMapper;
 
     APIStatus status = APIStatus.SUCCESS;
 }

@@ -15,4 +15,5 @@
 
 
 	<bean id="userService" class="com.sftc.web.service.impl.UserServiceImpl" />
+	<bean id="editOrderService" class="com.sftc.web.service.impl.EditOrderServiceimpl" />
 </beans>
