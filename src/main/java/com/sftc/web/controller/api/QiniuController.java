@@ -20,7 +20,7 @@ import java.util.Map;
 @RequestMapping("qiniu")
 public class QiniuController extends AbstractBasicController {
 
-    @RequestMapping(value = "/uptoken", method = RequestMethod.GET, headers = "api-version=1")
+    @RequestMapping(value = "/uptoken", method = RequestMethod.GET)
     public @ResponseBody
     Map<String, String> uptoken() throws Exception {
         return qiniuService.returnUptoken();

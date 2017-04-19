@@ -35,7 +35,7 @@ public class UserServiceImpl extends AbstractBasicService implements UserService
                 open_id = APIResolve.getJson(AUTHORIZATION_URL, "openid");
                 userMapper.insertOpenid(open_id);
             } else {
-                status = APIStatus.FAIL;
+                // status = APIStatus.FAIL;
             }
             // 判断通过普通用户输入手机号密码登录
         } else if (user_phone != null && user_password != null) {
