@@ -1,8 +1,7 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,5 +19,5 @@ public interface UserService {
      * @param request 获取请求参数
      * @return
      */
-    APIResponse loginUser(HttpServletRequest request);
+    APIResponse login(APIRequest request) throws Exception;
 }

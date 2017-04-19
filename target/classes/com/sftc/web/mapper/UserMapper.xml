@@ -4,6 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.UserMapper">
 
+
     <select id="selectUserByLogin" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
 
 
@@ -16,6 +17,17 @@
          <if test="open_id!=null">
              open_id=#{open_id}
          </if>
+</select>
+
+    <select id="selectUserByLogin" parameterType="com.sftc.web.model.User" resultType="com.sftc.web.model.User">
+        select * from sftc_user
+        where
+            <if test="user_phone!=null">
+                user_phone=#{user_phone}
+            </if>
+            <if test="open_id!=null">
+                open_id=#{open_id}
+            </if>
 
     </select>
 

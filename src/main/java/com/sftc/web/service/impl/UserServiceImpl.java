@@ -4,8 +4,7 @@ import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
 import com.sftc.web.model.User;
 import com.sftc.web.service.UserService;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,21 +15,37 @@ import javax.servlet.http.HttpServletRequest;
  * @date 17/4/1
  * @Time 下午9:34
  */
+@Service
 public class UserServiceImpl extends AbstractBasicService implements UserService {
 
     private static String AUTHORIZATION_URL = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
 
-    @Override
-    public APIResponse loginUser(HttpServletRequest request) {
-        String user_phone = request.getParameter("user_phone");
-        String user_password = MD5Util.MD5(request.getParameter("user_password"));
-        User user = new User(user_phone, user_password);
-        user = userMapper.selectUserByLogin(user.getUser_phone());
-        if (user == null) {
-            status = APIStatus.USER_NOT_EXIST;
-        } else {
-            if (!user_password.equals(user.getUser_password())) {
-                status = APIStatus.USER_FAIL;
+    public APIResponse login(APIRequest request) throws Exception {
+        APIStatus status = APIStatus.SUCCESS;
+        String user_phone = (String) request.getParameter("user_phone");
+        String user_password = MD5Util.MD5((String) request.getParameter("user_password"));
+        String open_id = (String) request.getParameter("open_id");
+        User user = null;
+        // 判断通过微信进行登录
+        if (open_id != null) {
+            user.setOpen_id(open_id);
+            user = userMapper.selectUserByLogin(user);
+            if (user == null) {
+                AUTHORIZATION_URL = AUTHORIZATION_URL.replace("JSCODE", open_id);
+                open_id = APIResolve.getJson(AUTHORIZATION_URL, "openid");
+                userMapper.insertOpenid(open_id);
+            } else {
+                status = APIStatus.FAIL;
+            }
+            // 判断通过普通用户输入手机号密码登录
+        } else if (user_phone != null && user_password != null) {
+            user = userMapper.selectUserByLogin(new User(user_phone));
+            if (user == null) {
+                status = APIStatus.USER_NOT_EXIST;
+            } else {
+                if (!user_password.equals(user.getUser_password())) {
+                    status = APIStatus.USER_FAIL;
+                }
             }
         }
         return APIUtil.getResponse(status, user);

@@ -1,5 +1,6 @@
 package com.sftc.web.controller.api;
 
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,6 @@ public class UserController extends AbstractBasicController {
     @RequestMapping(value = "/login", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
     APIResponse login(HttpServletRequest request) throws Exception {
-        return userService.loginUser(request);
+        return userService.login(new APIRequest(request));
     }
 }
