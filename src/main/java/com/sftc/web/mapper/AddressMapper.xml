@@ -4,10 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.AddressMapper">
 
-    <insert id="addNewAddressInfo" parameterType="com.sftc.web.model.Address">
-        insert into address
-        (province,city,district,detail,phone,name,label,user_id)
-        values
-        (#{province},#{city},#{district},#{detail},#{phone},#{name},#{label},#{user_id})
-    </insert>
+    <insert id="addAddress" parameterType="com.sftc.web.model.Address">
+      insert into address
+      (province,city,district,detail,phone,name,label,user_id)
+      values
+      (#{province},#{city},#{district},#{detail},#{phone},#{name},#{label},#{user_id})
+</insert>
+
 </mapper>

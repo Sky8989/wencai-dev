@@ -4,5 +4,5 @@ import com.sftc.web.model.Address;
 
 public interface AddressMapper {
 
-    public void addNewAddressInfo(Address address);
+    public void addAddress(Address address);
 }

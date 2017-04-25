@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl extends AbstractBasicService implements UserService {
 
-    private static String AUTHORIZATION_URL = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
+    private static String AUTHORIZATION_URL = "https://api.weixin.qq.com/sns/jscode2session?appid=wx6923f7053c54d11f&secret=9658591779adc2d9e333f54395e220fa&js_code=JSCODE&grant_type=authorization_code";
 
     public APIResponse login(APIRequest request) throws Exception {
         APIStatus status = APIStatus.SUCCESS;

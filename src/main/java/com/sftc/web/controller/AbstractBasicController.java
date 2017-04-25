@@ -1,5 +1,6 @@
 package com.sftc.web.controller;
 
+import com.sftc.web.service.QiniuService;
 import com.sftc.web.service.UserService;
 
 import javax.annotation.Resource;
@@ -18,4 +19,7 @@ public abstract class AbstractBasicController {
 
     @Resource
     protected UserService userService;
+
+    @Resource
+    protected QiniuService qiniuService;
 }

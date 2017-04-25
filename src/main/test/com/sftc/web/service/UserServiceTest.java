@@ -24,21 +24,19 @@ public class UserServiceTest {
     }
 
     @Test
+    public void wechatLogin() throws Exception {
+
+        request.setAttribute("open_id", "0132HsW82RcP5Q0MWYV825xOW822HsWD");
+        APIResponse response = userService.login(request);
+        Assert.assertTrue(response.getMessage(), response.getState().equals("00001"));
+    }
+
+    @Test
     public void login() throws Exception {
 
         request.setAttribute("user_phone", "skm");
         request.setAttribute("user_password", "123");
         APIResponse response = userService.login(request);
         Assert.assertTrue(response.getMessage(), response.getState().equals("00001"));
-
-        request.setAttribute("user_phone", "skm");
-        request.setAttribute("user_password", "222");
-        response = userService.login(request);
-        Assert.assertTrue(response.getMessage(), response.getState().equals("00002"));
-
-        request.setAttribute("user_phone", "sss");
-        request.setAttribute("user_phone", "123");
-        response = userService.login(request);
-        Assert.assertTrue(response.getMessage(), response.getState().equals("00003"));
     }
 }
