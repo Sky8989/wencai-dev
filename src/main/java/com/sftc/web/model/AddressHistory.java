@@ -7,11 +7,11 @@ import java.util.List;
  *
  * @version 1.0
  * @Package com.sftc.ssm.pojo
- * @Description: 地址类
+ * @Description: 历史地址类
  * @date 17/4/1
  * @Time 下午9:00
  */
-public class Address {
+public class AddressHistory {
 
     private int id ;
     // 省份
@@ -31,7 +31,7 @@ public class Address {
     private int user_id;
     private List<Order> orderList;
 
-    public Address() {
+    public AddressHistory() {
     }
 
     public int getId() {

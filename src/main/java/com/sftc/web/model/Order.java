@@ -1,7 +1,5 @@
 package com.sftc.web.model;
 
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
  *
@@ -24,17 +22,23 @@ public class Order {
     private String gmt_pay_create;
     // 付款方式
     private String pay_method;
-    //运费
+    // 运费
     private double freight;
     // 寄件人id(根据用户表id)
     private User user;
     private int user_id;
-    // 地址表id
-    private Address address;
-    private int sender_address_id;
-    // 地址表id
-    private int getter_address_id;
-    private List<Commodity> commodityList;
+    // 寄件人地址
+    private String sender_address;
+    // 寄件人电话
+    private String sender_phone;
+    // 寄件人姓名
+    private String sender_name;
+    // 收件人地址
+    private String getter_address;
+    // 收件人电话
+    private String getter_phone;
+    // 收件人姓名
+    private String getter_name;
 
     public int getId() {
         return id;
@@ -108,35 +112,51 @@ public class Order {
         this.user_id = user_id;
     }
 
-    public Address getAddress() {
-        return address;
+    public String getSender_address() {
+        return sender_address;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setSender_address(String sender_address) {
+        this.sender_address = sender_address;
     }
 
-    public int getSender_address_id() {
-        return sender_address_id;
+    public String getSender_phone() {
+        return sender_phone;
     }
 
-    public void setSender_address_id(int sender_address_id) {
-        this.sender_address_id = sender_address_id;
+    public void setSender_phone(String sender_phone) {
+        this.sender_phone = sender_phone;
     }
 
-    public int getGetter_address_id() {
-        return getter_address_id;
+    public String getSender_name() {
+        return sender_name;
     }
 
-    public void setGetter_address_id(int getter_address_id) {
-        this.getter_address_id = getter_address_id;
+    public void setSender_name(String sender_name) {
+        this.sender_name = sender_name;
     }
 
-    public List<Commodity> getCommodityList() {
-        return commodityList;
+    public String getGetter_address() {
+        return getter_address;
     }
 
-    public void setCommodityList(List<Commodity> commodityList) {
-        this.commodityList = commodityList;
+    public void setGetter_address(String getter_address) {
+        this.getter_address = getter_address;
+    }
+
+    public String getGetter_phone() {
+        return getter_phone;
+    }
+
+    public void setGetter_phone(String getter_phone) {
+        this.getter_phone = getter_phone;
+    }
+
+    public String getGetter_name() {
+        return getter_name;
+    }
+
+    public void setGetter_name(String getter_name) {
+        this.getter_name = getter_name;
     }
 }
