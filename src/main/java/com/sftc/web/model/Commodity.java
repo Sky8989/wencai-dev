@@ -22,7 +22,6 @@ public class Commodity {
     private String commodity_describe;
     // 所属的订单
     private Order order;
-    //所属订单ID
     private int order_id;
 
     public int getId() {

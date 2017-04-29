@@ -22,6 +22,8 @@ public class Token {
     private String gmt_modified;
     // 到期时间
     private String gmt_expiry;
+    // 属于哪个用户
+    private User user;
     private int user_id;
 
     public int getId() {
@@ -70,6 +72,14 @@ public class Token {
 
     public void setGmt_expiry(String gmt_expiry) {
         this.gmt_expiry = gmt_expiry;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getUser_id() {

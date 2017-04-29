@@ -14,12 +14,8 @@ public class Evaluate {
     private int id;
     // 评价留言
     private String message;
-    // 服务速度等级
-    private int speed_service_level;
-    // 上门速度等级
-    private int speed_visit_level;
-    // 派送速度等级
-    private int speed_send_level;
+    // 标签
+    private String label;
     // 评价时间
     private String gmt_create;
     // 评价人的用户id
@@ -28,6 +24,9 @@ public class Evaluate {
     // 评价的是哪一个订单
     private Order order;
     private int order_id;
+    // 快递员id
+    private Courier courier;
+    private int courier_id;
 
     public int getId() {
         return id;
@@ -45,28 +44,12 @@ public class Evaluate {
         this.message = message;
     }
 
-    public int getSpeed_service_level() {
-        return speed_service_level;
+    public String getLabel() {
+        return label;
     }
 
-    public void setSpeed_service_level(int speed_service_level) {
-        this.speed_service_level = speed_service_level;
-    }
-
-    public int getSpeed_visit_level() {
-        return speed_visit_level;
-    }
-
-    public void setSpeed_visit_level(int speed_visit_level) {
-        this.speed_visit_level = speed_visit_level;
-    }
-
-    public int getSpeed_send_level() {
-        return speed_send_level;
-    }
-
-    public void setSpeed_send_level(int speed_send_level) {
-        this.speed_send_level = speed_send_level;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getGmt_create() {
@@ -107,5 +90,21 @@ public class Evaluate {
 
     public void setOrder_id(int order_id) {
         this.order_id = order_id;
+    }
+
+    public Courier getCourier() {
+        return courier;
+    }
+
+    public void setCourier(Courier courier) {
+        this.courier = courier;
+    }
+
+    public int getCourier_id() {
+        return courier_id;
+    }
+
+    public void setCourier_id(int courier_id) {
+        this.courier_id = courier_id;
     }
 }

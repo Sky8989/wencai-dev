@@ -18,26 +18,13 @@ public class UserContact {
     private String phone;
     // 用户头像
     private String icon;
-    // 用户邮箱
-    private String email;
+    // 是否标星
+    private int is_tag_star;
     // 用户微信
     private String wechat;
-    // 用户生日
-    private String gmt_birthday;
-    // 纪念日
-    private String anniversaries;
-    // 公司
-    private String company;
-    // 部门
-    private String department;
-    // 职位
-    private String job;
     // 备注
     private String remark;
-    // 个人标签
-    private String label;
-    // 所在地
-    private String location;
+    private User user;
     private int user_id;
 
     public int getId() {
@@ -56,86 +43,6 @@ public class UserContact {
         this.icon = icon;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getWechat() {
-        return wechat;
-    }
-
-    public void setWechat(String wechat) {
-        this.wechat = wechat;
-    }
-
-    public String getGmt_birthday() {
-        return gmt_birthday;
-    }
-
-    public void setGmt_birthday(String gmt_birthday) {
-        this.gmt_birthday = gmt_birthday;
-    }
-
-    public String getAnniversaries() {
-        return anniversaries;
-    }
-
-    public void setAnniversaries(String anniversaries) {
-        this.anniversaries = anniversaries;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
-    public String getJob() {
-        return job;
-    }
-
-    public void setJob(String job) {
-        this.job = job;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getName() {
         return name;
     }
@@ -150,6 +57,38 @@ public class UserContact {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public int getIs_tag_star() {
+        return is_tag_star;
+    }
+
+    public void setIs_tag_star(int is_tag_star) {
+        this.is_tag_star = is_tag_star;
+    }
+
+    public String getWechat() {
+        return wechat;
+    }
+
+    public void setWechat(String wechat) {
+        this.wechat = wechat;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getUser_id() {

@@ -4,6 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.UserMapper">
 
+<<<<<<< HEAD
 
 
 
@@ -17,12 +18,17 @@
                 open_id=#{open_id}
             </if>
 
+=======
+    <select id="selectUserByPhone" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
+        select * from sftc_user where user_phone=#{user_phone}
+    </select>
+
+    <select id="selectUserByOpenid" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
+        select * from sftc_user where open_id=#{open_id}
+>>>>>>> e6377359153d4cd1cc0521d59b1342eb4db7b16a
     </select>
 
     <insert id="insertOpenid" parameterType="java.lang.String">
-        insert into sftc_user
-        (open_id)
-        values
-        (#{open_id})
+        insert into sftc_user (open_id) values (#{open_id})
     </insert>
 </mapper>
