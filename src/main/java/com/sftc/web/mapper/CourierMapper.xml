@@ -3,5 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.CourierMapper">
-
+        <!-- 配送员信息  -->
+        <select id="selectCourierInformation" parameterType="String">
+                SELECT name,phone,location from sftc_courier where courier_number=#{courier_number}
+        </select>
 </mapper>

@@ -3,5 +3,36 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.OrderMapper">
+        <!-- 查看订单详情  -->
+        <select id="orderDetile" resultType="com.sftc.web.model.Order" parameterType="String">
+                SELECT sender_mobile, sender_name, sender_province,state,freight,
+                sender_city, sender_area, sender_addr, ship_mobile, ship_name,
+                ship_province, ship_city,
+                ship_area, ship_addr, memos, type, size, pay_method FROM sftc_order
 
+        </select>
+        <!--修改订单   -->
+        <update id="updateOrder" parameterType="com.sftc.web.model.Order">
+                update sftc_order
+                <trim prefix="set" suffixOverrides=",">
+                        <if test="sender_mobile!=null">sender_mobile=#{sender_mobile},</if>
+                        <if test="sender_name!=null">sender_name=#{sender_name},</if>
+                        <if test="sender_province!=null">sender_province=#{sender_province},</if>
+                        <if test="sender_city!=null">sender_city=#{sender_city},</if>
+                        <if test="sender_area!=null">sender_area=#{sender_area},</if>
+                        <if test="sender_addr!=null">sender_addr=#{sender_addr},</if>
+                        <if test="ship_mobile!=null">ship_mobile=#{ship_mobile},</if>
+                        <if test="ship_name!=null">ship_name=#{ship_name},</if>
+                        <if test="ship_province!=null">ship_province=#{ship_province},</if>
+                        <if test="ship_city!=null">ship_city=#{ship_city},</if>
+                        <if test="ship_area!=null">ship_area=#{ship_area},</if>
+                        <if test="ship_addr!=null">ship_addr=#{ship_addr}, </if>
+                        <if test="memos!=null">memos=#{memos},</if>
+                        <if test="type!=null">type=#{type},</if>
+                        <if test="size!=null">size=#{size}, </if>
+                        <if test="pay_method!=null">pay_method=#{pay_method}</if>
+
+                </trim>
+                WHERE order_number=#{order_number}
+        </update>
 </mapper>
