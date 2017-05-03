@@ -1,5 +1,8 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -10,4 +13,11 @@ package com.sftc.web.service;
  * @Time 下午9:32
  */
 public interface OrderService {
+
+    /**
+     * 下单
+     * @param request
+     * @return
+     */
+    APIResponse placeOrder(APIRequest request);
 }
