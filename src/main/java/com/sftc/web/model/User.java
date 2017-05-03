@@ -24,6 +24,8 @@ public class User {
     // 微信端保存的openid
     private String open_id;
 
+    //用户头像
+    private String head_portrait;
     private List<Order> userList;
     private List<Address> addressList;
     private List<UserContact> concatList;
@@ -102,5 +104,13 @@ public class User {
 
     public void setOpinionFeedbackList(List<OpinionFeedback> opinionFeedbackList) {
         this.opinionFeedbackList = opinionFeedbackList;
+    }
+
+    public String getHead_portrait() {
+        return head_portrait;
+    }
+
+    public void setHead_portrait(String head_portrait) {
+        this.head_portrait = head_portrait;
     }
 }

@@ -7,6 +7,7 @@
 
 
 
+
     <select id="selectUserByLogin" parameterType="com.sftc.web.model.User" resultType="com.sftc.web.model.User">
         select * from sftc_user
         where
@@ -18,11 +19,16 @@
             </if>
 
     </select>
+    <select id="selectUserByPhone" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
+        select * from sftc_user where user_phone=#{user_phone}
+    </select>
+
+    <select id="selectUserByOpenid" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
+        select * from sftc_user where open_id=#{open_id}
+
+    </select>
 
     <insert id="insertOpenid" parameterType="java.lang.String">
-        insert into sftc_user
-        (open_id)
-        values
-        (#{open_id})
+        insert into sftc_user (open_id) values (#{open_id})
     </insert>
 </mapper>

@@ -2,6 +2,8 @@ package com.sftc.web.mapper;
 
 import com.sftc.web.model.Courier;
 
+import java.util.Map;
+
 public interface CourierMapper {
-    Courier selectCourierInformation(String courierSn);
+    Courier selectCourierInformation(Map<String,String> param);
 }

@@ -27,18 +27,84 @@ public class Order {
     // 寄件人id(根据用户表id)
     private User user;
     private int user_id;
-    // 寄件人地址
-    private String sender_address;
+
     // 寄件人电话
-    private String sender_phone;
+    private String sender_mobile;
     // 寄件人姓名
     private String sender_name;
-    // 收件人地址
-    private String getter_address;
+    //寄件人省
+    private String sender_province;
+    //寄件人市
+    private String sender_city;
+    //寄件人区
+    private String sender_area;
+    //寄件人详细地址
+    private String sender_addr;
+
+
     // 收件人电话
-    private String getter_phone;
+    private String ship_mobile;
     // 收件人姓名
-    private String getter_name;
+    private String ship_name;
+    //收件人省
+    private String ship_province;
+    //收件人市
+    private String ship_city;
+    //收件人区
+    private String ship_area;
+    //收件人详细地址
+    private String ship_addr;
+
+    private int courier_id;
+    private Courier courier;
+    //包裹大小
+    private String size;
+    //包裹类型
+    private String type;
+    //订单备注
+    private String memos;
+    //包裹图片
+    private String images;
+    //语音
+    private String voice;
+    //创建时间
+    private String create_time;
+    //礼卡表id
+    private int gift_card_id;
+
+    private GiftCard giftCard;
+    public Order() {
+    }
+
+    public Order(String state,String pay_method, double freight, String sender_name, String sender_mobile,
+                 String sender_province, String sender_city, String sender_area,
+                 String sender_addr, String ship_name, String ship_mobile, String ship_province,
+                 String ship_city, String ship_area, String ship_addr, String memos,
+                 String type, String size, int user_id, String images, String voice,String create_time,int gift_card_id) {
+        this.state = state;
+        this.pay_method = pay_method;
+        this.freight = freight;
+        this.sender_name = sender_name;
+        this.sender_mobile = sender_mobile;
+        this.sender_province = sender_province;
+        this.sender_city = sender_city;
+        this.sender_area = sender_area;
+        this.sender_addr = sender_addr;
+        this.ship_name = ship_name;
+        this.ship_mobile = ship_mobile;
+        this.ship_province = ship_province;
+        this.ship_city = ship_city;
+        this.ship_area = ship_area;
+        this.ship_addr = ship_addr;
+        this.memos = memos;
+        this.type = type;
+        this.size = size;
+        this.user_id = user_id;
+        this.images = images;
+        this.voice = voice;
+        this.create_time = create_time;
+        this.gift_card_id = gift_card_id;
+    }
 
     public int getId() {
         return id;
@@ -112,20 +178,14 @@ public class Order {
         this.user_id = user_id;
     }
 
-    public String getSender_address() {
-        return sender_address;
-    }
 
-    public void setSender_address(String sender_address) {
-        this.sender_address = sender_address;
-    }
 
     public String getSender_phone() {
-        return sender_phone;
+        return sender_mobile;
     }
 
-    public void setSender_phone(String sender_phone) {
-        this.sender_phone = sender_phone;
+    public void setSender_phone(String sender_mobile) {
+        this.sender_mobile = sender_mobile;
     }
 
     public String getSender_name() {
@@ -136,27 +196,179 @@ public class Order {
         this.sender_name = sender_name;
     }
 
-    public String getGetter_address() {
-        return getter_address;
+    public String getShip_mobile() {
+        return ship_mobile;
     }
 
-    public void setGetter_address(String getter_address) {
-        this.getter_address = getter_address;
+    public void setShip_mobile(String ship_mobile) {
+        this.ship_mobile = ship_mobile;
     }
 
-    public String getGetter_phone() {
-        return getter_phone;
+    public String getShip_name() {
+        return ship_name;
     }
 
-    public void setGetter_phone(String getter_phone) {
-        this.getter_phone = getter_phone;
+    public void setShip_name(String ship_name) {
+        this.ship_name = ship_name;
     }
 
-    public String getGetter_name() {
-        return getter_name;
+    public String getShip_province() {
+        return ship_province;
     }
 
-    public void setGetter_name(String getter_name) {
-        this.getter_name = getter_name;
+    public void setShip_province(String ship_province) {
+        this.ship_province = ship_province;
+    }
+
+    public String getShip_city() {
+        return ship_city;
+    }
+
+    public void setShip_city(String ship_city) {
+        this.ship_city = ship_city;
+    }
+
+    public String getShip_area() {
+        return ship_area;
+    }
+
+    public void setShip_area(String ship_area) {
+        this.ship_area = ship_area;
+    }
+
+    public String getSender_province() {
+        return sender_province;
+    }
+
+    public void setSender_province(String sender_province) {
+        this.sender_province = sender_province;
+    }
+
+    public String getSender_city() {
+        return sender_city;
+    }
+
+    public void setSender_city(String sender_city) {
+        this.sender_city = sender_city;
+    }
+
+    public String getSender_area() {
+        return sender_area;
+    }
+
+    public void setSender_area(String sender_area) {
+        this.sender_area = sender_area;
+    }
+
+    public String getShip_addr() {
+        return ship_addr;
+    }
+
+    public void setShip_addr(String ship_addr) {
+        this.ship_addr = ship_addr;
+    }
+
+    public String getSender_addr() {
+        return sender_addr;
+    }
+
+    public void setSender_addr(String sender_addr) {
+        this.sender_addr = sender_addr;
+    }
+
+    public Courier getCourier() {
+        return courier;
+    }
+
+    public void setCourier(Courier courier) {
+        this.courier = courier;
+    }
+
+    public int getCourier_id() {
+        return courier_id;
+    }
+
+    public void setCourier_id(int courier_id) {
+        this.courier_id = courier_id;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getMemos() {
+        return memos;
+    }
+
+    public void setMemos(String memos) {
+        this.memos = memos;
+    }
+
+    public String getSender_mobile() {
+        return sender_mobile;
+    }
+
+    public void setSender_mobile(String sender_mobile) {
+        this.sender_mobile = sender_mobile;
+    }
+
+    public String getUrl() {
+        return images;
+    }
+
+    public void setUrl(String images) {
+        this.images = images;
+    }
+
+    public String getVoice() {
+        return voice;
+    }
+
+    public void setVoice(String voice) {
+        this.voice = voice;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
+    }
+
+    public int getGift_card_id() {
+        return gift_card_id;
+    }
+
+    public void setGift_card_id(int gift_card_id) {
+        this.gift_card_id = gift_card_id;
+    }
+
+    public GiftCard getGiftCard() {
+        return giftCard;
+    }
+
+    public void setGiftCard(GiftCard giftCard) {
+        this.giftCard = giftCard;
+    }
+
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
     }
 }

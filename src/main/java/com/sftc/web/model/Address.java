@@ -34,6 +34,16 @@ public class Address {
     public Address() {
     }
 
+    public Address(String province, String city, String district, String detail, String phone,int user_id,String name) {
+        this.province = province;
+        this.city = city;
+        this.district = district;
+        this.detail = detail;
+        this.phone = phone;
+        this.name = name;
+        this.user_id = user_id;
+    }
+
     public int getId() {
         return id;
     }
@@ -102,8 +112,8 @@ public class Address {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.user_id = userId;
     }
 
     public List<Order> getOrderList() {

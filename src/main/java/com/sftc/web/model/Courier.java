@@ -1,5 +1,7 @@
 package com.sftc.web.model;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -25,6 +27,11 @@ public class Courier {
     private int evaluate_count;
     // 快递员编号
     private String courier_number;
+    //快递员头像
+    private String icon;
+    //添加礼卡表id
+
+    private List<Order> orderList;
 
     public int getId() {
         return id;
@@ -80,5 +87,21 @@ public class Courier {
 
     public void setCourier_number(String courier_number) {
         this.courier_number = courier_number;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public List<Order> getOrderList() {
+        return orderList;
+    }
+
+    public void setOrderList(List<Order> orderList) {
+        this.orderList = orderList;
     }
 }
