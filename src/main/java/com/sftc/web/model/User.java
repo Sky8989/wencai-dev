@@ -24,10 +24,12 @@ public class User {
     // 微信端保存的openid
     private String open_id;
 
-    private List<Order> userList;
+    //用户头像
+    private String head_portrait;
+    private List<com.sftc.web.model.Order> userList;
     private List<Address> addressList;
-    private List<UserContact> concatList;
-    private List<OpinionFeedback> opinionFeedbackList;
+    private List<com.sftc.web.model.UserContact> concatList;
+    private List<com.sftc.web.model.OpinionFeedback> opinionFeedbackList;
 
     public User() {}
 
@@ -72,11 +74,11 @@ public class User {
         this.open_id = open_id;
     }
 
-    public List<Order> getUserList() {
+    public List<com.sftc.web.model.Order> getUserList() {
         return userList;
     }
 
-    public void setUserList(List<Order> userList) {
+    public void setUserList(List<com.sftc.web.model.Order> userList) {
         this.userList = userList;
     }
 
@@ -88,19 +90,27 @@ public class User {
         this.addressList = addressList;
     }
 
-    public List<UserContact> getConcatList() {
+    public List<com.sftc.web.model.UserContact> getConcatList() {
         return concatList;
     }
 
-    public void setConcatList(List<UserContact> concatList) {
+    public void setConcatList(List<com.sftc.web.model.UserContact> concatList) {
         this.concatList = concatList;
     }
 
-    public List<OpinionFeedback> getOpinionFeedbackList() {
+    public List<com.sftc.web.model.OpinionFeedback> getOpinionFeedbackList() {
         return opinionFeedbackList;
     }
 
-    public void setOpinionFeedbackList(List<OpinionFeedback> opinionFeedbackList) {
+    public void setOpinionFeedbackList(List<com.sftc.web.model.OpinionFeedback> opinionFeedbackList) {
         this.opinionFeedbackList = opinionFeedbackList;
+    }
+
+    public String getHead_portrait() {
+        return head_portrait;
+    }
+
+    public void setHead_portrait(String head_portrait) {
+        this.head_portrait = head_portrait;
     }
 }

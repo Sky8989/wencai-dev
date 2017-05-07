@@ -11,7 +11,7 @@ package com.sftc.web.model;
  */
 public class Order {
 
-    private int id ;
+    private int id;
     // 订单编号
     private String order_number;
     // 订单状态
@@ -57,13 +57,28 @@ public class Order {
     private String type;
     // 包裹大小
     private String size;
+    //包裹图片
+    private String images;
+    //语音
+    private String voice;
+    //创建时间
+    private String create_time;
+    //礼卡表id
+    private int gift_card_id;
 
     public Order(String state, String gmt_order_create, String gmt_pay_create, String pay_method, double freight, String sender_name, String sender_mobile, String sender_province, String sender_city, String sender_area, String sender_addr, String ship_name, String ship_mobile, String ship_province, String ship_city, String ship_area, String ship_addr, String memos, String type, String size, int user_id) {
         this.state = state;
         this.gmt_order_create = gmt_order_create;
         this.gmt_pay_create = gmt_pay_create;
+    }
+
+    public Order(String state, String gmt_order_create, String gmt_pay_create, String pay_method, double freight, int user_id, String sender_name, String sender_mobile, String sender_province, String sender_city, String sender_area, String sender_addr, String ship_name, String ship_mobile, String ship_province, String ship_city, String ship_area, String ship_addr, String memos, String type, String size, String images, String voice, String create_time, int gift_card_id) {
+        this.state = state;
+        this.gmt_order_create = gmt_order_create;
+        this.gmt_pay_create = gmt_pay_create;
         this.pay_method = pay_method;
         this.freight = freight;
+        this.user_id = user_id;
         this.sender_name = sender_name;
         this.sender_mobile = sender_mobile;
         this.sender_province = sender_province;
@@ -79,7 +94,10 @@ public class Order {
         this.memos = memos;
         this.type = type;
         this.size = size;
-        this.user_id = user_id;
+        this.images = images;
+        this.voice = voice;
+        this.create_time = create_time;
+        this.gift_card_id = gift_card_id;
     }
 
     public int getId() {
@@ -272,5 +290,37 @@ public class Order {
 
     public void setSize(String size) {
         this.size = size;
+    }
+
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
+    }
+
+    public String getVoice() {
+        return voice;
+    }
+
+    public void setVoice(String voice) {
+        this.voice = voice;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
+    }
+
+    public int getGift_card_id() {
+        return gift_card_id;
+    }
+
+    public void setGift_card_id(int gift_card_id) {
+        this.gift_card_id = gift_card_id;
     }
 }

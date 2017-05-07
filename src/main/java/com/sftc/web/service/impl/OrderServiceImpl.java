@@ -47,11 +47,15 @@ public class OrderServiceImpl implements OrderService {
         String type = (String) request.getParameter("type");
         String size = (String) request.getParameter("size");
         int user_id = Integer.parseInt((String) request.getParameter("user_id"));
+        String images = (String) request.getParameter("images");
+        String voice = (String) request.getParameter("voice");
+        String create_time = Long.toString(System.currentTimeMillis());
+        int gift_card_id = Integer.parseInt((String) request.getParameter("gift_card_id"));
 
         Order order = new Order(order_state, gmt_order_create, gmt_pay_create, pay_method, freight,
-                sender_name, sender_mobile, sender_province, sender_city, sender_area,
+                user_id, sender_name, sender_mobile, sender_province, sender_city, sender_area,
                 sender_addr, ship_name, ship_mobile, ship_province, ship_city, ship_area,
-                ship_addr, memos, type, size, user_id);
+                ship_addr, memos, type, size, images, voice, create_time, gift_card_id);
 
         try {
             orderMapper.insertOrder(order);

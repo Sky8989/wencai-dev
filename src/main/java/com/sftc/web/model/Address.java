@@ -29,9 +29,19 @@ public class Address {
     // 所属的用户
     private User user;
     private int user_id;
-    private List<Order> orderList;
+    private List<com.sftc.web.model.Order> orderList;
 
     public Address() {
+    }
+
+    public Address(String province, String city, String district, String detail, String phone,int user_id,String name) {
+        this.province = province;
+        this.city = city;
+        this.district = district;
+        this.detail = detail;
+        this.phone = phone;
+        this.name = name;
+        this.user_id = user_id;
     }
 
     public int getId() {
@@ -102,15 +112,15 @@ public class Address {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.user_id = userId;
     }
 
-    public List<Order> getOrderList() {
+    public List<com.sftc.web.model.Order> getOrderList() {
         return orderList;
     }
 
-    public void setOrderList(List<Order> orderList) {
+    public void setOrderList(List<com.sftc.web.model.Order> orderList) {
         this.orderList = orderList;
     }
 }

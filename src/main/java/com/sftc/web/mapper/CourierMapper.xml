@@ -3,5 +3,28 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.CourierMapper">
+        <!-- 配送员信息  -->
+        <select id="selectCourierInformation" parameterType="java.util.Map" resultType="com.sftc.web.model.Courier" resultMap="CourierResultMap">
+                SELECT c.name,c.phone,c.icon,c.score from sftc_courier c,sftc_order o
+                <where>
+                        <if test="courier_number!=null">
+                                c.courier_number=#{courier_number}
+                        </if>
+                        <if test="order_number!=null">
+                                or o.courier_id = c.id  and o.order_number=#{order_number}
+                        </if>
+                </where>
+        </select>
+        <resultMap type="com.sftc.web.model.Courier" id="CourierResultMap">
+                <id column="id" property="id"/>
+                <result column="name" property="name"></result>
+                <result column="phone" property="phone"></result>
+                <result column="score" property="score"></result>
+                <result column="icon" property="icon"></result>
+                <collection property="orderList" ofType="com.sftc.web.model.Order">
+                        <id column="id" property="id"/>
+                        <result column="courier_number" property="courier_number"/>
 
+                </collection>
+        </resultMap>
 </mapper>
