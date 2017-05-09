@@ -13,6 +13,8 @@ package com.sftc.web.model;
 public class UserContactLabel {
 
     private int id;
+    // 创建时间
+    private String create_time;
     // 标签
     private String label;
     // 所属的联系人
@@ -25,6 +27,14 @@ public class UserContactLabel {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 
     public String getLabel() {

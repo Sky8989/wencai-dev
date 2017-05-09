@@ -17,6 +17,8 @@ import java.util.List;
 public class User {
 
     private int id;
+    // 创建时间
+    private String create_time;
     // 登陆用手机号
     private String user_phone;
     // 密码
@@ -48,6 +50,14 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 
     public String getUser_phone() {
