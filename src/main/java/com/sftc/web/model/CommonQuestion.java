@@ -14,10 +14,11 @@ public class CommonQuestion {
 
     private int id;
     // 等级规则
-    private String level_rule;
+    private String title;
     // 如何修改订单
-    private String how_update_order;
-
+    private String content;
+    //创建时间
+    private String create_time;
     public int getId() {
         return id;
     }
@@ -26,19 +27,27 @@ public class CommonQuestion {
         this.id = id;
     }
 
-    public String getLevel_rule() {
-        return level_rule;
+    public String getTitle() {
+        return title;
     }
 
-    public void setLevel_rule(String level_rule) {
-        this.level_rule = level_rule;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getHow_update_order() {
-        return how_update_order;
+    public String getContent() {
+        return content;
     }
 
-    public void setHow_update_order(String how_update_order) {
-        this.how_update_order = how_update_order;
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 }

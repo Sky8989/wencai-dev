@@ -3,5 +3,16 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.AddressHistoryMapper">
+        <!-- 历史地址表详情  -->
+        <select id="addressHistoryDetail" parameterType="int" resultType="com.sftc.web.model.AddressHistory">
+                SELECT province,city,district,detail,phone,name FROM sftc_address_history
+                WHERE id=#{id}
 
+        </select>
+        <!-- 历史地址列表*  -->
+        <select id="addressHistoryList" parameterType="java.util.Map" resultType="com.sftc.web.model.AddressHistory">
+                select province,city,district,detail,phone,name FROM
+                sftc_address_history WHERE user_id=#{user_id} limit #{pageOffset},#{pageSize};
+
+        </select>
 </mapper>

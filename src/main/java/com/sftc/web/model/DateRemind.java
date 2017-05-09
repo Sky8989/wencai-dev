@@ -19,7 +19,17 @@ public class DateRemind {
     private String date;
     // 所属的联系人id
     private UserContact userContact;
+
+    private int user_id;
+
     private int user_contact_id;
+
+    public DateRemind(String describe, String date, int user_id, int user_contact_id) {
+        this.describe = describe;
+        this.date = date;
+        this.user_id = user_id;
+        this.user_contact_id = user_contact_id;
+    }
 
     public int getId() {
         return id;
@@ -59,5 +69,13 @@ public class DateRemind {
 
     public void setUser_contact_id(int user_contact_id) {
         this.user_contact_id = user_contact_id;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 }

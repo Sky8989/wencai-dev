@@ -76,7 +76,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(String state,String pay_method, double freight, String sender_name, String sender_mobile,
+    public Order(String state,String gmt_order_create,String gmt_pay_create,String pay_method, double freight, String sender_name, String sender_mobile,
                  String sender_province, String sender_city, String sender_area,
                  String sender_addr, String ship_name, String ship_mobile, String ship_province,
                  String ship_city, String ship_area, String ship_addr, String memos,
@@ -104,6 +104,8 @@ public class Order {
         this.voice = voice;
         this.create_time = create_time;
         this.gift_card_id = gift_card_id;
+        this.gmt_order_create=gmt_order_create;
+        this.gmt_pay_create=gmt_pay_create;
     }
 
     public int getId() {

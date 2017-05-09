@@ -1,5 +1,9 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import org.springframework.stereotype.Service;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -9,5 +13,13 @@ package com.sftc.web.service;
  * @date 17/4/1
  * @Time 下午9:32
  */
+
 public interface OrderService {
+
+    /**
+     * 下单
+     * @param request
+     * @return
+     */
+    APIResponse placeOrder(APIRequest request);
 }

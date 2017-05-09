@@ -13,4 +13,5 @@ import com.sftc.web.service.AddressHistoryService;
  * @Time 上午11:00
  */
 public class AddressHistoryServiceImpl implements AddressHistoryService {
+
 }

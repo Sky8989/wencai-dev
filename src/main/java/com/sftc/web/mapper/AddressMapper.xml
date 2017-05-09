@@ -3,12 +3,40 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.AddressMapper">
-
+    <!-- 添加地址  -->
     <insert id="addAddress" parameterType="com.sftc.web.model.Address">
       insert into address
       (province,city,district,detail,phone,name,label,user_id)
       values
       (#{province},#{city},#{district},#{detail},#{phone},#{name},#{label},#{user_id})
-</insert>
+
+
+    </insert>
+    <!--  编辑地址  -->
+    <update id="editeAddress" parameterType="com.sftc.web.model.Address">
+        UPDATE sftc_address
+        <trim prefix="set" suffixOverrides=",">
+            <if test="province!=null">province=#{province},</if>
+            <if test="city!=null">city=#{city}</if>
+            <if test="district!=null">district=#{district}</if>
+            <if test="detail!=null">detail=#{detail}</if>
+            <if test="phone!=null">phone=#{phone}</if>
+            <if test="name!=null">name=#{name}</if>
+
+        </trim>
+        WHERE id=#{id}
+    </update>
+    <!-- 地址表详情  -->
+    <select id="addressDetail" parameterType="int" resultType="com.sftc.web.model.Address">
+        SELECT province,city,district,detail,phone,name from sftc_address WHERE id=#{id}
+
+    </select>
+
+    <!-- 地址列表 -->
+    <select id="addressList" parameterType="java.util.Map" resultType="com.sftc.web.model.Address">
+        select province,city,district,detail,phone,name FROM
+        sftc_address WHERE user_id=#{user_id} limit #{pageOffset},#{pageSize};
+
+    </select>
 
 </mapper>

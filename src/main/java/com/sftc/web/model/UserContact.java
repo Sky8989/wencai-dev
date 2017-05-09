@@ -24,6 +24,8 @@ public class UserContact {
     private String wechat;
     // 备注
     private String remark;
+    //亲密度
+    private int lntimacy;
     private User user;
     private int user_id;
 
@@ -97,5 +99,13 @@ public class UserContact {
 
     public void setUser_id(int user_id) {
         this.user_id = user_id;
+    }
+
+    public int getLntimacy() {
+        return lntimacy;
+    }
+
+    public void setLntimacy(int lntimacy) {
+        this.lntimacy = lntimacy;
     }
 }
