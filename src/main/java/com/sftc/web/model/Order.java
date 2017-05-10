@@ -1,5 +1,7 @@
 package com.sftc.web.model;
 
+import com.sftc.tools.api.APIRequest;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -59,6 +61,33 @@ public class Order {
     // 快递员id
     private Courier courier;
     private int courier_id;
+
+    public Order() {}
+
+    public Order(APIRequest request) {
+        this.create_time = Long.toString(System.currentTimeMillis());
+        this.order_number = (String) request.getParameter("order_number");
+        this.state = (String) request.getParameter("state");
+        this.gmt_order_create = Long.toString(System.currentTimeMillis());
+        this.gmt_pay_create = Long.toString(System.currentTimeMillis());
+        this.pay_method = (String) request.getParameter("pay_method");
+        this.distribution_method = (String) request.getParameter("distribution_method");
+        this.freight = Double.parseDouble((String) request.getParameter("freight"));
+        this.sender_name = (String) request.getParameter("sender_name");
+        this.sender_mobile = (String) request.getParameter("sender_mobile");
+        this.sender_province = (String) request.getParameter("sender_province");
+        this.sender_city = (String) request.getParameter("sender_city");
+        this.sender_area = (String) request.getParameter("sender_area");
+        this.sender_addr = (String) request.getParameter("sender_addr");
+        this.word_message = (String) request.getParameter("word_message");
+        this.image = (String) request.getParameter("image");
+        this.voice = (String) request.getParameter("voice");
+        this.longitude = Double.parseDouble((String) request.getParameter("longitude"));
+        this.latitude = Double.parseDouble((String) request.getParameter("latitude"));
+        this.user_id = Integer.parseInt((String) request.getParameter("user_id"));
+        this.gift_card_id = Integer.parseInt((String) request.getParameter("gift_card_id"));
+        this.courier_id = Integer.parseInt((String) request.getParameter("courier_id"));
+    }
 
     public int getId() {
         return id;
