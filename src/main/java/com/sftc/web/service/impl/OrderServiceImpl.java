@@ -17,12 +17,19 @@ import javax.annotation.Resource;
  * @date 17/4/1
  * @Time 下午9:34
  */
+
 @Service("orderService")
+
+
 public class OrderServiceImpl implements OrderService {
 
     @Resource
     private OrderMapper orderMapper;
+
+
     public APIResponse placeOrder(APIRequest request) {
+
+
         APIStatus status = APIStatus.SUCCESS;
         String order_state = (String) request.getParameter("state");
         String gmt_order_create = Long.toString(System.currentTimeMillis());
@@ -51,17 +58,18 @@ public class OrderServiceImpl implements OrderService {
         int gift_card_id = Integer.parseInt((String) request.getParameter("gift_card_id"));
 
         Order order = new Order(order_state, gmt_order_create, gmt_pay_create, pay_method, freight,
-                sender_name, sender_mobile, sender_province, sender_city, sender_area,
-                sender_addr, ship_name, ship_mobile, ship_province, ship_city, ship_area,
-                ship_addr, memos, type, size, user_id, images, voice, create_time, gift_card_id);
-        try {
-            orderMapper.addOrder(order);
-        } catch (Exception e) {
 
+                sender_name, sender_mobile, sender_province, sender_city, sender_area,
+                sender_addr,  user_id,  voice, create_time, gift_card_id);
+
+        try {
+            orderMapper.insertOrder(order);
+        } catch (Exception e) {
             status = APIStatus.ORDER_FAIL;
             e.printStackTrace();
-
         }
+
+
         return APIUtil.getResponse(status, null);
     }
 }

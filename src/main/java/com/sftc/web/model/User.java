@@ -17,6 +17,8 @@ import java.util.List;
 public class User {
 
     private int id;
+    // 创建时间
+    private String create_time;
     // 登陆用手机号
     private String user_phone;
     // 密码
@@ -26,10 +28,10 @@ public class User {
 
     //用户头像
     private String head_portrait;
-    private List<Order> userList;
+    private List<com.sftc.web.model.Order> userList;
     private List<Address> addressList;
-    private List<UserContact> concatList;
-    private List<OpinionFeedback> opinionFeedbackList;
+    private List<com.sftc.web.model.UserContact> concatList;
+    private List<com.sftc.web.model.OpinionFeedback> opinionFeedbackList;
 
     public User() {}
 
@@ -48,6 +50,14 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 
     public String getUser_phone() {
@@ -74,11 +84,11 @@ public class User {
         this.open_id = open_id;
     }
 
-    public List<Order> getUserList() {
+    public List<com.sftc.web.model.Order> getUserList() {
         return userList;
     }
 
-    public void setUserList(List<Order> userList) {
+    public void setUserList(List<com.sftc.web.model.Order> userList) {
         this.userList = userList;
     }
 
@@ -90,19 +100,19 @@ public class User {
         this.addressList = addressList;
     }
 
-    public List<UserContact> getConcatList() {
+    public List<com.sftc.web.model.UserContact> getConcatList() {
         return concatList;
     }
 
-    public void setConcatList(List<UserContact> concatList) {
+    public void setConcatList(List<com.sftc.web.model.UserContact> concatList) {
         this.concatList = concatList;
     }
 
-    public List<OpinionFeedback> getOpinionFeedbackList() {
+    public List<com.sftc.web.model.OpinionFeedback> getOpinionFeedbackList() {
         return opinionFeedbackList;
     }
 
-    public void setOpinionFeedbackList(List<OpinionFeedback> opinionFeedbackList) {
+    public void setOpinionFeedbackList(List<com.sftc.web.model.OpinionFeedback> opinionFeedbackList) {
         this.opinionFeedbackList = opinionFeedbackList;
     }
 

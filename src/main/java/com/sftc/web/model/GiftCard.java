@@ -13,6 +13,8 @@ package com.sftc.web.model;
 public class GiftCard {
 
     private int id;
+    // 创建时间
+    private String create_time;
     // 姓名
     private String name;
     // 图片地址
@@ -26,6 +28,14 @@ public class GiftCard {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 
     public String getName() {

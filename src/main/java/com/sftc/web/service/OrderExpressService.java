@@ -6,9 +6,9 @@ package com.sftc.web.service;
  * @author _KeMing
  * @version 1.0
  * @Package com.sftc.web.service
- * @Description: 优惠券申请操作接口
- * @date 2017/4/11
- * @Time 下午9:24
+ * @Description: 快递订单操作接口
+ * @date 2017/5/9
+ * @Time 下午5:01
  */
-public interface CouponApplyService {
+public interface OrderExpressService {
 }

@@ -15,6 +15,8 @@ import java.util.List;
 public class Courier {
 
     private int id;
+    // 创建时间
+    private String create_time;
     // 姓名
     private String name;
     // 电话
@@ -27,9 +29,8 @@ public class Courier {
     private int evaluate_count;
     // 快递员编号
     private String courier_number;
-    //快递员头像
-    private String icon;
-    //添加礼卡表id
+    // 快递员位置
+    private String location;
 
     private List<Order> orderList;
 
@@ -39,6 +40,14 @@ public class Courier {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 
     public String getName() {
@@ -89,12 +98,12 @@ public class Courier {
         this.courier_number = courier_number;
     }
 
-    public String getIcon() {
-        return icon;
+    public String getLocation() {
+        return location;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public List<Order> getOrderList() {

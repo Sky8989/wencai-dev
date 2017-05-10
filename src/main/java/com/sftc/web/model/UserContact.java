@@ -12,6 +12,10 @@ package com.sftc.web.model;
 public class UserContact {
 
     private int id;
+    // 创建时间
+    private String create_time;
+    // 亲密度
+    private int lntimacy;
     // 好友姓名
     private String name;
     //好友电话
@@ -37,12 +41,20 @@ public class UserContact {
         this.id = id;
     }
 
-    public String getIcon() {
-        return icon;
+    public String getCreate_time() {
+        return create_time;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
+    }
+
+    public int getLntimacy() {
+        return lntimacy;
+    }
+
+    public void setLntimacy(int lntimacy) {
+        this.lntimacy = lntimacy;
     }
 
     public String getName() {
@@ -59,6 +71,14 @@ public class UserContact {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public int getIs_tag_star() {

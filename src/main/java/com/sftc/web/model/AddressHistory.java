@@ -13,7 +13,9 @@ import java.util.List;
  */
 public class AddressHistory {
 
-    private int id ;
+    private int id;
+    // 创建时间
+    private String create_time;
     // 省份
     private String province;
     // 城市
@@ -40,6 +42,14 @@ public class AddressHistory {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 
     public String getProvince() {

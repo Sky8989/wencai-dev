@@ -14,6 +14,8 @@ import java.util.List;
 public class Address {
 
     private int id ;
+    // 创建时间
+    private String create_time;
     // 省份
     private String province;
     // 城市
@@ -26,10 +28,14 @@ public class Address {
     private String phone;
     // 收件人姓名
     private String name;
+    // 经度
+    private String longitude;
+    // 维度
+    private String latitude;
     // 所属的用户
     private User user;
     private int user_id;
-    private List<Order> orderList;
+    private List<com.sftc.web.model.Order> orderList;
 
     public Address() {
     }
@@ -50,6 +56,14 @@ public class Address {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 
     public String getProvince() {
@@ -100,6 +114,22 @@ public class Address {
         this.name = name;
     }
 
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
     public User getUser() {
         return user;
     }
@@ -112,8 +142,8 @@ public class Address {
         return user_id;
     }
 
-    public void setUserId(int userId) {
-        this.user_id = userId;
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     public List<Order> getOrderList() {

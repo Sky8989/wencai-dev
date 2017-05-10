@@ -12,6 +12,8 @@ package com.sftc.web.model;
 public class OpinionFeedback {
 
     private int id;
+    // 创建时间
+    private String create_time;
     // 意见反馈
     private String feedback;
     // 反馈时间
@@ -26,6 +28,14 @@ public class OpinionFeedback {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 
     public String getFeedback() {

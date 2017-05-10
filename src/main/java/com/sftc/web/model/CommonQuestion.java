@@ -13,18 +13,30 @@ package com.sftc.web.model;
 public class CommonQuestion {
 
     private int id;
-    // 等级规则
-    private String title;
-    // 如何修改订单
-    private String content;
-    //创建时间
+
+    // 创建时间
     private String create_time;
+    // 标题
+    private String title;
+    // 内容
+    private String content;
+
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 
     public String getTitle() {
@@ -41,13 +53,6 @@ public class CommonQuestion {
 
     public void setContent(String content) {
         this.content = content;
-    }
 
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
     }
 }

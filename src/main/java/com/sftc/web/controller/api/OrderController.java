@@ -18,8 +18,11 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2017/4/29
  * @Time 上午1:27
  */
+
 @Controller
 @RequestMapping("order")
+
+
 public class OrderController extends AbstractBasicController {
 
     @RequestMapping(value = "/place", method = RequestMethod.POST, headers = "api-version=1")
@@ -27,4 +30,5 @@ public class OrderController extends AbstractBasicController {
     APIResponse placeOrder(HttpServletRequest request) throws Exception {
         return orderService.placeOrder(new APIRequest(request));
     }
+
 }

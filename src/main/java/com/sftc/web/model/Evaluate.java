@@ -12,12 +12,16 @@ package com.sftc.web.model;
 public class Evaluate {
 
     private int id;
+    // 创建时间
+    private String create_time;
     // 评价留言
     private String message;
     // 标签
     private String label;
     // 评价时间
     private String gmt_create;
+    // 评价星级
+    private String star_level;
     // 评价人的用户id
     private User user;
     private int user_id;
@@ -34,6 +38,14 @@ public class Evaluate {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 
     public String getMessage() {
@@ -58,6 +70,14 @@ public class Evaluate {
 
     public void setGmt_create(String gmt_create) {
         this.gmt_create = gmt_create;
+    }
+
+    public String getStar_level() {
+        return star_level;
+    }
+
+    public void setStar_level(String star_level) {
+        this.star_level = star_level;
     }
 
     public User getUser() {

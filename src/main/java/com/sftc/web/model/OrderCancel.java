@@ -12,6 +12,8 @@ package com.sftc.web.model;
 public class OrderCancel {
 
     private int id;
+    // 创建时间
+    private String create_time;
     // 取消原因
     private String reason;
     // 问题描述
@@ -26,6 +28,14 @@ public class OrderCancel {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 
     public String getReason() {
