@@ -40,7 +40,20 @@ public class OrderServiceImpl implements OrderService {
             status = APIStatus.ORDER_FAIL;
             e.printStackTrace();
         }
+        return APIUtil.getResponse(status, null);
+    }
 
+    public APIResponse payOrder(APIRequest request) {
+
+        APIStatus status = APIStatus.SUCCESS;
+        Order order = new Order((String) request.getParameter("order_number"),
+                Long.toString(System.currentTimeMillis()), "待揽件");
+        try {
+            orderMapper.updateOrder(order);
+        } catch (Exception e) {
+            status = APIStatus.ORDER_FAIL;
+            e.printStackTrace();
+        }
         return APIUtil.getResponse(status, null);
     }
 }

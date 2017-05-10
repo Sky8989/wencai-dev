@@ -20,4 +20,11 @@ public interface OrderService {
      * @return
      */
     APIResponse placeOrder(APIRequest request);
+
+    /**
+     * 付款
+     * @param request
+     * @return
+     */
+    APIResponse payOrder(APIRequest request);
 }

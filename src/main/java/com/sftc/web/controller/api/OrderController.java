@@ -22,9 +22,27 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class OrderController extends AbstractBasicController {
 
+    /**
+     * 提交订单接口
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/place", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
     APIResponse placeOrder(HttpServletRequest request) throws Exception {
         return orderService.placeOrder(new APIRequest(request));
+    }
+
+    /**
+     * 支付订单接口
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/pay", method = RequestMethod.POST, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse payOrder(HttpServletRequest request) throws Exception {
+        return orderService.payOrder(new APIRequest(request));
     }
 }

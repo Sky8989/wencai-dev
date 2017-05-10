@@ -2,6 +2,8 @@ package com.sftc.web.model;
 
 import com.sftc.tools.api.APIRequest;
 
+import java.util.UUID;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -52,6 +54,8 @@ public class Order {
     private double longitude;
     // 纬度
     private double latitude;
+    // 包裹数量
+    private int package_count;
     // 寄件人id(根据用户表id)
     private User user;
     private int user_id;
@@ -64,12 +68,26 @@ public class Order {
 
     public Order() {}
 
+    /**
+     * 支付订单的构造方法
+     * @param gmt_pay_create
+     * @param state
+     */
+    public Order(String order_number, String gmt_pay_create, String state) {
+        this.order_number = order_number;
+        this.gmt_pay_create = gmt_pay_create;
+        this.state = state;
+    }
+
+    /**
+     * 提交订单的构造方法
+     * @param request
+     */
     public Order(APIRequest request) {
         this.create_time = Long.toString(System.currentTimeMillis());
-        this.order_number = (String) request.getParameter("order_number");
-        this.state = (String) request.getParameter("state");
+        this.order_number = UUID.randomUUID().toString();
+        this.state = "待支付";
         this.gmt_order_create = Long.toString(System.currentTimeMillis());
-        this.gmt_pay_create = Long.toString(System.currentTimeMillis());
         this.pay_method = (String) request.getParameter("pay_method");
         this.distribution_method = (String) request.getParameter("distribution_method");
         this.freight = Double.parseDouble((String) request.getParameter("freight"));
@@ -84,6 +102,7 @@ public class Order {
         this.voice = (String) request.getParameter("voice");
         this.longitude = Double.parseDouble((String) request.getParameter("longitude"));
         this.latitude = Double.parseDouble((String) request.getParameter("latitude"));
+        this.package_count = Integer.parseInt((String) request.getParameter("package_count"));
         this.user_id = Integer.parseInt((String) request.getParameter("user_id"));
         this.gift_card_id = Integer.parseInt((String) request.getParameter("gift_card_id"));
         this.courier_id = Integer.parseInt((String) request.getParameter("courier_id"));
@@ -247,6 +266,14 @@ public class Order {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+
+    public int getPackage_count() {
+        return package_count;
+    }
+
+    public void setPackage_count(int package_count) {
+        this.package_count = package_count;
     }
 
     public User getUser() {
