@@ -5,7 +5,7 @@
 <mapper namespace="com.sftc.web.mapper.OrderExpressMapper">
 
     <!-- 普通下单 -->
-    <insert id="addOrdinaryOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
+    <insert id="addOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
         INSERT INTO sftc_order_express
         (order_number, ship_name, ship_mobile, ship_province, ship_city,
         ship_area, ship_addr, package_type, object_type, create_time)

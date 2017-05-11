@@ -35,6 +35,32 @@ public class OrderController extends AbstractBasicController {
     }
 
     /**
+     * 好友填写收件接口
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/fill", method = RequestMethod.POST, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse fillOrder(HttpServletRequest request) throws Exception {
+        return orderService.friendFillOrder(new APIRequest(request));
+    }
+
+    /**
+     * 寄件给好友提交订单接口
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/place", method = RequestMethod.POST, headers = "api-version=2")
+    public @ResponseBody
+    APIResponse friendPlaceOrder(HttpServletRequest request) throws Exception {
+        return orderService.friendPlaceOrder(new APIRequest(request));
+    }
+
+
+
+    /**
      * 支付订单接口
      * @param request
      * @return

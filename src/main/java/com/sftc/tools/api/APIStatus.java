@@ -16,7 +16,9 @@ public enum APIStatus {
     USER_FAIL("00002", "用户名或密码错误"),
     USER_NOT_EXIST("00003", "用户名不存在"),
 
-    ORDER_FAIL("00004", "提交订单失败"),
+    ORDER_SUBMIT_FAIL("00004", "提交失败"),
+    ORDER_PAY_FAIL("00005", "订单支付失败"),
+    ORDER_PACKAGE_COUNT_PULL("00006", "包裹已分发完"),
 
     WECHAT_ERR("", "");
 

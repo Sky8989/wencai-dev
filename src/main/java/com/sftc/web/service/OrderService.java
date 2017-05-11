@@ -15,16 +15,30 @@ import com.sftc.tools.api.APIResponse;
 public interface OrderService {
 
     /**
-     * 下单
+     * 普通提交订单
      * @param request
      * @return
      */
     APIResponse placeOrder(APIRequest request);
 
     /**
-     * 付款
+     * 支付订单
      * @param request
      * @return
      */
     APIResponse payOrder(APIRequest request);
+
+    /**
+     * 好友寄件提交订单
+     * @param request
+     * @return
+     */
+    APIResponse friendPlaceOrder(APIRequest request);
+
+    /**
+     * 好友填写寄件订单
+     * @param request
+     * @return
+     */
+    APIResponse friendFillOrder(APIRequest request);
 }

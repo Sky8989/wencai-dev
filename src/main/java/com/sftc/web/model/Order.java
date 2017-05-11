@@ -54,7 +54,7 @@ public class Order {
     private double longitude;
     // 纬度
     private double latitude;
-    // 包裹数量
+    // 剩余包裹数量
     private int package_count;
     // 寄件人id(根据用户表id)
     private User user;
@@ -69,6 +69,16 @@ public class Order {
     public Order() {}
 
     /**
+     * 修改订单包裹数量
+     * @param order_number
+     * @param package_count
+     */
+    public Order(String order_number, int package_count) {
+        this.order_number = order_number;
+        this.package_count = package_count;
+    }
+
+    /**
      * 支付订单的构造方法
      * @param gmt_pay_create
      * @param state
@@ -77,6 +87,7 @@ public class Order {
         this.order_number = order_number;
         this.gmt_pay_create = gmt_pay_create;
         this.state = state;
+        this.package_count = 0;
     }
 
     /**
