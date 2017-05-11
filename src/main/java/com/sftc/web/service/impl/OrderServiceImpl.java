@@ -34,13 +34,11 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse placeOrder(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
         Order order = new Order(request);
-        OrderExpress orderExpress = new OrderExpress(request);
         try {
             orderMapper.addOrder(order);
-            orderExpressMapper.addOrderExpress(orderExpress);
+            orderExpressMapper.addOrderExpress(new OrderExpress(request));
         } catch (Exception e) {
             status = APIStatus.ORDER_SUBMIT_FAIL;
-            e.printStackTrace();
         }
         return APIUtil.getResponse(status, order.getOrder_number());
     }
@@ -56,7 +54,6 @@ public class OrderServiceImpl implements OrderService {
             orderMapper.updateOrder(order);
         } catch (Exception e) {
             status = APIStatus.ORDER_PAY_FAIL;
-            e.printStackTrace();
         }
         return APIUtil.getResponse(status, null);
     }
@@ -71,7 +68,6 @@ public class OrderServiceImpl implements OrderService {
             orderMapper.addOrder(order);
         } catch (Exception e) {
             status = APIStatus.ORDER_SUBMIT_FAIL;
-            e.printStackTrace();
         }
         return APIUtil.getResponse(status, order.getOrder_number());
     }
@@ -84,13 +80,11 @@ public class OrderServiceImpl implements OrderService {
         String order_number = (String) request.getParameter("order_number");
         int order_package_count = orderMapper.findPackageCount(order_number);
         if (order_package_count > 0) {
-            OrderExpress orderExpress = new OrderExpress(request);
             try {
-                orderExpressMapper.addOrderExpress(orderExpress);
+                orderExpressMapper.addOrderExpress(new OrderExpress(request));
                 orderMapper.updateOrder(new Order(order_number, order_package_count - 1));
             } catch (Exception e) {
                 status = APIStatus.ORDER_SUBMIT_FAIL;
-                e.printStackTrace();
             }
         } else {
             status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
