@@ -56,6 +56,7 @@ public class Order {
     // 礼卡表id
     private GiftCard giftCard;
 
+    //
     public Order() {
     }
 

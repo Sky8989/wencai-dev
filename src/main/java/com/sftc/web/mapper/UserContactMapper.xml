@@ -31,4 +31,5 @@
                 SELECT icon,name,phone,is_tag_star,wechat,remark FROM  sftc_user_contact
                 WHERE id=#{id}
         </select>
+
 </mapper>
