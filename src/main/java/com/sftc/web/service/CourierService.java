@@ -1,5 +1,9 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.Courier;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -11,4 +15,5 @@ package com.sftc.web.service;
  * @Time 上午10:58
  */
 public interface CourierService {
+    APIResponse getCourier(APIRequest request);
 }

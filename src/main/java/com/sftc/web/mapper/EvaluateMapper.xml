@@ -3,5 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.EvaluateMapper">
+        <!--  订单评价 -->
 
 </mapper>

@@ -1,5 +1,10 @@
 package com.sftc.web.model;
 
+import com.sftc.tools.api.APIRequest;
+
+import java.util.List;
+import java.util.UUID;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -50,12 +55,14 @@ public class Order {
     private double longitude;
     // 纬度
     private double latitude;
+    // 剩余包裹数量
+    private int package_count;
     // 寄件人id(根据用户表id)
     private User user;
     private int user_id;
     // 礼卡表id
     private GiftCard giftCard;
-
+    private List<OrderExpress> orderExpressList;
     //
     public Order() {
     }
@@ -112,6 +119,59 @@ public class Order {
     // 快递员id
     private Courier courier;
     private int courier_id;
+
+
+
+    /**
+     * 修改订单包裹数量
+     * @param order_number
+     * @param package_count
+     */
+    public Order(String order_number, int package_count) {
+        this.order_number = order_number;
+        this.package_count = package_count;
+    }
+
+    /**
+     * 支付订单的构造方法
+     * @param gmt_pay_create
+     * @param state
+     */
+    public Order(String order_number, String gmt_pay_create, String state) {
+        this.order_number = order_number;
+        this.gmt_pay_create = gmt_pay_create;
+        this.state = state;
+        this.package_count = 0;
+    }
+
+    /**
+     * 提交订单的构造方法
+     * @param request
+     */
+    public Order(APIRequest request) {
+        this.create_time = Long.toString(System.currentTimeMillis());
+        this.order_number = UUID.randomUUID().toString();
+        this.state = "待支付";
+        this.gmt_order_create = Long.toString(System.currentTimeMillis());
+        this.pay_method = (String) request.getParameter("pay_method");
+        this.distribution_method = (String) request.getParameter("distribution_method");
+        this.freight = Double.parseDouble((String) request.getParameter("freight"));
+        this.sender_name = (String) request.getParameter("sender_name");
+        this.sender_mobile = (String) request.getParameter("sender_mobile");
+        this.sender_province = (String) request.getParameter("sender_province");
+        this.sender_city = (String) request.getParameter("sender_city");
+        this.sender_area = (String) request.getParameter("sender_area");
+        this.sender_addr = (String) request.getParameter("sender_addr");
+        this.word_message = (String) request.getParameter("word_message");
+        this.image = (String) request.getParameter("image");
+        this.voice = (String) request.getParameter("voice");
+        this.longitude = Double.parseDouble((String) request.getParameter("longitude"));
+        this.latitude = Double.parseDouble((String) request.getParameter("latitude"));
+        this.package_count = Integer.parseInt((String) request.getParameter("package_count"));
+        this.user_id = Integer.parseInt((String) request.getParameter("user_id"));
+        this.gift_card_id = Integer.parseInt((String) request.getParameter("gift_card_id"));
+        this.courier_id = Integer.parseInt((String) request.getParameter("courier_id"));
+    }
 
 
     public int getId() {
@@ -274,6 +334,14 @@ public class Order {
         this.latitude = latitude;
     }
 
+    public int getPackage_count() {
+        return package_count;
+    }
+
+    public void setPackage_count(int package_count) {
+        this.package_count = package_count;
+    }
+
     public User getUser() {
         return user;
     }
@@ -320,5 +388,13 @@ public class Order {
 
     public void setCourier_id(int courier_id) {
         this.courier_id = courier_id;
+    }
+
+    public List<OrderExpress> getOrderExpressList() {
+        return orderExpressList;
+    }
+
+    public void setOrderExpressList(List<OrderExpress> orderExpressList) {
+        this.orderExpressList = orderExpressList;
     }
 }

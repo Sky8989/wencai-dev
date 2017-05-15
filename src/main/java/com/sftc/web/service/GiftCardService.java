@@ -1,5 +1,8 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -11,4 +14,6 @@ package com.sftc.web.service;
  * @Time 上午10:56
  */
 public interface GiftCardService {
+    APIResponse getGiftCard(APIRequest request);
+    APIResponse getGiftCardList(APIRequest request);
 }

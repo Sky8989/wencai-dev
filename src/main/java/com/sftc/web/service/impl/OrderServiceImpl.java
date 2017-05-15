@@ -1,12 +1,17 @@
 package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
+import com.sftc.web.mapper.CourierMapper;
+import com.sftc.web.mapper.OrderExpressMapper;
 import com.sftc.web.mapper.OrderMapper;
+import com.sftc.web.model.Courier;
 import com.sftc.web.model.Order;
+import com.sftc.web.model.OrderExpress;
 import com.sftc.web.service.OrderService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,49 +32,129 @@ public class OrderServiceImpl implements OrderService {
     private OrderMapper orderMapper;
 
 
+    @Resource
+    private OrderExpressMapper orderExpressMapper;
+
+    /*
+     * 普通提交订单
+     */
     public APIResponse placeOrder(APIRequest request) {
 
-
         APIStatus status = APIStatus.SUCCESS;
-        String order_state = (String) request.getParameter("state");
-        String gmt_order_create = Long.toString(System.currentTimeMillis());
-        String gmt_pay_create = Long.toString(System.currentTimeMillis());
-        String pay_method = (String) request.getParameter("pay_method");
-        double freight = Double.parseDouble((String) request.getParameter("freight"));
-        String sender_name = (String) request.getParameter("sender_name");
-        String sender_mobile = (String) request.getParameter("sender_mobile");
-        String sender_province = (String) request.getParameter("sender_province");
-        String sender_city = (String) request.getParameter("sender_city");
-        String sender_area = (String) request.getParameter("sender_area");
-        String sender_addr = (String) request.getParameter("sender_addr");
-        String ship_name = (String) request.getParameter("ship_name");
-        String ship_mobile = (String) request.getParameter("ship_mobile");
-        String ship_province = (String) request.getParameter("ship_province");
-        String ship_city = (String) request.getParameter("ship_city");
-        String ship_area = (String) request.getParameter("ship_area");
-        String ship_addr = (String) request.getParameter("ship_addr");
-        String memos = (String) request.getParameter("memos");
-        String type = (String) request.getParameter("type");
-        String size = (String) request.getParameter("size");
-        int user_id = Integer.parseInt((String) request.getParameter("user_id"));
-        String images = (String) request.getParameter("images");
-        String voice = (String) request.getParameter("voice");
-        String create_time = Long.toString(System.currentTimeMillis());
-        int gift_card_id = Integer.parseInt((String) request.getParameter("gift_card_id"));
-
-        Order order = new Order(order_state, gmt_order_create, gmt_pay_create, pay_method, freight,
-
-                sender_name, sender_mobile, sender_province, sender_city, sender_area,
-                sender_addr,  user_id,  voice, create_time, gift_card_id);
-
+        Order order = new Order(request);
         try {
-            orderMapper.insertOrder(order);
+            orderMapper.addOrder(order);
+            orderExpressMapper.addOrderExpress(new OrderExpress(request));
         } catch (Exception e) {
-            status = APIStatus.ORDER_FAIL;
-            e.printStackTrace();
+            status = APIStatus.ORDER_SUBMIT_FAIL;
         }
+        return APIUtil.getResponse(status, order.getOrder_number());
+    }
 
+
+
+
+    /*
+     * 支付订单
+     */
+    public APIResponse payOrder(APIRequest request) {
+        APIStatus status = APIStatus.SUCCESS;
+        Order order = new Order((String) request.getParameter("order_number"),
+                Long.toString(System.currentTimeMillis()), "待揽件");
+        try {
+            orderMapper.updateOrder(order);
+        } catch (Exception e) {
+            status = APIStatus.ORDER_PAY_FAIL;
+        }
+        return APIUtil.getResponse(status, null);
+    }
+
+
+    /*
+     * 好友寄件提交订单
+     */
+    public APIResponse friendPlaceOrder(APIRequest request) {
+        APIStatus status = APIStatus.SUCCESS;
+        Order order = new Order(request);
+        try {
+            orderMapper.addOrder(order);
+        } catch (Exception e) {
+            status = APIStatus.ORDER_SUBMIT_FAIL;
+        }
+        return APIUtil.getResponse(status, order.getOrder_number());
+    }
+
+
+    /*
+     * 好友填写寄件订单
+     */
+    public synchronized APIResponse friendFillOrder(APIRequest request) {
+        APIStatus status = APIStatus.SUCCESS;
+        String order_number = (String) request.getParameter("order_number");
+        int order_package_count = orderMapper.findPackageCount(order_number);
+        if (order_package_count > 0) {
+            try {
+                orderExpressMapper.addOrderExpress(new OrderExpress(request));
+                orderMapper.updateOrder(new Order(order_number, order_package_count - 1));
+            } catch (Exception e) {
+                status = APIStatus.ORDER_SUBMIT_FAIL;
+            }
+        } else {
+            status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
+        }
 
         return APIUtil.getResponse(status, null);
     }
-}
+    /*
+    * @查看所有订单
+    * */
+    @Override
+    public APIResponse getAllOrder(APIRequest request) {
+        System.out.println("11");
+        APIStatus status = APIStatus.SUCCESS;
+        String user_id_str = (String)request.getParameter("user_id");
+        String state = (String)request.getParameter("state");
+        int user_id=0;
+        try {
+             user_id = Integer.parseInt(user_id_str);
+        }catch (NumberFormatException e){
+
+        }
+        Order order = new Order();
+        order.setUser_id(user_id);
+        order.setState(state);
+        List<Order> list = orderMapper.myOrderList(order);
+
+        if(list.size()==0){
+            status = APIStatus.ORDER_NOT_FOUND;
+            System.out.print("11");
+        }
+        return  APIUtil.getResponse(status, list);
+    }
+    /*
+    * @订单详情接口
+    * */
+    @Override
+    public APIResponse getOrderDetile(APIRequest request) {
+        APIStatus status = APIStatus.SUCCESS;
+        String orderSn = (String)request.getParameter("orderSn");
+        System.out.println(orderSn);
+        Order order = orderMapper.orderDetile(orderSn);
+        System.out.println(order);
+        if(order==null){
+            status = APIStatus.COURIER_NOT_FOUND;
+        }
+        return  APIUtil.getResponse(status, order);
+    }
+    /*
+    * 修改订单接口
+    * */
+    public APIResponse updateOrder(APIRequest request,Order order,OrderExpress orderExpress) {
+        APIStatus status = APIStatus.SUCCESS;
+        System.out.println(order.getVoice());
+        order.setOrder_number("22");
+        orderMapper.updateOrder(order);
+        orderMapper.updateOrderExpress(orderExpress);
+        return  APIUtil.getResponse(status, null);
+    }
+ }

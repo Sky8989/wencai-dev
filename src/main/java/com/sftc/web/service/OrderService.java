@@ -3,6 +3,8 @@ package com.sftc.web.service;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 
+import com.sftc.web.model.Order;
+import com.sftc.web.model.OrderExpress;
 import org.springframework.stereotype.Service;
 
 
@@ -19,9 +21,44 @@ import org.springframework.stereotype.Service;
 public interface OrderService {
 
     /**
-     * 下单
+     * 普通提交订单
      * @param request
      * @return
      */
     APIResponse placeOrder(APIRequest request);
-}
+
+    /**
+     * 支付订单
+     * @param request
+     * @return
+     */
+    APIResponse payOrder(APIRequest request);
+
+    /**
+     * 好友寄件提交订单
+     * @param request
+     * @return
+     */
+    APIResponse friendPlaceOrder(APIRequest request);
+
+    /**
+     * 好友填写寄件订单
+     * @param request
+     * @return
+     */
+    APIResponse friendFillOrder(APIRequest request);
+
+   /*
+    * 我的订单列表
+    * @param request
+    * @return
+    * */
+    APIResponse getAllOrder(APIRequest request);
+    /*
+    * @获取订单详情
+    *@param request
+    * @return
+    * */
+    APIResponse getOrderDetile(APIRequest request);
+    APIResponse updateOrder(APIRequest request,Order order,OrderExpress orderExpress);
+ }

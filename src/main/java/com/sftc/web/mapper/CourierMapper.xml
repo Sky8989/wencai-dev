@@ -27,4 +27,7 @@
 
                 </collection>
         </resultMap>
+        <select id="getCourier" parameterType="string" resultType="com.sftc.web.model.Courier">
+                SELECT name,icon,phone,score FROM sftc_courier WHERE courier_number=#{courier_number}
+        </select>
 </mapper>

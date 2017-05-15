@@ -6,4 +6,5 @@ import java.util.Map;
 
 public interface CourierMapper {
     Courier selectCourierInformation(Map<String,String> param);
+    Courier getCourier(String express_number);
 }

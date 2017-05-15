@@ -4,4 +4,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.OrderExpressMapper">
 
+    <!-- 普通下单 -->
+    <insert id="addOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
+        INSERT INTO sftc_order_express
+        (order_number, ship_name, ship_mobile, ship_province, ship_city,
+        ship_area, ship_addr, package_type, object_type, create_time)
+        VALUES
+        (#{order_number}, #{ship_name}, #{ship_mobile}, #{ship_province}, #{ship_city},
+        #{ship_area}, #{ship_addr}, #{package_type}, #{object_type}, #{create_time})
+    </insert>
 </mapper>

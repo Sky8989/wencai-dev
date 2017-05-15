@@ -1,5 +1,9 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.OrderCancel;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -10,4 +14,5 @@ package com.sftc.web.service;
  * @Time 下午9:30
  */
 public interface OrderCancelService {
+    APIResponse deleteOrder(OrderCancel orderCancel);
 }
