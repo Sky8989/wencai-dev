@@ -41,4 +41,11 @@ public interface OrderService {
      * @return
      */
     APIResponse friendFillOrder(APIRequest request);
+
+    /**
+     * 返回未被填写的包裹
+     * @param request
+     * @return
+     */
+    APIResponse getEmptyPackage(APIRequest request);
 }

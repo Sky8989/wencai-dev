@@ -3,6 +3,7 @@ package com.sftc.web.controller.api;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
+import com.sftc.web.model.reqeustParam.OrderParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,17 +49,17 @@ public class OrderController extends AbstractBasicController {
 
     /**
      * 寄件给好友提交订单接口
-     * @param request
+     * @param orderParam
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/place", method = RequestMethod.POST, headers = "api-version=2")
     public @ResponseBody
-    APIResponse friendPlaceOrder(HttpServletRequest request) throws Exception {
-        return orderService.friendPlaceOrder(new APIRequest(request));
+    APIResponse friendPlaceOrder(@RequestBody OrderParam orderParam) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(orderParam);
+        return orderService.friendPlaceOrder(request);
     }
-
-
 
     /**
      * 支付订单接口
@@ -70,5 +71,17 @@ public class OrderController extends AbstractBasicController {
     public @ResponseBody
     APIResponse payOrder(HttpServletRequest request) throws Exception {
         return orderService.payOrder(new APIRequest(request));
+    }
+
+    /**
+     * 根据订单编号查找未被填写包裹的接口
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/pack", method = RequestMethod.GET, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse pack(HttpServletRequest request) throws Exception {
+        return orderService.getEmptyPackage(new APIRequest(request));
     }
 }

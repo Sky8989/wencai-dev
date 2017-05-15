@@ -4,13 +4,44 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.OrderExpressMapper">
 
+    <resultMap id="orderExpressMap" type="com.sftc.web.model.OrderExpress" >
+        <id column="id" property="id" />
+        <result column="order_number" property="order_number" />
+        <result column="ship_name" property="ship_name" />
+        <result column="ship_mobile" property="ship_mobile" />
+        <result column="ship_province" property="ship_province" />
+        <result column="ship_city" property="ship_city" />
+        <result column="ship_area" property="ship_area" />
+        <result column="ship_addr" property="ship_addr" />
+        <result column="package_type" property="package_type" />
+        <result column="object_type" property="object_type" />
+        <result column="create_time" property="create_time" />
+        <result column="is_use" property="is_use" />
+    </resultMap>
+
+    <!-- 根据订单编号查询该订单的包裹 -->
+    <select id="findEmptyPackage" resultMap="orderExpressMap" parameterType="java.lang.String">
+        SELECT * FROM sftc_order_express WHERE order_number=#{order_number} AND is_use=0
+    </select>
+
     <!-- 普通下单 -->
     <insert id="addOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
         INSERT INTO sftc_order_express
-        (order_number, ship_name, ship_mobile, ship_province, ship_city,
-        ship_area, ship_addr, package_type, object_type, create_time)
+        (order_number, package_type, object_type, create_time)
         VALUES
-        (#{order_number}, #{ship_name}, #{ship_mobile}, #{ship_province}, #{ship_city},
-        #{ship_area}, #{ship_addr}, #{package_type}, #{object_type}, #{create_time})
+        (#{order_number}, #{package_type}, #{object_type}, #{create_time})
     </insert>
+
+    <update id="updateOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
+        UPDATE sftc_order_express
+        set
+        ship_name=#{ship_name},
+        ship_mobile=#{ship_mobile},
+        ship_province=#{ship_province},
+        ship_city=#{ship_city},
+        ship_area=#{ship_area},
+        ship_addr=#{ship_addr},
+        is_use=1
+        WHERE id=#{id}
+    </update>
 </mapper>

@@ -1,6 +1,7 @@
 package com.sftc.web.model;
 
 import com.sftc.tools.api.APIRequest;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,6 +12,7 @@ import com.sftc.tools.api.APIRequest;
  * @date 2017/5/9
  * @Time 下午4:55
  */
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class OrderExpress {
 
     private int id;
@@ -34,20 +36,31 @@ public class OrderExpress {
     private String package_type;
     // 物品类型
     private String object_type;
+    // 是否已经填写
+    private int is_use;
 
     public OrderExpress() {}
 
-    public OrderExpress(APIRequest request) {
+    public OrderExpress(String package_type, String object_type) {
+        this.package_type = package_type;
+        this.object_type = object_type;
+    }
+
+    public OrderExpress(String order_number, String package_type, String object_type) {
         this.create_time = Long.toString(System.currentTimeMillis());
-        this.order_number = (String) request.getParameter("order_number");
+        this.order_number = order_number;
+        this.package_type = package_type;
+        this.object_type = object_type;
+    }
+
+    public OrderExpress(APIRequest request) {
+        this.id = Integer.parseInt((String) request.getParameter("id"));
         this.ship_name = (String) request.getParameter("ship_name");
         this.ship_mobile = (String) request.getParameter("ship_mobile");
         this.ship_province = (String) request.getParameter("ship_province");
         this.ship_city = (String) request.getParameter("ship_city");
         this.ship_area = (String) request.getParameter("ship_area");
         this.ship_addr = (String) request.getParameter("ship_addr");
-        this.package_type = (String) request.getParameter("package_type");
-        this.object_type = (String) request.getParameter("object_type");
     }
 
     public int getId() {
@@ -136,5 +149,13 @@ public class OrderExpress {
 
     public void setObject_type(String object_type) {
         this.object_type = object_type;
+    }
+
+    public int getIs_use() {
+        return is_use;
+    }
+
+    public void setIs_use(int is_use) {
+        this.is_use = is_use;
     }
 }

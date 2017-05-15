@@ -1,6 +1,7 @@
 package com.sftc.web.model;
 
 import com.sftc.tools.api.APIRequest;
+import com.sftc.web.model.reqeustParam.OrderParam;
 
 import java.util.UUID;
 
@@ -54,8 +55,6 @@ public class Order {
     private double longitude;
     // 纬度
     private double latitude;
-    // 剩余包裹数量
-    private int package_count;
     // 寄件人id(根据用户表id)
     private User user;
     private int user_id;
@@ -73,9 +72,8 @@ public class Order {
      * @param order_number
      * @param package_count
      */
-    public Order(String order_number, int package_count) {
+    public Order(String order_number) {
         this.order_number = order_number;
-        this.package_count = package_count;
     }
 
     /**
@@ -87,7 +85,6 @@ public class Order {
         this.order_number = order_number;
         this.gmt_pay_create = gmt_pay_create;
         this.state = state;
-        this.package_count = 0;
     }
 
     /**
@@ -113,10 +110,32 @@ public class Order {
         this.voice = (String) request.getParameter("voice");
         this.longitude = Double.parseDouble((String) request.getParameter("longitude"));
         this.latitude = Double.parseDouble((String) request.getParameter("latitude"));
-        this.package_count = Integer.parseInt((String) request.getParameter("package_count"));
         this.user_id = Integer.parseInt((String) request.getParameter("user_id"));
         this.gift_card_id = Integer.parseInt((String) request.getParameter("gift_card_id"));
         this.courier_id = Integer.parseInt((String) request.getParameter("courier_id"));
+    }
+
+    public Order(OrderParam orderParam) {
+        this.create_time = Long.toString(System.currentTimeMillis());
+        this.order_number = UUID.randomUUID().toString();
+        this.state = "待支付";
+        this.gmt_order_create = Long.toString(System.currentTimeMillis());
+        this.pay_method = orderParam.getPay_method();
+        this.distribution_method = orderParam.getDistribution_method();
+        this.sender_name = orderParam.getSender_name();
+        this.sender_mobile = orderParam.getSender_mobile();
+        this.sender_province = orderParam.getSender_province();
+        this.sender_city = orderParam.getSender_city();
+        this.sender_area = orderParam.getSender_area();
+        this.sender_addr = orderParam.getSender_addr();
+        this.word_message = orderParam.getWord_message();
+        this.image = orderParam.getImage();
+        this.voice = orderParam.getVoice();
+        this.longitude = orderParam.getLongitude();
+        this.latitude = orderParam.getLatitude();
+        this.user_id = orderParam.getUser_id();
+        this.gift_card_id = orderParam.getGift_card_id();
+        this.courier_id = orderParam.getCourier_id();
     }
 
     public int getId() {
@@ -277,14 +296,6 @@ public class Order {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
-    }
-
-    public int getPackage_count() {
-        return package_count;
-    }
-
-    public void setPackage_count(int package_count) {
-        this.package_count = package_count;
     }
 
     public User getUser() {
