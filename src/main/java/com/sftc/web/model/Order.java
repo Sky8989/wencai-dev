@@ -68,15 +68,6 @@ public class Order {
     public Order() {}
 
     /**
-     * 修改订单包裹数量
-     * @param order_number
-     * @param package_count
-     */
-    public Order(String order_number) {
-        this.order_number = order_number;
-    }
-
-    /**
      * 支付订单的构造方法
      * @param gmt_pay_create
      * @param state
@@ -98,7 +89,6 @@ public class Order {
         this.gmt_order_create = Long.toString(System.currentTimeMillis());
         this.pay_method = (String) request.getParameter("pay_method");
         this.distribution_method = (String) request.getParameter("distribution_method");
-        this.freight = Double.parseDouble((String) request.getParameter("freight"));
         this.sender_name = (String) request.getParameter("sender_name");
         this.sender_mobile = (String) request.getParameter("sender_mobile");
         this.sender_province = (String) request.getParameter("sender_province");

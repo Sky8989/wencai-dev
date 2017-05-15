@@ -38,9 +38,10 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order(request);
         try {
             orderMapper.addOrder(order);
-            orderExpressMapper.addOrderExpress(new OrderExpress(request));
+            // orderExpressMapper.addOrderExpress(new OrderExpress(request, UUID.randomUUID().toString()));
         } catch (Exception e) {
             status = APIStatus.ORDER_SUBMIT_FAIL;
+            e.printStackTrace();
         }
         return APIUtil.getResponse(status, order.getOrder_number());
     }

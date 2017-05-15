@@ -27,9 +27,11 @@
     <!-- 普通下单 -->
     <insert id="addOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
         INSERT INTO sftc_order_express
-        (order_number, package_type, object_type, create_time)
+        (ship_name,ship_mobile,ship_province,ship_city,ship_area,
+        ship_addr,order_number,package_type,object_type,create_time)
         VALUES
-        (#{order_number}, #{package_type}, #{object_type}, #{create_time})
+        (#{ship_name},#{ship_mobile},#{ship_province},#{ship_city},#{ship_area},
+        #{ship_addr},#{order_number},#{package_type},#{object_type},#{create_time})
     </insert>
 
     <update id="updateOrderExpress" parameterType="com.sftc.web.model.OrderExpress">

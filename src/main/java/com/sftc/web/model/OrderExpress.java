@@ -63,6 +63,19 @@ public class OrderExpress {
         this.ship_addr = (String) request.getParameter("ship_addr");
     }
 
+    public OrderExpress(APIRequest request, String order_number) {
+        this.create_time = Long.toString(System.currentTimeMillis());
+        this.order_number = order_number;
+        this.ship_name = (String) request.getParameter("ship_name");
+        this.ship_mobile = (String) request.getParameter("ship_mobile");
+        this.ship_province = (String) request.getParameter("ship_province");
+        this.ship_city = (String) request.getParameter("ship_city");
+        this.ship_area = (String) request.getParameter("ship_area");
+        this.ship_addr = (String) request.getParameter("ship_addr");
+        this.package_type = (String) request.getParameter("package_type");
+        this.object_type = (String) request.getParameter("object_type");
+    }
+
     public int getId() {
         return id;
     }

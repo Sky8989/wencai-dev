@@ -23,13 +23,13 @@
         (order_number, state, gmt_order_create, freight,
         create_time, sender_province, sender_name, sender_mobile, sender_city,
         sender_area, sender_addr, word_message, image, voice, courier_id,
-        user_id, gift_card_id, pay_method, distribution_method, longitude, latitude, package_count)
+        user_id, gift_card_id, pay_method, distribution_method, longitude, latitude)
         VALUES
         (#{order_number}, #{state}, #{gmt_order_create}, #{freight},
         #{create_time}, #{sender_province}, #{sender_name}, #{sender_mobile}, #{sender_city},
         #{sender_area}, #{sender_addr}, #{word_message}, #{image}, #{voice}, #{courier_id},
         #{user_id}, #{gift_card_id}, #{pay_method}, #{distribution_method},
-        #{longitude}, #{latitude}, #{package_count})
+        #{longitude}, #{latitude})
     </insert>
 
     <!-- 修改订单 -->
@@ -39,7 +39,6 @@
             <if test="gmt_pay_create!=null">gmt_pay_create=#{gmt_pay_create},</if>
             <if test="state!=null">state=#{state},</if>
             <if test="courier_id!=null">courier_id=#{courier_id},</if>
-            <if test="package_count!=null">package_count=#{package_count},</if>
         </trim>
         WHERE order_number=#{order_number}
     </update>
