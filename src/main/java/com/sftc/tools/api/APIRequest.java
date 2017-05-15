@@ -83,6 +83,8 @@ public class APIRequest {
      */
     private String contextPath;
 
+    private Object requestParam;
+
     public APIRequest() {
         super();
     }
@@ -267,5 +269,13 @@ public class APIRequest {
 
     public void setContextPath(String contextPath) {
         this.contextPath = contextPath;
+    }
+
+    public Object getRequestParam() {
+        return requestParam;
+    }
+
+    public void setRequestParam(Object requestParam) {
+        this.requestParam = requestParam;
     }
 }

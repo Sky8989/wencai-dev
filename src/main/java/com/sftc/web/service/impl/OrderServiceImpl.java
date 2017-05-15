@@ -7,6 +7,7 @@ import com.sftc.web.mapper.OrderMapper;
 import com.sftc.web.model.Courier;
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.service.OrderService;
 import org.springframework.stereotype.Service;
 
@@ -44,9 +45,10 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order(request);
         try {
             orderMapper.addOrder(order);
-            orderExpressMapper.addOrderExpress(new OrderExpress(request));
+            // orderExpressMapper.addOrderExpress(new OrderExpress(request, UUID.randomUUID().toString()));
         } catch (Exception e) {
             status = APIStatus.ORDER_SUBMIT_FAIL;
+            e.printStackTrace();
         }
         return APIUtil.getResponse(status, order.getOrder_number());
     }
@@ -75,11 +77,21 @@ public class OrderServiceImpl implements OrderService {
      */
     public APIResponse friendPlaceOrder(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
-        Order order = new Order(request);
+        OrderParam orderParam = (OrderParam) request.getRequestParam();
+        List<OrderExpress> orderExpressList = orderParam.getOrderExpressList();
+        Order order = new Order(orderParam);
         try {
             orderMapper.addOrder(order);
+            for (int i = 0; i < orderExpressList.size(); i++) {
+                OrderExpress orderExpress = new OrderExpress(
+                        order.getOrder_number(),
+                        orderExpressList.get(i).getPackage_type(),
+                        orderExpressList.get(i).getObject_type());
+                orderExpressMapper.addOrderExpress(orderExpress);
+            }
         } catch (Exception e) {
             status = APIStatus.ORDER_SUBMIT_FAIL;
+            e.printStackTrace();
         }
         return APIUtil.getResponse(status, order.getOrder_number());
     }
@@ -90,21 +102,17 @@ public class OrderServiceImpl implements OrderService {
      */
     public synchronized APIResponse friendFillOrder(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
-        String order_number = (String) request.getParameter("order_number");
-        int order_package_count = orderMapper.findPackageCount(order_number);
-        if (order_package_count > 0) {
-            try {
-                orderExpressMapper.addOrderExpress(new OrderExpress(request));
-                orderMapper.updateOrder(new Order(order_number, order_package_count - 1));
-            } catch (Exception e) {
-                status = APIStatus.ORDER_SUBMIT_FAIL;
-            }
-        } else {
-            status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
+        OrderExpress orderExpress = new OrderExpress(request);
+        try {
+            orderExpressMapper.updateOrderExpress(orderExpress);
+        } catch (Exception e) {
+            status = APIStatus.ORDER_SUBMIT_FAIL;
+            e.printStackTrace();
         }
 
         return APIUtil.getResponse(status, null);
     }
+
     /*
     * @查看所有订单
     * */
@@ -157,4 +165,25 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.updateOrderExpress(orderExpress);
         return  APIUtil.getResponse(status, null);
     }
- }
+
+
+
+    /*
+     * 返回未被填写的包裹
+     */
+    public APIResponse getEmptyPackage(APIRequest request) {
+        APIStatus status = APIStatus.SUCCESS;
+        String order_number = (String) request.getParameter("order_number");
+        OrderExpress orderExpress = null;
+        try {
+            List<OrderExpress> orderExpressList = orderExpressMapper.findEmptyPackage(order_number);
+            int randomOrderExpress = (int) (Math.random() * orderExpressList.size());
+            orderExpress = orderExpressList.get(randomOrderExpress);
+        } catch (Exception e) {
+            status = APIStatus.ORDER_SUBMIT_FAIL;
+            e.printStackTrace();
+        }
+        return APIUtil.getResponse(status, orderExpress);
+    }
+}
+

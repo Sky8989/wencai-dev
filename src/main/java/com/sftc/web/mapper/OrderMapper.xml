@@ -45,19 +45,20 @@
         (order_number, state, gmt_order_create, freight,
         create_time, sender_province, sender_name, sender_mobile, sender_city,
         sender_area, sender_addr, word_message, image, voice, courier_id,
-        user_id, gift_card_id, pay_method, distribution_method, longitude, latitude, package_count)
+        user_id, gift_card_id, pay_method, distribution_method, longitude, latitude)
         VALUES
         (#{order_number}, #{state}, #{gmt_order_create}, #{freight},
         #{create_time}, #{sender_province}, #{sender_name}, #{sender_mobile}, #{sender_city},
         #{sender_area}, #{sender_addr}, #{word_message}, #{image}, #{voice}, #{courier_id},
         #{user_id}, #{gift_card_id}, #{pay_method}, #{distribution_method},
-        #{longitude}, #{latitude}, #{package_count})
+        #{longitude}, #{latitude})
     </insert>
 
     <!--修改订单   -->
     <update id="updateOrder" parameterType="com.sftc.web.model.Order">
         update sftc_order
         <trim prefix="set" suffixOverrides=",">
+
             <if test="sender_mobile!=null">sender_mobile=#{sender_mobile},</if>
             <if test="sender_name!=null">sender_name=#{sender_name},</if>
             <if test="sender_province!=null">sender_province=#{sender_province},</if>
@@ -86,6 +87,11 @@
             <if test="type!=null">type=#{type},</if>
             <if test="size!=null">size=#{size},</if>
             <!--    <if test="voice!=null">voice=#{voice}</if> -->
+=======
+            <if test="gmt_pay_create!=null">gmt_pay_create=#{gmt_pay_create},</if>
+            <if test="state!=null">state=#{state},</if>
+            <if test="courier_id!=null">courier_id=#{courier_id},</if>
+>>>>>>> ab9642b4f497ee86f4b46a6c7c39a584a5661660
         </trim>
         WHERE order_number=#{order_number}
     </update>

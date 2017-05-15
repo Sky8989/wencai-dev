@@ -48,6 +48,7 @@ public interface OrderService {
      */
     APIResponse friendFillOrder(APIRequest request);
 
+
    /*
     * 我的订单列表
     * @param request
@@ -61,4 +62,13 @@ public interface OrderService {
     * */
     APIResponse getOrderDetile(APIRequest request);
     APIResponse updateOrder(APIRequest request,Order order,OrderExpress orderExpress);
- }
+
+
+    /**
+     * 返回未被填写的包裹
+     * @param request
+     * @return
+     */
+    APIResponse getEmptyPackage(APIRequest request);
+}
+
