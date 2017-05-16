@@ -1,8 +1,7 @@
 package com.sftc.tools.api;
 
-import com.google.gson.Gson;
-import com.sftc.web.model.wechat.WechatUser;
-import org.apache.commons.io.IOUtils;
+import com.sftc.web.model.Result;
+import net.sf.json.JSONObject;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -11,24 +10,23 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
-import org.codehaus.jackson.map.util.JSONPObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 
 /**
  * Created by Administrator on 2017/5/15.
  */
 public class PAIPost {
-    public static String getPost(Object json,String URL) {
+    public static Result getPost(String json,String URL,Result res) {
 
                  HttpClient client = new DefaultHttpClient();
                  HttpPost post = new HttpPost(URL);
 
                  post.setHeader("Content-Type", "application/json");
                  post.addHeader("Authorization", "Basic YWRtaW46");
+                 post.addHeader("PushEnvelope-Device-Token","oBrKAePstU99W4p8UVqt");
                  String result = "";
 
                  try {
@@ -51,7 +49,12 @@ public class PAIPost {
                                  strber.append(line + "\n");
                          inStream.close();
 
-                         result = strber.toString();
+                     result = strber.toString();
+
+                     JSONObject jsonObject = JSONObject.fromObject(result);
+                     res = (Result) JSONObject.toBean(jsonObject,res.getClass());
+                   //     System.out.println(res.getError().getType());
+
                          System.out.println(result);
 
                          if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -70,7 +73,7 @@ public class PAIPost {
                          throw new RuntimeException(e);
                      }
 
-                return result;
+                return res;
              }
     }
 

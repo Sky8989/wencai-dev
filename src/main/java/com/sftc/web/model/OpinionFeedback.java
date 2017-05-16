@@ -19,7 +19,7 @@ public class OpinionFeedback {
     // 反馈时间
     private String gmt_create;
     // 反馈意见的用户
-    private User user;
+   private Merchant merchant;
     private int user_id;
 
     public int getId() {
@@ -54,13 +54,7 @@ public class OpinionFeedback {
         this.gmt_create = gmt_create;
     }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public int getUser_id() {
         return user_id;

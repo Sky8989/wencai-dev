@@ -12,7 +12,7 @@
 
                         <result column="icon" property="icon"></result>
                 </association>
-                <association property="user" javaType="com.sftc.web.model.User">
+                <association property="user" javaType="com.sftc.web.model.Merchant">
 
                         <result column="head_portrait" property="head_portrait"></result>
 

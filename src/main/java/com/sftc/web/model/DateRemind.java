@@ -26,7 +26,7 @@ public class DateRemind {
 
     private int user_contact_id;
     // 所属的用户Id
-    private User user;
+
     private int user_id;
 
     public DateRemind(String describe, String date, int user_id, int user_contact_id) {
@@ -85,13 +85,7 @@ public class DateRemind {
     }
 
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
 
     public int getUser_id() {

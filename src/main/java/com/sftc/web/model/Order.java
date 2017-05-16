@@ -57,7 +57,7 @@ public class Order {
     // 纬度
     private double latitude;
     // 寄件人id(根据用户表id)
-    private User user;
+
     private int user_id;
     // 礼卡表id
     private GiftCard giftCard;
@@ -344,13 +344,7 @@ public class Order {
         this.latitude = latitude;
     }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public int getUser_id() {
         return user_id;

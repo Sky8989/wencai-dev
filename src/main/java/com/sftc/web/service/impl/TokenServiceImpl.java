@@ -1,6 +1,7 @@
 package com.sftc.web.service.impl;
 
 import com.sftc.web.mapper.TokenMapper;
+import com.sftc.web.service.TokenService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,5 +13,5 @@ import com.sftc.web.mapper.TokenMapper;
  * @date 2017/4/12
  * @Time 上午12:33
  */
-public class TokenServiceImpl implements TokenMapper {
+public class TokenServiceImpl implements TokenService {
 }

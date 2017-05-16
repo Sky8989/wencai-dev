@@ -19,14 +19,30 @@ public class Token {
     // 是否已经注销
     private int is_logout;
     // 创建时间
-    private String gmt_create;
+    private String create_at;
     // 更新时间
     private String gmt_modified;
     // 到期时间
     private String gmt_expiry;
     // 属于哪个用户
-    private User user;
+
+    private String access_token;
+
+    private String refresh_token;
+
+    private String uuid;
     private int user_id;
+
+    public Token() {
+    }
+
+    public Token(String create_time, int is_logout, String gmt_modified, String gmt_expiry, int user_id) {
+        this.create_time = create_time;
+        this.is_logout = is_logout;
+        this.gmt_modified = gmt_modified;
+        this.gmt_expiry = gmt_expiry;
+        this.user_id = user_id;
+    }
 
     public int getId() {
         return id;
@@ -60,13 +76,7 @@ public class Token {
         this.is_logout = is_logout;
     }
 
-    public String getGmt_create() {
-        return gmt_create;
-    }
 
-    public void setGmt_create(String gmt_create) {
-        this.gmt_create = gmt_create;
-    }
 
     public String getGmt_modified() {
         return gmt_modified;
@@ -84,13 +94,7 @@ public class Token {
         this.gmt_expiry = gmt_expiry;
     }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public int getUser_id() {
         return user_id;
@@ -99,4 +103,37 @@ public class Token {
     public void setUser_id(int user_id) {
         this.user_id = user_id;
     }
+
+    public String getCreate_at() {
+        return create_at;
+    }
+
+    public void setCreate_at(String create_at) {
+        this.create_at = create_at;
+    }
+
+    public String getAccess_token() {
+        return access_token;
+    }
+
+    public void setAccess_token(String access_token) {
+        this.access_token = access_token;
+    }
+
+    public String getRefresh_token() {
+        return refresh_token;
+    }
+
+    public void setRefresh_token(String refresh_token) {
+        this.refresh_token = refresh_token;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
 }

@@ -23,6 +23,13 @@ public enum APIStatus {
     COURIER_NOT_FOUND("00008","没有该订单"),
     WECHAT_ERR("", ""),
     CANCEL_ORDER_FALT("00009","falt"),
+    GET_MESSAGE("000010","VALIDATION_ERROR"),
+    REGISTER_FAIL("000011","验证码错误或已失效"),
+    REGISTER_SUCCESS("000012","注册成功"),
+    ERROR("000013","账号或密码错误"),
+    TOKEN_SUCCESS("000014","获取token成功"),
+    LOGIN_ERROR("000015","密码或验证码错误"),
+    AUTHORIZATION_FAIL("000016","鉴权失败"),
     GIFT_CARD_NOT_FOUND("00009","没有该礼卡");
 
     private String state;

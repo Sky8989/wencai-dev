@@ -29,7 +29,7 @@ public class AddressHistory {
     // 收件人姓名
     private String name;
     // 所属的用户
-    private User user;
+
     private int user_id;
     private List<Order> orderList;
 
@@ -100,13 +100,7 @@ public class AddressHistory {
         this.name = name;
     }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public int getUser_id() {
         return user_id;

@@ -2,6 +2,7 @@ package com.sftc.web.controller.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
 import jdk.nashorn.api.scripting.JSObject;
 
@@ -26,18 +27,42 @@ import java.util.Map;
 @Controller
 @RequestMapping("sf")
 public class MessageController extends AbstractBasicController {
-
+    /**
+     * 获取短信接口
+     */
     @RequestMapping(value = "/message", method = RequestMethod.POST)
-
-    void message(@RequestBody Object obj) throws Exception {
-        messageService.getMessage(obj);
+    APIResponse message(@RequestBody Object obj) throws Exception {
+       return messageService.getMessage(obj);
 
 
     }
+    /**
+     * 注册接口
+     */
     @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @ResponseBody
+    APIResponse register(@RequestBody Object obj) throws Exception {
+      return  messageService.register(obj);
 
-    void register(@RequestBody Object obj) throws Exception {
-        messageService.register(obj);
+
+    }
+    /**
+     * 获取TOKEN接口
+     */
+    @RequestMapping(value = "/getToken", method = RequestMethod.POST)
+    @ResponseBody
+    APIResponse getToken(@RequestBody Object obj) throws Exception {
+        return  messageService.getToken(obj);
+
+
+    }
+    /**
+     * 登录接口
+     */
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @ResponseBody
+    APIResponse login(@RequestBody Object obj) throws Exception {
+        return  messageService.login(obj);
 
 
     }

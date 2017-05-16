@@ -23,7 +23,7 @@ public class Evaluate {
     // 评价星级
     private String star_level;
     // 评价人的用户id
-    private User user;
+    private Merchant merchant;
     private int user_id;
     // 评价的是哪一个订单
     private Order order;
@@ -80,12 +80,12 @@ public class Evaluate {
         this.star_level = star_level;
     }
 
-    public User getUser() {
-        return user;
+    public Merchant getMerchant() {
+        return merchant;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setMerchant(Merchant merchant) {
+        this.merchant = merchant;
     }
 
     public int getUser_id() {
