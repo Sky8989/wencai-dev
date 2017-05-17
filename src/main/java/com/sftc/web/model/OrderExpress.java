@@ -38,6 +38,10 @@ public class OrderExpress {
     private String object_type;
     // 是否已经填写
     private int is_use;
+    // 收件人id(根据用户表id)
+    private int ship_user_id;
+    // 礼卡表id
+    private int gift_card_id;
 
     public OrderExpress() {}
 
@@ -170,5 +174,21 @@ public class OrderExpress {
 
     public void setIs_use(int is_use) {
         this.is_use = is_use;
+    }
+
+    public int getShip_user_id() {
+        return ship_user_id;
+    }
+
+    public void setShip_user_id(int ship_user_id) {
+        this.ship_user_id = ship_user_id;
+    }
+
+    public int getGift_card_id() {
+        return gift_card_id;
+    }
+
+    public void setGift_card_id(int gift_card_id) {
+        this.gift_card_id = gift_card_id;
     }
 }

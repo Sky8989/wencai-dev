@@ -3,7 +3,7 @@ package com.sftc.web.model;
 /**
  * Created by Administrator on 2017/5/16.
  */
-public class Merchant {
+public class User {
     private int id;
     private String uuid;
     //用户名字
@@ -19,13 +19,13 @@ public class Merchant {
     private Object summary;
     private Object attributes;
     private Object tags;
-    public Merchant(String user_password, String open_id, String create_time) {
+    public User(String user_password, String open_id, String create_time) {
         this.user_password = user_password;
         this.open_id = open_id;
         this.create_time = create_time;
     }
 
-    public Merchant() {
+    public User() {
     }
 
     public int getId() {

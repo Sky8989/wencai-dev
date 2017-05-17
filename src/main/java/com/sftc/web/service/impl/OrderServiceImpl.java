@@ -1,10 +1,8 @@
 package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
-import com.sftc.web.mapper.CourierMapper;
 import com.sftc.web.mapper.OrderExpressMapper;
 import com.sftc.web.mapper.OrderMapper;
-import com.sftc.web.model.Courier;
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.reqeustParam.OrderParam;
@@ -13,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order(request);
         try {
             orderMapper.addOrder(order);
-            // orderExpressMapper.addOrderExpress(new OrderExpress(request, UUID.randomUUID().toString()));
+            orderExpressMapper.addOrderExpress(new OrderExpress(request, UUID.randomUUID().toString()));
         } catch (Exception e) {
             status = APIStatus.ORDER_SUBMIT_FAIL;
             e.printStackTrace();
@@ -116,7 +115,6 @@ public class OrderServiceImpl implements OrderService {
     /*
     * @查看所有订单
     * */
-    @Override
     public APIResponse getAllOrder(APIRequest request) {
         System.out.println("11");
         APIStatus status = APIStatus.SUCCESS;
@@ -142,7 +140,6 @@ public class OrderServiceImpl implements OrderService {
     /*
     * @订单详情接口
     * */
-    @Override
     public APIResponse getOrderDetile(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
         String orderSn = (String)request.getParameter("orderSn");
@@ -165,8 +162,6 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.updateOrderExpress(orderExpress);
         return  APIUtil.getResponse(status, null);
     }
-
-
 
     /*
      * 返回未被填写的包裹

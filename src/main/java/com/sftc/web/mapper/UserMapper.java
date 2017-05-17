@@ -1,15 +1,15 @@
 package com.sftc.web.mapper;
 
-import com.sftc.web.model.Merchant;
+import com.sftc.web.model.User;
 
 
 public interface UserMapper {
 
-    public Merchant selectUserByPhone(String user_phone);
+    public User selectUserByPhone(String user_phone);
 
-    public Merchant selectUserByOpenid(String open_id);
+    public User selectUserByOpenid(String open_id);
 
     public void insertOpenid(String open_id);
 
-    void addMerchant(Merchant merchant);
+    void addMerchant(User user);
 }

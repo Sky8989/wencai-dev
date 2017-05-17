@@ -7,7 +7,7 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.api.AIPPost;
 import com.sftc.web.controller.AbstractBasicController;
 import com.sftc.web.mapper.UserMapper;
-import com.sftc.web.model.Merchant;
+import com.sftc.web.model.User;
 import com.sftc.web.model.Result;
 import com.sftc.web.service.MessageService;
 
@@ -15,10 +15,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-
-/**
- * Created by Administrator on 2017/5/15.
- */
 @Service("messageService")
 public class MessageServiceImpl extends AbstractBasicController implements MessageService{
     @Resource
@@ -55,8 +51,8 @@ public class MessageServiceImpl extends AbstractBasicController implements Messa
         Result result = AIPPost.getPost(str, REGISTER_URL, new Result());
         status= result.getError().validate();
         if (status.equals(APIStatus.REGISTER_SUCCESS)){
-            Merchant merchant = new Merchant("123456", "1", "2017-7-7");
-            userMapper.addMerchant(merchant);
+            User user = new User("123456", "1", "2017-7-7");
+            userMapper.addMerchant(user);
         }
         return APIUtil.getResponse(status,null);
     }

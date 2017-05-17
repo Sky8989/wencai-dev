@@ -33,7 +33,7 @@ public class Address {
     // 维度
     private String latitude;
     // 所属的用户
-    private Merchant merchant;
+    private User user;
     private int user_id;
     private List<com.sftc.web.model.Order> orderList;
 
@@ -130,12 +130,12 @@ public class Address {
         this.latitude = latitude;
     }
 
-    public Merchant getMerchant() {
-        return merchant;
+    public User getUser() {
+        return user;
     }
 
-    public void setMerchant(Merchant merchant) {
-        this.merchant = merchant;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getUser_id() {

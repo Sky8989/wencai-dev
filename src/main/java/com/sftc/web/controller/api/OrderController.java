@@ -83,28 +83,38 @@ public class OrderController extends AbstractBasicController {
     }
 
 
-    /*
-    * 我的订单接口
-    * @param request
-    * @return
-    *
-    * */
+    /**
+     * 我的订单接口
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/getAllOrder", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
     APIResponse getAllOrder(HttpServletRequest request) throws Exception {
         return orderService.getAllOrder(new APIRequest(request));
     }
-    /*
-    * 获取订单详情
-    * */
+
+    /**
+     * 获取订单详情
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/getOrderDetile", method = RequestMethod.POST,headers = "api-version=1")
     public @ResponseBody
     APIResponse getOrderDetile(HttpServletRequest request) throws Exception {
         return orderService.getOrderDetile(new APIRequest(request));
     }
-    /*
-   * 修改订单
-   * */
+
+    /**
+     * 修改订单
+     * @param request
+     * @param order
+     * @param orderExpress
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/updateOrder", method = RequestMethod.POST,headers = "api-version=1")
     public @ResponseBody
     APIResponse updateOrder(HttpServletRequest request,Order order,OrderExpress orderExpress) throws Exception {
