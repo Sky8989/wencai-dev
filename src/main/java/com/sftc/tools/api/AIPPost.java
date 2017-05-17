@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
 /**
  * Created by Administrator on 2017/5/15.
  */
-public class PAIPost {
+public class AIPPost {
     public static Result getPost(String json,String URL,Result res) {
 
                  HttpClient client = new DefaultHttpClient();
@@ -26,7 +26,7 @@ public class PAIPost {
 
                  post.setHeader("Content-Type", "application/json");
                  post.addHeader("Authorization", "Basic YWRtaW46");
-                 post.addHeader("PushEnvelope-Device-Token","oBrKAePstU99W4p8UVqt");
+            //     post.addHeader("PushEnvelope-Device-Token","oBrKAePstU99W4p8UVqt");
                  String result = "";
 
                  try {
@@ -38,7 +38,7 @@ public class PAIPost {
 
                          // 发送请求
                          HttpResponse httpResponse = client.execute(post);
-                        System.out.println(json.toString());
+                        System.out.println(json.toString()+"aa");
                          // 获取响应输入流
                          InputStream inStream = httpResponse.getEntity().getContent();
                          BufferedReader reader = new BufferedReader(new InputStreamReader(

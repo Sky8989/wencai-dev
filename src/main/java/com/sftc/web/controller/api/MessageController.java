@@ -4,6 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
+import com.sftc.web.model.Order;
+import com.sftc.web.model.Result;
+import com.sftc.web.model.quotes.Request;
+import com.sftc.web.model.quotes.Source;
 import jdk.nashorn.api.scripting.JSObject;
 
 import org.springframework.stereotype.Controller;
@@ -31,6 +35,7 @@ public class MessageController extends AbstractBasicController {
      * 获取短信接口
      */
     @RequestMapping(value = "/message", method = RequestMethod.POST)
+    @ResponseBody
     APIResponse message(@RequestBody Object obj) throws Exception {
        return messageService.getMessage(obj);
 
@@ -63,7 +68,10 @@ public class MessageController extends AbstractBasicController {
     @ResponseBody
     APIResponse login(@RequestBody Object obj) throws Exception {
         return  messageService.login(obj);
-
-
     }
+    @RequestMapping(value = "/quotes", method = RequestMethod.POST)
+     void quotes(@RequestBody Result r) throws Exception {
+        System.out.println(r.getRequest().getPackages().get(0).getType()+r.getRequest().getPackages().get(1).getType());
+    }
+
 }

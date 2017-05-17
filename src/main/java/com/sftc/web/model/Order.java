@@ -63,6 +63,8 @@ public class Order {
     private GiftCard giftCard;
     private List<OrderExpress> orderExpressList;
     //
+
+
     public Order() {
     }
 
@@ -182,6 +184,7 @@ public class Order {
         this.gift_card_id = orderParam.getGift_card_id();
         this.courier_id = orderParam.getCourier_id();
     }
+
 
 
     public int getId() {

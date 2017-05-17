@@ -34,6 +34,8 @@ public class Error {
         this.message = message;
     }
 
+
+
     public APIStatus validate(){
         APIStatus status=null;
         if (this.type.equals("SMS_VERIFY_CODE_ERROR")){
