@@ -28,8 +28,7 @@ public class Evaluate {
     // 评价的是哪一个订单
     private Order order;
     private int order_id;
-    // 快递员id
-    private Courier courier;
+
     private int courier_id;
 
     public int getId() {
@@ -112,13 +111,7 @@ public class Evaluate {
         this.order_id = order_id;
     }
 
-    public Courier getCourier() {
-        return courier;
-    }
 
-    public void setCourier(Courier courier) {
-        this.courier = courier;
-    }
 
     public int getCourier_id() {
         return courier_id;

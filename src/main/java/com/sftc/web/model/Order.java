@@ -56,7 +56,11 @@ public class Order {
     private double longitude;
     // 纬度
     private double latitude;
+    // 快递员编号
+    private String job_number;
     // 寄件人id(根据用户表id)
+
+    private User user;
 
     private int sender_user_id;
     // 礼卡表id
@@ -68,12 +72,64 @@ public class Order {
     }
 
 
+
     private int gift_card_id;
+
+
+
+    public Order(String state, String gmt_order_create, String gmt_pay_create, String pay_method, double freight, String sender_name, String sender_mobile,
+                 String sender_province, String sender_city, String sender_area,
+                 String sender_addr, int sender_user_id, String voice, String create_time, int gift_card_id) {
+        this.state = state;
+        this.pay_method = pay_method;
+        this.freight = freight;
+        this.sender_name = sender_name;
+        this.sender_mobile = sender_mobile;
+        this.sender_province = sender_province;
+        this.sender_city = sender_city;
+        this.sender_area = sender_area;
+        this.sender_addr = sender_addr;
+        this.sender_user_id = sender_user_id;
+        this.voice = voice;
+        this.create_time = create_time;
+        this.gift_card_id = gift_card_id;
+        this.gmt_order_create = gmt_order_create;
+        this.gmt_pay_create = gmt_pay_create;
+    }
+
+    public Order(String create_time, String order_number, String state, String gmt_order_create, String gmt_pay_create,
+                 String pay_method, String distribution_method, double freight, String sender_name, String sender_mobile,
+                 String sender_province, String sender_city, String sender_area, String sender_addr, String word_message,
+                 String image, String voice, double longitude, double latitude, int gift_card_id, int sender_user_id) {
+        this.create_time = create_time;
+        this.order_number = order_number;
+        this.state = state;
+        this.gmt_order_create = gmt_order_create;
+        this.gmt_pay_create = gmt_pay_create;
+        this.pay_method = pay_method;
+        this.distribution_method = distribution_method;
+        this.freight = freight;
+        this.sender_name = sender_name;
+        this.sender_mobile = sender_mobile;
+        this.sender_province = sender_province;
+        this.sender_city = sender_city;
+        this.sender_area = sender_area;
+        this.sender_addr = sender_addr;
+        this.word_message = word_message;
+        this.image = image;
+        this.voice = voice;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.gift_card_id = gift_card_id;
+        this.sender_user_id = sender_user_id;
+    }
+
 
 
 
     /**
      * 支付订单的构造方法
+     *
      * @param gmt_pay_create
      * @param state
      */
@@ -85,6 +141,7 @@ public class Order {
 
     /**
      * 提交订单的构造方法
+     *
      * @param request
      */
     public Order(APIRequest request) {
@@ -106,14 +163,16 @@ public class Order {
         this.longitude = Double.parseDouble((String) request.getParameter("longitude"));
         this.latitude = Double.parseDouble((String) request.getParameter("latitude"));
 
+        this.sender_user_id = Integer.parseInt((String) request.getParameter("user_id"));
         this.gift_card_id = Integer.parseInt((String) request.getParameter("gift_card_id"));
+        this.job_number = (String) request.getParameter("job_number");
 
     }
 
 
     public Order(OrderParam orderParam) {
         this.create_time = Long.toString(System.currentTimeMillis());
-        this.order_number = UUID.randomUUID().toString();
+
         this.state = "待支付";
         this.gmt_order_create = Long.toString(System.currentTimeMillis());
         this.pay_method = orderParam.getPay_method();
@@ -129,18 +188,25 @@ public class Order {
         this.voice = orderParam.getVoice();
         this.longitude = orderParam.getLongitude();
         this.latitude = orderParam.getLatitude();
-        this.sender_user_id = orderParam.getUser_id();
-        this.gift_card_id = orderParam.getGift_card_id();
 
+
+
+        this.sender_user_id = orderParam.getSender_user_id();
+        this.gift_card_id = orderParam.getGift_card_id();
+        this.job_number = orderParam.getJob_number();
     }
 
-   // 订单提交
+
+
+
+
     public Order(String create_time, String order_number, String gmt_order_create, String state) {
         this.create_time = create_time;
         this.order_number = order_number;
         this.gmt_order_create = gmt_order_create;
         this.state = state;
     }
+
 
     public int getId() {
         return id;
@@ -303,9 +369,6 @@ public class Order {
     }
 
 
-
-
-
     public GiftCard getGiftCard() {
         return giftCard;
     }
@@ -323,13 +386,20 @@ public class Order {
     }
 
 
-
-    public List<OrderExpress> getOrderExpressList() {
-        return orderExpressList;
+    public String getJob_number() {
+        return job_number;
     }
 
-    public void setOrderExpressList(List<OrderExpress> orderExpressList) {
-        this.orderExpressList = orderExpressList;
+    public void setJob_number(String job_number) {
+        this.job_number = job_number;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getSender_user_id() {
@@ -339,4 +409,15 @@ public class Order {
     public void setSender_user_id(int sender_user_id) {
         this.sender_user_id = sender_user_id;
     }
+
+
+    public List<OrderExpress> getOrderExpressList() {
+        return orderExpressList;
+    }
+
+    public void setOrderExpressList(List<OrderExpress> orderExpressList) {
+        this.orderExpressList = orderExpressList;
+    }
+
+
 }

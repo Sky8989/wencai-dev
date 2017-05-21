@@ -46,13 +46,26 @@ public class OrderParam {
     private String word_message;
     // 剩余包裹数量
     private int package_count;
+    // 快递员编号
+    private String job_number;
     // 寄件人id(根据用户表id)
-    private int user_id;
+    private int sender_user_id;
+    // 收件人id(根据用户表id)
+    private int ship_user_id;
     // 礼卡表id
     private int gift_card_id;
-    // 快递员id
-    private int courier_id;
+
+
     private OrderExpress orderExpress;
+
+    public OrderExpress getOrderExpress() {
+        return orderExpress;
+    }
+
+    public void setOrderExpress(OrderExpress orderExpress) {
+        this.orderExpress = orderExpress;
+    }
+
     private List<OrderExpress> orderExpressList;
 
     public String getState() {
@@ -175,12 +188,28 @@ public class OrderParam {
         this.package_count = package_count;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public String getJob_number() {
+        return job_number;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setJob_number(String job_number) {
+        this.job_number = job_number;
+    }
+
+    public int getSender_user_id() {
+        return sender_user_id;
+    }
+
+    public void setSender_user_id(int sender_user_id) {
+        this.sender_user_id = sender_user_id;
+    }
+
+    public int getShip_user_id() {
+        return ship_user_id;
+    }
+
+    public void setShip_user_id(int ship_user_id) {
+        this.ship_user_id = ship_user_id;
     }
 
     public int getGift_card_id() {
@@ -189,14 +218,6 @@ public class OrderParam {
 
     public void setGift_card_id(int gift_card_id) {
         this.gift_card_id = gift_card_id;
-    }
-
-    public int getCourier_id() {
-        return courier_id;
-    }
-
-    public void setCourier_id(int courier_id) {
-        this.courier_id = courier_id;
     }
 
     public List<OrderExpress> getOrderExpressList() {

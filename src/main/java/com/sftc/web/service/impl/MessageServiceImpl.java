@@ -16,10 +16,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-/**
- * Created by Administrator on 2017/5/15.
- */
 @Service("messageService")
 public class MessageServiceImpl extends AbstractBasicService implements MessageService{
     @Resource
@@ -57,6 +53,7 @@ public class MessageServiceImpl extends AbstractBasicService implements MessageS
     public APIResponse register(Object object){
         APIStatus status = APIStatus.SUCCESS;
         String str = gson.toJson(object);
+
         HttpPost post = new HttpPost(REGISTER_URL);
         String res = AIPPost.getPost(str,post);
         Result result = new Result();

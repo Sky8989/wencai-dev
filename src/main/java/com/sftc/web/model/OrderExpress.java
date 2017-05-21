@@ -38,15 +38,31 @@ public class OrderExpress {
     private String object_type;
     // 是否已经填写
     private int is_use;
-    private String sender_user_id;
-    private String ship_user_id;
-    private String order_id;
 
-    public OrderExpress() {}
+    private int sender_user_id;
+
+    private int order_id;
+
+    // 收件人id(根据用户表id)
+    private int ship_user_id;
+    // 礼卡表id
+    private int gift_card_id;
+
+    public int getSender_user_id() {
+        return sender_user_id;
+    }
+
+    public void setSender_user_id(int sender_user_id) {
+        this.sender_user_id = sender_user_id;
+    }
+
+
+    public OrderExpress() {
+    }
 
     public OrderExpress(String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String package_type,
-                        String object_type, String sender_user_id, String ship_user_id) {
+                        String object_type, int sender_user_id, int ship_user_id) {
         this.create_time = create_time;
         this.order_number = order_number;
         this.ship_name = ship_name;
@@ -66,11 +82,16 @@ public class OrderExpress {
         this.object_type = object_type;
     }
 
-    public OrderExpress(String order_number, String package_type, String object_type) {
-        this.create_time = Long.toString(System.currentTimeMillis());
-        this.order_number = order_number;
+    public OrderExpress(String package_type, String object_type, int sender_user_id, int ship_user_id,
+                        int order_id, String create_time, int is_use) {
+
         this.package_type = package_type;
         this.object_type = object_type;
+        this.sender_user_id = sender_user_id;
+        this.ship_user_id = ship_user_id;
+        this.create_time = create_time;
+        this.is_use = is_use;
+        this.order_id = order_id;
     }
 
     public OrderExpress(APIRequest request) {
@@ -192,27 +213,29 @@ public class OrderExpress {
         this.is_use = is_use;
     }
 
-    public String getSender_user_id() {
-        return sender_user_id;
-    }
 
-    public void setSender_user_id(String sender_user_id) {
-        this.sender_user_id = sender_user_id;
-    }
-
-    public String getShip_user_id() {
+    public int getShip_user_id() {
         return ship_user_id;
     }
 
-    public void setShip_user_id(String ship_user_id) {
+    public void setShip_user_id(int ship_user_id) {
         this.ship_user_id = ship_user_id;
     }
 
-    public String getOrder_id() {
+    public int getGift_card_id() {
+        return gift_card_id;
+    }
+
+    public void setGift_card_id(int gift_card_id) {
+        this.gift_card_id = gift_card_id;
+
+    }
+
+    public int getOrder_id() {
         return order_id;
     }
 
-    public void setOrder_id(String order_id) {
+    public void setOrder_id(int order_id) {
         this.order_id = order_id;
     }
 }

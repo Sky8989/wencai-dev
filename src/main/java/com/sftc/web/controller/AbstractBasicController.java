@@ -26,8 +26,7 @@ public abstract class AbstractBasicController {
 
     @Resource
     protected OrderService orderService;
-    @Resource
-    protected CourierService courierService;
+
     @Resource
     protected GiftCardService giftCardService;
     @Resource

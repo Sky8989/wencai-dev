@@ -1,12 +1,9 @@
 package com.sftc.web.model;
 
 import com.sftc.tools.api.APIStatus;
-import net.sf.json.JSONObject;
 
-/**
- * Created by Administrator on 2017/5/16.
- */
 public class Error {
+
     private String type;
     private String reason;
     private String message;

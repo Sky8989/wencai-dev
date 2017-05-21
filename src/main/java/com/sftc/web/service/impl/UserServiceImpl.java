@@ -4,7 +4,9 @@ import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
 
 import com.sftc.web.model.User;
+
 import com.sftc.web.model.Token;
+
 import com.sftc.web.model.wechat.WechatUser;
 import com.sftc.web.service.UserService;
 import org.springframework.stereotype.Service;

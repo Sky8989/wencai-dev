@@ -19,7 +19,9 @@ public class OpinionFeedback {
     // 反馈时间
     private String gmt_create;
     // 反馈意见的用户
+
    private User merchant;
+
     private int user_id;
 
     public int getId() {

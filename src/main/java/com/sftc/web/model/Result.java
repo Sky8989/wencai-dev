@@ -7,18 +7,15 @@ import net.sf.json.JSONArray;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Administrator on 2017/5/16.
- */
 public class Result {
 
     private Error error;
+
     private User merchant;
+
     private Token token;
     private Object message;
     private Request request;
-
-
     private List<String> errors;
 
     public Object getMessage() {
@@ -45,12 +42,15 @@ public class Result {
         this.error = error;
     }
 
+
     public User getMerchant() {
         return merchant;
     }
 
     public void setMerchant(User merchant) {
         this.merchant = merchant;
+
+
     }
 
     public Token getToken() {

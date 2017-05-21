@@ -11,7 +11,10 @@ public interface UserMapper {
 
     public void insertOpenid(String open_id);
 
+
     void addMerchant(User merchant);
 
     User getUuidAndtoken(int order_id);
+
+
 }

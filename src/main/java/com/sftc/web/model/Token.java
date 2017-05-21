@@ -26,7 +26,6 @@ public class Token {
     // 到期时间
     private String gmt_expiry;
     // 属于哪个用户
-
     private String access_token;
 
     private String refresh_token;

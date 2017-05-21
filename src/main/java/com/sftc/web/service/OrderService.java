@@ -5,7 +5,7 @@ import com.sftc.tools.api.APIResponse;
 
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
-import com.sftc.web.model.sfmodel.Aa;
+
 import com.sftc.web.model.sfmodel.Requests;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public interface OrderService {
      * @param request
      * @return
      */
-    APIResponse friendFillOrder(APIRequest request);
+    APIResponse friendFillOrder(APIRequest request,Object object);
 
 
     /**
