@@ -9,6 +9,9 @@ import com.sftc.web.model.OrderExpress;
 
 import com.sftc.web.model.reqeustParam.OrderParam;
 
+
+import com.sftc.web.model.sfmodel.Requests;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,15 +34,28 @@ public class OrderController extends AbstractBasicController {
 
     /**
      * 提交订单接口
-     * @param request
+     * @param @request
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/place", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
-    APIResponse placeOrder(HttpServletRequest request) throws Exception {
-        return orderService.placeOrder(new APIRequest(request));
+    APIResponse placeOrder(@RequestBody Requests requests,Object object) throws Exception {
+        return orderService.placeOrder(requests,object);
     }
+
+    /**
+     * 计价
+     * @param @request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/countPrice", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse countPrice(@RequestBody Object object) throws Exception {
+        return orderService.countPrice(object);
+    }
+
 
 
     /**
@@ -50,8 +66,8 @@ public class OrderController extends AbstractBasicController {
      */
     @RequestMapping(value = "/fill", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
-    APIResponse fillOrder(HttpServletRequest request) throws Exception {
-        return orderService.friendFillOrder(new APIRequest(request));
+    APIResponse fillOrder(HttpServletRequest request,@RequestBody Object object) throws Exception {
+        return orderService.friendFillOrder(new APIRequest(request),object);
     }
 
     /**
@@ -95,14 +111,14 @@ public class OrderController extends AbstractBasicController {
 
     /**
      * 获取订单详情
-     * @param request
+     * @param @request
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/getOrderDetile", method = RequestMethod.POST,headers = "api-version=1")
     public @ResponseBody
-    APIResponse getOrderDetile(HttpServletRequest request) throws Exception {
-        return orderService.getOrderDetile(new APIRequest(request));
+    APIResponse getOrderDetile(@RequestBody Requests requests) throws Exception {
+        return orderService.getOrderDetile(requests);
     }
 
     /**

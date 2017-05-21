@@ -2,6 +2,8 @@ package com.sftc.web.service;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.Order;
+import com.sftc.web.model.Token;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,4 +22,5 @@ public interface UserService {
      * @return
      */
     APIResponse login(APIRequest request) throws Exception;
+    Token getToken(int id);
 }

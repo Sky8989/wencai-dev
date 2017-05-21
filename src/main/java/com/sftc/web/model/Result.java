@@ -10,7 +10,9 @@ import java.util.Map;
 public class Result {
 
     private Error error;
-    private User user;
+
+    private User merchant;
+
     private Token token;
     private Object message;
     private Request request;
@@ -40,12 +42,15 @@ public class Result {
         this.error = error;
     }
 
-    public User getUser() {
-        return user;
+
+    public User getMerchant() {
+        return merchant;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setMerchant(User merchant) {
+        this.merchant = merchant;
+
+
     }
 
     public Token getToken() {
@@ -76,5 +81,6 @@ public class Result {
         }
         return status;
     }
+
 }
 

@@ -28,7 +28,9 @@ public class UserContact {
     private String remark;
     //亲密度
     private int lntimacy;
-    private User user;
+
+    private User merchant;
+
     private int user_id;
     private int friend_id;
 
@@ -105,11 +107,14 @@ public class UserContact {
     }
 
     public User getMerchant() {
-        return user;
+
+        return merchant;
     }
 
-    public void setMerchant(User user) {
-        this.user = user;
+    public void setMerchant(User merchant) {
+        this.merchant = merchant;
+
+
     }
 
     public int getUser_id() {

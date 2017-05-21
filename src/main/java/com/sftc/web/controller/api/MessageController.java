@@ -45,7 +45,7 @@ public class MessageController extends AbstractBasicController {
      */
     @RequestMapping(value = "/getToken", method = RequestMethod.POST)
     @ResponseBody
-    APIResponse getToken(@RequestBody Object obj) throws Exception {
+    Result getToken(@RequestBody Object obj) throws Exception {
         return  messageService.getToken(obj);
 
 

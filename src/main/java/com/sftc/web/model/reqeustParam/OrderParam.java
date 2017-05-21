@@ -55,6 +55,17 @@ public class OrderParam {
     // 礼卡表id
     private int gift_card_id;
 
+
+    private OrderExpress orderExpress;
+
+    public OrderExpress getOrderExpress() {
+        return orderExpress;
+    }
+
+    public void setOrderExpress(OrderExpress orderExpress) {
+        this.orderExpress = orderExpress;
+    }
+
     private List<OrderExpress> orderExpressList;
 
     public String getState() {

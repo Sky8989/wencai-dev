@@ -21,6 +21,7 @@ public class Token {
     // 创建时间
     private String create_at;
     // 更新时间
+    private String expires_in ;
     private String gmt_modified;
     // 到期时间
     private String gmt_expiry;
@@ -41,6 +42,19 @@ public class Token {
         this.gmt_modified = gmt_modified;
         this.gmt_expiry = gmt_expiry;
         this.user_id = user_id;
+    }
+
+    public Token(String create_time, String create_at, String gmt_modified, String gmt_expiry,
+                 String access_token, String refresh_token, int user_id, String uuid) {
+        this.create_time = create_time;
+        this.is_logout = is_logout;
+        this.create_at = create_at;
+        this.gmt_modified = gmt_modified;
+        this.gmt_expiry = gmt_expiry;
+        this.access_token = access_token;
+        this.refresh_token = refresh_token;
+        this.user_id = user_id;
+        this.uuid = uuid;
     }
 
     public int getId() {

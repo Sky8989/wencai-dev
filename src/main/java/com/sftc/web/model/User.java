@@ -1,5 +1,7 @@
 package com.sftc.web.model;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2017/5/16.
  */
@@ -19,9 +21,32 @@ public class User {
     private Object summary;
     private Object attributes;
     private Object tags;
+
+    private Token token;
+
+
+    public Token getToken() {
+        return token;
+    }
+
+    public void setToken(Token token) {
+        this.token = token;
+    }
+
+
     public User(String user_password, String open_id, String create_time) {
         this.user_password = user_password;
         this.open_id = open_id;
+        this.create_time = create_time;
+    }
+
+
+    public User(String uuid, String name, String mobile, String avatar, String create_time) {
+        this.uuid = uuid;
+        this.name = name;
+        this.mobile = mobile;
+        this.avatar = avatar;
+
         this.create_time = create_time;
     }
 
