@@ -3,7 +3,6 @@ package com.sftc.web.controller;
 
 import com.sftc.web.service.*;
 
-
 import javax.annotation.Resource;
 
 /**
@@ -20,18 +19,16 @@ public abstract class AbstractBasicController {
 
     @Resource
     protected UserService userService;
-
     @Resource
     protected QiniuService qiniuService;
-
     @Resource
     protected OrderService orderService;
-    @Resource
-    protected CourierService courierService;
     @Resource
     protected GiftCardService giftCardService;
     @Resource
     protected OrderCancelService orderCancelService;
     @Resource
     protected MessageService messageService;
+    @Resource
+    protected UserContactService userContactService;
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("sf")
 public class MessageController extends AbstractBasicController {
+
     /**
      * 获取短信接口
      */

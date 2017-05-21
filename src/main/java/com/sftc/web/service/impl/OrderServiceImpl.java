@@ -24,8 +24,6 @@ import java.util.UUID;
  */
 
 @Service("orderService")
-
-
 public class OrderServiceImpl implements OrderService {
 
     @Resource
@@ -127,7 +125,7 @@ public class OrderServiceImpl implements OrderService {
 
         }
         Order order = new Order();
-        order.setUser_id(user_id);
+        order.setSender_user_id(user_id);
         order.setState(state);
         List<Order> list = orderMapper.myOrderList(order);
 

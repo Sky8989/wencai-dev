@@ -30,6 +30,7 @@ public class UserContact {
     private int lntimacy;
     private User user;
     private int user_id;
+    private int friend_id;
 
     public int getId() {
         return id;
@@ -119,5 +120,11 @@ public class UserContact {
         this.user_id = user_id;
     }
 
+    public int getFriend_id() {
+        return friend_id;
+    }
 
+    public void setFriend_id(int friend_id) {
+        this.friend_id = friend_id;
+    }
 }
