@@ -2,6 +2,8 @@ package com.sftc.web.service;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.Order;
+import com.sftc.web.model.Token;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,6 +17,7 @@ public class UserServiceTest {
 
     @Resource
     private UserService userService;
+
 
     APIRequest request;
 
@@ -48,5 +51,10 @@ public class UserServiceTest {
         request.setAttribute("user_password", "222");
         response = userService.login(request);
         Assert.assertTrue(response.getMessage(), response.getState().equals("00003"));
+    }
+    @Test
+    public void register() throws Exception {
+       Token order =  userService.getToken(85);
+        System.out.println(order.getAccess_token());
     }
 }

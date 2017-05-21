@@ -31,7 +31,8 @@ public enum APIStatus {
     LOGIN_ERROR("000015","密码或验证码错误"),
     AUTHORIZATION_FAIL("000016","鉴权失败"),
     VALIDATION_ERROR("000017","请输入正确的手机号码"),
-    GIFT_CARD_NOT_FOUND("00009","没有该礼卡");
+    GIFT_CARD_NOT_FOUND("00009","没有该礼卡"),
+    QUOTE_FAIL("000018","计价失败");
 
     private String state;
     private String message;

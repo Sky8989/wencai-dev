@@ -52,7 +52,7 @@ public class OrderParam {
     private int gift_card_id;
     // 快递员id
     private int courier_id;
-
+    private OrderExpress orderExpress;
     private List<OrderExpress> orderExpressList;
 
     public String getState() {

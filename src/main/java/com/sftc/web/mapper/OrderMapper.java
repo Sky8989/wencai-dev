@@ -16,7 +16,7 @@ public interface OrderMapper {
     void updateOrder(Order order);
     void updateOrderExpress(OrderExpress orderExpress);
 
-    Order orderDetile(String orderSn);
+    Order orderDetile(int id);
 
     List<Order> myOrderList(Order order);
 

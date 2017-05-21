@@ -3,11 +3,7 @@ package com.sftc.web.model;
 import com.sftc.tools.api.APIStatus;
 import com.sftc.web.model.quotes.Request;
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +13,7 @@ import java.util.Map;
 public class Result {
 
     private Error error;
-    private Merchant merchant;
+    private User merchant;
     private Token token;
     private Object message;
     private Request request;
@@ -49,11 +45,11 @@ public class Result {
         this.error = error;
     }
 
-    public Merchant getMerchant() {
+    public User getMerchant() {
         return merchant;
     }
 
-    public void setMerchant(Merchant merchant) {
+    public void setMerchant(User merchant) {
         this.merchant = merchant;
     }
 
@@ -85,5 +81,6 @@ public class Result {
         }
         return status;
     }
+
 }
 

@@ -38,8 +38,28 @@ public class OrderExpress {
     private String object_type;
     // 是否已经填写
     private int is_use;
+    private String sender_user_id;
+    private String ship_user_id;
+    private String order_id;
 
     public OrderExpress() {}
+
+    public OrderExpress(String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
+                        String ship_city, String ship_area, String ship_addr, String package_type,
+                        String object_type, String sender_user_id, String ship_user_id) {
+        this.create_time = create_time;
+        this.order_number = order_number;
+        this.ship_name = ship_name;
+        this.ship_mobile = ship_mobile;
+        this.ship_province = ship_province;
+        this.ship_city = ship_city;
+        this.ship_area = ship_area;
+        this.ship_addr = ship_addr;
+        this.package_type = package_type;
+        this.object_type = object_type;
+        this.sender_user_id = sender_user_id;
+        this.ship_user_id = ship_user_id;
+    }
 
     public OrderExpress(String package_type, String object_type) {
         this.package_type = package_type;
@@ -170,5 +190,29 @@ public class OrderExpress {
 
     public void setIs_use(int is_use) {
         this.is_use = is_use;
+    }
+
+    public String getSender_user_id() {
+        return sender_user_id;
+    }
+
+    public void setSender_user_id(String sender_user_id) {
+        this.sender_user_id = sender_user_id;
+    }
+
+    public String getShip_user_id() {
+        return ship_user_id;
+    }
+
+    public void setShip_user_id(String ship_user_id) {
+        this.ship_user_id = ship_user_id;
+    }
+
+    public String getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(String order_id) {
+        this.order_id = order_id;
     }
 }

@@ -3,7 +3,8 @@ package com.sftc.web.service.impl;
 import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
 
-import com.sftc.web.model.Merchant;
+import com.sftc.web.model.User;
+import com.sftc.web.model.Token;
 import com.sftc.web.model.wechat.WechatUser;
 import com.sftc.web.service.UserService;
 import org.springframework.stereotype.Service;
@@ -27,12 +28,13 @@ public class UserServiceImpl extends AbstractBasicService implements UserService
         String user_phone = (String) request.getParameter("user_phone");
         String user_password = MD5Util.MD5((String) request.getParameter("user_password"));
         String js_code = (String) request.getParameter("js_code");
-        Merchant user = null;
+        User user = null;
         WechatUser wechatUser = null;
         // 判断通过微信进行登录
         if (js_code != null) {
             AUTHORIZATION_URL = AUTHORIZATION_URL.replace("JSCODE", js_code);
             wechatUser = APIResolve.getJson(AUTHORIZATION_URL);
+            System.out.println(wechatUser.getOpenid());
             if (wechatUser.getOpenid() != null) {
                 user = userMapper.selectUserByOpenid(wechatUser.getOpenid());
                 if (user == null) {
@@ -56,5 +58,11 @@ public class UserServiceImpl extends AbstractBasicService implements UserService
             }
         }
         return APIUtil.getResponse(status, user);
+    }
+
+    @Override
+    public Token getToken(int id) {
+        Token token = tokenMapper.getToken(id);
+        return token;
     }
 }

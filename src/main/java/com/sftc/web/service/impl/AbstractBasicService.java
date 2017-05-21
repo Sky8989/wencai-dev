@@ -1,6 +1,8 @@
 package com.sftc.web.service.impl;
 
+import com.sftc.web.mapper.TokenMapper;
 import com.sftc.web.mapper.UserMapper;
+import com.sftc.web.model.Token;
 
 import javax.annotation.Resource;
 
@@ -18,4 +20,6 @@ public abstract class AbstractBasicService {
 
     @Resource
     protected UserMapper userMapper;
+    @Resource
+    protected TokenMapper tokenMapper;
 }

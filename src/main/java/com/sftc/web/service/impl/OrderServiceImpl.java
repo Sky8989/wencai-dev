@@ -1,14 +1,16 @@
 package com.sftc.web.service.impl;
 
+import com.google.gson.Gson;
 import com.sftc.tools.api.*;
-import com.sftc.web.mapper.CourierMapper;
-import com.sftc.web.mapper.OrderExpressMapper;
-import com.sftc.web.mapper.OrderMapper;
-import com.sftc.web.model.Courier;
-import com.sftc.web.model.Order;
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.mapper.*;
+import com.sftc.web.model.*;
 import com.sftc.web.model.reqeustParam.OrderParam;
+import com.sftc.web.model.sfmodel.Aa;
+import com.sftc.web.model.sfmodel.Requests;
 import com.sftc.web.service.OrderService;
+import net.sf.json.JSONObject;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -28,32 +30,76 @@ import java.util.List;
 
 
 public class OrderServiceImpl implements OrderService {
+    private static String QUOTES_URL = "http://api-dev.sf-rush.com/quotes";
+    private static String REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
+    private static String REQUEST_URL = "http://api-dev.sf-rush.com/requests";
+    Gson gson = new Gson();
+    String time = Long.toString(System.currentTimeMillis());
 
     @Resource
     private OrderMapper orderMapper;
-
-
+    @Resource
+    private UserMapper userMapper;
+    @Resource
+    private TokenMapper tokenMapper;
     @Resource
     private OrderExpressMapper orderExpressMapper;
 
     /*
      * 普通提交订单
      */
-    public APIResponse placeOrder(APIRequest request) {
-
+    public APIResponse placeOrder(Requests requests,Object object) {
+        String order_number=Long.toString(System.currentTimeMillis());
         APIStatus status = APIStatus.SUCCESS;
-        Order order = new Order(request);
+        String str = gson.toJson(object);
+        JSONObject jsonObject = null;
         try {
-            orderMapper.addOrder(order);
-            // orderExpressMapper.addOrderExpress(new OrderExpress(request, UUID.randomUUID().toString()));
+            HttpPost post = new HttpPost(REQUEST_URL);
+            post.addHeader("PushEnvelope-Device-Token","97uAK7HQmDtsw5JMOqad");//97uAK7HQmDtsw5JMOqad
+            String res = AIPPost.getPost(str,post);
+             jsonObject = JSONObject.fromObject(res);
+           Requests requests1 = new Requests();
+            requests1 = (Requests) JSONObject.toBean(jsonObject,requests1.getClass());
+               Order order = requests.getOrder();
+              order.setCreate_time(time);
+              order.setGmt_order_create(time);
+             order.setOrder_number(order_number);
+             order.setState("待支付");
+             OrderExpress orderExpress = requests.getOrderExpress();
+              orderExpress.setCreate_time(time);
+              orderExpress.setOrder_number(order_number);
+
+            if(requests1.getError()==null) {
+                orderMapper.addOrder(order);
+                orderExpressMapper.addOrderExpress(orderExpress);
+            }else{
+                status = APIStatus.ORDER_SUBMIT_FAIL;
+            }
         } catch (Exception e) {
-            status = APIStatus.ORDER_SUBMIT_FAIL;
+
             e.printStackTrace();
         }
-        return APIUtil.getResponse(status, order.getOrder_number());
+        return APIUtil.getResponse(status, jsonObject);
     }
 
+    /*
+     * 计价
+     */
+    public APIResponse countPrice(Object object) {
 
+        APIStatus status = APIStatus.SUCCESS;
+        String str = gson.toJson(object);
+        Token token = tokenMapper.getTokenByMobile("18124033797");
+        HttpPost post = new HttpPost(QUOTES_URL);
+        post.addHeader("PushEnvelope-Device-Token",token.getAccess_token());
+        String res = AIPPost.getPost(str,post);
+        JSONObject jsonObject = JSONObject.fromObject(res);
+        if(jsonObject.get("error")!=null){
+            status = APIStatus.QUOTE_FAIL;
+        }
+
+        return APIUtil.getResponse(status,jsonObject);
+    }
 
 
     /*
@@ -129,7 +175,7 @@ public class OrderServiceImpl implements OrderService {
 
         }
         Order order = new Order();
-        order.setUser_id(user_id);
+        order.setSender_user_id(user_id);
         order.setState(state);
         List<Order> list = orderMapper.myOrderList(order);
 
@@ -143,16 +189,25 @@ public class OrderServiceImpl implements OrderService {
     * @订单详情接口
     * */
     @Override
-    public APIResponse getOrderDetile(APIRequest request) {
+    public APIResponse getOrderDetile(Requests requests) {
         APIStatus status = APIStatus.SUCCESS;
-        String orderSn = (String)request.getParameter("orderSn");
-        System.out.println(orderSn);
-        Order order = orderMapper.orderDetile(orderSn);
-        System.out.println(order);
-        if(order==null){
-            status = APIStatus.COURIER_NOT_FOUND;
-        }
-        return  APIUtil.getResponse(status, order);
+        String str = gson.toJson(requests);
+//       try{
+       User merchant =  userMapper.getUuidAndtoken(85);
+        REQUESTS_URL = REQUESTS_URL+merchant.getUuid();
+        HttpGet post = new HttpGet(REQUESTS_URL);
+        post.addHeader("PushEnvelope-Device-Token",merchant.getToken().getAccess_token());
+        String res = APIGet.getPost(str,post);
+       JSONObject jsonObject = JSONObject.fromObject(res);
+        requests.setJsonObject(jsonObject);
+        Order order = orderMapper.orderDetile(85);
+        requests.setOrder(order);
+    //}
+//       catch (Exception e){
+//           e.fillInStackTrace();
+//       }
+
+        return  APIUtil.getResponse(status, requests);
     }
     /*
     * 修改订单接口

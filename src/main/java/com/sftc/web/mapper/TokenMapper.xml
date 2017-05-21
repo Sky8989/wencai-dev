@@ -3,10 +3,37 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.TokenMapper">
-        <insert id="addToken" parameterType="com.sftc.web.model.Token">
-                INSERT INTO sftc_token (create_at,create_time, is_logout, gmt_modified,
-                 gmt_expiry,  user_id,access_token,refresh_token,uuid) VALUES
-                 (#{create_at},#{create_time},#{is_logout},#{gmt_modified},#{gmt_expiry},#{user_id},#{access_token},#{refresh_token},#{uuid})
 
-        </insert>
+
+    <insert id="addToken" parameterType="com.sftc.web.model.Token">
+        INSERT INTO sftc_token ( create_time, is_logout, create_at, gmt_modified, gmt_expiry,
+        access_token, refresh_token, user_id, uuid)VALUES (
+        #{create_time},#{is_logout},#{create_at},#{gmt_modified},#{gmt_expiry},#{access_token},#{refresh_token},
+        #{user_id},#{uuid}
+        )
+    </insert>
+    <select id="getToken" parameterType="int" resultType="com.sftc.web.model.Token" resultMap="getToken">
+        SELECT  u.name ,t.access_token from sftc_order o, sftc_user u,sftc_token t
+        WHERE u.id=o.sender_user_id and u.id=t.user_id and o.id=#{id}
+
+    </select>
+    <resultMap id="getToken" type="com.sftc.web.model.Token">
+        <result property="access_token" column="access_token"/>
+    </resultMap>
+    <select id="getTokenByMobile" parameterType="string" resultType="com.sftc.web.model.Token">
+      SELECT t.access_token from sftc_user u,sftc_token t WHERE u.id=t.user_id AND u.mobile=#{mobile}
+    </select>
 </mapper>
+
+
+
+<!--<select id="getToken" parameterType="int" resultType="com.sftc.web.model.Order" resultMap="getToken">-->
+<!--SELECT  u.name from sftc_order o, sftc_user u-->
+<!--WHERE u.id=o.sender_user_id and o.id=#{id}-->
+
+<!--</select>-->
+<!--<resultMap id="getToken" type="com.sftc.web.model.Order">-->
+<!--<association property="merchant" javaType="com.sftc.web.model.Merchant">-->
+    <!--<result property="name" column="name"/>-->
+<!--</association>-->
+<!--</resultMap>-->

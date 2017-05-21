@@ -5,6 +5,9 @@ import com.sftc.tools.api.APIResponse;
 
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.sfmodel.Aa;
+import com.sftc.web.model.sfmodel.Requests;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 
@@ -22,10 +25,10 @@ public interface OrderService {
 
     /**
      * 普通提交订单
-     * @param request
+     * @param @request
      * @return
      */
-    APIResponse placeOrder(APIRequest request);
+    APIResponse placeOrder(Requests requests,Object object);
 
     /**
      * 支付订单
@@ -49,6 +52,13 @@ public interface OrderService {
     APIResponse friendFillOrder(APIRequest request);
 
 
+    /**
+     * 计价
+     * @param @request
+     * @return
+     */
+    APIResponse countPrice(Object object);
+
    /*
     * 我的订单列表
     * @param request
@@ -60,7 +70,7 @@ public interface OrderService {
     *@param request
     * @return
     * */
-    APIResponse getOrderDetile(APIRequest request);
+    APIResponse getOrderDetile(Requests requests);
     APIResponse updateOrder(APIRequest request,Order order,OrderExpress orderExpress);
 
 

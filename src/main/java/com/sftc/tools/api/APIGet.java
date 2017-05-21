@@ -1,10 +1,10 @@
 package com.sftc.tools.api;
 
-import com.sftc.web.model.Result;
 import net.sf.json.JSONObject;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -18,8 +18,8 @@ import java.io.InputStreamReader;
 /**
  * Created by Administrator on 2017/5/15.
  */
-public class AIPPost {
-    public static String getPost(String json,HttpPost post) {
+public class APIGet {
+    public static String getPost(String json,HttpGet post) {
 
                  HttpClient client = new DefaultHttpClient();
 
@@ -35,7 +35,7 @@ public class AIPPost {
                          StringEntity s = new StringEntity(json.toString(), "utf-8");
                          s.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,
                                          "application/json"));
-                         post.setEntity(s);
+                     //    post.setEntity(s);
 
                          // 发送请求
                          HttpResponse httpResponse = client.execute(post);
