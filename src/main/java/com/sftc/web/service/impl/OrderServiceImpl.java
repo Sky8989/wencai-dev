@@ -13,7 +13,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -250,7 +250,11 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse getMyOrderList(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
         String id = request.getParameter("id").toString();
-        List<Order> orderList = orderMapper.myOrderLists(Integer.parseInt(id));;
+        String state = request.getParameter("state").toString();
+        OrderExpress orderExpress = new OrderExpress();
+        orderExpress.setId(Integer.parseInt(id));
+        orderExpress.setState(state);
+        List<Order> orderList = orderMapper.myOrderLists(orderExpress);
         return APIUtil.getResponse(status, orderList);
     }
 }

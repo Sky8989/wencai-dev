@@ -222,7 +222,7 @@
     <!--
         C01 我的订单
     -->
-    <select id="myOrderLists" parameterType="int" resultMap="myOrderListInfo">
+    <select id="myOrderLists" parameterType="com.sftc.web.model.OrderExpress" resultMap="myOrderListInfo">
         select
         sftc_order_express.id,
         sftc_order_express.order_number,
@@ -262,8 +262,11 @@
         sftc_order,
         sftc_order_express
         where
-        sftc_order_express.sender_user_id=#{id}
+        <if test="state!=null">
+            sftc_order_express.state=#{state} and
+        </if>
+        (sftc_order_express.sender_user_id=#{id}
         or
-        sftc_order_express.ship_user_id=#{id}
+        sftc_order_express.ship_user_id=#{id})
     </select>
 </mapper>
