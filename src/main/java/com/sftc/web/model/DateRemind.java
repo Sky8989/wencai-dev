@@ -84,10 +84,6 @@ public class DateRemind {
         this.user_contact_id = user_contact_id;
     }
 
-
-
-
-
     public int getUser_id() {
         return user_id;
     }

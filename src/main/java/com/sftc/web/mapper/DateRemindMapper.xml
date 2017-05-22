@@ -3,11 +3,15 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.DateRemindMapper">
+
         <!-- 添加日期提醒  -->
         <insert id="addDateRemind" parameterType="com.sftc.web.model.DateRemind">
-                INSERT INTO sftc_date_remind ( depict,date,user_id,user_contact_id,create_time)
-                VALUES (#{depict},#{date},#{user_id},#{user_contact_id},#{create_time})
+                INSERT INTO sftc_date_remind
+                (sftc_date_remind.describe,sftc_date_remind.date,user_id,user_contact_id,create_time)
+                VALUES
+                (#{describe},#{date},#{user_id},#{user_contact_id},#{create_time})
         </insert>
+
         <!-- 获得日期提醒列表  -->
         <select id="getDateRemindList" parameterType="com.sftc.web.model.DateRemind" resultType="com.sftc.web.model.DateRemind">
                 SELECT depict,date FROM sftc_date_remind
@@ -15,8 +19,8 @@
                         <if test="user_contact_id!=null">user_contact_id=#{user_contact_id} or</if>
                         <if test="user_id!=null">user_id=#{user_id}</if>
                 </where>
-
         </select>
+
         <!-- 删除日期提醒  -->
         <delete id="deleteDateRemind" parameterType="int">
                 DELETE FROM sftc_date_remind WHERE id=#{id}

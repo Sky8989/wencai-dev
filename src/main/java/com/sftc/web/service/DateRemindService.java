@@ -1,5 +1,9 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.DateRemind;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -11,4 +15,18 @@ package com.sftc.web.service;
  * @Time 上午10:57
  */
 public interface DateRemindService {
+
+    /**
+     * 添加好友标签
+     * @param dateRemind
+     * @return
+     */
+    APIResponse addFriendDateRemind(DateRemind dateRemind);
+
+    /**
+     * 删除好友的标签
+     * @param request
+     * @return
+     */
+    APIResponse deleteFriendDateRemind(APIRequest request);
 }
