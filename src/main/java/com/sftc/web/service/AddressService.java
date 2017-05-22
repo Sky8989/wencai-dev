@@ -1,5 +1,8 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.Address;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -11,4 +14,10 @@ package com.sftc.web.service;
  */
 public interface AddressService {
 
+    /**
+     * 新增新地址
+     * @param address
+     * @return
+     */
+    APIResponse addAddress(Address address);
 }

@@ -3,13 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.AddressMapper">
+
     <!-- 添加地址  -->
     <insert id="addAddress" parameterType="com.sftc.web.model.Address">
-      insert into address
-      (province,city,district,detail,phone,name,label,user_id)
+      insert into sftc_address
+      (province,city,district,detail,phone,name,longitude,latitude,user_id,create_time)
       values
-      (#{province},#{city},#{district},#{detail},#{phone},#{name},#{label},#{user_id})
-
+      (#{province},#{city},#{district},#{detail},#{phone},#{name},#{longitude},#{latitude},#{user_id},#{create_time})
 
     </insert>
     <!--  编辑地址  -->
