@@ -1,5 +1,6 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.Address;
 
@@ -20,4 +21,25 @@ public interface AddressService {
      * @return
      */
     APIResponse addAddress(Address address);
+
+    /**
+     * 我的收件人地址
+     * @param request
+     * @return
+     */
+    APIResponse consigneeAddress(APIRequest request);
+
+    /**
+     * 修改收件人地址
+     * @param address
+     * @return
+     */
+    APIResponse editAddress(Address address);
+
+    /**
+     * 删除收件人地址
+     * @param request
+     * @return
+     */
+    APIResponse deleteAddress(APIRequest request);
 }

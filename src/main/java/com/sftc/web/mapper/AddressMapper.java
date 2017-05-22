@@ -8,7 +8,12 @@ import java.util.Map;
 public interface AddressMapper {
 
     void addAddress(Address address);
+
     void editeAddress(Address address);
-    Address addressDetail(int id);
+
+    List<Address> addressDetail(int id);
+
     List<Address> addressList(Map<String,Integer> params);
+
+    void deleteAddress(int id);
 }

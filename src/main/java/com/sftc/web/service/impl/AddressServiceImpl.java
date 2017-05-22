@@ -7,6 +7,8 @@ import com.sftc.web.service.AddressService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,6 +33,46 @@ public class AddressServiceImpl implements AddressService {
         } catch (Exception e) {
             e.printStackTrace();
             status = APIStatus.SUBMIT_FAIL;
+        }
+        return APIUtil.getResponse(status, null);
+    }
+
+    public APIResponse consigneeAddress(APIRequest request) {
+        APIStatus status = APIStatus.SELECT_FAIL;
+        String id = request.getParameter("user_id").toString();
+        List<Address> addressList = new ArrayList<Address>();
+        if (id != null) {
+            try {
+                addressList = addressMapper.addressDetail(Integer.parseInt(id));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            status = APIStatus.SUCCESS;
+        }
+        return APIUtil.getResponse(status, addressList);
+    }
+
+    public APIResponse editAddress(Address address) {
+        APIStatus status = APIStatus.SUCCESS;
+        try {
+            addressMapper.editeAddress(address);
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = APIStatus.SUBMIT_FAIL;
+        }
+        return APIUtil.getResponse(status, null);
+    }
+
+    public APIResponse deleteAddress(APIRequest request) {
+        APIStatus status = APIStatus.SUCCESS;
+        String id = request.getParameter("id").toString();
+        if (id != null) {
+            try {
+                addressMapper.deleteAddress(Integer.parseInt(id));
+            } catch (Exception e) {
+                e.printStackTrace();
+                status = APIStatus.SUBMIT_FAIL;
+            }
         }
         return APIUtil.getResponse(status, null);
     }

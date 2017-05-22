@@ -4,39 +4,56 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.AddressMapper">
 
+    <resultMap id="addressList" type="com.sftc.web.model.Address">
+        <id column="id" property="id" />
+        <result column="province" property="province" />
+        <result column="city" property="city" />
+        <result column="district" property="district" />
+        <result column="detail" property="detail" />
+        <result column="phone" property="phone" />
+        <result column="name" property="name" />
+        <result column="longitude" property="longitude" />
+        <result column="latitude" property="latitude" />
+        <result column="user_id" property="user_id" />
+    </resultMap>
+
     <!-- 添加地址  -->
     <insert id="addAddress" parameterType="com.sftc.web.model.Address">
       insert into sftc_address
       (province,city,district,detail,phone,name,longitude,latitude,user_id,create_time)
       values
       (#{province},#{city},#{district},#{detail},#{phone},#{name},#{longitude},#{latitude},#{user_id},#{create_time})
-
     </insert>
+
     <!--  编辑地址  -->
     <update id="editeAddress" parameterType="com.sftc.web.model.Address">
         UPDATE sftc_address
         <trim prefix="set" suffixOverrides=",">
             <if test="province!=null">province=#{province},</if>
-            <if test="city!=null">city=#{city}</if>
-            <if test="district!=null">district=#{district}</if>
-            <if test="detail!=null">detail=#{detail}</if>
-            <if test="phone!=null">phone=#{phone}</if>
-            <if test="name!=null">name=#{name}</if>
-
+            <if test="city!=null">city=#{city},</if>
+            <if test="district!=null">district=#{district},</if>
+            <if test="detail!=null">detail=#{detail},</if>
+            <if test="phone!=null">phone=#{phone},</if>
+            <if test="name!=null">name=#{name},</if>
+            <if test="name!=null">longitude=#{longitude},</if>
+            <if test="name!=null">latitude=#{latitude},</if>
         </trim>
         WHERE id=#{id}
     </update>
-    <!-- 地址表详情  -->
-    <select id="addressDetail" parameterType="int" resultType="com.sftc.web.model.Address">
-        SELECT province,city,district,detail,phone,name from sftc_address WHERE id=#{id}
 
+    <!-- 地址表详情 -->
+    <select id="addressDetail" parameterType="int" resultMap="addressList">
+        SELECT province,city,district,detail,phone,name from sftc_address WHERE user_id=#{id}
     </select>
 
     <!-- 地址列表 -->
     <select id="addressList" parameterType="java.util.Map" resultType="com.sftc.web.model.Address">
         select province,city,district,detail,phone,name FROM
         sftc_address WHERE user_id=#{user_id} limit #{pageOffset},#{pageSize};
-
     </select>
+
+    <delete id="deleteAddress" parameterType="int">
+        delete from sftc_address where id=#{id}
+    </delete>
 
 </mapper>
