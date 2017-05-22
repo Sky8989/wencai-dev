@@ -1,5 +1,7 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIResponse;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -11,4 +13,10 @@ package com.sftc.web.service;
  * @Time 上午10:58
  */
 public interface CommonQuestionService {
+
+    /**
+     * 获取所有常见问题
+     * @return
+     */
+    APIResponse getCommonQuestion();
 }
