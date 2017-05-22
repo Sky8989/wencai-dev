@@ -3,6 +3,7 @@ package com.sftc.web.controller.api;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
+import com.sftc.web.model.reqeustParam.UserContactParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,13 @@ public class UserContactController extends AbstractBasicController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET, headers = "api-version=1")
     public @ResponseBody
-    APIResponse placeOrder(HttpServletRequest request) throws Exception {
+    APIResponse allFriend(HttpServletRequest request) throws Exception {
         return userContactService.findUserFriend(new APIRequest(request));
+    }
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse addFriend(@RequestBody UserContactParam userContactParam) throws Exception {
+        return userContactService.addFriend(userContactParam);
     }
 }

@@ -3,6 +3,7 @@ package com.sftc.web.service.impl;
 import com.sftc.tools.api.*;
 import com.sftc.web.mapper.UserContactMapper;
 import com.sftc.web.model.UserContact;
+import com.sftc.web.model.reqeustParam.UserContactParam;
 import com.sftc.web.service.UserContactService;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +37,24 @@ public class UserContactServiceImpl implements UserContactService {
                 userContactList = userContactMapper.friendList(Integer.parseInt(user_id));
             } catch (Exception e) {
                 e.printStackTrace();
-                status = APIStatus.USER_CONTACT_FAIL;
+                status = APIStatus.SELECT_FAIL;
             }
         }
         return APIUtil.getResponse(status, userContactList);
+    }
+
+    /*
+     * 添加好友
+     */
+    public APIResponse addFriend(UserContactParam userContactParam) {
+        APIStatus status = APIStatus.SUCCESS;
+        userContactParam.setCreate_time(Long.toString(System.currentTimeMillis()));
+        try {
+            userContactMapper.addFriend(userContactParam);
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = APIStatus.SUBMIT_FAIL;
+        }
+        return APIUtil.getResponse(status, null);
     }
 }

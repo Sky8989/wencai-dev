@@ -36,6 +36,8 @@ public class OrderExpress {
     private String package_type;
     // 物品类型
     private String object_type;
+    // 订单状态
+    private String state;
     // 是否已经填写
     private int is_use;
 
@@ -237,5 +239,13 @@ public class OrderExpress {
 
     public void setOrder_id(int order_id) {
         this.order_id = order_id;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

@@ -22,8 +22,6 @@ public abstract class AbstractBasicController {
     @Resource
     protected QiniuService qiniuService;
     @Resource
-    protected OrderService orderService;
-    @Resource
     protected GiftCardService giftCardService;
     @Resource
     protected OrderCancelService orderCancelService;

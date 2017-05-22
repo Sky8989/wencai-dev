@@ -16,12 +16,6 @@
                 <result column="friend_id" property="friend_id" />
         </resultMap>
 
-        <!--&lt;!&ndash; 好友列表 &ndash;&gt;-->
-        <!--<select id="friendList" parameterType="java.util.Map" resultType="com.sftc.web.model.UserContact">-->
-                <!--SELECT icon,name,lntimacy,is_tag_star FROM  sftc_user_contact-->
-                <!--WHERE user_id=#{user_id} limit #{pageOffset},#{pageSize}-->
-        <!--</select>-->
-
         <!-- 好友列表 -->
         <select id="friendList" parameterType="int" resultMap="friendListInfo">
             select lntimacy, phone, icon, wechat, remark, is_tag_star, friend_id
@@ -29,9 +23,11 @@
         </select>
 
         <!-- 添加好友  -->
-        <insert id="addFriend" parameterType="com.sftc.web.model.UserContact">
-                INSERT INTO sftc_user_contact(name,phone,icon,user_id,remark,wechat,create_time) VALUES
-                (#{name},#{phone},#{icon},#{user_id},#{remark},#{wechat},#{create_time})
+        <insert id="addFriend" parameterType="com.sftc.web.model.reqeustParam.UserContactParam">
+                INSERT INTO sftc_user_contact
+                (name,phone,icon,user_id,friend_id,remark,wechat,create_time)
+                VALUES
+                (#{name},#{phone},#{icon},#{user_id},#{friend_id},#{remark},#{wechat},#{create_time})
         </insert>
 
         <!-- 编辑好友  -->

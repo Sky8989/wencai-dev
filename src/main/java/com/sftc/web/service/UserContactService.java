@@ -2,6 +2,7 @@ package com.sftc.web.service;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.reqeustParam.UserContactParam;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,4 +21,11 @@ public interface UserContactService {
      * @return
      */
     APIResponse findUserFriend(APIRequest request);
+
+    /**
+     * 添加好友
+     * @param userContactParam
+     * @return
+     */
+    APIResponse addFriend(UserContactParam userContactParam);
 }

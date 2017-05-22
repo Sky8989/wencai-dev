@@ -71,13 +71,13 @@ public class OrderServiceImpl implements OrderService {
                 orderMapper.addOrder(order);
                 orderExpressMapper.addOrderExpress(orderExpress);
             } else {
-                status = APIStatus.ORDER_SUBMIT_FAIL;
+                status = APIStatus.SUBMIT_FAIL;
             }
 
 
         } catch (Exception e) {
 
-            status = APIStatus.ORDER_SUBMIT_FAIL;
+            status = APIStatus.SUBMIT_FAIL;
         }
         return APIUtil.getResponse(status, jsonObject);
     }
@@ -141,7 +141,7 @@ public class OrderServiceImpl implements OrderService {
                 orderExpressMapper.addOrderExpress(orderExpress);
             }
         } catch (Exception e) {
-            status = APIStatus.ORDER_SUBMIT_FAIL;
+            status = APIStatus.SUBMIT_FAIL;
             e.printStackTrace();
         }
         return APIUtil.getResponse(status, order.getOrder_number());
@@ -157,7 +157,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             orderExpressMapper.updateOrderExpress(orderExpress);
         } catch (Exception e) {
-            status = APIStatus.ORDER_SUBMIT_FAIL;
+            status = APIStatus.SUBMIT_FAIL;
             e.printStackTrace();
         }
 
@@ -238,10 +238,20 @@ public class OrderServiceImpl implements OrderService {
             int randomOrderExpress = (int) (Math.random() * orderExpressList.size());
             orderExpress = orderExpressList.get(randomOrderExpress);
         } catch (Exception e) {
-            status = APIStatus.ORDER_SUBMIT_FAIL;
+            status = APIStatus.SUBMIT_FAIL;
             e.printStackTrace();
         }
         return APIUtil.getResponse(status, orderExpress);
+    }
+
+    /*
+     * C01 我的订单
+     */
+    public APIResponse getMyOrderList(APIRequest request) {
+        APIStatus status = APIStatus.SUCCESS;
+        String id = request.getParameter("id").toString();
+        List<Order> orderList = orderMapper.myOrderLists(Integer.parseInt(id));;
+        return APIUtil.getResponse(status, orderList);
     }
 }
 
