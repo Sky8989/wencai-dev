@@ -3,10 +3,13 @@ package com.sftc.web.controller.api;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
+import com.sftc.web.model.UserContactLabel;
 import com.sftc.web.model.reqeustParam.UserContactParam;
+import com.sftc.web.service.UserContactLabelService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -23,6 +26,9 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("friend")
 public class UserContactController extends AbstractBasicController {
 
+    @Resource
+    private UserContactLabelService userContactLabelService;
+
     @RequestMapping(value = "/list", method = RequestMethod.GET, headers = "api-version=1")
     public @ResponseBody
     APIResponse allFriend(HttpServletRequest request) throws Exception {
@@ -33,5 +39,23 @@ public class UserContactController extends AbstractBasicController {
     public @ResponseBody
     APIResponse addFriend(@RequestBody UserContactParam userContactParam) throws Exception {
         return userContactService.addFriend(userContactParam);
+    }
+
+    @RequestMapping(value = "/label/add", method = RequestMethod.POST, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse addLabelFriend(@RequestBody UserContactLabel userContactLabel) throws Exception {
+        return userContactLabelService.addLabelForFriend(userContactLabel);
+    }
+
+    @RequestMapping(value = "/label/delete", method = RequestMethod.GET, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse deleteLabelFriend(HttpServletRequest request) throws Exception {
+        return userContactLabelService.deleteLabelForFriend(new APIRequest(request));
+    }
+
+    @RequestMapping(value = "/label", method = RequestMethod.GET, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse getFriendLabelList(HttpServletRequest request) throws Exception {
+        return userContactLabelService.getFriendLabelList(new APIRequest(request));
     }
 }

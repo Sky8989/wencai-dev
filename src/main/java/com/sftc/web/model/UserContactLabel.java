@@ -15,6 +15,9 @@ public class UserContactLabel {
         this.label = label;
     }
 
+    public UserContactLabel() {
+    }
+
     public int getId() {
         return id;
     }
