@@ -1,9 +1,9 @@
 package com.sftc.web.model.sfmodel;
 
 /**
- * Created by Administrator on 2017/5/18.
+ * Created by Administrator on 2017/5/22.
  */
-public class Merchant {
+public class Coupon {
     private String uuid;
 
     public String getUuid() {

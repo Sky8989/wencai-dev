@@ -33,4 +33,6 @@ public abstract class AbstractBasicController {
     protected OrderCancelService orderCancelService;
     @Resource
     protected MessageService messageService;
+    @Resource
+    protected AddressService addressService;
 }

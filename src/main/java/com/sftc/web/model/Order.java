@@ -146,7 +146,7 @@ public class Order {
      */
     public Order(APIRequest request) {
         this.create_time = Long.toString(System.currentTimeMillis());
-        this.order_number = UUID.randomUUID().toString();
+
         this.state = "待支付";
         this.gmt_order_create = Long.toString(System.currentTimeMillis());
         this.pay_method = (String) request.getParameter("pay_method");
@@ -172,7 +172,7 @@ public class Order {
 
     public Order(OrderParam orderParam) {
         this.create_time = Long.toString(System.currentTimeMillis());
-
+        this.order_number = Long.toString(System.currentTimeMillis());
         this.state = "待支付";
         this.gmt_order_create = Long.toString(System.currentTimeMillis());
         this.pay_method = orderParam.getPay_method();

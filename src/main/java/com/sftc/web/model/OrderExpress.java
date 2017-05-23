@@ -47,7 +47,7 @@ public class OrderExpress {
     private int ship_user_id;
     // 礼卡表id
     private int gift_card_id;
-
+    private String state;
     public int getSender_user_id() {
         return sender_user_id;
     }
@@ -82,9 +82,9 @@ public class OrderExpress {
         this.object_type = object_type;
     }
 
-    public OrderExpress(String package_type, String object_type, int sender_user_id, int ship_user_id,
-                        int order_id, String create_time, int is_use) {
-
+    public OrderExpress(String order_number,String package_type, String object_type, int sender_user_id, int ship_user_id,
+                        int order_id, String create_time, int is_use,String state) {
+        this.order_number = order_number;
         this.package_type = package_type;
         this.object_type = object_type;
         this.sender_user_id = sender_user_id;
@@ -92,6 +92,7 @@ public class OrderExpress {
         this.create_time = create_time;
         this.is_use = is_use;
         this.order_id = order_id;
+        this.state = state;
     }
 
     public OrderExpress(APIRequest request) {
@@ -237,5 +238,13 @@ public class OrderExpress {
 
     public void setOrder_id(int order_id) {
         this.order_id = order_id;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

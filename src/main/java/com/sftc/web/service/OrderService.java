@@ -7,8 +7,7 @@ import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
 
 import com.sftc.web.model.sfmodel.Requests;
-import net.sf.json.JSONObject;
-import org.springframework.stereotype.Service;
+
 
 
 /**
@@ -28,7 +27,7 @@ public interface OrderService {
      * @param @request
      * @return
      */
-    APIResponse placeOrder(Requests requests,Object object);
+    APIResponse placeOrder(Object object);
 
     /**
      * 支付订单
@@ -57,7 +56,7 @@ public interface OrderService {
      * @param @request
      * @return
      */
-    APIResponse countPrice(Object object);
+    APIResponse countPrice(Requests requests);
 
    /*
     * 我的订单列表
