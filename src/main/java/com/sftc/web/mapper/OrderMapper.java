@@ -25,4 +25,6 @@ public interface OrderMapper {
 
     // C01 我的订单
     List<Order> myOrderLists(OrderExpress orderExpress);
+
+    List<Order> myOrderListsForState(OrderExpress orderExpress);
 }

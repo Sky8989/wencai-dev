@@ -38,6 +38,8 @@ public class UserContact {
     private int user_id;
     private int friend_id;
 
+    public UserContact() {}
+
     public int getId() {
         return id;
     }

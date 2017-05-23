@@ -253,7 +253,9 @@ public class OrderServiceImpl implements OrderService {
         String state = request.getParameter("state").toString();
         OrderExpress orderExpress = new OrderExpress();
         orderExpress.setId(Integer.parseInt(id));
-        orderExpress.setState(state);
+        if (!state.equals("")) {
+            orderExpress.setState(state);
+        }
         List<Order> orderList = orderMapper.myOrderLists(orderExpress);
         return APIUtil.getResponse(status, orderList);
     }

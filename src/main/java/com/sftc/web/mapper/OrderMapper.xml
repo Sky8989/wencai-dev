@@ -262,11 +262,11 @@
         sftc_order,
         sftc_order_express
         where
-        <if test="state!=null">
-            sftc_order_express.state=#{state} and
-        </if>
         (sftc_order_express.sender_user_id=#{id}
         or
         sftc_order_express.ship_user_id=#{id})
+        <if test="state!=null">
+            and sftc_order_express.state=#{state}
+        </if>
     </select>
 </mapper>

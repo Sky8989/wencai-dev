@@ -2,6 +2,7 @@ package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
 import com.sftc.web.mapper.UserContactMapper;
+import com.sftc.web.model.Paging;
 import com.sftc.web.model.UserContact;
 import com.sftc.web.model.reqeustParam.UserContactParam;
 import com.sftc.web.service.UserContactService;
@@ -26,24 +27,6 @@ public class UserContactServiceImpl implements UserContactService {
     private UserContactMapper userContactMapper;
 
     /*
-     * 查询该联系人的所有好友
-     */
-    public APIResponse findUserFriend(APIRequest request) {
-        APIStatus status = APIStatus.SUCCESS;
-        String user_id = (String) request.getParameter("user_id");
-        List<UserContact> userContactList = null;
-        if (user_id != null) {
-            try {
-                userContactList = userContactMapper.friendList(Integer.parseInt(user_id));
-            } catch (Exception e) {
-                e.printStackTrace();
-                status = APIStatus.SELECT_FAIL;
-            }
-        }
-        return APIUtil.getResponse(status, userContactList);
-    }
-
-    /*
      * 添加好友
      */
     public APIResponse addFriend(UserContactParam userContactParam) {
@@ -56,5 +39,27 @@ public class UserContactServiceImpl implements UserContactService {
             status = APIStatus.SUBMIT_FAIL;
         }
         return APIUtil.getResponse(status, null);
+    }
+
+    /*
+     * 根据id查询好友详情
+     */
+    public APIResponse getFriendDetail(APIRequest request) {
+        APIStatus status = APIStatus.SELECT_FAIL;
+        String id = request.getParameter("id").toString();
+        UserContact userContact = userContactMapper.friendDetail(Integer.parseInt(id));
+        if (userContact != null) status = APIStatus.SUCCESS;
+        return APIUtil.getResponse(status, userContact);
+    }
+
+    /*
+     * 获取某个用户的所有好友（带分页）
+     */
+    public APIResponse getFriendList(Paging paging) {
+        APIStatus status = APIStatus.SELECT_FAIL;
+        paging.setPageNum(paging.getPageNum() - 1);
+        List<UserContact> userContactList = userContactMapper.friendList(paging);
+        if (userContactList != null) status = APIStatus.SUCCESS;
+        return APIUtil.getResponse(status, userContactList);
     }
 }
