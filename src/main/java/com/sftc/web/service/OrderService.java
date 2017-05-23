@@ -2,10 +2,8 @@ package com.sftc.web.service;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
-
 import com.sftc.web.model.sfmodel.Requests;
 
 
@@ -58,15 +56,16 @@ public interface OrderService {
      */
     APIResponse countPrice(Requests requests);
 
-   /*
+   /**
     * 我的订单列表
     * @param request
     * @return
     * */
     APIResponse getAllOrder(APIRequest request);
-    /*
+
+    /**
     * @获取订单详情
-    *@param request
+    *@param requests
     * @return
     * */
     APIResponse getOrderDetile(Requests requests);
@@ -79,5 +78,7 @@ public interface OrderService {
      * @return
      */
     APIResponse getEmptyPackage(APIRequest request);
+
+    APIResponse getMyOrderList(APIRequest request);
 }
 

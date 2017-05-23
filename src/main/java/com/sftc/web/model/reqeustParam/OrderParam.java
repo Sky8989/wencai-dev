@@ -55,7 +55,6 @@ public class OrderParam {
     // 礼卡表id
     private int gift_card_id;
 
-
     private OrderExpress orderExpress;
 
     public OrderExpress getOrderExpress() {

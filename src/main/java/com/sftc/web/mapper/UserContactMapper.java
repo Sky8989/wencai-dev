@@ -1,9 +1,10 @@
 package com.sftc.web.mapper;
 
+import com.sftc.web.model.Paging;
 import com.sftc.web.model.UserContact;
+import com.sftc.web.model.reqeustParam.UserContactParam;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,8 +17,16 @@ import java.util.Map;
  * @Time 上午8:44
  */
 public interface UserContactMapper {
-    List<UserContact> friendList(Map<String,Integer> params);
-    void addFriend(UserContact userContact);
+
+    // 好友列表
+    List<UserContact> friendList(Paging paging);
+
+    int selectFriendCount(int user_id);
+
+    // 添加好友
+    void addFriend(UserContactParam userContactParam);
+
     void updateFriend(UserContact userContact);
+
     UserContact friendDetail(int id);
 }

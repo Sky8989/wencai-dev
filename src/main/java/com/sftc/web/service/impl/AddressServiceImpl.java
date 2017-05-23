@@ -1,5 +1,6 @@
 package com.sftc.web.service.impl;
 
+
 import com.google.gson.Gson;
 import com.sftc.tools.api.AIPPost;
 import com.sftc.tools.api.APIResponse;
@@ -14,6 +15,16 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+import com.sftc.tools.api.*;
+
+import com.sftc.web.model.Address;
+
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -23,26 +34,68 @@ import javax.annotation.Resource;
  * @date 17/4/1
  * @Time 下午9:32
  */
-@Service
+
+@Service("addressService")
 public class AddressServiceImpl implements AddressService {
+
     @Resource
     private AddressMapper addressMapper;
-    Gson gson = new Gson();
-    private static String ADDADDRESS_URL = "http://api-dev.sf-rush.com/addresses";
-    /**
-     * 新增地址
-     */
+
+    public APIResponse addAddress(Address address) {
+        APIStatus status = APIStatus.SUCCESS;
+        address.setCreate_time(Long.toString(System.currentTimeMillis()));
+        try {
+            addressMapper.addAddress(address);
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = APIStatus.SUBMIT_FAIL;
+        }
+        return APIUtil.getResponse(status, null);
+    }
+
+    public APIResponse consigneeAddress(APIRequest request) {
+        APIStatus status = APIStatus.SELECT_FAIL;
+        String id = request.getParameter("user_id").toString();
+        List<Address> addressList = new ArrayList<Address>();
+        if (id != null) {
+            try {
+                addressList = addressMapper.addressDetail(Integer.parseInt(id));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            status = APIStatus.SUCCESS;
+        }
+        return APIUtil.getResponse(status, addressList);
+    }
+
+    public APIResponse editAddress(Address address) {
+        APIStatus status = APIStatus.SUCCESS;
+        try {
+            addressMapper.editeAddress(address);
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = APIStatus.SUBMIT_FAIL;
+        }
+        return APIUtil.getResponse(status, null);
+    }
+
+    public APIResponse deleteAddress(APIRequest request) {
+        APIStatus status = APIStatus.SUCCESS;
+        String id = request.getParameter("id").toString();
+        if (id != null) {
+            try {
+                addressMapper.deleteAddress(Integer.parseInt(id));
+            } catch (Exception e) {
+                e.printStackTrace();
+                status = APIStatus.SUBMIT_FAIL;
+            }
+        }
+        return APIUtil.getResponse(status, null);
+
+    }
+
     @Override
     public APIResponse addAddress(Object object) {
-        APIStatus status= APIStatus.SUCCESS;
-        String str = gson.toJson(object);
-        HttpPost post = new HttpPost(ADDADDRESS_URL);
-        post.addHeader("PushEnvelope-Device-Token","97uAK7HQmDtsw5JMOqad");//97uAK7HQmDtsw5JMOqad
-        String res = AIPPost.getPost(str, post);
-        JSONObject jsonObject = JSONObject.fromObject(res);
-        if(jsonObject.get("error")!=null){
-            status = APIStatus.ADDRESS_FAIL;
-        }
-        return APIUtil.getResponse(status, jsonObject);
+        return null;
     }
 }

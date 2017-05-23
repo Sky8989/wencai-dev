@@ -1,5 +1,10 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.Paging;
+import com.sftc.web.model.reqeustParam.UserContactParam;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -10,4 +15,25 @@ package com.sftc.web.service;
  * @Time 下午9:31
  */
 public interface UserContactService {
+
+    /**
+     * 添加好友
+     * @param userContactParam
+     * @return
+     */
+    APIResponse addFriend(UserContactParam userContactParam);
+
+    /**
+     * 根据id获取好友信息
+     * @param request
+     * @return
+     */
+    APIResponse getFriendDetail(APIRequest request);
+
+    /**
+     * 获取某个用户的所有好友（带分页）
+     * @param paging
+     * @return
+     */
+    APIResponse getFriendList(Paging paging);
 }

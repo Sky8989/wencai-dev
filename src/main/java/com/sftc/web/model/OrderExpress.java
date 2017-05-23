@@ -36,6 +36,8 @@ public class OrderExpress {
     private String package_type;
     // 物品类型
     private String object_type;
+    // 订单状态
+    private String state;
     // 是否已经填写
     private int is_use;
 
@@ -47,7 +49,7 @@ public class OrderExpress {
     private int ship_user_id;
     // 礼卡表id
     private int gift_card_id;
-    private String state;
+ 
     public int getSender_user_id() {
         return sender_user_id;
     }

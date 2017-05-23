@@ -36,6 +36,8 @@ public class DateRemind {
         this.user_contact_id = user_contact_id;
     }
 
+    public DateRemind() {}
+
     public int getId() {
         return id;
     }
@@ -83,10 +85,6 @@ public class DateRemind {
     public void setUser_contact_id(int user_contact_id) {
         this.user_contact_id = user_contact_id;
     }
-
-
-
-
 
     public int getUser_id() {
         return user_id;

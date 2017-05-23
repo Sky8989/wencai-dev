@@ -23,4 +23,8 @@ public interface OrderMapper {
 
     int findPackageCount(String order_number);
 
+    // C01 我的订单
+    List<Order> myOrderLists(OrderExpress orderExpress);
+
+    List<Order> myOrderListsForState(OrderExpress orderExpress);
 }

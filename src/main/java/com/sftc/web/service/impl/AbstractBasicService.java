@@ -22,4 +22,5 @@ public abstract class AbstractBasicService {
     protected UserMapper userMapper;
     @Resource
     protected TokenMapper tokenMapper;
+
 }

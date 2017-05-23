@@ -3,18 +3,15 @@ package com.sftc.web.controller.api;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
-
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
-
 import com.sftc.web.model.reqeustParam.OrderParam;
-
-
 import com.sftc.web.model.sfmodel.Requests;
-import net.sf.json.JSONObject;
+import com.sftc.web.service.OrderService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -30,9 +27,10 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("order")
-
-
 public class OrderController extends AbstractBasicController {
+
+    @Resource
+    private OrderService orderService;
 
     /**
      * 提交订单接口
@@ -138,6 +136,7 @@ public class OrderController extends AbstractBasicController {
         return orderService.updateOrder(new APIRequest(request), order, orderExpress);
 
     }
+
     /**
      * 根据订单编号查找未被填写包裹的接口
      * @param request
@@ -148,6 +147,11 @@ public class OrderController extends AbstractBasicController {
     public @ResponseBody
     APIResponse pack(HttpServletRequest request) throws Exception {
         return orderService.getEmptyPackage(new APIRequest(request));
+    }
 
+    @RequestMapping(value = "/my", method = RequestMethod.GET, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse myOrder(HttpServletRequest request) throws Exception {
+        return orderService.getMyOrderList(new APIRequest(request));
     }
 }

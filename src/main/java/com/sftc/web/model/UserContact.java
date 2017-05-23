@@ -1,5 +1,7 @@
 package com.sftc.web.model;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -30,8 +32,13 @@ public class UserContact {
     private int lntimacy;
 
     private User merchant;
+    private List<UserContactLabel> userContactLabelList;
+    private List<DateRemind> dateRemindList;
 
     private int user_id;
+    private int friend_id;
+
+    public UserContact() {}
 
     public int getId() {
         return id;
@@ -112,8 +119,6 @@ public class UserContact {
 
     public void setMerchant(User merchant) {
         this.merchant = merchant;
-
-
     }
 
     public int getUser_id() {
@@ -124,5 +129,27 @@ public class UserContact {
         this.user_id = user_id;
     }
 
+    public int getFriend_id() {
+        return friend_id;
+    }
 
+    public void setFriend_id(int friend_id) {
+        this.friend_id = friend_id;
+    }
+
+    public List<UserContactLabel> getUserContactLabelList() {
+        return userContactLabelList;
+    }
+
+    public void setUserContactLabelList(List<UserContactLabel> userContactLabelList) {
+        this.userContactLabelList = userContactLabelList;
+    }
+
+    public List<DateRemind> getDateRemindList() {
+        return dateRemindList;
+    }
+
+    public void setDateRemindList(List<DateRemind> dateRemindList) {
+        this.dateRemindList = dateRemindList;
+    }
 }

@@ -2,6 +2,7 @@ package com.sftc.web.model;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.web.model.reqeustParam.OrderParam;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import java.util.UUID;
  * @date 17/4/1
  * @Time 下午9:00
  */
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Order {
 
     private int id;
@@ -59,23 +61,17 @@ public class Order {
     // 快递员编号
     private String job_number;
     // 寄件人id(根据用户表id)
-
     private User user;
-
     private int sender_user_id;
     // 礼卡表id
+    private int gift_card_id;
     private GiftCard giftCard;
     private List<OrderExpress> orderExpressList;
+    private OrderExpress orderExpress;
 
 
     public Order() {
     }
-
-
-
-    private int gift_card_id;
-
-
 
     public Order(String state, String gmt_order_create, String gmt_pay_create, String pay_method, double freight, String sender_name, String sender_mobile,
                  String sender_province, String sender_city, String sender_area,
@@ -419,5 +415,11 @@ public class Order {
         this.orderExpressList = orderExpressList;
     }
 
+    public OrderExpress getOrderExpress() {
+        return orderExpress;
+    }
 
+    public void setOrderExpress(OrderExpress orderExpress) {
+        this.orderExpress = orderExpress;
+    }
 }
