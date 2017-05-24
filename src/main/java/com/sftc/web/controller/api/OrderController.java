@@ -71,7 +71,7 @@ public class OrderController extends AbstractBasicController {
     @RequestMapping(value = "/fill", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
     APIResponse fillOrder(HttpServletRequest request,@RequestBody Object object) throws Exception {
-        return orderService.friendFillOrder(new APIRequest(request),object);
+        return orderService.friendFillOrder(object);
     }
 
 

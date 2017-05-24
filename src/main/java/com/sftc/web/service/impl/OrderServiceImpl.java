@@ -57,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
      */
 
     public APIResponse placeOrder(Object object) {
-        String order_number=Long.toString(System.currentTimeMillis());
+        String order_number = UUID.randomUUID().toString();
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
         JSONObject jsonObject1 = JSONObject.fromObject(object);
@@ -145,11 +145,11 @@ public class OrderServiceImpl implements OrderService {
         JSONObject jsonObject = JSONObject.fromObject(str);
 
         Request request = (Request)JSONObject.toBean((JSONObject)jsonObject.get("request"), Request.class);
-        Token token = tokenMapper.getTokenByMobile("13632571782");
+        Token token = tokenMapper.getTokenByMobile("18124033797");
 
         HttpPost post = new HttpPost(QUOTES_URL);
         if(request.getMerchant().getUuid().equals("")&&requests.getRequest().getToken().getAccess_token().equals("")) {
-            request.getMerchant().setUuid("2c9a85895c163a16015c165321dc0045");
+            request.getMerchant().setUuid("2c9a85895c2f618a015c2fe994ff0094");
             post.addHeader("PushEnvelope-Device-Token",token.getAccess_token());
         }else{
             post.addHeader("PushEnvelope-Device-Token",requests.getRequest().getToken().getAccess_token());
@@ -190,8 +190,8 @@ public class OrderServiceImpl implements OrderService {
      * 好友寄件提交订单
      */
     public APIResponse friendPlaceOrder(APIRequest request) {
-        APIStatus status = APIStatus.SUCCESS;
 
+        APIStatus status = APIStatus.SUCCESS;
         OrderParam orderParam = (OrderParam) request.getRequestParam();
         List<OrderExpress> orderExpressList = orderParam.getOrderExpressList();
         Order order = new Order(orderParam);
@@ -226,25 +226,27 @@ public class OrderServiceImpl implements OrderService {
     /*
      * 好友填写寄件订单
      */
-    public synchronized APIResponse friendFillOrder(APIRequest request, Object object) {
+    public synchronized APIResponse friendFillOrder(Object object) {
+//        System.out.println(object);
         APIStatus status = APIStatus.SUCCESS;
-        OrderExpress orderExpress = new OrderExpress(request);
-        String str = gson.toJson(object);
-        HttpPost post = new HttpPost(REQUEST_URL);
-        System.out.println(str);
-        post.addHeader("PushEnvelope-Device-Token","97uAK7HQmDtsw5JMOqad");//97uAK7HQmDtsw5JMOqad
-
-        String res = AIPPost.getPost(str,post);
-       JSONObject jsonObject = JSONObject.fromObject(res);
-        if(jsonObject.get("error")!=null){
-            status = APIStatus.QUOTE_FAIL;
-        }
-        try {
-            orderExpressMapper.updateOrderExpress(orderExpress);
-        } catch (Exception e) {
-            status = APIStatus.SUBMIT_FAIL;
-            e.printStackTrace();
-        }
+//        String str = gson.toJson(object);
+//        JSONObject jsonObject = null;
+//        JSONObject jsonObject1 = JSONObject.fromObject(object);
+//        HttpPost post = new HttpPost(REQUEST_URL);
+//
+//        post.addHeader("PushEnvelope-Device-Token","97uAK7HQmDtsw5JMOqad");//97uAK7HQmDtsw5JMOqad
+//
+//        String res = AIPPost.getPost(str,post);
+//       JSONObject jsonObject = JSONObject.fromObject(res);
+//        if(jsonObject.get("error")!=null){
+//            status = APIStatus.QUOTE_FAIL;
+//        }
+//        try {
+//            orderExpressMapper.updateOrderExpress();
+//        } catch (Exception e) {
+//            status = APIStatus.SUBMIT_FAIL;
+//            e.printStackTrace();
+//        }
 
         return APIUtil.getResponse(status, null);
     }
