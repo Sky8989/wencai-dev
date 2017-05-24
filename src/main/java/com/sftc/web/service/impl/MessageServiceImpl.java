@@ -116,10 +116,7 @@ public class MessageServiceImpl extends AbstractBasicService implements MessageS
     }
     public APIResponse loginByGet(String object){
         APIStatus status = APIStatus.SUCCESS;
-    //    String str = gson.toJson(object);
         HttpGet get = new HttpGet(LOGIN);
-    //    JSONObject jsonObject = JSONObject.fromObject(str);
-   //     Request request = (Request)JSONObject.toBean((JSONObject)jsonObject.get("request"), Request.class);
        get.addHeader("PushEnvelope-Device-Token", object);
         String res = APIGet.getPost(object,get);
         Result result = new Result();

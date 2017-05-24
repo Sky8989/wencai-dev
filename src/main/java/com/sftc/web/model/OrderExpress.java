@@ -53,7 +53,7 @@ public class OrderExpress {
     public int getSender_user_id() {
         return sender_user_id;
     }
-
+    private String uuid;
     public void setSender_user_id(int sender_user_id) {
         this.sender_user_id = sender_user_id;
     }
@@ -267,5 +267,13 @@ public class OrderExpress {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }
