@@ -9,6 +9,7 @@ import org.codehaus.jackson.map.util.JSONPObject;
 public interface MessageService {
     APIResponse getMessage(Object object);
     APIResponse register(Object object);
-    Result getToken(Object object);
+    APIResponse getToken(Object object);
     APIResponse login(Object object);
+    APIResponse loginByGet(String object);
 }

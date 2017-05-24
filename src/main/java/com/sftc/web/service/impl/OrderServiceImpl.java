@@ -229,6 +229,7 @@ public class OrderServiceImpl implements OrderService {
     public synchronized APIResponse friendFillOrder(Object object) {
         System.out.println(object);
         APIStatus status = APIStatus.SUCCESS;
+<<<<<<< HEAD
 //
 //        JSONObject jsonObject = null;
 //        JSONObject jsonObject1 = JSONObject.fromObject(object);
@@ -247,8 +248,27 @@ public class OrderServiceImpl implements OrderService {
 //            status = APIStatus.SUBMIT_FAIL;
 //            e.printStackTrace();
 //      }
+=======
+>>>>>>> yqy
 
-        return APIUtil.getResponse(status, null);
+        JSONObject jsonObject = null;
+        JSONObject jsonObject1 = JSONObject.fromObject(object);
+        String str = gson.toJson(jsonObject1.get("requests"));
+        HttpPost post = new HttpPost(REQUEST_URL);
+        post.addHeader("PushEnvelope-Device-Token","7nWq8uExhVUoE7EW4ud2");//97uAK7HQmDtsw5JMOqad
+        String res = AIPPost.getPost(str,post);
+        jsonObject = JSONObject.fromObject(res);
+        OrderExpress orderExpress = (OrderExpress) JSONObject.toBean((JSONObject)jsonObject1.get("orderExpress"),OrderExpress.class);
+
+        if(jsonObject.get("error")!=null){
+            status = APIStatus.QUOTE_FAIL;
+        }
+        try {
+            orderExpressMapper.updateOrderExpress(orderExpress);
+        } catch (Exception e) {
+            status = APIStatus.SUBMIT_FAIL;
+        }
+        return APIUtil.getResponse(status, jsonObject);
     }
 
     /*
