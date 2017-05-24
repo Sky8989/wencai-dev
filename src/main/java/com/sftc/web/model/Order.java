@@ -165,6 +165,32 @@ public class Order {
 
     }
 
+    public Order(String create_time, String order_number, String state, String gmt_order_create, String pay_method,
+                 String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
+                 String sender_city, String sender_area, String sender_addr, String word_message, String image, String voice,
+                 double longitude, double latitude, int sender_user_id, int gift_card_id) {
+        this.create_time = create_time;
+        this.order_number = order_number;
+        this.state = state;
+        this.gmt_order_create = gmt_order_create;
+        this.pay_method = pay_method;
+        this.distribution_method = distribution_method;
+        this.freight = freight;
+        this.sender_name = sender_name;
+        this.sender_mobile = sender_mobile;
+        this.sender_province = sender_province;
+        this.sender_city = sender_city;
+        this.sender_area = sender_area;
+        this.sender_addr = sender_addr;
+        this.word_message = word_message;
+        this.image = image;
+        this.voice = voice;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.job_number = job_number;
+        this.sender_user_id = sender_user_id;
+        this.gift_card_id = gift_card_id;
+    }
 
     public Order(OrderParam orderParam) {
         this.create_time = Long.toString(System.currentTimeMillis());

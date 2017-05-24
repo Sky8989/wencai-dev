@@ -43,7 +43,11 @@ public class OrderController extends AbstractBasicController {
     APIResponse placeOrder(@RequestBody Object object) throws Exception {
         return orderService.placeOrder(object);
     }
-
+    @RequestMapping(value = "/place1", method = RequestMethod.POST, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse placeOrder1(@RequestBody Requests object) throws Exception {
+        return orderService.placeOrder1(object);
+    }
     /**
      * 计价
      * @param @request
@@ -69,6 +73,7 @@ public class OrderController extends AbstractBasicController {
     APIResponse fillOrder(HttpServletRequest request,@RequestBody Object object) throws Exception {
         return orderService.friendFillOrder(new APIRequest(request),object);
     }
+
 
     /**
      * 寄件给好友提交订单接口

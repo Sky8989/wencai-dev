@@ -10,15 +10,26 @@ import net.sf.json.JSONObject;
  */
 public class Requests {
 
-
+    private Order order;
 
     private Request request;
+    private OrderExpress orderExpress;
 
+    public OrderExpress getOrderExpress() {
+        return orderExpress;
+    }
 
+    public void setOrderExpress(OrderExpress orderExpress) {
+        this.orderExpress = orderExpress;
+    }
 
+    public Order getOrder() {
+        return order;
+    }
 
-
-
+    public void setOrder(Order order) {
+        this.order = order;
+    }
 
     public Request getRequest() {
         return request;

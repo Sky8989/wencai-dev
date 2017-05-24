@@ -89,13 +89,11 @@
         INSERT INTO sftc_order
         (order_number, state, gmt_order_create, freight,
         create_time, sender_province, sender_name, sender_mobile, sender_city,
-        sender_area, sender_addr, word_message, image, voice, job_number,
         sender_area, sender_addr, word_message, image, voice,
         sender_user_id, gift_card_id, pay_method, distribution_method, longitude, latitude)
         VALUES
         (#{order_number}, #{state}, #{gmt_order_create}, #{freight},
         #{create_time}, #{sender_province}, #{sender_name}, #{sender_mobile}, #{sender_city},
-        #{sender_area}, #{sender_addr}, #{word_message}, #{image}, #{voice}, #{job_number},
         #{sender_area}, #{sender_addr}, #{word_message}, #{image}, #{voice},
         #{sender_user_id}, #{gift_card_id}, #{pay_method}, #{distribution_method},
         #{longitude}, #{latitude})
