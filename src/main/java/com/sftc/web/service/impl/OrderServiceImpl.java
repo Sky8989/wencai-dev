@@ -67,6 +67,10 @@ public class OrderServiceImpl implements OrderService {
             post.addHeader("PushEnvelope-Device-Token","7nWq8uExhVUoE7EW4ud2");//97uAK7HQmDtsw5JMOqad
             String res = AIPPost.getPost(str,post);
             jsonObject = JSONObject.fromObject(res);
+
+            System.out.println(jsonObject.getJSONObject("request"));
+          Request request = (Request) JSONObject.toBean((JSONObject)jsonObject.get("request"),Request.class);
+            System.out.println("CC");
            Error error = (Error) JSONObject.toBean((JSONObject) jsonObject.get("error"), Error.class);
            Order order = (Order) JSONObject.toBean((JSONObject)jsonObject1.get("order"),Order.class);
             OrderExpress orderExpress = (OrderExpress) JSONObject.toBean((JSONObject)jsonObject1.get("orderExpress"),OrderExpress.class);
@@ -77,8 +81,10 @@ public class OrderServiceImpl implements OrderService {
               orderExpress.setCreate_time(time);
               orderExpress.setOrder_number(order_number);
                 orderExpress.setState("待支付");
-            System.out.println(error);
+            orderExpress.setUuid(request.getUuid());
+
             if(error==null) {
+                System.out.println("BBB");
                 orderMapper.addOrder(order);
                 orderExpressMapper.addOrderExpress(orderExpress);
             } else {

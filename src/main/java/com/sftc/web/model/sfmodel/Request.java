@@ -22,6 +22,9 @@ public class Request {
     private Order order;
     private OrderExpress orderExpress;
     private Token token;
+    private String uuid;
+    private String eta;
+    private String request_num;
     public Merchant getMerchant() {
         return merchant;
     }
@@ -108,5 +111,29 @@ public class Request {
 
     public void setToken(Token token) {
         this.token = token;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getEta() {
+        return eta;
+    }
+
+    public void setEta(String eta) {
+        this.eta = eta;
+    }
+
+    public String getRequest_num() {
+        return request_num;
+    }
+
+    public void setRequest_num(String request_num) {
+        this.request_num = request_num;
     }
 }
