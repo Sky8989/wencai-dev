@@ -10,7 +10,7 @@ package com.sftc.web.model;
  * @date 2017/4/25
  * @Time 上午10:46
  */
-public class CommonQuestion {
+public class CommonQuestion extends Object {
 
     private int id;
 

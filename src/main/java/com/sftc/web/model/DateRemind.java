@@ -10,7 +10,7 @@ package com.sftc.web.model;
  * @date 2017/4/25
  * @Time 上午10:39
  */
-public class DateRemind {
+public class DateRemind extends Object {
 
     private int id;
     // 创建时间

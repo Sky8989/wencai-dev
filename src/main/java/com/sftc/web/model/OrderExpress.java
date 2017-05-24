@@ -1,7 +1,6 @@
 package com.sftc.web.model;
 
 import com.sftc.tools.api.APIRequest;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,8 +11,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * @date 2017/5/9
  * @Time 下午4:55
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class OrderExpress {
+public class OrderExpress extends Object {
 
     private int id;
     // 创建时间

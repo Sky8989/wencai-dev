@@ -62,7 +62,6 @@ public class UserServiceImpl extends AbstractBasicService implements UserService
         return APIUtil.getResponse(status, user);
     }
 
-    @Override
     public Token getToken(int id) {
         Token token = tokenMapper.getToken(id);
         return token;
