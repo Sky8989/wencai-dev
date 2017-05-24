@@ -67,19 +67,20 @@ public class OrderServiceImpl implements OrderService {
             post.addHeader("PushEnvelope-Device-Token","7nWq8uExhVUoE7EW4ud2");//97uAK7HQmDtsw5JMOqad
             String res = AIPPost.getPost(str,post);
             jsonObject = JSONObject.fromObject(res);
-           Error error = (Error) JSONObject.toBean((JSONObject) jsonObject.get("error"), Error.class);
-           Order order = (Order) JSONObject.toBean((JSONObject)jsonObject1.get("order"),Order.class);
+            Error error = (Error) JSONObject.toBean((JSONObject) jsonObject.get("error"), Error.class);
+            Order order = (Order) JSONObject.toBean((JSONObject)jsonObject1.get("order"),Order.class);
             OrderExpress orderExpress = (OrderExpress) JSONObject.toBean((JSONObject)jsonObject1.get("orderExpress"),OrderExpress.class);
-              order.setCreate_time(time);
-              order.setGmt_order_create(time);
-             order.setOrder_number(order_number);
-             order.setState("待支付");
-              orderExpress.setCreate_time(time);
-              orderExpress.setOrder_number(order_number);
-                orderExpress.setState("待支付");
-            System.out.println(error);
+            order.setCreate_time(time);
+            order.setGmt_order_create(time);
+            order.setOrder_number(order_number);
+            order.setState("待支付");
+            orderExpress.setCreate_time(time);
+            orderExpress.setOrder_number(order_number);
+            orderExpress.setState("待支付");
             if(error==null) {
                 orderMapper.addOrder(order);
+                System.out.println(order.getId());
+                jsonObject.put("id",order.getId());
                 orderExpressMapper.addOrderExpress(orderExpress);
             } else {
                 status = APIStatus.SUBMIT_FAIL;
@@ -159,7 +160,8 @@ public class OrderServiceImpl implements OrderService {
         String str2 = gson1.toJson(str1);
         String res = AIPPost.getPost(str2,post);
         JSONObject jsonObject1 = JSONObject.fromObject(res);
-        if(jsonObject1.get("error")!=null){
+
+        if(jsonObject1.get("errors")!=null||jsonObject1.get("error")!=null){
             status = APIStatus.QUOTE_FAIL;
         }
 
