@@ -96,18 +96,18 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse placeOrder1(Requests requests) {
         String order_number=Long.toString(System.currentTimeMillis());
         APIStatus status = APIStatus.SUCCESS;
-        Order order  = new Order(time,order_number,"待支付", time,requests.getRequest().getPay_type(),
-                requests.getRequest().getProduct_type(), requests.getOrder().getFreight(),requests.getRequest().getSource().getAddress().getReceiver(),
-                requests.getRequest().getSource().getAddress().getMobile(),requests.getRequest().getSource().getAddress().getProvince(),
-                requests.getRequest().getSource().getAddress().getCity(),requests.getRequest().getSource().getAddress().getRegion(),requests.getRequest().getSource().getAddress().getStreet(),
-                requests.getOrder().getWord_message(), requests.getOrder().getImage(), requests.getOrder().getVoice(),
-       requests.getRequest().getSource().getCoordinate().getLongitude(), requests.getRequest().getSource().getCoordinate().getLatitude(), requests.getOrder().getSender_user_id(), requests.getOrder().getGift_card_id());
-
-        OrderExpress orderExpress = new OrderExpress(time, order_number,requests.getRequest().getTarget().getAddress().getReceiver(),
-                requests.getRequest().getTarget().getAddress().getMobile(),requests.getRequest().getTarget().getAddress().getProvince(),
-                requests.getRequest().getTarget().getAddress().getCity(),requests.getRequest().getTarget().getAddress().getRegion(),
-                requests.getRequest().getTarget().getAddress().getStreet(),requests.getRequest().getPackages().get(0).getType(), requests.getRequest().getPackages().get(0).getComments(),
-                "待支付", requests.getOrderExpress().getSender_user_id(),requests.getOrderExpress().getOrder_id(), requests.getOrderExpress().getShip_user_id());
+//        Order order  = new Order(time,order_number,"待支付", time,requests.getRequest().getPay_type(),
+//                requests.getRequest().getProduct_type(), requests.getOrder().getFreight(),requests.getRequest().getSource().getAddress().getReceiver(),
+//                requests.getRequest().getSource().getAddress().getMobile(),requests.getRequest().getSource().getAddress().getProvince(),
+//                requests.getRequest().getSource().getAddress().getCity(),requests.getRequest().getSource().getAddress().getRegion(),requests.getRequest().getSource().getAddress().getStreet(),
+//                requests.getOrder().getWord_message(), requests.getOrder().getImage(), requests.getOrder().getVoice(),
+//       requests.getRequest().getSource().getCoordinate().getLongitude(), requests.getRequest().getSource().getCoordinate().getLatitude(), requests.getOrder().getSender_user_id(), requests.getOrder().getGift_card_id());
+//
+//        OrderExpress orderExpress = new OrderExpress(time, order_number,requests.getRequest().getTarget().getAddress().getReceiver(),
+//                requests.getRequest().getTarget().getAddress().getMobile(),requests.getRequest().getTarget().getAddress().getProvince(),
+//                requests.getRequest().getTarget().getAddress().getCity(),requests.getRequest().getTarget().getAddress().getRegion(),
+//                requests.getRequest().getTarget().getAddress().getStreet(),requests.getRequest().getPackages().get(0).getType(), requests.getRequest().getPackages().get(0).getComments(),
+//                "待支付", requests.getOrderExpress().getSender_user_id(),requests.getOrderExpress().getOrder_id(), requests.getOrderExpress().getShip_user_id());
 
         JSONObject jsonObject = null;
         JSONObject jsonObject1 = JSONObject.fromObject(requests);
@@ -271,19 +271,19 @@ public class OrderServiceImpl implements OrderService {
     * @订单详情接口
     * */
     public APIResponse getOrderDetile(Requests requests) {
-
         APIStatus status = APIStatus.SUCCESS;
         String str = gson.toJson(requests);
 //       try{
         User merchant = userMapper.getUuidAndtoken(85);
-        REQUESTS_URL = REQUESTS_URL + merchant.getUuid();
+        REQUESTS_URL = REQUESTS_URL +requests.getRequest().getOrder().getJob_number();
         HttpGet post = new HttpGet(REQUESTS_URL);
 
         post.addHeader("PushEnvelope-Device-Token",merchant.getToken().getAccess_token());
         String res = APIGet.getPost(str,post);
-       JSONObject jsonObject = JSONObject.fromObject(res);
+       JSONObject jsonObject = (JSONObject)JSONObject.fromObject(res).get("request");
       //  requests.setJsonObject(jsonObject);
         Order order = orderMapper.orderDetile(85);
+        order.setRequest(jsonObject);
        // requests.setOrder(order);
     //}
 
@@ -292,7 +292,7 @@ public class OrderServiceImpl implements OrderService {
 //           e.fillInStackTrace();
 //       }
 
-        return APIUtil.getResponse(status, requests);
+        return APIUtil.getResponse(status, order);
     }
 
     /*

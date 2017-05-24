@@ -2,6 +2,7 @@ package com.sftc.web.model;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.web.model.reqeustParam.OrderParam;
+import net.sf.json.JSONObject;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.List;
@@ -69,7 +70,7 @@ public class Order {
     private List<OrderExpress> orderExpressList;
     private OrderExpress orderExpress;
 
-
+    private JSONObject request;
     public Order() {
     }
 
@@ -447,5 +448,13 @@ public class Order {
 
     public void setOrderExpress(OrderExpress orderExpress) {
         this.orderExpress = orderExpress;
+    }
+
+    public JSONObject getRequest() {
+        return request;
+    }
+
+    public void setRequest(JSONObject request) {
+        this.request = request;
     }
 }

@@ -1,5 +1,7 @@
 package com.sftc.web.model.sfmodel;
 
+import com.sftc.web.model.Order;
+import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.User;
 
 import java.util.List;
@@ -16,7 +18,8 @@ public class Request {
     private List<Package> packages;
     private String product_type;
     private String pay_type;
-
+    private Order order;
+    private OrderExpress orderExpress;
     public Merchant getMerchant() {
         return merchant;
     }
@@ -79,5 +82,21 @@ public class Request {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public OrderExpress getOrderExpress() {
+        return orderExpress;
+    }
+
+    public void setOrderExpress(OrderExpress orderExpress) {
+        this.orderExpress = orderExpress;
     }
 }
