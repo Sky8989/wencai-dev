@@ -23,7 +23,7 @@ public class MessageController extends AbstractBasicController {
     /**
      * 获取短信接口
      */
-    @RequestMapping(value = "/message", method = RequestMethod.POST)
+    @RequestMapping(value = "/message", method = RequestMethod.POST, headers = "api-version=1")
     @ResponseBody
     APIResponse message(@RequestBody Object obj) throws Exception {
        return messageService.getMessage(obj);
@@ -33,7 +33,7 @@ public class MessageController extends AbstractBasicController {
     /**
      * 注册接口
      */
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RequestMapping(value = "/register", method = RequestMethod.POST, headers = "api-version=1")
     @ResponseBody
     APIResponse register(@RequestBody Object obj) throws Exception {
       return  messageService.register(obj);
@@ -43,7 +43,7 @@ public class MessageController extends AbstractBasicController {
     /**
      * 获取TOKEN接口
      */
-    @RequestMapping(value = "/getToken", method = RequestMethod.POST)
+    @RequestMapping(value = "/getToken", method = RequestMethod.POST, headers = "api-version=1")
     @ResponseBody
     Result getToken(@RequestBody Object obj) throws Exception {
         return  messageService.getToken(obj);
@@ -53,12 +53,12 @@ public class MessageController extends AbstractBasicController {
     /**
      * 登录接口
      */
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/login", method = RequestMethod.POST, headers = "api-version=1")
     @ResponseBody
     APIResponse login(@RequestBody Object obj) throws Exception {
         return  messageService.login(obj);
     }
-    @RequestMapping(value = "/quotes", method = RequestMethod.POST)
+    @RequestMapping(value = "/quotes", method = RequestMethod.POST, headers = "api-version=1")
      void quotes(@RequestBody Result r) throws Exception {
         System.out.println(r.getRequest().getPackages().get(0).getType()+r.getRequest().getPackages().get(1).getType());
     }

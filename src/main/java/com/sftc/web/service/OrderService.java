@@ -43,10 +43,10 @@ public interface OrderService {
 
     /**
      * 好友填写寄件订单
-     * @param request
+     * @param
      * @return
      */
-    APIResponse friendFillOrder(APIRequest request,Object object);
+    APIResponse friendFillOrder(Object object);
 
 
     /**
