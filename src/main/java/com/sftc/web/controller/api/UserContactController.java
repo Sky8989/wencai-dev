@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author _KeMing
  * @version 1.0
  * @Package com.sftc.web.controller.api
- * @Description:
+ * @Description: 好友接口
  * @date 2017/5/21
  * @Time 下午10:21
  */
@@ -34,6 +34,12 @@ public class UserContactController extends AbstractBasicController {
     public @ResponseBody
     APIResponse allFriend(@RequestBody Paging paging) throws Exception {
         return userContactService.getFriendList(paging);
+    }
+
+    @RequestMapping(value = "/detail", method = RequestMethod.POST, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse friendDetail(@RequestBody UserContactParam userContactParam) throws Exception {
+        return userContactService.getFriendDetail(userContactParam);
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST, headers = "api-version=1")

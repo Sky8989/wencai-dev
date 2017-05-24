@@ -3,10 +3,10 @@ package com.sftc.web.model;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import net.sf.json.JSONObject;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,8 +17,7 @@ import java.util.UUID;
  * @date 17/4/1
  * @Time 下午9:00
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class Order {
+public class Order extends Object {
 
     private int id;
     // 创建时间

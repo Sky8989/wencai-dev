@@ -19,18 +19,23 @@ public abstract class AbstractBasicController {
 
     @Resource
     protected UserService userService;
+
     @Resource
     protected QiniuService qiniuService;
+
     @Resource
     protected GiftCardService giftCardService;
+
     @Resource
     protected OrderCancelService orderCancelService;
+
     @Resource
     protected MessageService messageService;
-    @Resource
 
+    @Resource
     protected AddressService addressService;
 
+    @Resource
     protected UserContactService userContactService;
 
 }

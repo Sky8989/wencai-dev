@@ -1,6 +1,5 @@
 package com.sftc.web.service;
 
-import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.Paging;
 import com.sftc.web.model.reqeustParam.UserContactParam;
@@ -25,10 +24,10 @@ public interface UserContactService {
 
     /**
      * 根据id获取好友信息
-     * @param request
+     * @param id
      * @return
      */
-    APIResponse getFriendDetail(APIRequest request);
+    APIResponse getFriendDetail(UserContactParam userContactParam);
 
     /**
      * 获取某个用户的所有好友（带分页）

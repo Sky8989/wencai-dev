@@ -10,7 +10,7 @@ package com.sftc.web.model;
  * @date 2017/4/12
  * @Time 上午12:30
  */
-public class Token {
+public class Token extends Object {
 
     private int id;
     // 创建时间

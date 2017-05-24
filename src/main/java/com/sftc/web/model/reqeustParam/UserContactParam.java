@@ -1,5 +1,7 @@
 package com.sftc.web.model.reqeustParam;
 
+import com.sftc.web.model.Object;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -10,8 +12,9 @@ package com.sftc.web.model.reqeustParam;
  * @date 2017/5/22
  * @Time 上午11:00
  */
-public class UserContactParam {
+public class UserContactParam extends Object {
 
+    private int id;
     // 好友姓名
     private String name;
     // 好友头像
@@ -26,6 +29,14 @@ public class UserContactParam {
     private String create_time;
     private int user_id;
     private int friend_id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
