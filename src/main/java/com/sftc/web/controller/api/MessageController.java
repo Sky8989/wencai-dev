@@ -6,6 +6,8 @@ import com.sftc.web.model.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.SecureRandom;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -45,7 +47,7 @@ public class MessageController extends AbstractBasicController {
      */
     @RequestMapping(value = "/getToken", method = RequestMethod.POST, headers = "api-version=1")
     @ResponseBody
-    Result getToken(@RequestBody Object obj) throws Exception {
+    APIResponse getToken(@RequestBody Object obj) throws Exception {
         return  messageService.getToken(obj);
 
 
@@ -58,6 +60,15 @@ public class MessageController extends AbstractBasicController {
     APIResponse login(@RequestBody Object obj) throws Exception {
         return  messageService.login(obj);
     }
+
+    @RequestMapping(value = "/loginByGet", method = RequestMethod.GET, headers = "api-version=1")
+    @ResponseBody
+    APIResponse loginByGet(String access_token) throws Exception {
+        return  messageService.loginByGet(access_token);
+    }
+
+
+
     @RequestMapping(value = "/quotes", method = RequestMethod.POST, headers = "api-version=1")
      void quotes(@RequestBody Result r) throws Exception {
         System.out.println(r.getRequest().getPackages().get(0).getType()+r.getRequest().getPackages().get(1).getType());

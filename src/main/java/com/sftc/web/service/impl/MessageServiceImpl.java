@@ -6,9 +6,11 @@ import com.sftc.web.mapper.UserMapper;
 import com.sftc.web.model.User;
 import com.sftc.web.model.Result;
 import com.sftc.web.model.Token;
+import com.sftc.web.model.sfmodel.Request;
 import com.sftc.web.service.MessageService;
 
 import net.sf.json.JSONObject;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +46,7 @@ public class MessageServiceImpl extends AbstractBasicService implements MessageS
                 status  = result.validateMessage();
         }
       // status= result.getError().validate();
-        return APIUtil.getResponse(status,null);
+        return APIUtil.getResponse(status,jsonObject);
     }
 
     /**
@@ -77,7 +79,7 @@ public class MessageServiceImpl extends AbstractBasicService implements MessageS
     /**
      * 获取顺丰token
      */
-    public Result getToken(Object object){
+    public APIResponse getToken(Object object){
         APIStatus status = APIStatus.SUCCESS;
         String str = gson.toJson(object);
         HttpPost post = new HttpPost(GET_TOKEN);
@@ -92,7 +94,7 @@ public class MessageServiceImpl extends AbstractBasicService implements MessageS
         }else {
             post.addHeader("PushEnvelope-Device-Token",result.getToken().getAccess_token());
         }
-        return result;
+        return APIUtil.getResponse(status,jsonObject);
     }
     /**
      * 登录接口
@@ -111,5 +113,21 @@ public class MessageServiceImpl extends AbstractBasicService implements MessageS
             status = result.getError().login();
         }
         return APIUtil.getResponse(status,jsonObject);
+    }
+    public APIResponse loginByGet(String object){
+        APIStatus status = APIStatus.SUCCESS;
+    //    String str = gson.toJson(object);
+        HttpGet get = new HttpGet(LOGIN);
+    //    JSONObject jsonObject = JSONObject.fromObject(str);
+   //     Request request = (Request)JSONObject.toBean((JSONObject)jsonObject.get("request"), Request.class);
+       get.addHeader("PushEnvelope-Device-Token", object);
+        String res = APIGet.getPost(object,get);
+        Result result = new Result();
+        JSONObject jsonObject1 = JSONObject.fromObject(res);
+        result = (Result) JSONObject.toBean(jsonObject1,result.getClass());
+        if(result.getError()!=null){
+            status = result.getError().login();
+        }
+        return APIUtil.getResponse(status,jsonObject1);
     }
 }
