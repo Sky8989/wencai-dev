@@ -11,7 +11,7 @@ import java.util.List;
  * @date 17/4/1
  * @Time 下午9:00
  */
-public class Address {
+public class Address extends Object {
 
     private int id ;
     // 创建时间

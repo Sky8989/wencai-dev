@@ -1,6 +1,6 @@
 package com.sftc.web.model;
 
-public class UserContactLabel {
+public class UserContactLabel extends Object {
     private int id;
     //联系人id
     private int user_contact_id;

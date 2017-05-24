@@ -1,9 +1,8 @@
 package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
-import com.sftc.web.mapper.UserContactMapper;
-import com.sftc.web.model.Paging;
-import com.sftc.web.model.UserContact;
+import com.sftc.web.mapper.*;
+import com.sftc.web.model.*;
 import com.sftc.web.model.reqeustParam.UserContactParam;
 import com.sftc.web.service.UserContactService;
 import org.springframework.stereotype.Service;
@@ -26,6 +25,12 @@ public class UserContactServiceImpl implements UserContactService {
     @Resource
     private UserContactMapper userContactMapper;
 
+    @Resource
+    private UserContactLabelMapper userContactLabelMapper;
+
+    @Resource
+    private DateRemindMapper dateRemindMapper;
+
     /*
      * 添加好友
      */
@@ -44,11 +49,14 @@ public class UserContactServiceImpl implements UserContactService {
     /*
      * 根据id查询好友详情
      */
-    public APIResponse getFriendDetail(APIRequest request) {
-        APIStatus status = APIStatus.SELECT_FAIL;
-        String id = request.getParameter("id").toString();
-        UserContact userContact = userContactMapper.friendDetail(Integer.parseInt(id));
-        if (userContact != null) status = APIStatus.SUCCESS;
+    public APIResponse getFriendDetail(UserContactParam userContactParam) {
+        APIStatus status = APIStatus.SUCCESS;
+        int id = userContactParam.getId();
+        UserContact userContact = userContactMapper.friendDetail(id);
+        List<UserContactLabel> userContactLabelList = userContactLabelMapper.getFriendLabelList(id);
+        List<DateRemind> dateRemindList = dateRemindMapper.getDateRemindList(id);
+        userContact.setUserContactLabelList(userContactLabelList);
+        userContact.setDateRemindList(dateRemindList);
         return APIUtil.getResponse(status, userContact);
     }
 
@@ -56,10 +64,15 @@ public class UserContactServiceImpl implements UserContactService {
      * 获取某个用户的所有好友（带分页）
      */
     public APIResponse getFriendList(Paging paging) {
-        APIStatus status = APIStatus.SELECT_FAIL;
+        APIStatus status = APIStatus.SUCCESS;
         paging.setPageNum(paging.getPageNum() - 1);
-        List<UserContact> userContactList = userContactMapper.friendList(paging);
-        if (userContactList != null) status = APIStatus.SUCCESS;
+        List<UserContact> userContactList = null;
+        try {
+            userContactList = userContactMapper.friendList(paging);
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = APIStatus.SELECT_FAIL;
+        }
         return APIUtil.getResponse(status, userContactList);
     }
 }

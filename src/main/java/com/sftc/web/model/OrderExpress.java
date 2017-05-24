@@ -1,7 +1,6 @@
 package com.sftc.web.model;
 
 import com.sftc.tools.api.APIRequest;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,8 +11,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * @date 2017/5/9
  * @Time 下午4:55
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class OrderExpress {
+public class OrderExpress extends Object {
 
     private int id;
     // 创建时间
@@ -104,7 +102,7 @@ public class OrderExpress {
     }
 
     public OrderExpress(String order_number,String package_type, String object_type, int sender_user_id, int ship_user_id,
-                        int order_id, String create_time, int is_use,String state) {
+                        int order_id, String create_time, int is_use,String state,String uuid) {
         this.order_number = order_number;
         this.package_type = package_type;
         this.object_type = object_type;
@@ -114,6 +112,7 @@ public class OrderExpress {
         this.is_use = is_use;
         this.order_id = order_id;
         this.state = state;
+        this.uuid = uuid;
     }
 
     public OrderExpress(APIRequest request) {

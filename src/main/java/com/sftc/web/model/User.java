@@ -1,11 +1,6 @@
 package com.sftc.web.model;
 
-import java.util.List;
-
-/**
- * Created by Administrator on 2017/5/16.
- */
-public class User {
+public class User extends Object {
     private int id;
     private String uuid;
     //用户名字

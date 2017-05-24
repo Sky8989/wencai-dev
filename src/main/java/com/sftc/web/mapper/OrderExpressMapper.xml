@@ -44,7 +44,8 @@
         ship_city=#{ship_city},
         ship_area=#{ship_area},
         ship_addr=#{ship_addr},
-        is_use=1
+        is_use=1,
+        uuid=#{uuid}
         WHERE id=#{id}
     </update>
 </mapper>

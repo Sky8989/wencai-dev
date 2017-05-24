@@ -1,6 +1,6 @@
 package com.sftc.web.model.reqeustParam;
 
-import com.sftc.web.model.*;
+import com.sftc.web.model.OrderExpress;
 
 import java.util.List;
 
