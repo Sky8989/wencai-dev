@@ -80,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
             if(error==null) {
                 orderMapper.addOrder(order);
                 System.out.println(order.getId());
-                jsonObject.put("id",order.getId());
+                jsonObject.put("id", order.getId());
                 orderExpressMapper.addOrderExpress(orderExpress);
             } else {
                 status = APIStatus.SUBMIT_FAIL;
@@ -227,14 +227,14 @@ public class OrderServiceImpl implements OrderService {
      * 好友填写寄件订单
      */
     public synchronized APIResponse friendFillOrder(Object object) {
-//        System.out.println(object);
+        System.out.println(object);
         APIStatus status = APIStatus.SUCCESS;
-//        String str = gson.toJson(object);
+//
 //        JSONObject jsonObject = null;
 //        JSONObject jsonObject1 = JSONObject.fromObject(object);
+//        String str = gson.toJson(jsonObject1.get("requests"));
 //        HttpPost post = new HttpPost(REQUEST_URL);
-//
-//        post.addHeader("PushEnvelope-Device-Token","97uAK7HQmDtsw5JMOqad");//97uAK7HQmDtsw5JMOqad
+//        post.addHeader("PushEnvelope-Device-Token","7nWq8uExhVUoE7EW4ud2");//97uAK7HQmDtsw5JMOqad
 //
 //        String res = AIPPost.getPost(str,post);
 //       JSONObject jsonObject = JSONObject.fromObject(res);
@@ -246,7 +246,7 @@ public class OrderServiceImpl implements OrderService {
 //        } catch (Exception e) {
 //            status = APIStatus.SUBMIT_FAIL;
 //            e.printStackTrace();
-//        }
+//      }
 
         return APIUtil.getResponse(status, null);
     }
