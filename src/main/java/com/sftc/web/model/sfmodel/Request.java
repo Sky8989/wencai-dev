@@ -2,6 +2,7 @@ package com.sftc.web.model.sfmodel;
 
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class Request {
     private String pay_type;
     private Order order;
     private OrderExpress orderExpress;
+    private Token token;
     public Merchant getMerchant() {
         return merchant;
     }
@@ -98,5 +100,13 @@ public class Request {
 
     public void setOrderExpress(OrderExpress orderExpress) {
         this.orderExpress = orderExpress;
+    }
+
+    public Token getToken() {
+        return token;
+    }
+
+    public void setToken(Token token) {
+        this.token = token;
     }
 }

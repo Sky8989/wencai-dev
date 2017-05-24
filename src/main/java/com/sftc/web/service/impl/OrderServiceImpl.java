@@ -142,15 +142,21 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         String str = gson.toJson(requests);
         JSONObject jsonObject = JSONObject.fromObject(str);
+
         Request request = (Request)JSONObject.toBean((JSONObject)jsonObject.get("request"), Request.class);
-        request.getMerchant().setUuid("2c9a85895c163a16015c165321dc0045");
+        Token token = tokenMapper.getTokenByMobile("13632571782");
+
+        HttpPost post = new HttpPost(QUOTES_URL);
+        if(request.getMerchant().getUuid().equals("")&&requests.getRequest().getToken().getAccess_token().equals("")) {
+            request.getMerchant().setUuid("2c9a85895c163a16015c165321dc0045");
+            post.addHeader("PushEnvelope-Device-Token",token.getAccess_token());
+        }else{
+            post.addHeader("PushEnvelope-Device-Token",requests.getRequest().getToken().getAccess_token());
+        }
         requests.setRequest(request);
         JSONObject str1 = JSONObject.fromObject(requests);
         System.out.println(requests.getRequest().getMerchant().getUuid());
         String str2 = gson1.toJson(str1);
-        Token token = tokenMapper.getTokenByMobile("13632571782");
-        HttpPost post = new HttpPost(QUOTES_URL);
-        post.addHeader("PushEnvelope-Device-Token",token.getAccess_token());
         String res = AIPPost.getPost(str2,post);
         JSONObject jsonObject1 = JSONObject.fromObject(res);
         if(jsonObject1.get("error")!=null){
