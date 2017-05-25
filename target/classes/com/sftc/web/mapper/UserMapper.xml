@@ -10,34 +10,31 @@
 
 
         where
-            <if test="mobile!=null">
-                mobile=#{mobile}
-            </if>
-            <if test="open_id!=null">
-                open_id=#{open_id}
-            </if>
+        <if test="mobile!=null">
+            mobile=#{mobile}
+        </if>
+        <if test="open_id!=null">
+            open_id=#{open_id}
+        </if>
 
     </select>
-    <select id="selectUserByPhone" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
 
-        select * from sftc_merchant where mobile=#{mobile}
+    <select id="selectUserByPhone" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
+        select * from sftc_user where mobile=#{mobile}
     </select>
 
     <select id="selectUserByOpenid" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
-        select * from sftc_merchant where open_id=#{open_id}
-
-
-
+        select * from sftc_user where open_id=#{open_id}
     </select>
 
     <insert id="insertOpenid" parameterType="java.lang.String">
-        insert into sftc_merchant (open_id) values (#{open_id})
+        insert into sftc_user (open_id) values (#{open_id})
     </insert>
 
 
     <!--添加顺丰传过来的Merchant信息-->
 
-    <insert id="addMerchant" parameterType="com.sftc.web.model.User"  useGeneratedKeys="true" keyProperty="id">
+    <insert id="addMerchant" parameterType="com.sftc.web.model.User" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_user (mobile,user_password,open_id,create_time,avatar,uuid,name)VALUES
 
          (#{mobile},#{user_password},#{open_id},#{create_time},#{avatar},#{uuid},#{name})

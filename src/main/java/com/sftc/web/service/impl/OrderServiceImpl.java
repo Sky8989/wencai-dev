@@ -3,17 +3,10 @@ package com.sftc.web.service.impl;
 import com.google.gson.Gson;
 import com.sftc.tools.api.*;
 import com.sftc.web.mapper.*;
-import com.sftc.web.model.*;
-
-
-
 import com.sftc.web.model.Error;
+import com.sftc.web.model.*;
 import com.sftc.web.model.reqeustParam.OrderParam;
-
 import com.sftc.web.model.sfmodel.Request;
-
-import com.sftc.web.model.reqeustParam.OrderParam;
-
 import com.sftc.web.model.sfmodel.Requests;
 import com.sftc.web.service.OrderService;
 import net.sf.json.JSONObject;
@@ -22,7 +15,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.lang.Object;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,7 +50,6 @@ public class OrderServiceImpl implements OrderService {
     /*
      * 普通提交订单
      */
-
     public APIResponse placeOrder(Object object) {
         String order_number = UUID.randomUUID().toString();
         APIStatus status = APIStatus.SUCCESS;
@@ -93,7 +87,6 @@ public class OrderServiceImpl implements OrderService {
         return APIUtil.getResponse(status, jsonObject);
     }
 
-    @Override
     public APIResponse placeOrder1(Requests requests) {
         String order_number=Long.toString(System.currentTimeMillis());
         APIStatus status = APIStatus.SUCCESS;

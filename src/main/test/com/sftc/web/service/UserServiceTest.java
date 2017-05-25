@@ -2,7 +2,6 @@ package com.sftc.web.service;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.Order;
 import com.sftc.web.model.Token;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -29,7 +28,7 @@ public class UserServiceTest {
     @Test
     public void wechatLogin() throws Exception {
 
-        request.setAttribute("js_code", "003N9DQB0KIF6e21BUPB0mstQB0N9DQL");
+        request.setAttribute("js_code", "061e8TBD1bljo00n7tAD1QrYBD1e8TB0");
         APIResponse response = userService.login(request);
         Assert.assertTrue(response.getMessage(), response.getState().equals("40029"));
     }
