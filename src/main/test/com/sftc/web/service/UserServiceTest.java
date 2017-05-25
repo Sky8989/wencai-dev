@@ -28,7 +28,7 @@ public class UserServiceTest {
     @Test
     public void wechatLogin() throws Exception {
 
-        request.setAttribute("js_code", "061e8TBD1bljo00n7tAD1QrYBD1e8TB0");
+        request.setAttribute("js_code", "003GdtOj0jwU7k1UelPj01NyOj0GdtOw");
         APIResponse response = userService.login(request);
         Assert.assertTrue(response.getMessage(), response.getState().equals("40029"));
     }

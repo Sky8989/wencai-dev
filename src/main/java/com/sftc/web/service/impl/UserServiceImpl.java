@@ -31,7 +31,11 @@ public class UserServiceImpl extends AbstractBasicService implements UserService
         if (wechatUser.getOpenid() != null) {
             user = userMapper.selectUserByOpenid(wechatUser.getOpenid());
             if (user == null) {
-                userMapper.insertOpenid(wechatUser.getOpenid());
+                user = new User();
+                user.setOpen_id(wechatUser.getOpenid());
+                user.setCreate_time(Long.toString(System.currentTimeMillis()));
+                int id = userMapper.insertOpenid(user);
+                user.setId(id);
             }
         } else {
             status = APIStatus.WECHAT_ERR;
