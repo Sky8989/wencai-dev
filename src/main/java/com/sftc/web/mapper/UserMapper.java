@@ -9,8 +9,7 @@ public interface UserMapper {
 
     public User selectUserByOpenid(String open_id);
 
-    public void insertOpenid(String open_id);
-
+    public int insertOpenid(User user);
 
     void addMerchant(User merchant);
 
