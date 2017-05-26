@@ -45,7 +45,7 @@ public class OrderController extends AbstractBasicController {
     }
     @RequestMapping(value = "/place1", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
-    APIResponse placeOrder1(@RequestBody Requests object) throws Exception {
+    APIResponse placeOrder1(@RequestBody Object object) throws Exception {
         return orderService.placeOrder1(object);
     }
     /**

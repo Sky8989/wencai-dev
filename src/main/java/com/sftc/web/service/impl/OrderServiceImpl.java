@@ -99,43 +99,54 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public APIResponse placeOrder1(Requests requests) {
-        String order_number=Long.toString(System.currentTimeMillis());
+    public APIResponse placeOrder1(Object object) {
+        String order_number= UUID.randomUUID().toString();
         APIStatus status = APIStatus.SUCCESS;
-//        Order order  = new Order(time,order_number,"待支付", time,requests.getRequest().getPay_type(),
-//                requests.getRequest().getProduct_type(), requests.getOrder().getFreight(),requests.getRequest().getSource().getAddress().getReceiver(),
-//                requests.getRequest().getSource().getAddress().getMobile(),requests.getRequest().getSource().getAddress().getProvince(),
-//                requests.getRequest().getSource().getAddress().getCity(),requests.getRequest().getSource().getAddress().getRegion(),requests.getRequest().getSource().getAddress().getStreet(),
-//                requests.getOrder().getWord_message(), requests.getOrder().getImage(), requests.getOrder().getVoice(),
-//       requests.getRequest().getSource().getCoordinate().getLongitude(), requests.getRequest().getSource().getCoordinate().getLatitude(), requests.getOrder().getSender_user_id(), requests.getOrder().getGift_card_id());
-//
-//        OrderExpress orderExpress = new OrderExpress(time, order_number,requests.getRequest().getTarget().getAddress().getReceiver(),
-//                requests.getRequest().getTarget().getAddress().getMobile(),requests.getRequest().getTarget().getAddress().getProvince(),
-//                requests.getRequest().getTarget().getAddress().getCity(),requests.getRequest().getTarget().getAddress().getRegion(),
-//                requests.getRequest().getTarget().getAddress().getStreet(),requests.getRequest().getPackages().get(0).getType(), requests.getRequest().getPackages().get(0).getComments(),
-//                "待支付", requests.getOrderExpress().getSender_user_id(),requests.getOrderExpress().getOrder_id(), requests.getOrderExpress().getShip_user_id());
 
         JSONObject jsonObject = null;
-        JSONObject jsonObject1 = JSONObject.fromObject(requests);
-        String str = gson.toJson(jsonObject1.get("requests"));
+        JSONObject jsonObject1 = JSONObject.fromObject(object);
+        String str = gson.toJson(jsonObject1);
         System.out.println(str);
         try {
+            User user = userMapper.selectUserByPhone((String) jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("mobile"));
+            System.out.println(user.getId());
+            System.out.println((String)jsonObject1.getJSONObject("request").get("pay_type"));
+            System.out.println( (String)jsonObject1.getJSONObject("request").get("product_type"));
+            System.out.println((String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver"));
+            System.out.println((String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("mobile"));
+            System.out.println((String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("province"));
+            System.out.println((String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("city"));
+            System.out.println((String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("region"));
+           System.out.println((String)jsonObject1.getJSONObject("request").getJSONObject("order").get("word_message"));
+           System.out.println((String)jsonObject1.getJSONObject("request").getJSONObject("order").get("image"));
+           System.out.println((String)jsonObject1.getJSONObject("request").getJSONObject("order").get("voice"));
+            System.out.println((Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"));
+            Order order = new Order(time,order_number, "待支付",time,(String)jsonObject1.getJSONObject("request").get("pay_type"),
+
+                    (String)jsonObject1.getJSONObject("request").get("product_type"),0.0,  (String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver"), (String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("mobile"),(String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("province"),
+                    (String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("city"),(String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("region"),(String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("street"),(String)jsonObject1.getJSONObject("request").getJSONObject("order").get("word_message"),(String)jsonObject1.getJSONObject("request").getJSONObject("order").get("image"),(String)jsonObject1.getJSONObject("request").getJSONObject("order").get("voice"),
+                    (Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"), (Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),Integer.parseInt((String)jsonObject1.getJSONObject("request").getJSONObject("order").get("gift_card_id")),"普通订单",user.getId());
+           System.out.println("aa");
             HttpPost post = new HttpPost(REQUEST_URL);
             post.addHeader("PushEnvelope-Device-Token","7nWq8uExhVUoE7EW4ud2");//97uAK7HQmDtsw5JMOqad
             String res = AIPPost.getPost(str,post);
             jsonObject = JSONObject.fromObject(res);
-            Error error = (Error) JSONObject.toBean((JSONObject) jsonObject.get("error"), Error.class);
-            Order order1 = (Order) JSONObject.toBean((JSONObject)jsonObject1.get("order"),Order.class);
-            OrderExpress orderExpress1 = (OrderExpress) JSONObject.toBean((JSONObject)jsonObject1.get("orderExpress"),OrderExpress.class);
-            if(error==null) {
-                orderMapper.addOrder(order1);
-                orderExpressMapper.addOrderExpress(orderExpress1);
+
+            if(jsonObject.get("errors")==null||jsonObject.get("error")==null) {
+
+                orderMapper.addOrder(order);
+                OrderExpress orderExpress = new OrderExpress(time,order_number,(String)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("receiver"),(String)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("mobile"),(String)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("province"),
+                        (String)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("city"),(String)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("region"), (String)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("street"), (String)jsonObject1.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("type"),
+                        (String)jsonObject1.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("comments"),"待支付",user.getId(),order.getId(), (String)jsonObject1.getJSONObject("request").getJSONObject("merchant").get("uuid"),(Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
+                        (Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"));
+                orderExpressMapper.addOrderExpress(orderExpress);
             } else {
+
                 status = APIStatus.SUBMIT_FAIL;
             }
         } catch (Exception e) {
-
-            status = APIStatus.ORDER_NOT_FOUND;
+            System.out.println(e.fillInStackTrace());
+            status = APIStatus.SUBMIT_FAIL;
 
         }
         return APIUtil.getResponse(status, jsonObject);

@@ -26,7 +26,7 @@ public interface OrderService {
      * @return
      */
     APIResponse placeOrder(Object object);
-    APIResponse placeOrder1(Requests object);
+    APIResponse placeOrder1(Object object);
     /**
      * 支付订单
      * @param request
