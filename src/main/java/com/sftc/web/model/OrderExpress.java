@@ -51,7 +51,7 @@ public class OrderExpress extends Object {
     public int getSender_user_id() {
         return sender_user_id;
     }
-
+    private String uuid;
     public void setSender_user_id(int sender_user_id) {
         this.sender_user_id = sender_user_id;
     }
@@ -102,7 +102,7 @@ public class OrderExpress extends Object {
     }
 
     public OrderExpress(String order_number,String package_type, String object_type, int sender_user_id, int ship_user_id,
-                        int order_id, String create_time, int is_use,String state) {
+                        int order_id, String create_time, int is_use,String state,String uuid) {
         this.order_number = order_number;
         this.package_type = package_type;
         this.object_type = object_type;
@@ -112,6 +112,7 @@ public class OrderExpress extends Object {
         this.is_use = is_use;
         this.order_id = order_id;
         this.state = state;
+        this.uuid = uuid;
     }
 
     public OrderExpress(APIRequest request) {
@@ -265,5 +266,13 @@ public class OrderExpress extends Object {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

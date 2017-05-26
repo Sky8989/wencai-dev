@@ -18,6 +18,7 @@ import javax.annotation.Resource;
 import java.lang.Object;
 import java.util.List;
 import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -64,14 +65,18 @@ public class OrderServiceImpl implements OrderService {
             Error error = (Error) JSONObject.toBean((JSONObject) jsonObject.get("error"), Error.class);
             Order order = (Order) JSONObject.toBean((JSONObject)jsonObject1.get("order"),Order.class);
             OrderExpress orderExpress = (OrderExpress) JSONObject.toBean((JSONObject)jsonObject1.get("orderExpress"),OrderExpress.class);
-            order.setCreate_time(time);
-            order.setGmt_order_create(time);
-            order.setOrder_number(order_number);
-            order.setState("待支付");
-            orderExpress.setCreate_time(time);
-            orderExpress.setOrder_number(order_number);
-            orderExpress.setState("待支付");
+
+              order.setCreate_time(time);
+              order.setGmt_order_create(time);
+             order.setOrder_number(order_number);
+             order.setState("待支付");
+              orderExpress.setCreate_time(time);
+              orderExpress.setOrder_number(order_number);
+                orderExpress.setState("待支付");
+            orderExpress.setUuid((String)jsonObject.getJSONObject("request").get("uuid"));
+
             if(error==null) {
+                System.out.println("BBB");
                 orderMapper.addOrder(order);
                 System.out.println(order.getId());
                 jsonObject.put("id", order.getId());
@@ -195,6 +200,7 @@ public class OrderServiceImpl implements OrderService {
             for (int i = 0; i < orderExpressList.size(); i++) {
                 orderExpressList.get(i).setOrder_number(order_number);
                 orderExpressList.get(i).setState("待下单");
+                orderExpressList.get(i).setUuid("");
                 OrderExpress orderExpress = new OrderExpress(
                         orderExpressList.get(i).getOrder_number(),
                         orderExpressList.get(i).getPackage_type(),
@@ -204,7 +210,8 @@ public class OrderServiceImpl implements OrderService {
                         orderExpressList.get(i).getOrder_id(),
                         order.getCreate_time(),
                         orderExpressList.get(i).getIs_use(),
-                        orderExpressList.get(i).getState()
+                        orderExpressList.get(i).getState(),
+                        orderExpressList.get(i).getUuid()
                         );
                 orderExpressMapper.addOrderExpress(orderExpress);
             }
@@ -222,26 +229,29 @@ public class OrderServiceImpl implements OrderService {
     public synchronized APIResponse friendFillOrder(Object object) {
         System.out.println(object);
         APIStatus status = APIStatus.SUCCESS;
-//
-//        JSONObject jsonObject = null;
-//        JSONObject jsonObject1 = JSONObject.fromObject(object);
-//        String str = gson.toJson(jsonObject1.get("requests"));
-//        HttpPost post = new HttpPost(REQUEST_URL);
-//        post.addHeader("PushEnvelope-Device-Token","7nWq8uExhVUoE7EW4ud2");//97uAK7HQmDtsw5JMOqad
-//
-//        String res = AIPPost.getPost(str,post);
-//       JSONObject jsonObject = JSONObject.fromObject(res);
-//        if(jsonObject.get("error")!=null){
-//            status = APIStatus.QUOTE_FAIL;
-//        }
-//        try {
-//            orderExpressMapper.updateOrderExpress();
-//        } catch (Exception e) {
-//            status = APIStatus.SUBMIT_FAIL;
-//            e.printStackTrace();
-//      }
 
-        return APIUtil.getResponse(status, null);
+
+        JSONObject jsonObject = null;
+        JSONObject jsonObject1 = JSONObject.fromObject(object);
+        String str = gson.toJson(jsonObject1.get("requests"));
+        HttpPost post = new HttpPost(REQUEST_URL);
+        post.addHeader("PushEnvelope-Device-Token","7nWq8uExhVUoE7EW4ud2");//97uAK7HQmDtsw5JMOqad
+        String res = AIPPost.getPost(str,post);
+        jsonObject = JSONObject.fromObject(res);
+        System.out.println("ss");
+        OrderExpress orderExpress = (OrderExpress) JSONObject.toBean((JSONObject)jsonObject1.get("orderExpress"),OrderExpress.class);
+
+        orderExpress.setUuid((String)jsonObject.getJSONObject("request").get("uuid"));
+        if(jsonObject.get("error")!=null||jsonObject.get("errors")!=null){
+            status = APIStatus.SUBMIT_FAIL;
+        }else {
+            System.out.println(orderExpress.getUuid());
+            orderExpressMapper.updateOrderExpress(orderExpress);
+        }
+
+
+
+        return APIUtil.getResponse(status, jsonObject);
     }
 
     /*
