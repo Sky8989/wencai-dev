@@ -12,10 +12,19 @@ package com.sftc.web.model.wechat;
  */
 public class WechatUser {
 
+    private String js_code;
     private String openid;
     private String session_key;
     private int errcode;
     private String errmsg;
+
+    public String getJs_code() {
+        return js_code;
+    }
+
+    public void setJs_code(String js_code) {
+        this.js_code = js_code;
+    }
 
     public String getOpenid() {
         return openid;

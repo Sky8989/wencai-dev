@@ -21,12 +21,11 @@ public class UserServiceImpl extends AbstractBasicService implements UserService
 
     private static String AUTHORIZATION_URL = "https://api.weixin.qq.com/sns/jscode2session?appid=wxb6cbb81471348fec&secret=b201962b8a3da757c72a0747eb6f1110&js_code=JSCODE&grant_type=authorization_code";
 
-    public APIResponse login(APIRequest request) throws Exception {
+    public APIResponse login(WechatUser wechatUser) throws Exception {
         APIStatus status = APIStatus.SUCCESS;
-        String js_code = (String) request.getParameter("js_code");
         User user = null;
-        AUTHORIZATION_URL = AUTHORIZATION_URL.replace("JSCODE", js_code);
-        WechatUser wechatUser = APIResolve.getJson(AUTHORIZATION_URL);
+        AUTHORIZATION_URL = AUTHORIZATION_URL.replace("JSCODE", wechatUser.getJs_code());
+        wechatUser = APIResolve.getJson(AUTHORIZATION_URL);
         System.out.println(wechatUser.getOpenid());
         if (wechatUser.getOpenid() != null) {
             user = userMapper.selectUserByOpenid(wechatUser.getOpenid());
