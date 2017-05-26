@@ -62,19 +62,12 @@ public class OrderServiceImpl implements OrderService {
             post.addHeader("PushEnvelope-Device-Token","7nWq8uExhVUoE7EW4ud2");//97uAK7HQmDtsw5JMOqad
             String res = AIPPost.getPost(str,post);
             jsonObject = JSONObject.fromObject(res);
-<<<<<<< HEAD
-            System.out.println(jsonObject.getJSONObject("request"));
-          Request request = (Request) JSONObject.toBean((JSONObject)jsonObject.get("request"),Request.class);
-            System.out.println("CC");
-           Error error = (Error) JSONObject.toBean((JSONObject) jsonObject.get("error"), Error.class);
-           Order order = (Order) JSONObject.toBean((JSONObject)jsonObject1.get("order"),Order.class);
-            OrderExpress orderExpress = (OrderExpress) JSONObject.toBean((JSONObject)jsonObject1.get("orderExpress"),OrderExpress.class);
-=======
+
             Error error = (Error) JSONObject.toBean((JSONObject) jsonObject.get("error"), Error.class);
             Order order = (Order) JSONObject.toBean((JSONObject)jsonObject1.get("order"),Order.class);
             OrderExpress orderExpress = (OrderExpress) JSONObject.toBean((JSONObject)jsonObject1.get("orderExpress"),OrderExpress.class);
 
->>>>>>> yqy
+
               order.setCreate_time(time);
               order.setGmt_order_create(time);
              order.setOrder_number(order_number);
