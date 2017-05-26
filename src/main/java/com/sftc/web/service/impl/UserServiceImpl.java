@@ -27,7 +27,7 @@ public class UserServiceImpl extends AbstractBasicService implements UserService
         AUTHORIZATION_URL = AUTHORIZATION_URL.replace("JSCODE", wechatUser.getJs_code());
         wechatUser = APIResolve.getJson(AUTHORIZATION_URL);
         System.out.println(wechatUser.getOpenid());
-        if (wechatUser.getOpenid() != null) {
+        if (!wechatUser.getOpenid().equals("")) {
             user = userMapper.selectUserByOpenid(wechatUser.getOpenid());
             if (user == null) {
                 user = new User();
