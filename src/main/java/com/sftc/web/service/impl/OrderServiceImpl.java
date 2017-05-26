@@ -83,15 +83,8 @@ public class OrderServiceImpl implements OrderService {
               orderExpress.setOrder_number(order_number);
                 orderExpress.setState("待支付");
             orderExpress.setUuid((String)jsonObject.getJSONObject("request").get("uuid"));
-
-<<<<<<< HEAD
-
-=======
->>>>>>> yqy
             if(error==null) {
-                System.out.println("BBB");
                 orderMapper.addOrder(order);
-                System.out.println(order.getId());
                 jsonObject.put("id", order.getId());
                 orderExpressMapper.addOrderExpress(orderExpress);
             } else {
@@ -242,11 +235,6 @@ public class OrderServiceImpl implements OrderService {
     public synchronized APIResponse friendFillOrder(Object object) {
         System.out.println(object);
         APIStatus status = APIStatus.SUCCESS;
-<<<<<<< HEAD
-=======
-
-
->>>>>>> yqy
         JSONObject jsonObject = null;
         JSONObject jsonObject1 = JSONObject.fromObject(object);
         String str = gson.toJson(jsonObject1.get("requests"));
