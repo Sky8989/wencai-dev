@@ -18,9 +18,6 @@ import javax.annotation.Resource;
 public abstract class AbstractBasicController {
 
     @Resource
-    protected UserService userService;
-
-    @Resource
     protected QiniuService qiniuService;
 
     @Resource

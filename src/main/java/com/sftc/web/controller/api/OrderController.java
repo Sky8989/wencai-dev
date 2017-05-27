@@ -5,6 +5,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.model.sfmodel.Requests;
 import com.sftc.web.service.OrderService;
@@ -156,7 +157,7 @@ public class OrderController extends AbstractBasicController {
 
     @RequestMapping(value = "/my", method = RequestMethod.GET, headers = "api-version=1")
     public @ResponseBody
-    APIResponse myOrder(HttpServletRequest request) throws Exception {
-        return orderService.getMyOrderList(new APIRequest(request));
+    APIResponse myOrder(@RequestBody MyOrderParam myOrderParam) throws Exception {
+        return orderService.getMyOrderList(myOrderParam);
     }
 }

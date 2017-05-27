@@ -5,9 +5,9 @@ import com.sftc.tools.api.*;
 import com.sftc.web.mapper.*;
 import com.sftc.web.model.Error;
 import com.sftc.web.model.*;
+import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
-import com.sftc.web.model.sfmodel.Request;
-import com.sftc.web.model.sfmodel.Requests;
+import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.service.OrderService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -18,7 +18,6 @@ import javax.annotation.Resource;
 import java.lang.Object;
 import java.util.List;
 import java.util.UUID;
-import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,9 +31,12 @@ import java.util.*;
 
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
+
     private static String QUOTES_URL = "http://api-dev.sf-rush.com/quotes";
     private static String REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
     private static String REQUEST_URL = "http://api-dev.sf-rush.com/requests";
+    private static String ORDERS_URL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
+
     Gson gson = new Gson();
     Gson gson1 = new Gson();
     String time = Long.toString(System.currentTimeMillis());
@@ -340,17 +342,38 @@ public class OrderServiceImpl implements OrderService {
     /*
      * C01 我的订单
      */
-    public APIResponse getMyOrderList(APIRequest request) {
+    public APIResponse getMyOrderList(MyOrderParam myOrderParam) {
         APIStatus status = APIStatus.SUCCESS;
-        String id = request.getParameter("id").toString();
-        String state = request.getParameter("state").toString();
-        OrderExpress orderExpress = new OrderExpress();
-        orderExpress.setId(Integer.parseInt(id));
-        if (!state.equals("")) {
-            orderExpress.setState(state);
+        ORDERS_URL = ORDERS_URL.replace("uuid", myOrderParam.getUuid());
+        Orders orders = APIResolve.getOrdersJson(ORDERS_URL);
+        String order_status = orders.getStatus();
+        if (order_status.equals("INIT")) {
+
+        } else if (order_status.equals("PAYING")) {
+
+        } else if (order_status.equals("WAIT_HAND_OVER")) {
+
+        } else if (order_status.equals("DELIVERING")) {
+
+        } else if (order_status.equals("FINISHED")) {
+
+        } else if (order_status.equals("ABNORMAL")) {
+
+        } else if (order_status.equals("CANCELED")) {
+
+        } else if (order_status.equals("WAIT_REFUND")) {
+
+        } else if (order_status.equals("REFUNDING")) {
+
+        } else if (order_status.equals("REFUNDED")) {
+
         }
-        List<Order> orderList = orderMapper.myOrderLists(orderExpress);
-        return APIUtil.getResponse(status, orderList);
+        // if (!state.equals("")) {
+        //     orderExpress.setState(state);
+        // }
+        // List<Order> orderList = orderMapper.myOrderLists(orderExpress);
+        // return APIUtil.getResponse(status, orderList);
+        return null;
     }
 }
 

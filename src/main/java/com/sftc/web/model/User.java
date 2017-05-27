@@ -13,6 +13,7 @@ public class User extends Object {
     private String user_password;
     private String open_id;
     private String create_time;
+    private String js_code;
     private Object summary;
     private Object attributes;
     private Object tags;
@@ -46,6 +47,14 @@ public class User extends Object {
     }
 
     public User() {
+    }
+
+    public String getJs_code() {
+        return js_code;
+    }
+
+    public void setJs_code(String js_code) {
+        this.js_code = js_code;
     }
 
     public int getId() {

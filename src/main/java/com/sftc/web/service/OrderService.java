@@ -4,8 +4,8 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.sfmodel.Requests;
-
 
 
 /**
@@ -79,6 +79,6 @@ public interface OrderService {
      */
     APIResponse getEmptyPackage(APIRequest request);
 
-    APIResponse getMyOrderList(APIRequest request);
+    APIResponse getMyOrderList(MyOrderParam myOrderParam);
 }
 

@@ -2,13 +2,10 @@ package com.sftc.web.service.impl;
 
 import com.google.gson.Gson;
 import com.sftc.tools.api.*;
+import com.sftc.web.mapper.TokenMapper;
 import com.sftc.web.mapper.UserMapper;
-import com.sftc.web.model.User;
-import com.sftc.web.model.Result;
-import com.sftc.web.model.Token;
-import com.sftc.web.model.sfmodel.Request;
+import com.sftc.web.model.*;
 import com.sftc.web.service.MessageService;
-
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -17,9 +14,14 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.Object;
 
 @Service("messageService")
-public class MessageServiceImpl extends AbstractBasicService implements MessageService{
+public class MessageServiceImpl implements MessageService{
+
+    @Resource
+    private TokenMapper tokenMapper;
+
     @Resource
     UserMapper userMapper;
     HttpServletRequest request;
