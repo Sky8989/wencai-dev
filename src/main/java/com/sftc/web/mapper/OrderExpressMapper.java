@@ -11,4 +11,5 @@ public interface OrderExpressMapper {
     void updateOrderExpress(OrderExpress orderExpress);
 
     List<OrderExpress> findEmptyPackage(String order_number);
+    void updateUuid(OrderExpress orderExpress);
 }

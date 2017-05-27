@@ -45,7 +45,7 @@ public class OrderController extends AbstractBasicController {
     }
     @RequestMapping(value = "/place1", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
-    APIResponse placeOrder1(@RequestBody Requests object) throws Exception {
+    APIResponse placeOrder1(@RequestBody Object object) throws Exception {
         return orderService.placeOrder1(object);
     }
     /**
@@ -64,14 +64,14 @@ public class OrderController extends AbstractBasicController {
 
     /**
      * 好友填写收件接口
-     * @param request
+     * @param @request
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/fill", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
-    APIResponse fillOrder(HttpServletRequest request,@RequestBody Object object) throws Exception {
-        return orderService.friendFillOrder(object);
+    APIResponse fillOrder(@RequestBody OrderExpress orderExpress) throws Exception {
+        return orderService.friendFillOrder(orderExpress);
     }
 
 
@@ -158,5 +158,12 @@ public class OrderController extends AbstractBasicController {
     public @ResponseBody
     APIResponse myOrder(HttpServletRequest request) throws Exception {
         return orderService.getMyOrderList(new APIRequest(request));
+    }
+
+
+    @RequestMapping(value = "/friendPlace", method = RequestMethod.POST, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse friendPlace(@RequestBody Object object) throws Exception {
+        return orderService.friendPlace(object);
     }
 }

@@ -19,16 +19,23 @@
 
     </select>
 
+
     <select id="selectUserByPhone" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
+
         select * from sftc_user where mobile=#{mobile}
     </select>
 
     <select id="selectUserByOpenid" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
         select * from sftc_user where open_id=#{open_id}
+
+
+
+
     </select>
 
-    <insert id="insertOpenid" parameterType="com.sftc.web.model.User" keyProperty="id" useGeneratedKeys="true">
-        insert into sftc_user (open_id,create_time) values (#{open_id},#{create_time})
+    <insert id="insertOpenid" parameterType="java.lang.String">
+        insert into sftc_user (open_id) values (#{open_id})
+
     </insert>
 
 

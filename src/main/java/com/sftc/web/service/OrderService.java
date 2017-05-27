@@ -26,7 +26,7 @@ public interface OrderService {
      * @return
      */
     APIResponse placeOrder(Object object);
-    APIResponse placeOrder1(Requests object);
+    APIResponse placeOrder1(Object object);
     /**
      * 支付订单
      * @param request
@@ -35,7 +35,7 @@ public interface OrderService {
     APIResponse payOrder(APIRequest request);
 
     /**
-     * 好友寄件提交订单
+     * 寄件人填写订单
      * @param request
      * @return
      */
@@ -46,7 +46,7 @@ public interface OrderService {
      * @param
      * @return
      */
-    APIResponse friendFillOrder(Object object);
+    APIResponse friendFillOrder(OrderExpress orderExpress);
 
 
     /**
@@ -80,5 +80,7 @@ public interface OrderService {
     APIResponse getEmptyPackage(APIRequest request);
 
     APIResponse getMyOrderList(APIRequest request);
+
+    APIResponse friendPlace(Object object);
 }
 

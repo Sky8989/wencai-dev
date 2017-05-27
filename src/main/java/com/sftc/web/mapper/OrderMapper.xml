@@ -90,13 +90,13 @@
         (order_number, state, gmt_order_create, freight,
         create_time, sender_province, sender_name, sender_mobile, sender_city,
         sender_area, sender_addr, word_message, image, voice,
-        sender_user_id, gift_card_id, pay_method, distribution_method, longitude, latitude)
+        sender_user_id, gift_card_id, pay_method, distribution_method, longitude, latitude,order_type)
         VALUES
         (#{order_number}, #{state}, #{gmt_order_create}, #{freight},
         #{create_time}, #{sender_province}, #{sender_name}, #{sender_mobile}, #{sender_city},
         #{sender_area}, #{sender_addr}, #{word_message}, #{image}, #{voice},
         #{sender_user_id}, #{gift_card_id}, #{pay_method}, #{distribution_method},
-        #{longitude}, #{latitude})
+        #{longitude}, #{latitude},#{order_type})
     </insert>
 
     <!--修改订单   -->

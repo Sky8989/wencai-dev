@@ -68,57 +68,14 @@ public class Order extends Object {
     private GiftCard giftCard;
     private List<OrderExpress> orderExpressList;
     private OrderExpress orderExpress;
-
+    private String order_type;
     private JSONObject request;
     public Order() {
     }
 
-    public Order(String state, String gmt_order_create, String gmt_pay_create, String pay_method, double freight, String sender_name, String sender_mobile,
-                 String sender_province, String sender_city, String sender_area,
-                 String sender_addr, int sender_user_id, String voice, String create_time, int gift_card_id) {
-        this.state = state;
-        this.pay_method = pay_method;
-        this.freight = freight;
-        this.sender_name = sender_name;
-        this.sender_mobile = sender_mobile;
-        this.sender_province = sender_province;
-        this.sender_city = sender_city;
-        this.sender_area = sender_area;
-        this.sender_addr = sender_addr;
-        this.sender_user_id = sender_user_id;
-        this.voice = voice;
-        this.create_time = create_time;
-        this.gift_card_id = gift_card_id;
-        this.gmt_order_create = gmt_order_create;
-        this.gmt_pay_create = gmt_pay_create;
-    }
 
-    public Order(String create_time, String order_number, String state, String gmt_order_create, String gmt_pay_create,
-                 String pay_method, String distribution_method, double freight, String sender_name, String sender_mobile,
-                 String sender_province, String sender_city, String sender_area, String sender_addr, String word_message,
-                 String image, String voice, double longitude, double latitude, int gift_card_id, int sender_user_id) {
-        this.create_time = create_time;
-        this.order_number = order_number;
-        this.state = state;
-        this.gmt_order_create = gmt_order_create;
-        this.gmt_pay_create = gmt_pay_create;
-        this.pay_method = pay_method;
-        this.distribution_method = distribution_method;
-        this.freight = freight;
-        this.sender_name = sender_name;
-        this.sender_mobile = sender_mobile;
-        this.sender_province = sender_province;
-        this.sender_city = sender_city;
-        this.sender_area = sender_area;
-        this.sender_addr = sender_addr;
-        this.word_message = word_message;
-        this.image = image;
-        this.voice = voice;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.gift_card_id = gift_card_id;
-        this.sender_user_id = sender_user_id;
-    }
+
+
 
 
 
@@ -138,37 +95,14 @@ public class Order extends Object {
     /**
      * 提交订单的构造方法
      *
-     * @param request
+     * @param @request
      */
-    public Order(APIRequest request) {
-        this.create_time = Long.toString(System.currentTimeMillis());
 
-        this.state = "待支付";
-        this.gmt_order_create = Long.toString(System.currentTimeMillis());
-        this.pay_method = (String) request.getParameter("pay_method");
-        this.distribution_method = (String) request.getParameter("distribution_method");
-        this.sender_name = (String) request.getParameter("sender_name");
-        this.sender_mobile = (String) request.getParameter("sender_mobile");
-        this.sender_province = (String) request.getParameter("sender_province");
-        this.sender_city = (String) request.getParameter("sender_city");
-        this.sender_area = (String) request.getParameter("sender_area");
-        this.sender_addr = (String) request.getParameter("sender_addr");
-        this.word_message = (String) request.getParameter("word_message");
-        this.image = (String) request.getParameter("image");
-        this.voice = (String) request.getParameter("voice");
-        this.longitude = Double.parseDouble((String) request.getParameter("longitude"));
-        this.latitude = Double.parseDouble((String) request.getParameter("latitude"));
-
-        this.sender_user_id = Integer.parseInt((String) request.getParameter("user_id"));
-        this.gift_card_id = Integer.parseInt((String) request.getParameter("gift_card_id"));
-        this.job_number = (String) request.getParameter("job_number");
-
-    }
 
     public Order(String create_time, String order_number, String state, String gmt_order_create, String pay_method,
                  String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr, String word_message, String image, String voice,
-                 double longitude, double latitude, int sender_user_id, int gift_card_id) {
+                 double longitude, double latitude, int gift_card_id,String order_type,int sender_user_id) {
         this.create_time = create_time;
         this.order_number = order_number;
         this.state = state;
@@ -187,9 +121,9 @@ public class Order extends Object {
         this.voice = voice;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.job_number = job_number;
-        this.sender_user_id = sender_user_id;
         this.gift_card_id = gift_card_id;
+        this.order_type = order_type;
+        this.sender_user_id = sender_user_id;
     }
 
     public Order(OrderParam orderParam) {
@@ -455,5 +389,13 @@ public class Order extends Object {
 
     public void setRequest(JSONObject request) {
         this.request = request;
+    }
+
+    public String getOrder_type() {
+        return order_type;
+    }
+
+    public void setOrder_type(String order_type) {
+        this.order_type = order_type;
     }
 }

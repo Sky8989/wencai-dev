@@ -28,11 +28,11 @@
     <insert id="addOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
         INSERT INTO sftc_order_express
         (ship_name,ship_mobile,ship_province,ship_city,ship_area,
-        ship_addr,order_number,package_type,object_type,create_time,sender_user_id,ship_user_id,order_id,state,uuid)
+        ship_addr,order_number,package_type,object_type,create_time,sender_user_id,order_id,state,uuid,longitude,latitude)
         VALUES
         (#{ship_name},#{ship_mobile},#{ship_province},#{ship_city},#{ship_area},
-        #{ship_addr},#{order_number},#{package_type},#{object_type},#{create_time},#{sender_user_id},#{ship_user_id},#{order_id},#{state}
-        ,#{uuid})
+        #{ship_addr},#{order_number},#{package_type},#{object_type},#{create_time},#{sender_user_id},#{order_id},#{state}
+        ,#{uuid},#{longitude},#{latitude})
     </insert>
 
     <update id="updateOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
@@ -46,6 +46,14 @@
         ship_addr=#{ship_addr},
         is_use=1,
         uuid=#{uuid}
-        WHERE id=#{id}
+        WHERE order_number=#{order_number}
+    </update>
+
+    <update id="updateUuid" parameterType="com.sftc.web.model.OrderExpress">
+        UPDATE sftc_order_express
+        set
+        is_use=1,
+        uuid=#{uuid}
+        WHERE order_number=#{order_number}
     </update>
 </mapper>
