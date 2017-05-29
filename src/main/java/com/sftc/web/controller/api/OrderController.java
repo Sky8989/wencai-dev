@@ -41,12 +41,7 @@ public class OrderController extends AbstractBasicController {
      */
     @RequestMapping(value = "/place", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
-    APIResponse placeOrder(@RequestBody Object object) throws Exception {
-        return orderService.placeOrder(object);
-    }
-    @RequestMapping(value = "/place1", method = RequestMethod.POST, headers = "api-version=1")
-    public @ResponseBody
-    APIResponse placeOrder1(@RequestBody Requests object) throws Exception {
+    APIResponse placeOrder1(@RequestBody Object object) throws Exception {
         return orderService.placeOrder1(object);
     }
     /**
@@ -65,14 +60,14 @@ public class OrderController extends AbstractBasicController {
 
     /**
      * 好友填写收件接口
-     * @param request
+     * @param @request
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/fill", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
-    APIResponse fillOrder(HttpServletRequest request,@RequestBody Object object) throws Exception {
-        return orderService.friendFillOrder(object);
+    APIResponse fillOrder(@RequestBody OrderExpress orderExpress) throws Exception {
+        return orderService.friendFillOrder(orderExpress);
     }
 
 
@@ -123,8 +118,8 @@ public class OrderController extends AbstractBasicController {
      */
     @RequestMapping(value = "/getOrderDetile", method = RequestMethod.POST,headers = "api-version=1")
     public @ResponseBody
-    APIResponse getOrderDetile(@RequestBody Requests requests) throws Exception {
-        return orderService.getOrderDetile(requests);
+    APIResponse getOrderDetile(@RequestBody Object object) throws Exception {
+        return orderService.getOrderDetile(object);
     }
 
     /**
@@ -159,5 +154,12 @@ public class OrderController extends AbstractBasicController {
     public @ResponseBody
     APIResponse myOrder(@RequestBody MyOrderParam myOrderParam) throws Exception {
         return orderService.getMyOrderList(myOrderParam);
+    }
+
+
+    @RequestMapping(value = "/friendPlace", method = RequestMethod.POST, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse friendPlace(@RequestBody Object object) throws Exception {
+        return orderService.friendPlace(object);
     }
 }

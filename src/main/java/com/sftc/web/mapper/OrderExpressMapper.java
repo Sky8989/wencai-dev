@@ -11,8 +11,6 @@ public interface OrderExpressMapper {
 
     List<OrderCallback> findMyOrderExpress(OrderExpress orderExpress);
 
-    List<OrderCallback> findMyOrderExpressByOrderNumber(OrderCallback orderCallback);
-
     void addOrderExpress(OrderExpress orderExpress);
 
     void updateOrderExpress(OrderExpress orderExpress);
@@ -20,4 +18,5 @@ public interface OrderExpressMapper {
     List<OrderExpress> findEmptyPackage(String order_number);
 
     void updateOrderExpressForSF(OrderExpress orderExpress);
+    void updatePlace(OrderExpress orderExpress);
 }
