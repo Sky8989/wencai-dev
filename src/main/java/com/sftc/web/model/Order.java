@@ -69,7 +69,7 @@ public class Order extends Object {
     private List<OrderExpress> orderExpressList;
     private OrderExpress orderExpress;
     private String order_type;
-    private JSONObject request;
+
     public Order() {
     }
 
@@ -389,13 +389,7 @@ public class Order extends Object {
         this.orderExpress = orderExpress;
     }
 
-    public JSONObject getRequest() {
-        return request;
-    }
 
-    public void setRequest(JSONObject request) {
-        this.request = request;
-    }
 
     public String getOrder_type() {
         return order_type;

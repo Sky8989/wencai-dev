@@ -5,6 +5,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.Token;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.model.sfmodel.Requests;
 import com.sftc.web.service.OrderService;
@@ -40,8 +41,8 @@ public class OrderController extends AbstractBasicController {
      */
     @RequestMapping(value = "/place", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
-    APIResponse placeOrder1(@RequestBody Object object) throws Exception {
-        return orderService.placeOrder1(object);
+    APIResponse placeOrder(@RequestBody Object object) throws Exception {
+        return orderService.placeOrder(object);
     }
     /**
      * 计价
@@ -115,10 +116,10 @@ public class OrderController extends AbstractBasicController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/getOrderDetile", method = RequestMethod.POST,headers = "api-version=1")
+    @RequestMapping(value = "/getOrderDetile", method = RequestMethod.GET,headers = "api-version=1")
     public @ResponseBody
-    APIResponse getOrderDetile(@RequestBody Object object) throws Exception {
-        return orderService.getOrderDetile(object);
+    APIResponse getOrderDetile(Order order,OrderExpress orderExpress,Token token) throws Exception {
+        return orderService.getOrderDetile(order,orderExpress,token);
     }
 
     /**
@@ -155,10 +156,35 @@ public class OrderController extends AbstractBasicController {
         return orderService.getMyOrderList(new APIRequest(request));
     }
 
-
+    /**
+     * 好友订单提交
+     * * @param
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/friendPlace", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
     APIResponse friendPlace(@RequestBody Object object) throws Exception {
         return orderService.friendPlace(object);
+    }
+
+    /**
+     * 顺丰详情接口
+     * * @param
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/sfDetail", method = RequestMethod.GET, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse sfDetail(OrderExpress orderExpress,Token token) throws Exception {
+
+        return orderService.sfOrderDetail(orderExpress.getOrder_id(),token.getAccess_token());
+    }
+
+    @RequestMapping(value = "/placeOrderDetail", method = RequestMethod.GET, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse placeOrderDetail(OrderExpress orderExpress,Token token) throws Exception {
+
+        return orderService.placeOrderDetail(orderExpress.getOrder_id(),token.getAccess_token());
     }
 }

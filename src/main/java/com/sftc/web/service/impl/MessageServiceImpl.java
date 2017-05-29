@@ -118,7 +118,7 @@ public class MessageServiceImpl extends AbstractBasicService implements MessageS
         APIStatus status = APIStatus.SUCCESS;
         HttpGet get = new HttpGet(LOGIN);
        get.addHeader("PushEnvelope-Device-Token", object);
-        String res = APIGet.getPost(object,get);
+        String res = APIGet.getGet(object,get);
         Result result = new Result();
         JSONObject jsonObject1 = JSONObject.fromObject(res);
         result = (Result) JSONObject.toBean(jsonObject1,result.getClass());

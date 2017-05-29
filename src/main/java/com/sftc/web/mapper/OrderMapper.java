@@ -16,7 +16,7 @@ public interface OrderMapper {
     void updateOrder(Order order);
     void updateOrderExpress(OrderExpress orderExpress);
 
-    Order orderDetile(String order_number);
+    Order orderAndOrderExpressAndGiftDetile(int id);
 
     List<Order> myOrderList(Order order);
 
@@ -28,4 +28,5 @@ public interface OrderMapper {
 
     List<Order> myOrderListsForState(OrderExpress orderExpress);
     void updatePlace(Order order);
+    Order placeOrderDetile(int id);
 }

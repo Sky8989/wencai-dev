@@ -150,11 +150,11 @@
         gc.type,gc.create_time
     </sql>
     <!-- 查看订单详情  -->
-    <select id="orderDetile" resultType="com.sftc.web.model.Order" parameterType="string" resultMap="OrderExpressMap">
+    <select id="orderAndOrderExpressAndGiftDetile" resultType="com.sftc.web.model.Order" parameterType="int" resultMap="OrderExpressMap">
         SELECT
         <include refid="Order_And_OrderExpress_List"/>
-        FROM sftc_order o,sftc_order_express oe,sftc_gift_card gc WHERE o.order_number=#{order_number}
-        and oe.order_number=o.order_number AND o.gift_card_id=gc.id
+        FROM sftc_order o,sftc_order_express oe,sftc_gift_card gc WHERE o.id=#{id}
+        and oe.order_id=o.id AND o.gift_card_id=gc.id
 
 
     </select>
@@ -276,4 +276,17 @@
         latitude=#{latitude}
         WHERE order_number=#{order_number}
     </update>
+    <sql id="orderDetail">
+        o.sender_mobile, o.sender_name, o.sender_province,o.state,
+        o.sender_city, o.sender_area, o.sender_addr, o.voice,o.image ,o.pay_method,o.distribution_method,o.gmt_order_create,
+        o.gmt_pay_create
+    </sql>
+    <!-- 查看订单详情  -->
+    <select id="placeOrderDetile" resultType="com.sftc.web.model.Order" parameterType="int" >
+        SELECT
+        <include refid="orderDetail"/>
+        FROM sftc_order o WHERE o.id=#{id}
+    </select>
+
+
 </mapper>

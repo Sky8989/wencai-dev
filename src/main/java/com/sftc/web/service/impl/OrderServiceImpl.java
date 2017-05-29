@@ -51,49 +51,9 @@ public class OrderServiceImpl implements OrderService {
     /*
      * 普通提交订单
      */
-    public APIResponse placeOrder(Object object) {
-        String order_number = UUID.randomUUID().toString();
-        APIStatus status = APIStatus.SUCCESS;
-        JSONObject jsonObject = null;
-        JSONObject jsonObject1 = JSONObject.fromObject(object);
-        String str = gson.toJson(jsonObject1.get("requests"));
-        try {
-            HttpPost post = new HttpPost(REQUEST_URL);
-            post.addHeader("PushEnvelope-Device-Token","7nWq8uExhVUoE7EW4ud2");//97uAK7HQmDtsw5JMOqad
-            String res = AIPPost.getPost(str,post);
-            jsonObject = JSONObject.fromObject(res);
-
-            Error error = (Error) JSONObject.toBean((JSONObject) jsonObject.get("error"), Error.class);
-            Order order = (Order) JSONObject.toBean((JSONObject)jsonObject1.get("order"),Order.class);
-            OrderExpress orderExpress = (OrderExpress) JSONObject.toBean((JSONObject)jsonObject1.get("orderExpress"),OrderExpress.class);
-
-
-              order.setCreate_time(time);
-              order.setGmt_order_create(time);
-             order.setOrder_number(order_number);
-             order.setState("待支付");
-              orderExpress.setCreate_time(time);
-              orderExpress.setOrder_number(order_number);
-                orderExpress.setState("待支付");
-            orderExpress.setUuid((String)jsonObject.getJSONObject("request").get("uuid"));
-            if(error==null) {
-                orderMapper.addOrder(order);
-                jsonObject.put("id", order.getId());
-                orderExpressMapper.addOrderExpress(orderExpress);
-            } else {
-                status = APIStatus.SUBMIT_FAIL;
-            }
-        } catch (Exception e) {
-
-
-
-        }
-        return APIUtil.getResponse(status, jsonObject);
-    }
-
 
     @Override
-    public APIResponse placeOrder1(Object object) {
+    public APIResponse placeOrder(Object object) {
         String order_number= UUID.randomUUID().toString();
 
         APIStatus status = APIStatus.SUCCESS;
@@ -118,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
                 orderMapper.addOrder(order);
                 OrderExpress orderExpress = new OrderExpress(time,order_number,(String)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("receiver"),(String)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("mobile"),(String)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("province"),
                         (String)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("city"),(String)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("region"), (String)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("street"), (String)jsonObject1.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("type"),
-                        (String)jsonObject1.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("comments"),"待支付",user.getId(),order.getId(), (String)jsonObject1.getJSONObject("request").getJSONObject("merchant").get("uuid"),(Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
+                        (String)jsonObject1.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("comments"),"待支付",user.getId(),order.getId(), (String)jsonObject.getJSONObject("request").get("uuid"),(Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
                         (Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"));
                 orderExpressMapper.addOrderExpress(orderExpress);
             } else {
@@ -264,38 +224,46 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /*
-    * @订单详情接口
+    * @好友订单订单详情接口
     * */
-    public APIResponse getOrderDetile(Object object) {
+    public APIResponse getOrderDetile(Order order,OrderExpress orderExpress,Token token) {
         APIStatus status = APIStatus.SUCCESS;
-        String str = gson.toJson(object);
-        Order order =null;
+
+        JSONObject jsonObject = new JSONObject();
+
        try{
-        JSONObject jsonObject1 = JSONObject.fromObject(object);
 
-        order = orderMapper.orderDetile((String)jsonObject1.getJSONObject("request").getJSONObject("order").get("order_number"));
-           System.out.println("bb"+order.getSender_area()+order.getOrderExpress().getUuid());
-        REQUESTS_URL = REQUESTS_URL +order.getOrderExpress().getUuid();
-           System.out.println("aa");
-        HttpGet post = new HttpGet(REQUESTS_URL);
+           String uuid = orderExpressMapper.getUuidByOrderId(orderExpress.getOrder_id());
+           if(order.getOrder_type().equals("好友订单")){
 
-        post.addHeader("PushEnvelope-Device-Token",(String)jsonObject1.getJSONObject("request").getJSONObject("order").get("access_token"));
+               Order order1 = orderMapper.orderAndOrderExpressAndGiftDetile(orderExpress.getOrder_id());
+              jsonObject =  JSONObject.fromObject(order1);
+           }
+           else {
+              jsonObject =  APISfDetail.sfOrderDetail(token.getAccess_token(),uuid);
 
-        String res = APIGet.getPost(str,post);
-       JSONObject jsonObject = (JSONObject)JSONObject.fromObject(res).get("request");
-
-      //  requests.setJsonObject(jsonObject);
-
-        order.setRequest(jsonObject);
-       // requests.setOrder(order);
+           }
     }
-
-
        catch (Exception e){
         System.out.println( e.fillInStackTrace());
       }
+        return APIUtil.getResponse(status, jsonObject);
+    }
+    /*
+        * @顺丰订单详情接口
+        * */
 
-        return APIUtil.getResponse(status, order);
+    public APIResponse sfOrderDetail(int order_id,String access_token){
+        APIStatus status = APIStatus.SUCCESS;
+        JSONObject jsonObject =null;
+        try {
+         String uuid = orderExpressMapper.getUuidByOrderId(order_id);
+            jsonObject = APISfDetail.sfOrderDetail(access_token,uuid);
+        }catch (Exception e){
+
+            System.out.println(e.fillInStackTrace());
+        }
+        return APIUtil.getResponse(status, jsonObject);
     }
 
     /*
@@ -343,6 +311,7 @@ public class OrderServiceImpl implements OrderService {
         return APIUtil.getResponse(status, orderList);
     }
 
+
     @Override
     public APIResponse friendPlace(Object object) {
         APIStatus status = APIStatus.SUCCESS;
@@ -359,6 +328,29 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order((Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"),(Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),(String)jsonObject1.getJSONObject("request").get("order_number"));
         orderMapper.updatePlace(order);
         return APIUtil.getResponse(status,jsonObject );
+    }
+
+
+        /*
+        * @普通订单详情接口
+        * */
+
+    public APIResponse placeOrderDetail(int order_id,String access_token){
+        APIStatus status = APIStatus.SUCCESS;
+        JSONObject jsonObject =null;
+
+        try {
+            Order order = orderMapper.placeOrderDetile(order_id);
+            System.out.println("aa");
+            String uuid = orderExpressMapper.getUuidByOrderId(order_id);
+            jsonObject = APISfDetail.sfOrderDetail(access_token,uuid);
+            jsonObject.put("order",order);
+            System.out.println(order);
+        }catch (Exception e){
+
+            System.out.println(e.fillInStackTrace());
+        }
+        return APIUtil.getResponse(status, jsonObject);
     }
 }
 

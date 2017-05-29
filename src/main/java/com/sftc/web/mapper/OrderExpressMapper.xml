@@ -58,4 +58,8 @@
         uuid=#{uuid}
         WHERE order_number=#{order_number}
     </update>
+
+    <select id="getUuidByOrderId" resultType="string" parameterType="int">
+        SELECT uuid FROM sftc_order_express where order_id=#{order_id}
+    </select>
 </mapper>

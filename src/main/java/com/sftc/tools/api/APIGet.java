@@ -1,78 +1,53 @@
 package com.sftc.tools.api;
 
 import net.sf.json.JSONObject;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+import org.omg.CORBA.NameValuePair;
 
 import java.io.*;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/5/15.
  */
 public class APIGet {
-    public static String getPost(String json, HttpGet post) {
-
-        HttpClient client = new DefaultHttpClient();
-
-
-        post.setHeader("Content-Type", "application/json");
-        post.addHeader("Authorization", "Basic YWRtaW46");
-        //     post.addHeader("PushEnvelope-Device-Token","97uAK7HQmDtsw5JMOqad");
-
-        String result = "";
-
-        try {
-
-            StringEntity s = new StringEntity(json.toString(), "utf-8");
-            s.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,
-                    "application/json"));
-            //    post.setEntity(s);
-
-            // 发送请求
-            HttpResponse httpResponse = client.execute(post);
-            System.out.println(json.toString() + "aa");
-            // 获取响应输入流
-            InputStream inStream = httpResponse.getEntity().getContent();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    inStream, "utf-8"));
-            StringBuilder strber = new StringBuilder();
-            String line = null;
-            while ((line = reader.readLine()) != null)
-                strber.append(line + "\n");
-            inStream.close();
-
-            result = strber.toString();
-
-            JSONObject jsonObject = JSONObject.fromObject(result);
-
-            // res = (Result) JSONObject.toBean(jsonObject,res.getClass());
-            //     System.out.println(res.getError().getType());
-
-            System.out.println(result);
-
-            if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-
-                System.out.println("请求服务器成功，做相应处理");
-
-            } else {
-
-                System.out.println("请求服务端失败");
-
-            }
+    public static String getGet(String json, HttpGet get) {
+        //httpClient
+        HttpClient httpClient = new DefaultHttpClient();
 
 
-        } catch (Exception e) {
-            System.out.println("请求异常");
-            throw new RuntimeException(e);
-        }
 
-        return result;
+        //response
+        HttpResponse response = null;
+        try{
+            response = httpClient.execute(get);
+        }catch (Exception e) {}
+
+        //get response into String
+        String temp="";
+        try{
+            HttpEntity entity = response.getEntity();
+            temp=EntityUtils.toString(entity,"UTF-8");
+        }catch (Exception e) {}
+
+        return temp;
     }
 }
 

@@ -4,6 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.Token;
 import com.sftc.web.model.sfmodel.Requests;
 
 
@@ -25,8 +26,8 @@ public interface OrderService {
      * @param @request
      * @return
      */
+
     APIResponse placeOrder(Object object);
-    APIResponse placeOrder1(Object object);
     /**
      * 支付订单
      * @param request
@@ -68,7 +69,7 @@ public interface OrderService {
     *@param
     * @return
     * */
-    APIResponse getOrderDetile(Object object);
+    APIResponse getOrderDetile(Order order,OrderExpress orderExpress,Token token);
     APIResponse updateOrder(APIRequest request,Order order,OrderExpress orderExpress);
 
 
@@ -82,5 +83,9 @@ public interface OrderService {
     APIResponse getMyOrderList(APIRequest request);
 
     APIResponse friendPlace(Object object);
+
+    public APIResponse sfOrderDetail(int order_id,String access_token);
+
+    APIResponse placeOrderDetail(int order_id,String access_token);
 }
 
