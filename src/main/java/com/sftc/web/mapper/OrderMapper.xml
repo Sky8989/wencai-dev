@@ -218,6 +218,11 @@
                 #{ship_city},#{ship_area},#{ship_addr})
     </insert>
 
+    <select id="findOrderByOrderNumber" parameterType="java.lang.String"
+            resultType="com.sftc.web.model.apiCallback.OrderCallback">
+        SELECT sender_name,sender_addr FROM sftc_order WHERE order_number=#{order_number}
+    </select>
+
     <!--
         C01 我的订单
     -->

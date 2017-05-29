@@ -1,10 +1,7 @@
 package com.sftc.web.model;
 
-import com.sftc.tools.api.APIRequest;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import net.sf.json.JSONObject;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.List;
 
@@ -72,12 +69,6 @@ public class Order extends Object {
 
     public Order() {
     }
-
-
-
-
-
-
 
 
     /**

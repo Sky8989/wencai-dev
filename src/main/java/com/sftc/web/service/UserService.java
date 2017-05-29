@@ -2,7 +2,7 @@ package com.sftc.web.service;
 
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.Token;
-import com.sftc.web.model.wechat.WechatUser;
+import com.sftc.web.model.reqeustParam.UserParam;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,9 +17,9 @@ public interface UserService {
 
     /**
      * 登录
-     * @param wechatUser
+     * @param user
      * @return
      */
-    APIResponse login(WechatUser wechatUser) throws Exception;
+    APIResponse login(UserParam userParam) throws Exception;
     Token getToken(int id);
 }

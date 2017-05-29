@@ -12,19 +12,11 @@ package com.sftc.web.model.wechat;
  */
 public class WechatUser {
 
-    private String js_code;
     private String openid;
     private String session_key;
+    private String expires_in;
     private int errcode;
     private String errmsg;
-
-    public String getJs_code() {
-        return js_code;
-    }
-
-    public void setJs_code(String js_code) {
-        this.js_code = js_code;
-    }
 
     public String getOpenid() {
         return openid;
@@ -40,6 +32,14 @@ public class WechatUser {
 
     public void setSession_key(String session_key) {
         this.session_key = session_key;
+    }
+
+    public String getExpires_in() {
+        return expires_in;
+    }
+
+    public void setExpires_in(String expires_in) {
+        this.expires_in = expires_in;
     }
 
     public Integer getErrcode() {

@@ -1,9 +1,6 @@
 package com.sftc.web.service.impl;
 
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIStatus;
-import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.api.*;
 import com.sftc.web.mapper.OrderCancelMapper;
 import com.sftc.web.model.OrderCancel;
 import com.sftc.web.service.OrderCancelService;
@@ -24,7 +21,6 @@ import javax.annotation.Resource;
 public class OrderCancelServiceImpl implements OrderCancelService {
     @Resource
     OrderCancelMapper orderCancelMapper;
-    @Override
     public APIResponse deleteOrder(OrderCancel orderCancel) {
         APIStatus status = APIStatus.SUCCESS;
         orderCancel.setCreate_time("2017-1-1");

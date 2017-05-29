@@ -2,11 +2,13 @@ package com.sftc.web.mapper;
 
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.apiCallback.OrderCallback;
 
 import java.util.List;
 
 public interface OrderMapper {
 
+    OrderCallback findOrderByOrderNumber(String order_number);
 
     void addOrderExpress(OrderExpress orderExpress);
 

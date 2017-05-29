@@ -5,9 +5,10 @@ import com.sftc.tools.api.*;
 import com.sftc.web.mapper.*;
 import com.sftc.web.model.Error;
 import com.sftc.web.model.*;
+import com.sftc.web.model.apiCallback.OrderCallback;
+import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
-import com.sftc.web.model.sfmodel.Request;
-import com.sftc.web.model.sfmodel.Requests;
+import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.service.OrderService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -18,7 +19,6 @@ import javax.annotation.Resource;
 import java.lang.Object;
 import java.util.List;
 import java.util.UUID;
-import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,9 +32,11 @@ import java.util.*;
 
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
+
     private static String QUOTES_URL = "http://api-dev.sf-rush.com/quotes";
     private static String REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
     private static String REQUEST_URL = "http://api-dev.sf-rush.com/requests";
+
     Gson gson = new Gson();
     Gson gson1 = new Gson();
     String time = Long.toString(System.currentTimeMillis());
@@ -52,9 +54,11 @@ public class OrderServiceImpl implements OrderService {
      * 普通提交订单
      */
 
+
     @Override
     public APIResponse placeOrder(Object object) {
         String order_number= UUID.randomUUID().toString();
+
 
         APIStatus status = APIStatus.SUCCESS;
 
@@ -152,7 +156,8 @@ public class OrderServiceImpl implements OrderService {
         OrderParam orderParam = (OrderParam) request.getRequestParam();
         List<OrderExpress> orderExpressList = orderParam.getOrderExpressList();
         Order order = new Order(orderParam);
-        String order_number = UUID.randomUUID().toString();
+        long long_order_number = (long) (Math.random() * 100000 * 1000000);
+        String order_number = long_order_number + "";
         order.setOrder_number(order_number);
         order.setOrder_type("好友寄件");
         User user = userMapper.selectUserByPhone(orderParam.getSender_mobile());
@@ -258,7 +263,7 @@ public class OrderServiceImpl implements OrderService {
         JSONObject jsonObject =null;
         try {
          String uuid = orderExpressMapper.getUuidByOrderId(order_id);
-            jsonObject = APISfDetail.sfOrderDetail(access_token,uuid);
+            jsonObject = APISfDetail.sfOrderDetail(access_token, uuid);
         }catch (Exception e){
 
             System.out.println(e.fillInStackTrace());
@@ -298,21 +303,64 @@ public class OrderServiceImpl implements OrderService {
     /*
      * C01 我的订单
      */
-    public APIResponse getMyOrderList(APIRequest request) {
+    public APIResponse getMyOrderList(MyOrderParam myOrderParam) {
         APIStatus status = APIStatus.SUCCESS;
-        String id = request.getParameter("id").toString();
-        String state = request.getParameter("state").toString();
-        OrderExpress orderExpress = new OrderExpress();
-        orderExpress.setId(Integer.parseInt(id));
-        if (!state.equals("")) {
-            orderExpress.setState(state);
+        String ORDERS_URL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
+        String uuids = "";
+        List<OrderCallback> orderCallbacks = null;
+        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(myOrderParam.getId());
+        for (OrderExpress oe : orderExpressList) {
+            uuids = uuids + oe.getUuid() + ",";
         }
-        List<Order> orderList = orderMapper.myOrderLists(orderExpress);
-        return APIUtil.getResponse(status, orderList);
+        uuids = uuids.substring(0, uuids.length() - 1);
+        ORDERS_URL = ORDERS_URL.replace("uuid", uuids);
+        try {
+            List<Orders> orderses = APIResolve.getOrdersJson(ORDERS_URL, myOrderParam.getToken());
+            for (Orders orders : orderses) {
+                String uuid = orders.getUuid();
+                String order_status = sfStatus(orders.getStatus());
+                orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
+            }
+            if (myOrderParam.getState().equals("")) {
+                myOrderParam.setState(null);
+            }
+            orderCallbacks = orderExpressMapper.findMyOrderExpress
+                    (new OrderExpress(myOrderParam.getId(), myOrderParam.getState()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return APIUtil.getResponse(status, orderCallbacks);
+    }
+
+    public String sfStatus(String status) {
+        if (status.equals("INIT")) {
+            status = "下单";
+        } else if (status.equals("PAYING")) {
+            status = "支付中";
+        } else if (status.equals("WAIT_HAND_OVER")) {
+            status = "待揽件";
+        } else if (status.equals("DELIVERING")) {
+            status = "派送中";
+        } else if (status.equals("FINISHED")) {
+            status = "已完成";
+        } else if (status.equals("ABNORMAL")) {
+            status = "不正常的";
+        } else if (status.equals("CANCELED")) {
+            status = "取消单";
+        } else if (status.equals("WAIT_REFUND")) {
+            status = "等待退款";
+        } else if (status.equals("REFUNDING")) {
+            status = "退款中";
+        } else if (status.equals("REFUNDED")) {
+            status = "已退款";
+        }
+        return status;
     }
 
 
+
     @Override
+
     public APIResponse friendPlace(Object object) {
         APIStatus status = APIStatus.SUCCESS;
         String str = gson.toJson(object);
