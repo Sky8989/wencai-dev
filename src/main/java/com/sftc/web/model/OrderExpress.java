@@ -82,9 +82,11 @@ public class OrderExpress extends Object {
         this.longitude = longitude;
     }
 
-    public OrderExpress(String uuid,String order_number) {
+    public OrderExpress(String uuid,String order_number,Double longitude,Double latitude) {
         this.order_number = order_number;
         this.uuid = uuid;
+        this.longitude=longitude;
+        this.latitude=latitude;
     }
 
 //    public OrderExpress(String package_type, String object_type) {

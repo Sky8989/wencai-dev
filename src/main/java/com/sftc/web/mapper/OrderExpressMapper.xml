@@ -49,9 +49,11 @@
         WHERE order_number=#{order_number}
     </update>
 
-    <update id="updateUuid" parameterType="com.sftc.web.model.OrderExpress">
+    <update id="updatePlace" parameterType="com.sftc.web.model.OrderExpress">
         UPDATE sftc_order_express
         set
+        longitude=#{longitude},
+        latitude=#{latitude},
         is_use=1,
         uuid=#{uuid}
         WHERE order_number=#{order_number}

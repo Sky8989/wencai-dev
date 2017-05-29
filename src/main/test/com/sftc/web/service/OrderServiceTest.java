@@ -45,19 +45,7 @@ public class OrderServiceTest {
 
     }
 
-    @Test
-    public void friendPlaceOrder() throws Exception {
-        request.setAttribute("order_number", UUID.randomUUID().toString());
-        Map<Integer, OrderExpress> map = new HashMap<Integer, OrderExpress>();
-        OrderExpress orderExpress = new OrderExpress("大包裹", "玩具");
-        OrderExpress orderExpress2 = new OrderExpress("中包裹", "文具");
-        OrderExpress orderExpress3 = new OrderExpress("小包裹", "衣服");
-        map.put(1, orderExpress);
-        map.put(2, orderExpress2);
-        map.put(3, orderExpress3);
-        // APIResponse response = orderService.friendPlaceOrder(request, map);
-        // Assert.assertTrue(response.getMessage(), response.getState().equals("00001"));
-    }
+
 
     @Test
     public void friendFillOrder() throws Exception {

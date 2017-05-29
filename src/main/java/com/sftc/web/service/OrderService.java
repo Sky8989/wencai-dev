@@ -65,10 +65,10 @@ public interface OrderService {
 
     /**
     * @获取订单详情
-    *@param requests
+    *@param
     * @return
     * */
-    APIResponse getOrderDetile(Requests requests);
+    APIResponse getOrderDetile(Object object);
     APIResponse updateOrder(APIRequest request,Order order,OrderExpress orderExpress);
 
 

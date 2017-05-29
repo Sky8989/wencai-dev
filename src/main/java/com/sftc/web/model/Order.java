@@ -92,6 +92,12 @@ public class Order extends Object {
         this.state = state;
     }
 
+    public Order(double longitude, double latitude,String order_number) {
+        this.order_number=order_number;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
     /**
      * 提交订单的构造方法
      *
