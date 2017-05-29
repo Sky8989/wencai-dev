@@ -155,7 +155,7 @@ public class OrderController extends AbstractBasicController {
         return orderService.getEmptyPackage(new APIRequest(request));
     }
 
-    @RequestMapping(value = "/my", method = RequestMethod.GET, headers = "api-version=1")
+    @RequestMapping(value = "/my", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
     APIResponse myOrder(@RequestBody MyOrderParam myOrderParam) throws Exception {
         return orderService.getMyOrderList(myOrderParam);

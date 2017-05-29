@@ -14,7 +14,7 @@ public class Orders {
 
     private String uuid;
     private String status;
-    private String payed;
+    private boolean payed;
 
     // private String INIT = "下单";
     // private String PAYING = "支付中";
@@ -84,11 +84,11 @@ public class Orders {
         this.status = status;
     }
 
-    public String getPayed() {
+    public boolean isPayed() {
         return payed;
     }
 
-    public void setPayed(String payed) {
+    public void setPayed(boolean payed) {
         this.payed = payed;
     }
 }

@@ -12,15 +12,16 @@ package com.sftc.web.model.reqeustParam;
  */
 public class MyOrderParam {
 
-    private String uuid;
+    private int id;
     private String state;
+    private String token;
 
-    public String getUuid() {
-        return uuid;
+    public int getId() {
+        return id;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getState() {
@@ -29,5 +30,13 @@ public class MyOrderParam {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

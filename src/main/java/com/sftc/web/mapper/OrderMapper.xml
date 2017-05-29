@@ -155,8 +155,6 @@
         <include refid="Order_And_OrderExpress_List"/>
         FROM sftc_order o,sftc_order_express oe,sftc_gift_card gc WHERE o.id=#{id}
         and oe.order_id=o.id AND o.gift_card_id=gc.id
-
-
     </select>
 
     <resultMap id="OrderExpressMap" type="com.sftc.web.model.Order">
@@ -215,6 +213,11 @@
                 ship_area, ship_addr) VALUES (#{ship_mobile},#{ship_name},#{ship_province},
                 #{ship_city},#{ship_area},#{ship_addr})
     </insert>
+
+    <select id="findOrderByOrderNumber" parameterType="java.lang.String"
+            resultType="com.sftc.web.model.apiCallback.OrderCallback">
+        SELECT sender_name,sender_addr FROM sftc_order WHERE order_number=#{order_number}
+    </select>
 
     <!--
         C01 我的订单

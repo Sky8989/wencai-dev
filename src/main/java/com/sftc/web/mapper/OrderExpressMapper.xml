@@ -19,9 +19,26 @@
         <result column="is_use" property="is_use" />
     </resultMap>
 
+    <select id="selectExpressForId" parameterType="int" resultType="com.sftc.web.model.OrderExpress">
+        SELECT uuid FROM sftc_order_express WHERE (sender_user_id=#{id} or ship_user_id=#{id})
+    </select>
+
     <!-- 根据订单编号查询该订单的包裹 -->
     <select id="findEmptyPackage" resultMap="orderExpressMap" parameterType="java.lang.String">
         SELECT * FROM sftc_order_express WHERE order_number=#{order_number} AND is_use=0
+    </select>
+
+    <select id="findMyOrderExpress" parameterType="com.sftc.web.model.OrderExpress"
+            resultType="com.sftc.web.model.apiCallback.OrderCallback">
+        SELECT DISTINCT sftc_order_express.id,sftc_order_express.order_number,sftc_order_express.ship_name,
+        sftc_order_express.ship_addr,sftc_order_express.state,
+        sftc_order.sender_name,sftc_order.sender_addr
+        FROM sftc_order_express,sftc_order
+        WHERE (sftc_order_express.sender_user_id=#{id} or sftc_order_express.ship_user_id=#{id})
+        AND sftc_order_express.order_id = sftc_order.id
+        <if test="state!=null">
+            AND sftc_order_express.state=#{state}
+        </if>
     </select>
 
     <!-- 普通下单 -->
@@ -47,5 +64,12 @@
         is_use=1,
         uuid=#{uuid}
         WHERE id=#{id}
+    </update>
+
+    <update id="updateOrderExpressForSF" parameterType="com.sftc.web.model.OrderExpress">
+        update sftc_order_express
+        set
+        state=#{state}
+        WHERE uuid=#{uuid}
     </update>
 </mapper>

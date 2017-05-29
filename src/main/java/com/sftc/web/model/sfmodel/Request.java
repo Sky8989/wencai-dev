@@ -1,9 +1,6 @@
 package com.sftc.web.model.sfmodel;
 
-import com.sftc.web.model.Order;
-import com.sftc.web.model.OrderExpress;
-import com.sftc.web.model.Token;
-import com.sftc.web.model.User;
+import com.sftc.web.model.*;
 
 import java.util.List;
 
@@ -17,6 +14,7 @@ public class Request {
     private Merchant merchant;
     private Attributes attributes;
     private List<Package> packages;
+    private List<Orders> orderses;
     private String product_type;
     private String pay_type;
     private Order order;
@@ -25,6 +23,15 @@ public class Request {
     private String uuid;
     private String eta;
     private String request_num;
+
+    public List<Orders> getOrderses() {
+        return orderses;
+    }
+
+    public void setOrderses(List<Orders> orderses) {
+        this.orderses = orderses;
+    }
+
     public Merchant getMerchant() {
         return merchant;
     }

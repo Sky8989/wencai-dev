@@ -5,6 +5,7 @@ import com.sftc.tools.api.*;
 import com.sftc.web.mapper.*;
 import com.sftc.web.model.Error;
 import com.sftc.web.model.*;
+import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.model.sfmodel.*;
@@ -35,7 +36,6 @@ public class OrderServiceImpl implements OrderService {
     private static String QUOTES_URL = "http://api-dev.sf-rush.com/quotes";
     private static String REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
     private static String REQUEST_URL = "http://api-dev.sf-rush.com/requests";
-    private static String ORDERS_URL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
 
     Gson gson = new Gson();
     Gson gson1 = new Gson();
@@ -344,36 +344,56 @@ public class OrderServiceImpl implements OrderService {
      */
     public APIResponse getMyOrderList(MyOrderParam myOrderParam) {
         APIStatus status = APIStatus.SUCCESS;
-        ORDERS_URL = ORDERS_URL.replace("uuid", myOrderParam.getUuid());
-        Orders orders = APIResolve.getOrdersJson(ORDERS_URL);
-        String order_status = orders.getStatus();
-        if (order_status.equals("INIT")) {
-
-        } else if (order_status.equals("PAYING")) {
-
-        } else if (order_status.equals("WAIT_HAND_OVER")) {
-
-        } else if (order_status.equals("DELIVERING")) {
-
-        } else if (order_status.equals("FINISHED")) {
-
-        } else if (order_status.equals("ABNORMAL")) {
-
-        } else if (order_status.equals("CANCELED")) {
-
-        } else if (order_status.equals("WAIT_REFUND")) {
-
-        } else if (order_status.equals("REFUNDING")) {
-
-        } else if (order_status.equals("REFUNDED")) {
-
+        String ORDERS_URL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
+        String uuids = "";
+        List<OrderCallback> orderCallbacks = null;
+        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(myOrderParam.getId());
+        for (OrderExpress oe : orderExpressList) {
+            uuids = uuids + oe.getUuid() + ",";
         }
-        // if (!state.equals("")) {
-        //     orderExpress.setState(state);
-        // }
-        // List<Order> orderList = orderMapper.myOrderLists(orderExpress);
-        // return APIUtil.getResponse(status, orderList);
-        return null;
+        uuids = uuids.substring(0, uuids.length() - 1);
+        ORDERS_URL = ORDERS_URL.replace("uuid", uuids);
+        try {
+            List<Orders> orderses = APIResolve.getOrdersJson(ORDERS_URL, myOrderParam.getToken());
+            for (Orders orders : orderses) {
+                String uuid = orders.getUuid();
+                String order_status = sfStatus(orders.getStatus());
+                orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
+            }
+            if (myOrderParam.getState().equals("")) {
+                myOrderParam.setState(null);
+            }
+            orderCallbacks = orderExpressMapper.findMyOrderExpress
+                    (new OrderExpress(myOrderParam.getId(), myOrderParam.getState()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return APIUtil.getResponse(status, orderCallbacks);
+    }
+
+    public String sfStatus(String status) {
+        if (status.equals("INIT")) {
+            status = "下单";
+        } else if (status.equals("PAYING")) {
+            status = "支付中";
+        } else if (status.equals("WAIT_HAND_OVER")) {
+            status = "待揽件";
+        } else if (status.equals("DELIVERING")) {
+            status = "派送中";
+        } else if (status.equals("FINISHED")) {
+            status = "已完成";
+        } else if (status.equals("ABNORMAL")) {
+            status = "不正常的";
+        } else if (status.equals("CANCELED")) {
+            status = "取消单";
+        } else if (status.equals("WAIT_REFUND")) {
+            status = "等待退款";
+        } else if (status.equals("REFUNDING")) {
+            status = "退款中";
+        } else if (status.equals("REFUNDED")) {
+            status = "已退款";
+        }
+        return status;
     }
 }
 
