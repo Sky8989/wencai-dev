@@ -53,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
      * 普通提交订单
      */
     public APIResponse placeOrder(Object object) {
-        long long_order_number = (long) (Math.random() * 10000 * 1000000);
+        long long_order_number = (long) (Math.random() * 100000 * 1000000);
         String order_number = long_order_number + "";
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
@@ -95,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     public APIResponse placeOrder1(Object object) {
-        long long_order_number = (long) (Math.random() * 10000 * 1000000);
+        long long_order_number = (long) (Math.random() * 100000 * 1000000);
         String order_number = long_order_number + "";
         APIStatus status = APIStatus.SUCCESS;
 
@@ -193,7 +193,7 @@ public class OrderServiceImpl implements OrderService {
         OrderParam orderParam = (OrderParam) request.getRequestParam();
         List<OrderExpress> orderExpressList = orderParam.getOrderExpressList();
         Order order = new Order(orderParam);
-        long long_order_number = (long) (Math.random() * 10000 * 1000000);
+        long long_order_number = (long) (Math.random() * 100000 * 1000000);
         String order_number = long_order_number + "";
         order.setOrder_number(order_number);
         order.setOrder_type("好友寄件");
