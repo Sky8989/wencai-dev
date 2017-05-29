@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.lang.Object;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,7 +53,8 @@ public class OrderServiceImpl implements OrderService {
      * 普通提交订单
      */
     public APIResponse placeOrder(Object object) {
-        String order_number = UUID.randomUUID().toString();
+        long long_order_number = (long) (Math.random() * 10000 * 1000000);
+        String order_number = long_order_number + "";
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
         JSONObject jsonObject1 = JSONObject.fromObject(object);
@@ -95,8 +95,8 @@ public class OrderServiceImpl implements OrderService {
 
 
     public APIResponse placeOrder1(Object object) {
-        String order_number= UUID.randomUUID().toString();
-
+        long long_order_number = (long) (Math.random() * 10000 * 1000000);
+        String order_number = long_order_number + "";
         APIStatus status = APIStatus.SUCCESS;
 
         JSONObject jsonObject = null;
@@ -193,7 +193,8 @@ public class OrderServiceImpl implements OrderService {
         OrderParam orderParam = (OrderParam) request.getRequestParam();
         List<OrderExpress> orderExpressList = orderParam.getOrderExpressList();
         Order order = new Order(orderParam);
-        String order_number = UUID.randomUUID().toString();
+        long long_order_number = (long) (Math.random() * 10000 * 1000000);
+        String order_number = long_order_number + "";
         order.setOrder_number(order_number);
         order.setOrder_type("好友寄件");
         User user = userMapper.selectUserByPhone(orderParam.getSender_mobile());

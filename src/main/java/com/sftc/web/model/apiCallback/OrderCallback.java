@@ -19,6 +19,7 @@ public class OrderCallback {
     private String sender_addr;
     private String order_number;
     private String state;
+    private String order_type;
 
     public int getId() {
         return id;
@@ -74,5 +75,13 @@ public class OrderCallback {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getOrder_type() {
+        return order_type;
+    }
+
+    public void setOrder_type(String order_type) {
+        this.order_type = order_type;
     }
 }
