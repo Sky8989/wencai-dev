@@ -3,7 +3,6 @@ package com.sftc.web.service.impl;
 import com.google.gson.Gson;
 import com.sftc.tools.api.*;
 import com.sftc.web.mapper.*;
-import com.sftc.web.model.Error;
 import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
@@ -11,7 +10,6 @@ import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.service.OrderService;
 import net.sf.json.JSONObject;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
@@ -318,7 +316,7 @@ public class OrderServiceImpl implements OrderService {
             List<Orders> orderses = APIResolve.getOrdersJson(ORDERS_URL, myOrderParam.getToken());
             for (Orders orders : orderses) {
                 String uuid = orders.getUuid();
-                String order_status = sfStatus(orders.getStatus());
+                String order_status = orders.getStatus();
                 orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
             }
             if (myOrderParam.getState().equals("")) {
@@ -331,35 +329,6 @@ public class OrderServiceImpl implements OrderService {
         }
         return APIUtil.getResponse(status, orderCallbacks);
     }
-
-    public String sfStatus(String status) {
-        if (status.equals("INIT")) {
-            status = "下单";
-        } else if (status.equals("PAYING")) {
-            status = "支付中";
-        } else if (status.equals("WAIT_HAND_OVER")) {
-            status = "待揽件";
-        } else if (status.equals("DELIVERING")) {
-            status = "派送中";
-        } else if (status.equals("FINISHED")) {
-            status = "已完成";
-        } else if (status.equals("ABNORMAL")) {
-            status = "不正常的";
-        } else if (status.equals("CANCELED")) {
-            status = "取消单";
-        } else if (status.equals("WAIT_REFUND")) {
-            status = "等待退款";
-        } else if (status.equals("REFUNDING")) {
-            status = "退款中";
-        } else if (status.equals("REFUNDED")) {
-            status = "已退款";
-        }
-        return status;
-    }
-
-
-
-    @Override
 
     public APIResponse friendPlace(Object object) {
         APIStatus status = APIStatus.SUCCESS;
