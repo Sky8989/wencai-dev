@@ -21,11 +21,12 @@ public class Token extends Object {
     // 创建时间
     private String create_at;
     // 更新时间
-    private String expires_in ;
+    private String expires_in;
     private String gmt_modified;
     // 到期时间
     private String gmt_expiry;
     // 属于哪个用户
+    private String local_token;
     private String access_token;
 
     private String refresh_token;
@@ -38,8 +39,10 @@ public class Token extends Object {
 
     public Token(int user_id, String token) {
         this.user_id = user_id;
-        this.access_token = token;
+        this.local_token = token;
         this.create_time = Long.toString(System.currentTimeMillis());
+        this.gmt_modified = Long.toString(System.currentTimeMillis());
+        this.gmt_expiry = (Long.parseLong(gmt_modified) + 1209600) + "";
     }
 
     public Token(String create_time, int is_logout, String gmt_modified, String gmt_expiry, int user_id) {
@@ -129,6 +132,18 @@ public class Token extends Object {
 
     public void setCreate_at(String create_at) {
         this.create_at = create_at;
+    }
+
+    public String getLocal_token() {
+        return local_token;
+    }
+
+    public void setLocal_token(String local_token) {
+        this.local_token = local_token;
+    }
+
+    public void setExpires_in(String expires_in) {
+        this.expires_in = expires_in;
     }
 
     public String getAccess_token() {

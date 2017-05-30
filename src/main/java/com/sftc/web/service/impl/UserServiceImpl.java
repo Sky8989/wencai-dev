@@ -12,6 +12,7 @@ import com.sftc.web.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,6 +38,7 @@ public class UserServiceImpl implements UserService {
         AUTHORIZATION_URL = AUTHORIZATION_URL.replace("JSCODE", userParam.getJs_code());
         WechatUser wechatUser = APIResolve.getWechatJson(AUTHORIZATION_URL);
         User user = null;
+        Map<String, String> tokenInfo = new HashMap<String, String>();
         if (wechatUser.getOpenid() != null) {
             user = userMapper.selectUserByOpenid(wechatUser.getOpenid());
             if (user == null) {
@@ -45,16 +47,35 @@ public class UserServiceImpl implements UserService {
                 user.setSession_key(wechatUser.getSession_key());
                 user.setCreate_time(Long.toString(System.currentTimeMillis()));
                 int id = userMapper.insertOpenid(user);
-                String myToken = makeToken(user.getOpen_id(), user.getSession_key());
+                String myToken = makeToken(user.getCreate_time(), user.getOpen_id());
                 Token token = new Token(id, myToken);
-                user.setId(id);
+                tokenMapper.addToken(token);
+                tokenInfo.put("token", myToken);
+                tokenInfo.put("user_id", (id + ""));
+            } else {
+                Token token = tokenMapper.getTokenById(user.getId());
+                if (token == null) {
+                    token = new Token(user.getId(), makeToken(user.getCreate_time(), user.getOpen_id()));
+                    tokenMapper.addToken(token);
+                } else {
+                    String gmt_modified = Long.toString(System.currentTimeMillis());
+                    if (Long.parseLong(gmt_modified) > Long.parseLong(token.getGmt_expiry())) {
+                        token.setGmt_expiry(Long.toString(System.currentTimeMillis() + 1209600));
+                        String myToken = makeToken(gmt_modified, user.getOpen_id());
+                        token.setLocal_token(myToken);
+                    }
+                    token.setGmt_modified(gmt_modified);
+                    tokenMapper.updateToken(token);
+                }
+                tokenInfo.put("token", token.getLocal_token());
+                tokenInfo.put("user_id", (token.getUser_id() + ""));
             }
         } else {
             status = APIStatus.WECHAT_ERR;
             status.setState(wechatUser.getErrcode().toString());
             status.setMessage(wechatUser.getErrmsg());
         }
-        return APIUtil.getResponse(status, user);
+        return APIUtil.getResponse(status, tokenInfo);
     }
 
     public Token getToken(int id) {
@@ -63,6 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public String makeToken(String str1, String str2) {
-        return MD5Util.MD5(str1 + str2);
+        String s = MD5Util.MD5(str1 + str2);
+        return s.substring(0, s.length() - 10);
     }
 }

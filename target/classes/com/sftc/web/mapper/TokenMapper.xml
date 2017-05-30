@@ -4,19 +4,32 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.TokenMapper">
 
+    <update id="updateToken" parameterType="com.sftc.web.model.Token">
+        update sftc_token
+        <trim prefix="set" suffixOverrides=",">
+            <if test="gmt_modified!=null">gmt_modified=#{gmt_modified},</if>
+            <if test="gmt_expiry!=null">gmt_expiry=#{gmt_expiry},</if>
+            <if test="local_token!=null">local_token=#{local_token},</if>
+        </trim>
+        WHERE user_id=#{user_id}
+    </update>
 
     <insert id="addToken" parameterType="com.sftc.web.model.Token">
-        INSERT INTO sftc_token ( create_time, is_logout, create_at, gmt_modified, gmt_expiry,
-        access_token, refresh_token, user_id, uuid)VALUES (
-        #{create_time},#{is_logout},#{create_at},#{gmt_modified},#{gmt_expiry},#{access_token},#{refresh_token},
-        #{user_id},#{uuid}
-        )
+        INSERT INTO sftc_token
+        (create_time, is_logout, gmt_modified, gmt_expiry,local_token, user_id)
+        VALUES
+        (#{create_time},#{is_logout},#{gmt_modified},#{gmt_expiry},#{local_token},#{user_id})
     </insert>
+
     <select id="getToken" parameterType="int" resultType="com.sftc.web.model.Token" resultMap="getToken">
         SELECT  u.name ,t.access_token from sftc_order o, sftc_user u,sftc_token t
         WHERE u.id=o.sender_user_id and u.id=t.user_id and o.id=#{id}
-
     </select>
+
+    <select id="getTokenById" parameterType="int" resultType="com.sftc.web.model.Token">
+        select * from sftc_token where user_id=#{user_id}
+    </select>
+
     <resultMap id="getToken" type="com.sftc.web.model.Token">
         <result property="access_token" column="access_token"/>
     </resultMap>
