@@ -284,14 +284,37 @@
     <sql id="orderDetail">
         o.sender_mobile, o.sender_name, o.sender_province,o.state,
         o.sender_city, o.sender_area, o.sender_addr, o.voice,o.image ,o.pay_method,o.distribution_method,o.gmt_order_create,
-        o.gmt_pay_create
+        o.gmt_pay_create,gc.name,gc.icon,gc.type,gc.create_time
     </sql>
     <!-- 查看订单详情  -->
-    <select id="placeOrderDetile" resultType="com.sftc.web.model.Order" parameterType="int" >
+    <select id="placeOrderDetile" resultType="com.sftc.web.model.Order" parameterType="string" resultMap="OrderMap">
         SELECT
         <include refid="orderDetail"/>
-        FROM sftc_order o WHERE o.id=#{id}
+        FROM sftc_order o,sftc_order_express oe,sftc_gift_card gc WHERE oe.uuid=#{uuid} AND o.gift_card_id=gc.id AND o.id=oe.order_id
     </select>
+    <resultMap id="OrderMap" type="com.sftc.web.model.Order">
 
+        <result property="sender_mobile" column="sender_mobile"/>
+        <result property="sender_name" column="sender_name"/>
+        <result property="sender_province" column="sender_province"/>
+        <result property="state" column="state"/>
+        <result property="sender_city" column="sender_city"/>
+        <result property="sender_area" column="sender_area"/>
+        <result property="sender_addr" column="sender_addr"/>
+        <result property="voice" column="voice"/>
+        <result property="image" column="image"/>
+        <result property="pay_method" column="pay_method"/>
+        <result property="distribution_method" column="distribution_method"/>
+        <result property="gmt_order_create" column="gmt_order_create"/>
+        <result property="gmt_pay_create" column="gmt_pay_create"/>
+        <result property="order_number" column="order_number"/>
+        <result property="gift_card_id" column="gift_card_id"/>
+        <association property="giftCard" javaType="com.sftc.web.model.GiftCard">
+            <result column="name" property="name"/>
+            <result property="icon" column="icon"/>
+            <result column="type" property="type"/>
+            <result property="create_time" column="create_time"/>
+        </association>
+    </resultMap>
 
 </mapper>

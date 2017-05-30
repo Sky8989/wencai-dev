@@ -88,8 +88,8 @@ public interface OrderService {
 
     APIResponse friendPlace(Object object);
 
-    public APIResponse sfOrderDetail(int order_id,String access_token);
+    public APIResponse sfOrderDetail(int order_id,String access_token,String uuid);
 
-    APIResponse placeOrderDetail(int order_id,String access_token);
+    APIResponse placeOrderDetail(String uuid,String access_token);
 }
 
