@@ -245,11 +245,13 @@ public class OrderServiceImpl implements OrderService {
               jsonObject =  JSONObject.fromObject(order1);
            }
            else {
+               System.out.println(uuid);
               jsonObject =  APISfDetail.sfOrderDetail(token.getAccess_token(),uuid);
 
            }
     }
        catch (Exception e){
+           status  = APIStatus.PARAMETER_FAIL;
         System.out.println( e.fillInStackTrace());
       }
         return APIUtil.getResponse(status, jsonObject);
@@ -267,7 +269,7 @@ public class OrderServiceImpl implements OrderService {
             }
             jsonObject = APISfDetail.sfOrderDetail(access_token, uuid);
         }catch (Exception e){
-
+            status  = APIStatus.PARAMETER_FAIL;
             System.out.println(e.fillInStackTrace());
         }
         return APIUtil.getResponse(status, jsonObject);
@@ -396,7 +398,7 @@ public class OrderServiceImpl implements OrderService {
             jsonObject.put("order",order);
             System.out.println(order);
         }catch (Exception e){
-
+            status  = APIStatus.PARAMETER_FAIL;
             System.out.println(e.fillInStackTrace());
         }
         return APIUtil.getResponse(status, jsonObject);
