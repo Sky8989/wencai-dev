@@ -146,7 +146,7 @@ public class OrderExpress extends Object {
         this.ship_city = (String) request.getParameter("ship_city");
         this.ship_area = (String) request.getParameter("ship_area");
         this.ship_addr = (String) request.getParameter("ship_addr");
-        this.package_type = (String) request.getParameter("package_type");
+        this.package_type = (String)request.getParameter("package_type");
         this.object_type = (String) request.getParameter("object_type");
     }
 
@@ -222,13 +222,7 @@ public class OrderExpress extends Object {
         this.ship_addr = ship_addr;
     }
 
-    public String getPackage_type() {
-        return package_type;
-    }
 
-    public void setPackage_type(String package_type) {
-        this.package_type = package_type;
-    }
 
     public String getObject_type() {
         return object_type;
@@ -262,6 +256,14 @@ public class OrderExpress extends Object {
     public void setGift_card_id(int gift_card_id) {
         this.gift_card_id = gift_card_id;
 
+    }
+
+    public String getPackage_type() {
+        return package_type;
+    }
+
+    public void setPackage_type(String package_type) {
+        this.package_type = package_type;
     }
 
     public int getOrder_id() {
