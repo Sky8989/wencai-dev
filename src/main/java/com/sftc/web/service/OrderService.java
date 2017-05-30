@@ -58,7 +58,7 @@ public interface OrderService {
      * @param @request
      * @return
      */
-    APIResponse countPrice(Requests requests);
+    APIResponse countPrice(Object object);
 
    /**
     * 我的订单列表

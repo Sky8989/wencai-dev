@@ -56,8 +56,8 @@ public class OrderController extends AbstractBasicController {
      */
     @RequestMapping(value = "/countPrice", method = RequestMethod.POST ,headers = "api-version=1")
     public @ResponseBody
-    APIResponse countPrice(@RequestBody Requests requests) throws Exception {
-        return orderService.countPrice(requests);
+    APIResponse countPrice(@RequestBody Object object) throws Exception {
+        return orderService.countPrice(object);
     }
 
 

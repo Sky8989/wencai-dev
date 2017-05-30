@@ -61,6 +61,9 @@ public class MessageController extends AbstractBasicController {
         return  messageService.login(obj);
     }
 
+    /**
+     * 获取个人信息
+     */
     @RequestMapping(value = "/loginByGet", method = RequestMethod.GET, headers = "api-version=1")
     @ResponseBody
     APIResponse loginByGet(String access_token) throws Exception {
