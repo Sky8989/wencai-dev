@@ -258,11 +258,13 @@ public class OrderServiceImpl implements OrderService {
         * @顺丰订单详情接口
         * */
 
-    public APIResponse sfOrderDetail(int order_id,String access_token){
+    public APIResponse sfOrderDetail(int order_id,String access_token,String uuid){
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject =null;
         try {
-         String uuid = orderExpressMapper.getUuidByOrderId(order_id);
+            if (uuid==null) {
+                uuid = orderExpressMapper.getUuidByOrderId(order_id);
+            }
             jsonObject = APISfDetail.sfOrderDetail(access_token, uuid);
         }catch (Exception e){
 
@@ -383,14 +385,13 @@ public class OrderServiceImpl implements OrderService {
         * @普通订单详情接口
         * */
 
-    public APIResponse placeOrderDetail(int order_id,String access_token){
+    public APIResponse placeOrderDetail(String uuid,String access_token){
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject =null;
 
         try {
-            Order order = orderMapper.placeOrderDetile(order_id);
+            Order order = orderMapper.placeOrderDetile(uuid);
             System.out.println("aa");
-            String uuid = orderExpressMapper.getUuidByOrderId(order_id);
             jsonObject = APISfDetail.sfOrderDetail(access_token,uuid);
             jsonObject.put("order",order);
             System.out.println(order);

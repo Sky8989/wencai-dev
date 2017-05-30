@@ -182,13 +182,13 @@ public class OrderController extends AbstractBasicController {
     public @ResponseBody
     APIResponse sfDetail(OrderExpress orderExpress,Token token) throws Exception {
 
-        return orderService.sfOrderDetail(orderExpress.getOrder_id(),token.getAccess_token());
+        return orderService.sfOrderDetail(orderExpress.getOrder_id(),token.getAccess_token(),orderExpress.getUuid());
     }
 
     @RequestMapping(value = "/placeOrderDetail", method = RequestMethod.GET, headers = "api-version=1")
     public @ResponseBody
     APIResponse placeOrderDetail(OrderExpress orderExpress,Token token) throws Exception {
 
-        return orderService.placeOrderDetail(orderExpress.getOrder_id(),token.getAccess_token());
+        return orderService.placeOrderDetail(orderExpress.getUuid(),token.getAccess_token());
     }
 }
