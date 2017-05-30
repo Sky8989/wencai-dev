@@ -2,6 +2,7 @@ package com.sftc.web.mapper;
 
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.apiCallback.OrderCallback;
+import com.sftc.web.model.reqeustParam.MyOrderParam;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ public interface OrderExpressMapper {
 
     List<OrderExpress> selectExpressForId(int id);
 
-    List<OrderCallback> findMyOrderExpress(OrderExpress orderExpress);
+    List<OrderCallback> findMyOrderExpress(MyOrderParam myOrderParam);
 
     void addOrderExpress(OrderExpress orderExpress);
 

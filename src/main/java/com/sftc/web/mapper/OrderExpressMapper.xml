@@ -28,7 +28,7 @@
         SELECT * FROM sftc_order_express WHERE order_number=#{order_number} AND is_use=0
     </select>
 
-    <select id="findMyOrderExpress" parameterType="com.sftc.web.model.OrderExpress"
+    <select id="findMyOrderExpress" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
             resultType="com.sftc.web.model.apiCallback.OrderCallback">
         SELECT DISTINCT sftc_order_express.id,sftc_order_express.order_number,sftc_order_express.ship_name,
         sftc_order_express.ship_addr,sftc_order_express.state,
@@ -38,6 +38,9 @@
         AND sftc_order_express.order_id = sftc_order.id
         <if test="state!=null">
             AND sftc_order_express.state=#{state}
+        </if>
+        <if test="pageNum!=0">
+            limit #{pageNum},#{pageSize}
         </if>
     </select>
 

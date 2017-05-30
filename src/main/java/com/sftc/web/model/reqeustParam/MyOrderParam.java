@@ -15,6 +15,8 @@ public class MyOrderParam {
     private int id;
     private String state;
     private String token;
+    private int pageNum;
+    private int pageSize;
 
     public int getId() {
         return id;
@@ -38,5 +40,21 @@ public class MyOrderParam {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public int getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(int pageNum) {
+        this.pageNum = pageNum;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
     }
 }

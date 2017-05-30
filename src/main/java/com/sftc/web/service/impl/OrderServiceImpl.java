@@ -15,8 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.lang.Object;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -305,7 +304,7 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         String ORDERS_URL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
         String uuids = "";
-        List<OrderCallback> orderCallbacks = null;
+        List<OrderCallback> orderCallbacks = new ArrayList<OrderCallback>();
         List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(myOrderParam.getId());
         for (OrderExpress oe : orderExpressList) {
             uuids = uuids + oe.getUuid() + ",";
@@ -321,9 +320,20 @@ public class OrderServiceImpl implements OrderService {
             }
             if (myOrderParam.getState().equals("")) {
                 myOrderParam.setState(null);
+                myOrderParam.setPageNum(myOrderParam.getPageNum() - 1);
+                orderCallbacks = orderExpressMapper.findMyOrderExpress(myOrderParam);
+            } else {
+                if (myOrderParam.getPageNum() == 0) {
+                    myOrderParam.setPageNum(0);
+                }
+                myOrderParam.setPageNum(myOrderParam.getPageNum() - 1);
+                String [] arr_status = myOrderParam.getState().split(",");
+                for (String str : arr_status) {
+                    myOrderParam.setState(str);
+                    List<OrderCallback> orderCallbackList = orderExpressMapper.findMyOrderExpress(myOrderParam);
+                    orderCallbacks.addAll(orderCallbackList);
+                }
             }
-            orderCallbacks = orderExpressMapper.findMyOrderExpress
-                    (new OrderExpress(myOrderParam.getId(), myOrderParam.getState()));
         } catch (Exception e) {
             e.printStackTrace();
         }
