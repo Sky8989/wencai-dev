@@ -244,9 +244,13 @@ public class OrderServiceImpl implements OrderService {
               jsonObject =  JSONObject.fromObject(order1);
            }
            else {
+               REQUESTS_URL = REQUESTS_URL+uuid;
                System.out.println(uuid);
-              jsonObject =  APISfDetail.sfOrderDetail(token.getAccess_token(),uuid);
-
+               HttpGet get = new HttpGet(REQUESTS_URL);
+               get.addHeader("PushEnvelope-Device-Token",token.getAccess_token());
+               String res = APIGet.getGet(get);
+               jsonObject = JSONObject.fromObject(res);
+               REQUESTS_URL="http://api-dev.sf-rush.com/requests/";
            }
     }
        catch (Exception e){
@@ -263,10 +267,18 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject =null;
         try {
+            System.out.println(uuid);
             if (uuid==null) {
                 uuid = orderExpressMapper.getUuidByOrderId(order_id);
             }
-            jsonObject = APISfDetail.sfOrderDetail(access_token, uuid);
+            REQUESTS_URL = REQUESTS_URL + uuid;
+            System.out.println(REQUESTS_URL);
+            HttpGet get = new HttpGet(REQUESTS_URL);
+            get.addHeader("PushEnvelope-Device-Token",access_token);
+            String res = APIGet.getGet(get);
+             jsonObject = JSONObject.fromObject(res);
+            REQUESTS_URL="http://api-dev.sf-rush.com/requests/";
+
         }catch (Exception e){
             status  = APIStatus.PARAMETER_FAIL;
             System.out.println(e.fillInStackTrace());
@@ -391,11 +403,17 @@ public class OrderServiceImpl implements OrderService {
         JSONObject jsonObject =null;
 
         try {
+            System.out.println(uuid);
             Order order = orderMapper.placeOrderDetile(uuid);
             System.out.println("aa");
-            jsonObject = APISfDetail.sfOrderDetail(access_token,uuid);
+            REQUESTS_URL=REQUESTS_URL+uuid;
+            HttpGet get = new HttpGet(REQUESTS_URL);
+            get.addHeader("PushEnvelope-Device-Token",access_token);
+            String res = APIGet.getGet(get);
+            jsonObject = JSONObject.fromObject(res);
             jsonObject.put("order",order);
             System.out.println(order);
+            REQUESTS_URL="http://api-dev.sf-rush.com/requests/";
         }catch (Exception e){
             status  = APIStatus.PARAMETER_FAIL;
             System.out.println(e.fillInStackTrace());

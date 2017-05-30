@@ -16,17 +16,5 @@ import java.net.URLDecoder;
 
 public class APISfDetail {
     private static String REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
-    public static JSONObject sfOrderDetail(String access_token,String uuid){
 
-
-        REQUESTS_URL = REQUESTS_URL + uuid;
-        HttpGet get = new HttpGet(REQUESTS_URL);
-        get.addHeader("PushEnvelope-Device-Token",access_token);
-        String res = APIGet.getGet(get);
-
-       JSONObject jsonObject = JSONObject.fromObject(res);
-
-        return jsonObject;
-
-    }
 }
