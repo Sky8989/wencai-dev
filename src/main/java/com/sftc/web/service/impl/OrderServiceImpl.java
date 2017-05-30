@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private static String REQUEST_URL = "http://api-dev.sf-rush.com/requests";
 
     Gson gson = new Gson();
-    Gson gson1 = new Gson();
+
     String time = Long.toString(System.currentTimeMillis());
 
     @Resource
@@ -100,28 +100,23 @@ public class OrderServiceImpl implements OrderService {
     /*
          * 计价
          */
-    public APIResponse countPrice(Requests requests) {
+    public APIResponse countPrice(Object object) {
+        Gson gson1 = new Gson();
         APIStatus status = APIStatus.SUCCESS;
-        String str = gson.toJson(requests);
+        String str = gson.toJson(object);
         JSONObject jsonObject = JSONObject.fromObject(str);
-
-        Request request = (Request)JSONObject.toBean((JSONObject)jsonObject.get("request"), Request.class);
         Token token = tokenMapper.getTokenByMobile("18124033797");
-
         HttpPost post = new HttpPost(QUOTES_URL);
-        if(request.getMerchant().getUuid().equals("")&&requests.getRequest().getToken().getAccess_token().equals("")) {
-            request.getMerchant().setUuid("2c9a85895c2f618a015c2fe994ff0094");
+        if(jsonObject.getJSONObject("request").getJSONObject("merchant").get("uuid").equals("")&&jsonObject.getJSONObject("request").getJSONObject("token").get("access_token").equals("")) {
+            jsonObject.getJSONObject("request").getJSONObject("merchant").put("uuid","2c9a85895c2f618a015c2fe994ff0094");
             post.addHeader("PushEnvelope-Device-Token",token.getAccess_token());
         }else{
-            post.addHeader("PushEnvelope-Device-Token",requests.getRequest().getToken().getAccess_token());
+            post.addHeader("PushEnvelope-Device-Token",(String)jsonObject.getJSONObject("request").getJSONObject("token").get("access_token"));
         }
-        requests.setRequest(request);
-        JSONObject str1 = JSONObject.fromObject(requests);
-        System.out.println(requests.getRequest().getMerchant().getUuid());
-        String str2 = gson1.toJson(str1);
+        String str2 = gson1.toJson(jsonObject);
+        System.out.println(jsonObject.getJSONObject("request").getJSONObject("merchant").get("uuid"));
         String res = AIPPost.getPost(str2,post);
         JSONObject jsonObject1 = JSONObject.fromObject(res);
-
         if(jsonObject1.get("errors")!=null||jsonObject1.get("error")!=null){
             status = APIStatus.QUOTE_FAIL;
         }
@@ -151,18 +146,19 @@ public class OrderServiceImpl implements OrderService {
      * 寄件人填写 订单
      */
     public APIResponse friendPlaceOrder(APIRequest request) {
-
-        APIStatus status = APIStatus.SUCCESS;
         OrderParam orderParam = (OrderParam) request.getRequestParam();
         List<OrderExpress> orderExpressList = orderParam.getOrderExpressList();
+        APIStatus status = APIStatus.SUCCESS;
         Order order = new Order(orderParam);
-        long long_order_number = (long) (Math.random() * 100000 * 1000000);
-        String order_number = long_order_number + "";
-        order.setOrder_number(order_number);
-        order.setOrder_type("好友寄件");
-        User user = userMapper.selectUserByPhone(orderParam.getSender_mobile());
-        order.setSender_user_id(user.getId());
         try {
+
+
+            long long_order_number = (long) (Math.random() * 100000 * 1000000);
+            String order_number = long_order_number + "";
+            order.setOrder_number(order_number);
+            order.setOrder_type("好友寄件");
+            User user = userMapper.selectUserByPhone(orderParam.getSender_mobile());
+            order.setSender_user_id(user.getId());
             orderMapper.addOrder(order);
             for (int i = 0; i < orderExpressList.size(); i++) {
                 orderExpressList.get(i).setOrder_number(order_number);
