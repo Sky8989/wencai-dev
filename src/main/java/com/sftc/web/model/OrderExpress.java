@@ -220,13 +220,7 @@ public class OrderExpress extends Object {
         this.ship_addr = ship_addr;
     }
 
-    public String getPackage_type() {
-        return package_type;
-    }
 
-    public void setPackage_type(String package_type) {
-        this.package_type = package_type;
-    }
 
     public String getObject_type() {
         return object_type;
@@ -260,6 +254,14 @@ public class OrderExpress extends Object {
     public void setGift_card_id(int gift_card_id) {
         this.gift_card_id = gift_card_id;
 
+    }
+
+    public String getPackage_type() {
+        return package_type;
+    }
+
+    public void setPackage_type(String package_type) {
+        this.package_type = package_type;
     }
 
     public int getOrder_id() {
