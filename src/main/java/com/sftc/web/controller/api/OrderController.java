@@ -76,12 +76,12 @@ public class OrderController extends AbstractBasicController {
 
 
     /**
-     * 寄件给好友提交订单接口
+     * 寄件人填写订单
      * @param orderParam
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/place", method = RequestMethod.POST, headers = "api-version=2")
+    @RequestMapping(value = "/senderplace", method = RequestMethod.POST, headers = "api-version=2")
     public @ResponseBody
     APIResponse friendPlaceOrder(@RequestBody OrderParam orderParam) throws Exception {
         APIRequest request = new APIRequest();
