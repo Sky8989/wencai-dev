@@ -144,7 +144,7 @@ public class OrderExpress extends Object {
         this.ship_city = (String) request.getParameter("ship_city");
         this.ship_area = (String) request.getParameter("ship_area");
         this.ship_addr = (String) request.getParameter("ship_addr");
-        this.package_type = (String) request.getParameter("package_type");
+        this.package_type = (String)request.getParameter("package_type");
         this.object_type = (String) request.getParameter("object_type");
     }
 
