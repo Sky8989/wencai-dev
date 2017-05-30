@@ -28,7 +28,7 @@ import java.util.List;
  * Created by Administrator on 2017/5/15.
  */
 public class APIGet {
-    public static String getGet(String json, HttpGet get) {
+    public static String getGet( HttpGet get) {
         //httpClient
         HttpClient httpClient = new DefaultHttpClient();
 

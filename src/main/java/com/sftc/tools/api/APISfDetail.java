@@ -22,7 +22,7 @@ public class APISfDetail {
         REQUESTS_URL = REQUESTS_URL + uuid;
         HttpGet get = new HttpGet(REQUESTS_URL);
         get.addHeader("PushEnvelope-Device-Token",access_token);
-        String res = APIGet.getGet("", get);
+        String res = APIGet.getGet(get);
 
        JSONObject jsonObject = JSONObject.fromObject(res);
 

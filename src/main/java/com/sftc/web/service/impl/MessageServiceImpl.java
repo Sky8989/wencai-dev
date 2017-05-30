@@ -116,16 +116,19 @@ public class MessageServiceImpl implements MessageService{
         }
         return APIUtil.getResponse(status,jsonObject);
     }
+
+    /**
+     **获取个人信息
+     */
     public APIResponse loginByGet(String object){
         APIStatus status = APIStatus.SUCCESS;
         HttpGet get = new HttpGet(LOGIN);
        get.addHeader("PushEnvelope-Device-Token", object);
-        String res = APIGet.getGet(object,get);
-        Result result = new Result();
+        String res = APIGet.getGet(get);
         JSONObject jsonObject1 = JSONObject.fromObject(res);
-        result = (Result) JSONObject.toBean(jsonObject1,result.getClass());
-        if(result.getError()!=null){
-            status = result.getError().login();
+
+        if(jsonObject1.get("errors")!=null||jsonObject1.get("error")!=null){
+            status = APIStatus.LOGIN_FAIL;
         }
         return APIUtil.getResponse(status,jsonObject1);
     }

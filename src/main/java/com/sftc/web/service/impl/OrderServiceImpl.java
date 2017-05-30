@@ -197,8 +197,12 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         //orderExpress.setUuid((String)jsonObject.getJSONObject("request").get("uuid"));
 //            status = APIStatus.SUBMIT_FAIL;
-        orderExpress.setUuid("");
-            orderExpressMapper.updateOrderExpress(orderExpress);
+     try {
+         orderExpress.setUuid("");
+         orderExpressMapper.updateOrderExpress(orderExpress);
+     }catch(Exception e){
+         status = APIStatus.SUBMIT_FAIL;
+        }
         return APIUtil.getResponse(status, null);
     }
 
