@@ -54,8 +54,6 @@ public class OrderServiceImpl implements OrderService {
      * 普通提交订单
      */
 
-
-    @Override
     public APIResponse placeOrder(Object object) {
         String order_number= UUID.randomUUID().toString();
 
