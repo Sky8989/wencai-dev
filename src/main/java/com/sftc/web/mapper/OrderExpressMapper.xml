@@ -36,12 +36,12 @@
         FROM sftc_order_express,sftc_order
         WHERE (sftc_order_express.sender_user_id=#{id} or sftc_order_express.ship_user_id=#{id})
         AND sftc_order_express.order_id = sftc_order.id
-        <if test="state!=null">
-            AND sftc_order_express.state=#{state}
+        <if test="states!=null">
+            <foreach collection="states" item="state" open="AND (" close=")" separator="or">
+                sftc_order_express.state=#{state}
+            </foreach>
         </if>
-        <if test="pageNum!=0">
             limit #{pageNum},#{pageSize}
-        </if>
     </select>
 
     <!-- 普通下单 -->

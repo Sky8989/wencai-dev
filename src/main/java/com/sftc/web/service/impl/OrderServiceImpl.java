@@ -320,20 +320,12 @@ public class OrderServiceImpl implements OrderService {
             }
             if (myOrderParam.getState().equals("")) {
                 myOrderParam.setState(null);
-                myOrderParam.setPageNum(myOrderParam.getPageNum() - 1);
-                orderCallbacks = orderExpressMapper.findMyOrderExpress(myOrderParam);
             } else {
-                if (myOrderParam.getPageNum() == 0) {
-                    myOrderParam.setPageNum(0);
-                }
-                myOrderParam.setPageNum(myOrderParam.getPageNum() - 1);
                 String [] arr_status = myOrderParam.getState().split(",");
-                for (String str : arr_status) {
-                    myOrderParam.setState(str);
-                    List<OrderCallback> orderCallbackList = orderExpressMapper.findMyOrderExpress(myOrderParam);
-                    orderCallbacks.addAll(orderCallbackList);
-                }
+                myOrderParam.setStates(arr_status);
             }
+            myOrderParam.setPageNum(myOrderParam.getPageNum() - 1);
+            orderCallbacks = orderExpressMapper.findMyOrderExpress(myOrderParam);
         } catch (Exception e) {
             e.printStackTrace();
         }
