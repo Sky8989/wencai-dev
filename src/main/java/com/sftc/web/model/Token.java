@@ -36,6 +36,12 @@ public class Token extends Object {
     public Token() {
     }
 
+    public Token(int user_id, String token) {
+        this.user_id = user_id;
+        this.access_token = token;
+        this.create_time = Long.toString(System.currentTimeMillis());
+    }
+
     public Token(String create_time, int is_logout, String gmt_modified, String gmt_expiry, int user_id) {
         this.create_time = create_time;
         this.is_logout = is_logout;

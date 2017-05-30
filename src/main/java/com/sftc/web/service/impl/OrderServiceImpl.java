@@ -10,6 +10,7 @@ import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.service.OrderService;
 import net.sf.json.JSONObject;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,7 @@
 package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
+import com.sftc.tools.md5.MD5Util;
 import com.sftc.web.mapper.TokenMapper;
 import com.sftc.web.mapper.UserMapper;
 import com.sftc.web.model.Token;
@@ -41,8 +42,11 @@ public class UserServiceImpl implements UserService {
             if (user == null) {
                 user = new User();
                 user.setOpen_id(wechatUser.getOpenid());
+                user.setSession_key(wechatUser.getSession_key());
                 user.setCreate_time(Long.toString(System.currentTimeMillis()));
                 int id = userMapper.insertOpenid(user);
+                String myToken = makeToken(user.getOpen_id(), user.getSession_key());
+                Token token = new Token(id, myToken);
                 user.setId(id);
             }
         } else {
@@ -56,5 +60,9 @@ public class UserServiceImpl implements UserService {
     public Token getToken(int id) {
         Token token = tokenMapper.getToken(id);
         return token;
+    }
+
+    public String makeToken(String str1, String str2) {
+        return MD5Util.MD5(str1 + str2);
     }
 }

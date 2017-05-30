@@ -33,8 +33,10 @@
 
     </select>
 
-    <insert id="insertOpenid" parameterType="java.lang.String">
-        insert into sftc_user (open_id) values (#{open_id})
+    <insert id="insertOpenid" parameterType="com.sftc.web.model.User"  useGeneratedKeys="true" keyProperty="id">
+        insert into sftc_user (open_id,create_time,session_key)
+        values
+        (#{open_id},#{create_time},#{session_key})
 
     </insert>
 

@@ -12,6 +12,7 @@ public class User extends Object {
     //用户密码
     private String user_password;
     private String open_id;
+    private String session_key;
     private String create_time;
     private String js_code;
     private Object summary;
@@ -83,6 +84,13 @@ public class User extends Object {
         this.name = name;
     }
 
+    public String getSession_key() {
+        return session_key;
+    }
+
+    public void setSession_key(String session_key) {
+        this.session_key = session_key;
+    }
 
     public Object getSummary() {
         return summary;
