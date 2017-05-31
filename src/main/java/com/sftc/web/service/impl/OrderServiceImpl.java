@@ -53,7 +53,8 @@ public class OrderServiceImpl implements OrderService {
      */
 
     public APIResponse placeOrder(Object object) {
-        String order_number= UUID.randomUUID().toString();
+        long long_order_number = (long) (Math.random() * 100000 * 1000000);
+        String order_number = long_order_number + "";
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
         JSONObject jsonObject1 = JSONObject.fromObject(object);
@@ -148,8 +149,6 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         Order order = new Order(orderParam);
         try {
-
-
             long long_order_number = (long) (Math.random() * 100000 * 1000000);
             String order_number = long_order_number + "";
             order.setOrder_number(order_number);
@@ -393,7 +392,6 @@ public class OrderServiceImpl implements OrderService {
         * @未下单详情接口
         * */
 
-    @Override
     public APIResponse noPlaceOrderDetail(int order_id) {
         APIStatus status = APIStatus.SUCCESS;
         Order order = null;
