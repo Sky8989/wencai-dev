@@ -270,7 +270,7 @@ public class OrderServiceImpl implements OrderService {
             if (uuid==null) {
                 uuid = orderExpressMapper.getUuidByOrderId(order_id);
             }
-            APISfDetail.sfDetail(uuid,access_token);
+           jsonObject = APISfDetail.sfDetail(uuid, access_token);
 
         }catch (Exception e){
             status  = APIStatus.PARAMETER_FAIL;
@@ -399,7 +399,9 @@ public class OrderServiceImpl implements OrderService {
             System.out.println(uuid);
             Order order = orderMapper.placeOrderDetile(uuid);
            jsonObject= APISfDetail.sfDetail(uuid,access_token);
+            System.out.println(jsonObject);
             jsonObject.put("order",order);
+            System.out.println(jsonObject);
         }catch (Exception e){
             status  = APIStatus.PARAMETER_FAIL;
             System.out.println(e.fillInStackTrace());

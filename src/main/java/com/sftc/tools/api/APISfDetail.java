@@ -22,7 +22,9 @@ public class APISfDetail {
         get.addHeader("PushEnvelope-Device-Token",access_token);
         String res = APIGet.getGet(get);
         JSONObject jsonObject = JSONObject.fromObject(res);
+
         REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
+        System.out.println(jsonObject);
         return jsonObject;
     }
 }
