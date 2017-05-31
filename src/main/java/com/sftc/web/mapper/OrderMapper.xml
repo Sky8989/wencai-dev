@@ -282,7 +282,7 @@
         set
         longitude=#{longitude},
         latitude=#{latitude}
-        WHERE order_number=#{order_number}
+        WHERE id=#{id}
     </update>
     <sql id="orderDetail">
         o.sender_mobile, o.sender_name, o.sender_province,o.state,
