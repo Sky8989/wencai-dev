@@ -34,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
     private static String QUOTES_URL = "http://api-dev.sf-rush.com/quotes";
     private static String REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
     private static String REQUEST_URL = "http://api-dev.sf-rush.com/requests";
-
+    private static String PAY_URL="http://api-dev.sf-rush.com/requests/";
     Gson gson = new Gson();
 
     String time = Long.toString(System.currentTimeMillis());
@@ -124,14 +124,18 @@ public class OrderServiceImpl implements OrderService {
      */
     public APIResponse payOrder(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
-        Order order = new Order((String) request.getParameter("order_number"),
-                Long.toString(System.currentTimeMillis()), "待揽件");
+        JSONObject jsonObject = null;
         try {
-            orderMapper.updateOrder(order);
+            PAY_URL = PAY_URL+request.getParameter("uuid")+"/js_pay?open_id="+request.getParameter("open_id");
+            HttpPost post = new HttpPost(PAY_URL);
+            post.addHeader("PushEnvelope-Device-Token",(String)request.getParameter("access_token"));
+            String res =  AIPPost.getPost("",post);
+            jsonObject = JSONObject.fromObject(res);
         } catch (Exception e) {
             status = APIStatus.ORDER_PAY_FAIL;
         }
-        return APIUtil.getResponse(status, null);
+        PAY_URL="http://api-dev.sf-rush.com/requests/";
+        return APIUtil.getResponse(status, jsonObject);
     }
 
 
@@ -376,17 +380,33 @@ public class OrderServiceImpl implements OrderService {
         JSONObject jsonObject =null;
 
         try {
-            System.out.println(uuid);
             Order order = orderMapper.placeOrderDetile(uuid);
            jsonObject= APISfDetail.sfDetail(uuid,access_token);
-            System.out.println(jsonObject);
             jsonObject.put("order",order);
-            System.out.println(jsonObject);
         }catch (Exception e){
             status  = APIStatus.PARAMETER_FAIL;
             System.out.println(e.fillInStackTrace());
         }
         return APIUtil.getResponse(status, jsonObject);
+    }
+ /*
+        * @未下单详情接口
+        * */
+
+    @Override
+    public APIResponse noPlaceOrderDetail(int order_id) {
+        APIStatus status = APIStatus.SUCCESS;
+        Order order = null;
+        try {
+             order = orderMapper.orderAndOrderExpressAndGiftDetile(order_id);
+            if(order==null){
+               status= APIStatus.COURIER_NOT_FOUND;
+            }
+        }catch (Exception e){
+            status = APIStatus.PARAMETER_FAIL;
+        }
+
+         return APIUtil.getResponse(status, order);
     }
 }
 

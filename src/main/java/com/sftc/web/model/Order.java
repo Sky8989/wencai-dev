@@ -77,11 +77,8 @@ public class Order extends Object {
      * @param gmt_pay_create
      * @param state
      */
-    public Order(String order_number, String gmt_pay_create, String state) {
-        this.order_number = order_number;
-        this.gmt_pay_create = gmt_pay_create;
-        this.state = state;
-    }
+
+
 
     public Order(double longitude, double latitude,String order_number) {
         this.order_number=order_number;
