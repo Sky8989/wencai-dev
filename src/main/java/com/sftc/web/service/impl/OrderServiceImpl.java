@@ -340,6 +340,16 @@ public class OrderServiceImpl implements OrderService {
             }
             myOrderParam.setPageNum(myOrderParam.getPageNum() - 1);
             orderCallbacks = orderExpressMapper.findMyOrderExpress(myOrderParam);
+            for (OrderCallback orderCallback : orderCallbacks) {
+                if (orderCallback.getOrder_type().equals("ORDER_FRIEND")) {
+                    orderCallback.setUuid(null);
+                }
+                if (orderCallback.getGift_card_id() == 1) {
+                    orderCallback.setIs_gift(true);
+                } else {
+                    orderCallback.setIs_gift(false);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

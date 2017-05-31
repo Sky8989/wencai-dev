@@ -18,8 +18,11 @@ public class OrderCallback {
     private String sender_name;
     private String sender_addr;
     private String order_number;
+    private String uuid;
     private String state;
     private String order_type;
+    private boolean is_gift;
+    private transient int gift_card_id;
 
     public int getId() {
         return id;
@@ -69,6 +72,14 @@ public class OrderCallback {
         this.order_number = order_number;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public String getState() {
         return state;
     }
@@ -83,5 +94,21 @@ public class OrderCallback {
 
     public void setOrder_type(String order_type) {
         this.order_type = order_type;
+    }
+
+    public boolean isIs_gift() {
+        return is_gift;
+    }
+
+    public void setIs_gift(boolean is_gift) {
+        this.is_gift = is_gift;
+    }
+
+    public int getGift_card_id() {
+        return gift_card_id;
+    }
+
+    public void setGift_card_id(int gift_card_id) {
+        this.gift_card_id = gift_card_id;
     }
 }
