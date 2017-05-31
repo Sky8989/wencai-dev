@@ -62,8 +62,9 @@
         ship_area=#{ship_area},
         ship_addr=#{ship_addr},
         is_use=1,
-        uuid=#{uuid}
-        WHERE order_number=#{order_number}
+        uuid=#{uuid},
+        ship_user_id=#{ship_user_id}
+        WHERE order_id=#{order_id}
     </update>
 
     <update id="updatePlace" parameterType="com.sftc.web.model.OrderExpress">

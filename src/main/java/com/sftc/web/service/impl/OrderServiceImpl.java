@@ -191,6 +191,7 @@ public class OrderServiceImpl implements OrderService {
         //orderExpress.setUuid((String)jsonObject.getJSONObject("request").get("uuid"));
 //            status = APIStatus.SUBMIT_FAIL;
      try {
+         System.out.println("aaa");
          orderExpress.setUuid("");
          orderExpressMapper.updateOrderExpress(orderExpress);
      }catch(Exception e){
