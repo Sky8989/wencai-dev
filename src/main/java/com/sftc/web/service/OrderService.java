@@ -91,5 +91,6 @@ public interface OrderService {
     public APIResponse sfOrderDetail(int order_id,String access_token,String uuid);
 
     APIResponse placeOrderDetail(String uuid,String access_token);
+    APIResponse noPlaceOrderDetail(int order_id);
 }
 

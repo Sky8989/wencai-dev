@@ -408,5 +408,24 @@ public class OrderServiceImpl implements OrderService {
         }
         return APIUtil.getResponse(status, jsonObject);
     }
+ /*
+        * @未下单详情接口
+        * */
+
+    @Override
+    public APIResponse noPlaceOrderDetail(int order_id) {
+        APIStatus status = APIStatus.SUCCESS;
+        Order order = null;
+        try {
+             order = orderMapper.orderAndOrderExpressAndGiftDetile(order_id);
+            if(order==null){
+               status= APIStatus.COURIER_NOT_FOUND;
+            }
+        }catch (Exception e){
+            status = APIStatus.PARAMETER_FAIL;
+        }
+
+         return APIUtil.getResponse(status, order);
+    }
 }
 

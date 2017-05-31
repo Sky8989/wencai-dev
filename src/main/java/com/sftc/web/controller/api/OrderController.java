@@ -191,4 +191,17 @@ public class OrderController extends AbstractBasicController {
 
         return orderService.placeOrderDetail(orderExpress.getUuid(),token.getAccess_token());
     }
+
+    /**
+     * 未下单详情接口
+     * * @param
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/noPlaceDetail", method = RequestMethod.POST, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse noPlaceDetail(OrderExpress orderExpress) throws Exception {
+
+        return orderService.noPlaceOrderDetail(orderExpress.getOrder_id());
+    }
 }
