@@ -236,7 +236,7 @@ public class OrderServiceImpl implements OrderService {
        try{
 
            String uuid = orderExpressMapper.getUuidByOrderId(orderExpress.getOrder_id());
-           if(order.getOrder_type().equals("好友订单")){
+           if(order.getOrder_type().equals("ORDER_FRIEND")){
 
                Order order1 = orderMapper.orderAndOrderExpressAndGiftDetile(orderExpress.getOrder_id());
               jsonObject =  JSONObject.fromObject(order1);
