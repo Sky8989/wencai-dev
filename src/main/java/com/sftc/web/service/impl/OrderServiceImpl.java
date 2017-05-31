@@ -187,6 +187,7 @@ public class OrderServiceImpl implements OrderService {
         //orderExpress.setUuid((String)jsonObject.getJSONObject("request").get("uuid"));
 //            status = APIStatus.SUBMIT_FAIL;
      try {
+         System.out.println("aaa");
          orderExpress.setUuid("");
          orderExpressMapper.updateOrderExpress(orderExpress);
      }catch(Exception e){
@@ -265,7 +266,7 @@ public class OrderServiceImpl implements OrderService {
             if (uuid==null) {
                 uuid = orderExpressMapper.getUuidByOrderId(order_id);
             }
-            APISfDetail.sfDetail(uuid,access_token);
+           jsonObject = APISfDetail.sfDetail(uuid, access_token);
 
         }catch (Exception e){
             status  = APIStatus.PARAMETER_FAIL;
@@ -378,7 +379,9 @@ public class OrderServiceImpl implements OrderService {
             System.out.println(uuid);
             Order order = orderMapper.placeOrderDetile(uuid);
            jsonObject= APISfDetail.sfDetail(uuid,access_token);
+            System.out.println(jsonObject);
             jsonObject.put("order",order);
+            System.out.println(jsonObject);
         }catch (Exception e){
             status  = APIStatus.PARAMETER_FAIL;
             System.out.println(e.fillInStackTrace());
