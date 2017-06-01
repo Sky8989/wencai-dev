@@ -31,7 +31,7 @@
     <select id="findMyOrderExpress" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
             resultType="com.sftc.web.model.apiCallback.OrderCallback">
         SELECT DISTINCT sftc_order_express.id,sftc_order_express.order_number,sftc_order_express.ship_name,
-        sftc_order_express.ship_addr,sftc_order_express.state,sftc_order_express.uuid,
+        sftc_order_express.ship_addr,sftc_order_express.state,sftc_order_express.uuid,sftc_order_express.create_time,
         sftc_order.sender_name,sftc_order.sender_addr,sftc_order.order_type,sftc_order.gift_card_id
         FROM sftc_order_express,sftc_order
         WHERE (sftc_order_express.sender_user_id=#{id} or sftc_order_express.ship_user_id=#{id})
@@ -41,6 +41,7 @@
                 sftc_order_express.state=#{state}
             </foreach>
         </if>
+        order by sftc_order_express.create_time desc
             limit #{pageNum},#{pageSize}
     </select>
 
