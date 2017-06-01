@@ -100,5 +100,11 @@ public interface OrderService {
      * @return
      */
     APIResponse evaluate(Object object);
+    /**
+     * 取消订单
+     * @param
+     * @return
+     */
+    APIResponse deleteOrder(Object object);
 }
 

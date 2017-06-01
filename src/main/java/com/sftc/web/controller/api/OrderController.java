@@ -205,7 +205,7 @@ public class OrderController extends AbstractBasicController {
         return orderService.noPlaceOrderDetail(orderExpress.getOrder_id());
     }
     /**
-     * 未下单详情接口
+     * 评价小哥
      * * @param
      * @return
      * @throws Exception
@@ -216,4 +216,19 @@ public class OrderController extends AbstractBasicController {
 
         return orderService.evaluate(object);
     }
+    /**
+     * 取消订单
+     * * @param
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/cancelOrder", method = RequestMethod.POST, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse cancelOrder(@RequestBody Object object) throws Exception {
+
+        return orderService.deleteOrder(object);
+    }
+
+
+
 }

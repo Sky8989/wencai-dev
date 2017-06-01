@@ -456,5 +456,32 @@ public class OrderServiceImpl implements OrderService {
         PAY_URL="http://api-dev.sf-rush.com/requests/";
         return APIUtil.getResponse(status, jsonObject);
     }
+         /*
+        * @取消订单
+        * */
+
+    @Override
+    public APIResponse deleteOrder(Object object) {
+        APIStatus status = APIStatus.SUCCESS;
+        JSONObject jsonObject = null;
+        try {
+            JSONObject jsonObject1 = JSONObject.fromObject(object);
+            String str = gson.toJson(object);
+            REQUESTS_URL = REQUESTS_URL+(String)jsonObject1.get("uuid")+"/events";
+            HttpPost post = new HttpPost(REQUESTS_URL);
+            post.addHeader("PushEnvelope-Device-Token",(String)jsonObject1.get("access_token"));
+            String res =  AIPPost.getPost(str,post);
+            jsonObject = JSONObject.fromObject(res);
+
+            if (jsonObject.get("error")==null){
+                orderMapper.deleOrderAndOrderExpress((String)jsonObject1.get("uuid"));
+            }
+        }catch (Exception e){
+            status = APIStatus.CANCEL_ORDER_FALT;
+        }
+
+        REQUESTS_URL="http://api-dev.sf-rush.com/requests/";
+        return APIUtil.getResponse(status, jsonObject);
+    }
 }
 
