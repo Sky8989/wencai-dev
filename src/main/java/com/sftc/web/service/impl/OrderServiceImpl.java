@@ -165,7 +165,7 @@ public class OrderServiceImpl implements OrderService {
             orderMapper.addOrder(order);
             for (int i = 0; i < orderExpressList.size(); i++) {
                 orderExpressList.get(i).setOrder_number(order_number);
-                orderExpressList.get(i).setState("待下单");
+                orderExpressList.get(i).setState("待好友填写");
                 orderExpressList.get(i).setUuid("");
                 orderExpressList.get(i).setSender_user_id(orderParam.getSender_user_id());
                 OrderExpress orderExpress = new OrderExpress(
@@ -199,6 +199,7 @@ public class OrderServiceImpl implements OrderService {
      try {
          System.out.println("aaa");
          orderExpress.setUuid("");
+         orderExpress.setState("好友已填写");
          orderExpressMapper.updateOrderExpress(orderExpress);
      }catch(Exception e){
          status = APIStatus.SUBMIT_FAIL;
@@ -378,17 +379,23 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse friendPlace(Object object) {
         APIStatus status = APIStatus.SUCCESS;
         String str = gson.toJson(object);
-        JSONObject jsonObject1 = JSONObject.fromObject(object);
-        HttpPost post = new HttpPost(REQUEST_URL);
-        post.addHeader("PushEnvelope-Device-Token",(String)jsonObject1.getJSONObject("request").getJSONObject("merchant").get("access_token"));//97uAK7HQmDtsw5JMOqad
-        String res = AIPPost.getPost(str,post);
-        JSONObject jsonObject = JSONObject.fromObject(res);
-        OrderExpress orderExpress = new OrderExpress((String)jsonObject1.getJSONObject("request").getJSONObject("merchant").get("uuid"),(String)jsonObject1.getJSONObject("request").get("order_id"),
-                (Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"),(Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"));
-       System.out.println(orderExpress.getUuid()+(String)jsonObject.getJSONObject("request").get("order_number"));
-        orderExpressMapper.updatePlace(orderExpress);
-        Order order = new Order((Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"),(Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),(String)jsonObject1.getJSONObject("request").get("order_id"));
-        orderMapper.updatePlace(order);
+        JSONObject jsonObject = null;
+        try {
+            JSONObject jsonObject1 = JSONObject.fromObject(object);
+            HttpPost post = new HttpPost(REQUEST_URL);
+            post.addHeader("PushEnvelope-Device-Token",(String)jsonObject1.getJSONObject("request").getJSONObject("merchant").get("access_token"));//97uAK7HQmDtsw5JMOqad
+            String res = AIPPost.getPost(str,post);
+             jsonObject = JSONObject.fromObject(res);
+            OrderExpress orderExpress = new OrderExpress((String)jsonObject1.getJSONObject("request").getJSONObject("merchant").get("uuid"),Integer.parseInt((String)jsonObject1.getJSONObject("request").get("order_id")),
+                    (Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"),(Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),(String)jsonObject.getJSONObject("request").get("status"));
+            orderExpressMapper.updatePlace(orderExpress);
+            Order order = new Order((Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"),(Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),(String)jsonObject1.getJSONObject("request").get("order_id"));
+            orderMapper.updatePlace(order);
+        }catch (Exception e){
+            status = APIStatus.SUBMIT_FAIL;
+            System.out.println(e.fillInStackTrace());
+        }
+
         return APIUtil.getResponse(status,jsonObject );
     }
 

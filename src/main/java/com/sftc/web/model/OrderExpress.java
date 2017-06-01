@@ -41,7 +41,7 @@ public class OrderExpress extends Object {
 
     private int sender_user_id;
 
-    private int order_id;
+
 
     // 收件人id(根据用户表id)
     private int ship_user_id;
@@ -49,6 +49,7 @@ public class OrderExpress extends Object {
     private int gift_card_id;
     private Double latitude;
     private Double longitude;
+    private int order_id;
     public int getSender_user_id() {
         return sender_user_id;
     }
@@ -87,8 +88,9 @@ public class OrderExpress extends Object {
         this.longitude = longitude;
     }
 
-    public OrderExpress(String uuid,String order_number,Double longitude,Double latitude) {
-        this.order_number = order_number;
+    public OrderExpress(String uuid,int order_id,Double longitude,Double latitude,String state) {
+        this.state=state;
+       this.order_id=order_id;
         this.uuid = uuid;
         this.longitude=longitude;
         this.latitude=latitude;

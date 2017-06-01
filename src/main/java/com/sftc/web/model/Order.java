@@ -84,6 +84,7 @@ public class Order extends Object {
         this.order_number=order_number;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.state=state;
     }
 
     /**
