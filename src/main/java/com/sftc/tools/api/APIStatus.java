@@ -37,7 +37,10 @@ public enum APIStatus {
     QUOTE_FAIL("000018","计价失败"),
     ADDRESS_FAIL("0000019","新增地址失败"),
     PARAMETER_FAIL("0000020","参数传递错误"),
-    LOGIN_FAIL("0000021","获取个人信息失败");
+    LOGIN_FAIL("0000021","获取个人信息失败"),
+    EVALUATE_FALT("0000022","评价失败");
+
+
     private String state;
     private String message;
 

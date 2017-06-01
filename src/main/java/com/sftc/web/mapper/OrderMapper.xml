@@ -319,5 +319,9 @@
             <result property="create_time" column="create_time"/>
         </association>
     </resultMap>
-
+    <!--  删除订单  -->
+    <delete id="deleOrderAndOrderExpress" parameterType="string">
+      DELETE sftc_order,sftc_order_express from sftc_order LEFT JOIN sftc_order_express ON
+       sftc_order.id=sftc_order_express.order_id WHERE sftc_order_express.uuid=#{uuid}
+    </delete>
 </mapper>
