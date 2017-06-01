@@ -204,4 +204,16 @@ public class OrderController extends AbstractBasicController {
 
         return orderService.noPlaceOrderDetail(orderExpress.getOrder_id());
     }
+    /**
+     * 未下单详情接口
+     * * @param
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/evaluate", method = RequestMethod.POST, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse evaluate(@RequestBody Object object) throws Exception {
+
+        return orderService.evaluate(object);
+    }
 }

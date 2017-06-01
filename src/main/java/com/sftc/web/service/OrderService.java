@@ -11,6 +11,8 @@ import com.sftc.web.model.reqeustParam.MyOrderParam;
 
 import com.sftc.web.model.sfmodel.Requests;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -92,5 +94,11 @@ public interface OrderService {
 
     APIResponse placeOrderDetail(String uuid,String access_token);
     APIResponse noPlaceOrderDetail(int order_id);
+    /**
+     * 评价小哥
+     * @param
+     * @return
+     */
+    APIResponse evaluate(Object object);
 }
 

@@ -13,9 +13,11 @@ import com.sftc.web.service.OrderService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.lang.Object;
 import java.util.List;
 import java.util.UUID;
@@ -427,6 +429,32 @@ public class OrderServiceImpl implements OrderService {
         }
 
          return APIUtil.getResponse(status, order);
+    }
+     /*
+        * @对商家评价
+        * */
+
+    @Override
+    public APIResponse evaluate(Object object) {
+        APIStatus status = APIStatus.SUCCESS;
+        String str = gson.toJson(object);
+        JSONObject jsonObject = null;
+        JSONObject jsonObject1 = JSONObject.fromObject(object);
+        try {
+            PAY_URL = PAY_URL+(String)jsonObject1.getJSONObject("request").get("uuid")+"/attributes/merchant_comment";
+            HttpPut put = new HttpPut(PAY_URL);
+            put.addHeader("PushEnvelope-Device-Token",(String)jsonObject1.getJSONObject("request").get("access_token"));
+            String res =  AIPPost.getPost(str,put);
+            jsonObject = JSONObject.fromObject(res);
+           if (jsonObject.get("errors")!=null||jsonObject.get("error")!=null){
+               status = APIStatus.EVALUATE_FALT;
+           }
+        } catch (Exception e) {
+            System.out.println(e.fillInStackTrace());
+            status = APIStatus.EVALUATE_FALT;
+        }
+        PAY_URL="http://api-dev.sf-rush.com/requests/";
+        return APIUtil.getResponse(status, jsonObject);
     }
 }
 

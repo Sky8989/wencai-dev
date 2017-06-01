@@ -4,6 +4,7 @@ import net.sf.json.JSONObject;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -16,7 +17,7 @@ import java.io.*;
  * Created by Administrator on 2017/5/15.
  */
 public class AIPPost {
-    public static String getPost(String json, HttpPost post) {
+    public static String getPost(String json, HttpEntityEnclosingRequestBase post) {
 
         HttpClient client = new DefaultHttpClient();
 
@@ -69,6 +70,7 @@ public class AIPPost {
 
         } catch (Exception e) {
             System.out.println("请求异常");
+            System.out.println(e.fillInStackTrace());
             throw new RuntimeException(e);
         }
 
