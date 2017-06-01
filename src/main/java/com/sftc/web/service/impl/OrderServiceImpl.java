@@ -324,9 +324,11 @@ public class OrderServiceImpl implements OrderService {
         try {
             List<Orders> orderses = APIResolve.getOrdersJson(ORDERS_URL, myOrderParam.getToken());
             for (Orders orders : orderses) {
-                String uuid = orders.getUuid();
-                String order_status = orders.getStatus();
-                orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
+                if (!orders.getStatus().equals("WAIT_FILL") || !orders.getStatus().equals("ALREADY_FILL")) {
+                    String uuid = orders.getUuid();
+                    String order_status = orders.getStatus();
+                    orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
+                }
             }
             if (myOrderParam.getState().equals("")) {
                 myOrderParam.setState(null);
