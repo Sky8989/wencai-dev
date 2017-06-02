@@ -40,8 +40,8 @@ public class OrderExpress extends Object {
     private int is_use;
 
     private int sender_user_id;
-
-
+    //预约时间
+    private String reserve_time;
 
     // 收件人id(根据用户表id)
     private int ship_user_id;
@@ -71,7 +71,7 @@ public class OrderExpress extends Object {
 
     public OrderExpress(String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String package_type, String object_type,
-                        String state, int sender_user_id, int order_id,String uuid,Double latitude,Double longitude) {
+                        String state, int sender_user_id, int order_id,String uuid,Double latitude,Double longitude,String reserve_time) {
         this.create_time = create_time;
         this.order_number = order_number;
         this.ship_name = ship_name;
@@ -88,14 +88,16 @@ public class OrderExpress extends Object {
         this.uuid = uuid;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.reserve_time=reserve_time;
     }
 
-    public OrderExpress(String uuid,int order_id,Double longitude,Double latitude,String state) {
+    public OrderExpress(String uuid,int order_id,Double longitude,Double latitude,String state,String reserve_time) {
         this.state=state;
        this.order_id=order_id;
         this.uuid = uuid;
         this.longitude=longitude;
         this.latitude=latitude;
+        this.reserve_time=reserve_time;
     }
 
     // public OrderExpress(String package_type, String object_type) {
@@ -308,6 +310,7 @@ public class OrderExpress extends Object {
         this.longitude = longitude;
     }
 
+<<<<<<< HEAD
     public int getPageNum() {
         return pageNum;
     }
@@ -322,5 +325,13 @@ public class OrderExpress extends Object {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+=======
+    public String getReserve_time() {
+        return reserve_time;
+    }
+
+    public void setReserve_time(String reserve_time) {
+        this.reserve_time = reserve_time;
+>>>>>>> 72d31567f7ea3fd645ab4fb3fe8b3dd72c3b6b76
     }
 }

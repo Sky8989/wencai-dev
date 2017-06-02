@@ -228,7 +228,18 @@ public class OrderController extends AbstractBasicController {
 
         return orderService.deleteOrder(object);
     }
+    /**
+     * 时间规则
+     * * @param
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/constants", method = RequestMethod.POST, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse constants(HttpServletRequest request) throws Exception {
 
+        return orderService.timeConstants(new APIRequest(request));
+    }
 
 
 }

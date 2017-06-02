@@ -106,5 +106,11 @@ public interface OrderService {
      * @return
      */
     APIResponse deleteOrder(Object object);
+    /**
+     * 时间规则
+     * @param
+     * @return
+     */
+    APIResponse timeConstants(APIRequest request);
 }
 

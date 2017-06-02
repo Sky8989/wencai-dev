@@ -1,6 +1,7 @@
 package com.sftc.tools.api;
 
 import com.google.gson.Gson;
+import com.sftc.web.model.sfmodel.Coupon;
 import com.sftc.web.model.sfmodel.Orders;
 import com.sftc.web.model.wechat.WechatUser;
 import net.sf.json.JSONArray;
@@ -44,12 +45,25 @@ public class APIResolve {
         InputStream inputStream = connection.getInputStream();
         String old_json = IOUtils.toString(inputStream);
         JSONObject jasonObject = JSONObject.fromObject(old_json);
-        Map map = (Map)jasonObject;
+        Map map = (Map) jasonObject;
         String new_json = map.get("requests").toString();
         orderses = (List<Orders>) JSONArray.toList(JSONArray.fromObject(new_json), Orders.class);
-        for (Orders orders : orderses) {
-            System.out.println(orders.getStatus());
-        }
         return orderses;
+    }
+
+    public static List<Coupon> getCouponsJson(String apiUrl, String token, String method) throws Exception {
+        List<Coupon> couponList = null;
+        URL url = new URL(apiUrl);
+        HttpURLConnection connection;
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod(method);
+        connection.setRequestProperty("PushEnvelope-Device-Token", token);
+        InputStream inputStream = connection.getInputStream();
+        String old_json = IOUtils.toString(inputStream);
+        JSONObject jasonObject = JSONObject.fromObject(old_json);
+        Map map = (Map) jasonObject;
+        String new_json = map.get("coupons").toString();
+        couponList = (List<Coupon>) JSONArray.toList(JSONArray.fromObject(new_json), Orders.class);
+        return couponList;
     }
 }

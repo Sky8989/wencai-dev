@@ -49,11 +49,11 @@
     <insert id="addOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
         INSERT INTO sftc_order_express
         (ship_name,ship_mobile,ship_province,ship_city,ship_area,
-        ship_addr,order_number,package_type,object_type,create_time,sender_user_id,order_id,state,uuid,longitude,latitude)
+        ship_addr,order_number,package_type,object_type,create_time,sender_user_id,order_id,state,uuid,longitude,latitude,reserve_time)
         VALUES
         (#{ship_name},#{ship_mobile},#{ship_province},#{ship_city},#{ship_area},
         #{ship_addr},#{order_number},#{package_type},#{object_type},#{create_time},#{sender_user_id},#{order_id},#{state}
-        ,#{uuid},#{longitude},#{latitude})
+        ,#{uuid},#{longitude},#{latitude},#{reserve_time})
     </insert>
 
     <update id="updateOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
@@ -78,6 +78,7 @@
         longitude=#{longitude},
         latitude=#{latitude},
         state=#{state},
+        reserve_time=#{reserve_time},
         is_use=1,
         uuid=#{uuid}
         WHERE order_id=#{order_id}
