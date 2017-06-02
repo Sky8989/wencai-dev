@@ -310,7 +310,6 @@ public class OrderExpress extends Object {
         this.longitude = longitude;
     }
 
-<<<<<<< HEAD
     public int getPageNum() {
         return pageNum;
     }
@@ -325,13 +324,12 @@ public class OrderExpress extends Object {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
-=======
+    }
     public String getReserve_time() {
         return reserve_time;
     }
 
     public void setReserve_time(String reserve_time) {
         this.reserve_time = reserve_time;
->>>>>>> 72d31567f7ea3fd645ab4fb3fe8b3dd72c3b6b76
     }
 }
