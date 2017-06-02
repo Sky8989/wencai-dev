@@ -515,7 +515,7 @@ public class OrderServiceImpl implements OrderService {
                System.out.println(e.fillInStackTrace());
                status = APIStatus.CONSTANT_FALT;
            }
-           PAY_URL="http://api-dev.sf-rush.com/requests/";
+           CONSTANTS_URL="http://api-dev.sf-rush.com/";
            return APIUtil.getResponse(status, jsonObject);
        }
  }
