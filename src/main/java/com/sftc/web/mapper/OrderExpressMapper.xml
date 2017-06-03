@@ -78,7 +78,9 @@
         longitude=#{longitude},
         latitude=#{latitude},
         state=#{state},
+        <if test="reserve_time!=null">
         reserve_time=#{reserve_time},
+        </if>
         is_use=1,
         uuid=#{uuid}
         WHERE order_id=#{order_id}

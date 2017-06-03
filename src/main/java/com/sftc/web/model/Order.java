@@ -20,7 +20,7 @@ public class Order extends Object {
     // 创建时间
     private String create_time;
     // 订单编号
-    private String order_number;
+    private Long order_number;
     // 订单状态
     private String state;
     // 下单时间
@@ -74,14 +74,14 @@ public class Order extends Object {
     /**
      * 支付订单的构造方法
      *
-     * @param gmt_pay_create
-     * @param state
+     * @param
+     * @param
      */
 
 
 
-    public Order(double longitude, double latitude,String order_number) {
-        this.order_number=order_number;
+    public Order(double longitude, double latitude,int id) {
+        this.id=id;
         this.longitude = longitude;
         this.latitude = latitude;
         this.state=state;
@@ -94,7 +94,7 @@ public class Order extends Object {
      */
 
 
-    public Order(String create_time, String order_number, String state, String gmt_order_create, String pay_method,
+    public Order(String create_time, Long order_number, String state, String gmt_order_create, String pay_method,
                  String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr, String word_message, String image, String voice,
                  double longitude, double latitude, int gift_card_id,String order_type,int sender_user_id) {
@@ -123,7 +123,7 @@ public class Order extends Object {
 
     public Order(OrderParam orderParam) {
         this.create_time = Long.toString(System.currentTimeMillis());
-        this.order_number = Long.toString(System.currentTimeMillis());
+        this.order_number =(long) (Math.random() * 100000 * 1000000);
         this.state = "待支付";
         this.gmt_order_create = Long.toString(System.currentTimeMillis());
         this.pay_method = orderParam.getPay_method();
@@ -151,7 +151,7 @@ public class Order extends Object {
 
 
 
-    public Order(String create_time, String order_number, String gmt_order_create, String state) {
+    public Order(String create_time, Long order_number, String gmt_order_create, String state) {
         this.create_time = create_time;
         this.order_number = order_number;
         this.gmt_order_create = gmt_order_create;
@@ -175,11 +175,11 @@ public class Order extends Object {
         this.create_time = create_time;
     }
 
-    public String getOrder_number() {
+    public Long getOrder_number() {
         return order_number;
     }
 
-    public void setOrder_number(String order_number) {
+    public void setOrder_number(Long order_number) {
         this.order_number = order_number;
     }
 
