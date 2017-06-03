@@ -66,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
             Order order = new Order(time,long_order_number, "待支付",time,(String)jsonObject1.getJSONObject("request").get("pay_type"),
             (String)jsonObject1.getJSONObject("request").get("product_type"),0.0,  (String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver"), (String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("mobile"),(String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("province"),
             (String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("city"),(String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("region"),(String)jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("street"),(String)jsonObject1.getJSONObject("request").getJSONObject("order").get("word_message"),(String)jsonObject1.getJSONObject("request").getJSONObject("order").get("image"),(String)jsonObject1.getJSONObject("request").getJSONObject("order").get("voice"),
-            (Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"), (Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),Integer.parseInt((String)jsonObject1.getJSONObject("request").getJSONObject("order").get("gift_card_id")),"ORDER_BASIS",Integer.parseInt((String)jsonObject1.getJSONObject("request").getJSONObject("order").get("sender_user_id")));
+            (Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"), (Double)jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),Integer.parseInt((String)jsonObject1.getJSONObject("request").getJSONObject("order").get("gift_card_id")),"ORDER_BASIS",Integer.parseInt((String)jsonObject1.getJSONObject("request").getJSONObject("order").get("sender_user_id")),Integer.parseInt((String)jsonObject1.getJSONObject("request").getJSONObject("order").get("voice_time")));
             HttpPost post = new HttpPost(REQUEST_URL);
 
             post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("request").getJSONObject("merchant").get("access_token"));//97uAK7HQmDtsw5JMOqad
@@ -493,9 +493,9 @@ public class OrderServiceImpl implements OrderService {
         try {
             JSONObject jsonObject1 = JSONObject.fromObject(object);
             String str = gson.toJson(object);
-            REQUESTS_URL = REQUESTS_URL + (String) jsonObject1.get("uuid") + "/events";
+            REQUESTS_URL = REQUESTS_URL + (String) jsonObject1.getJSONObject("event").get("uuid") + "/events";
             HttpPost post = new HttpPost(REQUESTS_URL);
-            post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.get("access_token"));
+            post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("event").get("access_token"));
             String res = AIPPost.getPost(str, post);
             jsonObject = JSONObject.fromObject(res);
 
