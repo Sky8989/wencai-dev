@@ -24,7 +24,7 @@ public interface UserContactService {
 
     /**
      * 根据id获取好友信息
-     * @param id
+     * @param userContactParam
      * @return
      */
     APIResponse getFriendDetail(UserContactParam userContactParam);
@@ -35,4 +35,11 @@ public interface UserContactService {
      * @return
      */
     APIResponse getFriendList(Paging paging);
+
+    /**
+     * 好友圈来往记录
+     * @param userContactParam
+     * @return
+     */
+    APIResponse getContactInfo(UserContactParam userContactParam);
 }

@@ -3,11 +3,16 @@ package com.sftc.web.service.impl;
 import com.sftc.tools.api.*;
 import com.sftc.web.mapper.*;
 import com.sftc.web.model.*;
+import com.sftc.web.model.apiCallback.ContactCallback;
+import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.reqeustParam.UserContactParam;
+import com.sftc.web.model.reqeustParam.UserParam;
+import com.sftc.web.model.sfmodel.Orders;
 import com.sftc.web.service.UserContactService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +35,9 @@ public class UserContactServiceImpl implements UserContactService {
 
     @Resource
     private DateRemindMapper dateRemindMapper;
+
+    @Resource
+    private OrderExpressMapper orderExpressMapper;
 
     /*
      * 添加好友
@@ -74,5 +82,45 @@ public class UserContactServiceImpl implements UserContactService {
             status = APIStatus.SELECT_FAIL;
         }
         return APIUtil.getResponse(status, userContactList);
+    }
+
+    /**
+     * 好友圈来往记录
+     * @param userContactParam
+     * @return
+     */
+    public APIResponse getContactInfo(UserContactParam userContactParam) {
+        APIStatus status = APIStatus.SUCCESS;
+        String ORDERS_URL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
+        String uuids = "";
+        List<OrderCallback> orderCallbacks = new ArrayList<OrderCallback>();
+        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(userContactParam.getUser_id());
+        List<ContactCallback> contactCallbacks = null;
+        for (OrderExpress oe : orderExpressList) {
+            uuids = uuids + oe.getUuid() + ",";
+        }
+        uuids = uuids.substring(0, uuids.length() - 1);
+        ORDERS_URL = ORDERS_URL.replace("uuid", uuids);
+        try {
+            List<Orders> orderses = APIResolve.getOrdersJson(ORDERS_URL, userContactParam.getToken());
+            for (Orders orders : orderses) {
+                if (!orders.getStatus().equals("WAIT_FILL") || !orders.getStatus().equals("ALREADY_FILL")) {
+                    String uuid = orders.getUuid();
+                    String order_status = orders.getStatus();
+                    orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
+                }
+            }
+            contactCallbacks = userContactMapper.selectCirclesContact(userContactParam);
+            for (ContactCallback contactCallback : contactCallbacks) {
+                String sender_icon = userContactMapper.selectUserIcon(contactCallback.getSender_user_id());
+                contactCallback.setSender_icon(sender_icon);
+                String ship_icon = userContactMapper.selectUserIcon(contactCallback.getShip_user_id());
+                contactCallback.setShip_icon(ship_icon);
+            }
+        } catch (Exception e) {
+            status = APIStatus.SELECT_FAIL;
+            e.printStackTrace();
+        }
+        return APIUtil.getResponse(status, contactCallbacks);
     }
 }

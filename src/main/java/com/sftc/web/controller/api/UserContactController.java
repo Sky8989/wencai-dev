@@ -36,6 +36,12 @@ public class UserContactController extends AbstractBasicController {
         return userContactService.getFriendList(paging);
     }
 
+    @RequestMapping(value = "/contacts", method = RequestMethod.POST, headers = "api-version=1")
+    public @ResponseBody
+    APIResponse getContactInfo(@RequestBody UserContactParam userContactParam) throws Exception {
+        return userContactService.getContactInfo(userContactParam);
+    }
+
     @RequestMapping(value = "/detail", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
     APIResponse friendDetail(@RequestBody UserContactParam userContactParam) throws Exception {
