@@ -71,7 +71,7 @@ public class OrderExpress extends Object {
 
     public OrderExpress(String create_time, Long order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String package_type, String object_type,
-                        String state, int sender_user_id, int order_id,String uuid,Double latitude,Double longitude,String reserve_time) {
+                        String state, int sender_user_id, int order_id,String uuid,Double latitude,Double longitude) {
         this.create_time = create_time;
         this.order_number = order_number;
         this.ship_name = ship_name;
@@ -88,16 +88,16 @@ public class OrderExpress extends Object {
         this.uuid = uuid;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.reserve_time=reserve_time;
+
     }
 
-    public OrderExpress(String uuid,int order_id,Double longitude,Double latitude,String state,String reserve_time) {
+    public OrderExpress(String uuid,int order_id,Double longitude,Double latitude,String state) {
         this.state=state;
        this.order_id=order_id;
         this.uuid = uuid;
         this.longitude=longitude;
         this.latitude=latitude;
-        this.reserve_time=reserve_time;
+
     }
 
     // public OrderExpress(String package_type, String object_type) {
