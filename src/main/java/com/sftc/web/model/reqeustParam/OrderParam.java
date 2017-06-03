@@ -54,7 +54,8 @@ public class OrderParam {
     private int ship_user_id;
     // 礼卡表id
     private int gift_card_id;
-
+    //语音时长
+    private int voice_time;
     private OrderExpress orderExpress;
 
     public OrderExpress getOrderExpress() {
@@ -225,5 +226,13 @@ public class OrderParam {
 
     public void setOrderExpressList(List<OrderExpress> orderExpressList) {
         this.orderExpressList = orderExpressList;
+    }
+
+    public int getVoice_time() {
+        return voice_time;
+    }
+
+    public void setVoice_time(int voice_time) {
+        this.voice_time = voice_time;
     }
 }

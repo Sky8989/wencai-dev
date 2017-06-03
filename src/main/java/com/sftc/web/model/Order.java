@@ -62,6 +62,8 @@ public class Order extends Object {
     private int sender_user_id;
     // 礼卡表id
     private int gift_card_id;
+    //语音时间
+    private int voice_time;
     private GiftCard giftCard;
     private List<OrderExpress> orderExpressList;
     private OrderExpress orderExpress;
@@ -97,7 +99,7 @@ public class Order extends Object {
     public Order(String create_time, Long order_number, String state, String gmt_order_create, String pay_method,
                  String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr, String word_message, String image, String voice,
-                 double longitude, double latitude, int gift_card_id,String order_type,int sender_user_id) {
+                 double longitude, double latitude, int gift_card_id,String order_type,int sender_user_id,int voice_time) {
         this.create_time = create_time;
         this.order_number = order_number;
         this.state = state;
@@ -119,6 +121,7 @@ public class Order extends Object {
         this.gift_card_id = gift_card_id;
         this.order_type = order_type;
         this.sender_user_id = sender_user_id;
+        this.voice_time=voice_time;
     }
 
     public Order(OrderParam orderParam) {
@@ -139,7 +142,7 @@ public class Order extends Object {
         this.voice = orderParam.getVoice();
         this.longitude = orderParam.getLongitude();
         this.latitude = orderParam.getLatitude();
-
+        this.voice_time=orderParam.getVoice_time();
 
 
         this.sender_user_id = orderParam.getSender_user_id();
@@ -386,5 +389,13 @@ public class Order extends Object {
 
     public void setOrder_type(String order_type) {
         this.order_type = order_type;
+    }
+
+    public int getVoice_time() {
+        return voice_time;
+    }
+
+    public void setVoice_time(int voice_time) {
+        this.voice_time = voice_time;
     }
 }
