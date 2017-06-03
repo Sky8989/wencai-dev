@@ -169,6 +169,7 @@ public class OrderServiceImpl implements OrderService {
                 orderExpressList.get(i).setState("待好友填写");
                 orderExpressList.get(i).setUuid("");
                 orderExpressList.get(i).setSender_user_id(orderParam.getSender_user_id());
+                orderExpressList.get(i).setReserve_time("");
                 OrderExpress orderExpress = new OrderExpress(
                         orderExpressList.get(i).getOrder_number(),
                         orderExpressList.get(i).getPackage_type(),
@@ -178,7 +179,8 @@ public class OrderServiceImpl implements OrderService {
                         orderExpressList.get(i).getIs_use(),
                         orderExpressList.get(i).getState(),
                         orderExpressList.get(i).getUuid(),
-                        orderExpressList.get(i).getSender_user_id()
+                        orderExpressList.get(i).getSender_user_id(),
+                        orderExpressList.get(i).getReserve_time()
                         );
                 orderExpressMapper.addOrderExpress(orderExpress);
             }

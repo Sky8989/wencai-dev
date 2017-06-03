@@ -113,7 +113,7 @@ public class OrderExpress extends Object {
 //    }
 
     public OrderExpress(Long order_number,String package_type, String object_type,
-                        int order_id, String create_time, int is_use,String state,String uuid,int sender_user_id) {
+                        int order_id, String create_time, int is_use,String state,String uuid,int sender_user_id,String reserve_time) {
         this.order_number = order_number;
         this.package_type = package_type;
         this.object_type = object_type;
@@ -124,8 +124,7 @@ public class OrderExpress extends Object {
         this.order_id = order_id;
         this.state = state;
         this.uuid = uuid;
-        this.longitude = longitude;
-        this.latitude = latitude;
+       this.reserve_time=reserve_time;
         this.sender_user_id = sender_user_id;
     }
 
