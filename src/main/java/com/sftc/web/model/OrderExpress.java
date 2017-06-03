@@ -17,7 +17,7 @@ public class OrderExpress extends Object {
     // 创建时间
     private String create_time;
     // 订单编号
-    private String order_number;
+    private Long order_number;
     // 收件人姓名
     private String ship_name;
     // 收件人手机
@@ -67,7 +67,7 @@ public class OrderExpress extends Object {
         this.state = state;
     }
 
-    public OrderExpress(String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
+    public OrderExpress(String create_time, Long order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String package_type, String object_type,
                         String state, int sender_user_id, int order_id,String uuid,Double latitude,Double longitude,String reserve_time) {
         this.create_time = create_time;
@@ -112,7 +112,7 @@ public class OrderExpress extends Object {
 //        this.object_type = object_type;
 //    }
 
-    public OrderExpress(String order_number,String package_type, String object_type,
+    public OrderExpress(Long order_number,String package_type, String object_type,
                         int order_id, String create_time, int is_use,String state,String uuid,int sender_user_id) {
         this.order_number = order_number;
         this.package_type = package_type;
@@ -139,7 +139,7 @@ public class OrderExpress extends Object {
         this.ship_addr = (String) request.getParameter("ship_addr");
     }
 
-    public OrderExpress(APIRequest request, String order_number) {
+    public OrderExpress(APIRequest request, Long order_number) {
         this.create_time = Long.toString(System.currentTimeMillis());
         this.order_number = order_number;
         this.ship_name = (String) request.getParameter("ship_name");
@@ -168,11 +168,11 @@ public class OrderExpress extends Object {
         this.create_time = create_time;
     }
 
-    public String getOrder_number() {
+    public Long getOrder_number() {
         return order_number;
     }
 
-    public void setOrder_number(String order_number) {
+    public void setOrder_number(Long order_number) {
         this.order_number = order_number;
     }
 
