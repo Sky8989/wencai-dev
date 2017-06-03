@@ -493,9 +493,9 @@ public class OrderServiceImpl implements OrderService {
         try {
             JSONObject jsonObject1 = JSONObject.fromObject(object);
             String str = gson.toJson(object);
-            REQUESTS_URL = REQUESTS_URL + (String) jsonObject1.get("uuid") + "/events";
+            REQUESTS_URL = REQUESTS_URL + (String) jsonObject1.getJSONObject("event").get("uuid") + "/events";
             HttpPost post = new HttpPost(REQUESTS_URL);
-            post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.get("access_token"));
+            post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("event").get("access_token"));
             String res = AIPPost.getPost(str, post);
             jsonObject = JSONObject.fromObject(res);
 
