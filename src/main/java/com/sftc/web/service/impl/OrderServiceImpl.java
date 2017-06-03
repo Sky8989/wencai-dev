@@ -495,33 +495,7 @@ public class OrderServiceImpl implements OrderService {
         REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
         return APIUtil.getResponse(status, jsonObject);
     }
-<<<<<<< HEAD
 
-    /*
-     * @预约时间规则
-     *
-     * */
-    public APIResponse timeConstants(APIRequest request) {
-        APIStatus status = APIStatus.SUCCESS;
-        JSONObject jsonObject = null;
-        try {
-            CONSTANTS_URL = CONSTANTS_URL + "constants/" + request.getParameter("constants") + "?latitude=" + request.getParameter("latitude") + "&longitude=" + request.getParameter("longitude");
-            HttpGet get = new HttpGet(CONSTANTS_URL);
-            get.addHeader("PushEnvelope-Device-Token", (String) request.getParameter("access_token"));
-            String res = APIGet.getGet(get);
-            jsonObject = JSONObject.fromObject(res);
-            if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {
-                status = APIStatus.CONSTANT_FALT;
-            }
-        } catch (Exception e) {
-            System.out.println(e.fillInStackTrace());
-            status = APIStatus.CONSTANT_FALT;
-        }
-        PAY_URL = "http://api-dev.sf-rush.com/requests/";
-        return APIUtil.getResponse(status, jsonObject);
-    }
-}
-=======
        /*
         * @预约时间规则
         *
@@ -547,5 +521,4 @@ public class OrderServiceImpl implements OrderService {
            return APIUtil.getResponse(status, jsonObject);
        }
  }
->>>>>>> yqy
 
