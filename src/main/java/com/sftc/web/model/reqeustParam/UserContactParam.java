@@ -29,6 +29,7 @@ public class UserContactParam extends Object {
     private String create_time;
     private int user_id;
     private int friend_id;
+    private String token;
 
     public int getId() {
         return id;
@@ -100,5 +101,13 @@ public class UserContactParam extends Object {
 
     public void setFriend_id(int friend_id) {
         this.friend_id = friend_id;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

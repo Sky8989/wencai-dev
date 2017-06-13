@@ -16,6 +16,22 @@
         <result column="friend_id" property="friend_id"/>
     </resultMap>
 
+    <resultMap id="contactCallback" type="com.sftc.web.model.apiCallback.ContactCallback">
+        <id column="id" property="id"/>
+        <result column="sender_name" property="sender_name"/>
+        <result column="sender_user_id" property="sender_user_id"/>
+        <result column="ship_name" property="ship_name"/>
+        <result column="ship_user_id" property="ship_user_id"/>
+        <result column="create_time" property="create_time"/>
+        <result column="status" property="status"/>
+        <association property="giftCard" javaType="com.sftc.web.model.GiftCard">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="icon" property="icon"/>
+            <result column="type" property="type"/>
+        </association>
+    </resultMap>
+
     <!-- 好友列表 -->
     <select id="friendList" parameterType="com.sftc.web.model.Paging" resultMap="friendListInfo">
             select
@@ -24,6 +40,10 @@
             from sftc_user_contact
             where
             user_id=#{user_id} limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="selectUserIcon" parameterType="int" resultType="java.lang.String">
+        select icon from sftc_user_contact where user_id=#{id} and friend_id=#{id}
     </select>
 
     <select id="selectFriendCount" resultType="int">
@@ -62,4 +82,17 @@
             id=#{id}
     </select>
 
+    <select id="selectCirclesContact" parameterType="com.sftc.web.model.reqeustParam.UserContactParam" resultMap="contactCallback">
+        select
+        sftc_order_express.id,sftc_order_express.ship_name,sftc_order.sender_name,
+        sftc_order_express.create_time,sftc_order_express.state,sftc_order_express.ship_user_id,
+        sftc_order_express.sender_user_id,sftc_gift_card.*
+        FROM sftc_order_express,sftc_order,sftc_gift_card
+        WHERE
+        (sftc_order_express.sender_user_id=#{user_id} and sftc_order_express.ship_user_id=#{friend_id}
+        or
+        sftc_order_express.sender_user_id=#{friend_id} and sftc_order_express.ship_user_id=#{user_id})
+        AND sftc_order_express.order_id = sftc_order.id
+    </select>
+    
 </mapper>
