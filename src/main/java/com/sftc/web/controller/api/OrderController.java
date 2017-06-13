@@ -241,5 +241,40 @@ public class OrderController extends AbstractBasicController {
         return orderService.timeConstants(new APIRequest(request));
     }
 
+    /**
+     * 大网普遍下单接口
+     * * @param
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/createOrder", method = RequestMethod.POST, headers = "api-version=2")
+    public @ResponseBody
+    APIResponse createOrder(@RequestBody Object object) throws Exception {
 
+        return orderService.createOrder(object);
+    }
+    /**
+     * 大网计价接口
+     * * @param
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/OrderFreightQuery", method = RequestMethod.POST, headers = "api-version=2")
+    public @ResponseBody
+    APIResponse OrderFreightQuery(@RequestBody Object object) throws Exception {
+
+        return orderService.OrderFreightQuery(object);
+    }
+    /**
+     * 大网路由接口
+     * * @param
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/OrderRouteQuery", method = RequestMethod.POST, headers = "api-version=2")
+    public @ResponseBody
+    APIResponse OrderRouteQuery(HttpServletRequest request) throws Exception {
+
+        return orderService.OrderRouteQuery(new APIRequest(request));
+    }
 }

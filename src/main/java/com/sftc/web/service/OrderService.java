@@ -112,5 +112,24 @@ public interface OrderService {
      * @return
      */
     APIResponse timeConstants(APIRequest request);
+    /**
+     * 大网下单接口
+     * @param
+     * @return
+     */
+    APIResponse createOrder(Object object);
+
+    /**
+     * 大网计价接口
+     * @param
+     * @return
+     */
+    APIResponse OrderFreightQuery(Object object);
+    /**
+     * 大网路由接口
+     * @param
+     * @return
+     */
+    APIResponse OrderRouteQuery(APIRequest request);
 }
 
