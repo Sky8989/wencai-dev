@@ -98,8 +98,8 @@ public class Order extends Object {
 
     public Order(String create_time, Long order_number, String state, String gmt_order_create, String pay_method,
                  String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
-                 String sender_city, String sender_area, String sender_addr, String word_message, String image, String voice,
-                 double longitude, double latitude, int gift_card_id,String order_type,int sender_user_id,int voice_time) {
+                 String sender_city, String sender_area, String sender_addr,
+                 double longitude, double latitude,String order_type,int sender_user_id) {
         this.create_time = create_time;
         this.order_number = order_number;
         this.state = state;
