@@ -18,6 +18,7 @@ import javax.ws.rs.HEAD;
 import java.lang.Object;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA.
@@ -542,11 +543,13 @@ public class OrderServiceImpl implements OrderService {
        public APIResponse createOrder(Object object) {
 
            Long long_order_number= (long) (Math.random() * 100000 * 1000000);
+           String orderid = APIRandomOrderId.getRandomString(9);
            APIStatus status = APIStatus.SUCCESS;
            JSONObject jsonObject = null;
            JSONObject jsonObject1 = JSONObject.fromObject(object);
+           jsonObject1.getJSONObject("sf").put("orderid",orderid);
            String str = gson.toJson(jsonObject1.getJSONObject("sf"));
-
+            System.out.println(str);
            try {
 
                Order order = new Order(time,long_order_number, "待支付",time,(String)jsonObject1.getJSONObject("sf").get("pay_method"),
@@ -560,18 +563,18 @@ public class OrderServiceImpl implements OrderService {
                System.out.println(res);
                jsonObject = JSONObject.fromObject(res);
                if(jsonObject1.get("Message_Type")!=null) {
-               if(!jsonObject.get("Message_Type").equals("ORDER_CREATE_ERROR")) {
-                       orderMapper.addOrder(order);
-                       OrderExpress orderExpress = new OrderExpress(time, long_order_number, (String) jsonObject1.getJSONObject("sf").get("d_contact"), (String) jsonObject1.getJSONObject("sf").get("d_tel"), (String) jsonObject1.getJSONObject("sf").get("d_province"),
-                               (String) jsonObject1.getJSONObject("sf").get("d_city"), (String) jsonObject1.getJSONObject("sf").get("d_county"), (String) jsonObject1.getJSONObject("sf").get("d_address"), "",//包裹类型
-                              "", "待支付", Integer.parseInt((String) jsonObject1.getJSONObject("order").get("sender_user_id")), order.getId(),"",0.00,
-                               0.00);
-                   orderExpress.setReserve_time("");
-                       orderExpressMapper.addOrderExpress(orderExpress);
-                   jsonObject.put("order_id",order.getId());
-               } }else {
-
+               if(jsonObject.get("Message_Type").equals("ORDER_CREATE_ERROR")) {
                    status = APIStatus.SUBMIT_FAIL;
+               } }else {
+                   orderMapper.addOrder(order);
+                   OrderExpress orderExpress = new OrderExpress(time, long_order_number, (String) jsonObject1.getJSONObject("sf").get("d_contact"), (String) jsonObject1.getJSONObject("sf").get("d_tel"), (String) jsonObject1.getJSONObject("sf").get("d_province"),
+                           (String) jsonObject1.getJSONObject("sf").get("d_city"), (String) jsonObject1.getJSONObject("sf").get("d_county"), (String) jsonObject1.getJSONObject("sf").get("d_address"), "",//包裹类型
+                           "", "待支付", Integer.parseInt((String) jsonObject1.getJSONObject("order").get("sender_user_id")), order.getId(),orderid,0.00,
+                           0.00);
+                   orderExpress.setReserve_time("");
+                   orderExpressMapper.addOrderExpress(orderExpress);
+                   jsonObject.put("order_id",order.getId());
+
                }
            } catch (Exception e) {
                System.out.println(e.fillInStackTrace());
