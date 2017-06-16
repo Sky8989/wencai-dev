@@ -131,5 +131,11 @@ public interface OrderService {
      * @return
      */
     APIResponse OrderRouteQuery(APIRequest request);
+    /**
+     * 大网好友下单
+     * @param
+     * @return
+     */
+    APIResponse globalFriendPlace(Object object);
 }
 

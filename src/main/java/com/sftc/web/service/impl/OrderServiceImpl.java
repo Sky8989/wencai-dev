@@ -76,7 +76,6 @@ public class OrderServiceImpl implements OrderService {
             post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("request").getJSONObject("merchant").get("access_token"));//97uAK7HQmDtsw5JMOqad
             String res = AIPPost.getPost(str, post);
             jsonObject = JSONObject.fromObject(res);
-
             if(jsonObject.get("errors")==null||jsonObject.get("error")==null) {
                 if((String)jsonObject1.getJSONObject("request").getJSONObject("order").get("reserve_time")!=null) {
                     orderMapper.addOrder(order);
@@ -89,16 +88,13 @@ public class OrderServiceImpl implements OrderService {
                     }
                     orderExpressMapper.addOrderExpress(orderExpress);
                 }
-
                 jsonObject.put("order_id",order.getId());
             } else {
-
                 status = APIStatus.SUBMIT_FAIL;
             }
         } catch (Exception e) {
             System.out.println(e.fillInStackTrace());
             status = APIStatus.SUBMIT_FAIL;
-
         }
         return APIUtil.getResponse(status, jsonObject);
     }
@@ -542,7 +538,6 @@ public class OrderServiceImpl implements OrderService {
         *
         * */
        public APIResponse createOrder(Object object) {
-
            Long long_order_number= (long) (Math.random() * 100000 * 1000000);
            String orderid = APIRandomOrderId.getRandomString(9);
            APIStatus status = APIStatus.SUCCESS;
@@ -552,11 +547,10 @@ public class OrderServiceImpl implements OrderService {
            String str = gson.toJson(jsonObject1.getJSONObject("sf"));
             System.out.println(str);
            try {
-
-                    Order order = new Order(time, long_order_number, "待支付", time, (String) jsonObject1.getJSONObject("sf").get("pay_method"),
-                            "", 0.0, (String) jsonObject1.getJSONObject("sf").get("j_contact"), (String) jsonObject1.getJSONObject("sf").get("j_tel"), (String) jsonObject1.getJSONObject("sf").get("j_province"),
-                            (String) jsonObject1.getJSONObject("sf").get("j_city"), (String) jsonObject1.getJSONObject("sf").get("j_county"), (String) jsonObject1.getJSONObject("sf").get("j_address"),
-                            0.00, 0.00,"ORDER_BASIS", Integer.parseInt((String) jsonObject1.getJSONObject("order").get("sender_user_id")));
+               Order order = new Order(time, long_order_number, "待支付", time, (String) jsonObject1.getJSONObject("sf").get("pay_method"),
+                "", 0.0, (String) jsonObject1.getJSONObject("sf").get("j_contact"), (String) jsonObject1.getJSONObject("sf").get("j_tel"), (String) jsonObject1.getJSONObject("sf").get("j_province"),
+               (String) jsonObject1.getJSONObject("sf").get("j_city"), (String) jsonObject1.getJSONObject("sf").get("j_county"), (String) jsonObject1.getJSONObject("sf").get("j_address"),
+                0.00, 0.00,"ORDER_BASIS", Integer.parseInt((String) jsonObject1.getJSONObject("order").get("sender_user_id")));
                ValidateNull.validateParam(jsonObject1,order);
                HttpPost post = new HttpPost(CREATEORDER_URL);
                String access_token =  APIGetToken.getToken();
@@ -641,6 +635,35 @@ public class OrderServiceImpl implements OrderService {
         }
         return APIUtil.getResponse(status, jsonObject1);
     }
-
+    /*
+     * 大网好友下单
+     */
+    public APIResponse globalFriendPlace(Object object) {
+        APIStatus status = APIStatus.SUCCESS;
+        String orderid = APIRandomOrderId.getRandomString(9);
+        JSONObject jsonObject = null;
+        JSONObject jsonObject1 = JSONObject.fromObject(object);
+        jsonObject1.getJSONObject("sf").put("orderid",orderid);
+        String str = gson.toJson(jsonObject1.getJSONObject("sf"));
+        try {
+            HttpPost post = new HttpPost(CREATEORDER_URL);
+            String access_token = APIGetToken.getToken();
+            post.addHeader("Authorization", "bearer " + access_token);
+            String res =AIPPost.getPost(str,post);
+            jsonObject = JSONObject.fromObject(res);
+            if(jsonObject.get("Message_Type")!=null) {
+                if (jsonObject.get("Message_Type").equals("ORDER_CREATE_ERROR")) {
+                    status = APIStatus.ORDERROUT_FALT;
+                }
+            }else{
+                OrderExpress orderExpress = new OrderExpress();
+                orderExpress.setOrder_id(Integer.parseInt((String)jsonObject1.getJSONObject("order").get("order_id")));
+            }
+        }catch(Exception e){
+            System.out.println(e.fillInStackTrace());
+            status = APIStatus.ORDERROUT_FALT;
+        }
+        return APIUtil.getResponse(status, jsonObject);
+    }
 }
 

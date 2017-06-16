@@ -86,7 +86,7 @@ public class Order extends Object {
         this.id=id;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.state=state;
+
     }
 
     /**

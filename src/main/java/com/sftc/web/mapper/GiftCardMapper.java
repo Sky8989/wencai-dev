@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface GiftCardMapper {
     Order giftCardDetail(String order_number);
-    List<GiftCard> giftCardList(String type);
+    List<GiftCard> giftCardList();
 }

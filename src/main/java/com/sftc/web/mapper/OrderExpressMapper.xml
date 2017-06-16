@@ -75,9 +75,15 @@
     <update id="updatePlace" parameterType="com.sftc.web.model.OrderExpress">
         UPDATE sftc_order_express
         set
+        <if test="longitude!=null">
         longitude=#{longitude},
+        </if>
+        <if test="latitude!=null">
         latitude=#{latitude},
+        </if>
+        <if test="state!=null">
         state=#{state},
+        </if>
         <if test="reserve_time!=null">
         reserve_time=#{reserve_time},
         </if>
