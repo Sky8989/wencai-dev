@@ -12,10 +12,7 @@ import com.sftc.web.service.GiftCardService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,21 +45,14 @@ public class GiftCardServiceImpl implements GiftCardService {
     @Override
     public APIResponse getGiftCardList(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
-        GiftCardList giftCardList1 = new GiftCardList();
         List<GiftCard> giftCardList= giftCardMapper.giftCardList();
-        giftCardList1.setFestivalBlessingList(new ArrayList<GiftCard>());
-        giftCardList1.setExpressList(new ArrayList<GiftCard>());
-        Map map = new HashMap();
+        IdentityHashMap<String,List<GiftCard>> map = new IdentityHashMap();
         for(GiftCard giftCard:giftCardList){
-            if(giftCard.getType().equals("表达心意")){
+                   List<GiftCard> list = new ArrayList();
+                    list.add(giftCard);
+                    map.put(new String(giftCard.getType()),list);
+                    System.out.println(map.toString());
 
-                giftCardList1.getExpressList().add(giftCard);
-                map.put(giftCard.getType(),giftCardList1.getExpressList());
-            }
-            if(giftCard.getType().equals("节日祝福")){
-
-                giftCardList1.getFestivalBlessingList().add(giftCard);
-            }
         }
         if(giftCardList==null){
             status = APIStatus.GIFT_CARD_NOT_FOUND;
