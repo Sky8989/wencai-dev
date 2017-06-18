@@ -46,16 +46,35 @@ public class GiftCardServiceImpl implements GiftCardService {
     public APIResponse getGiftCardList(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
         List<GiftCard> giftCardList= giftCardMapper.giftCardList();
-        IdentityHashMap<String,List<GiftCard>> map = new IdentityHashMap();
-        for(GiftCard giftCard:giftCardList){
-                   List<GiftCard> list = new ArrayList();
-                    list.add(giftCard);
-                    map.put(new String(giftCard.getType()),list);
-                    System.out.println(map.toString());
+        Map map = new HashMap();
+        try {
+            for (GiftCard giftCard : giftCardList) {
+                List<GiftCard> list = new ArrayList();
+                list.add(giftCard);
+                if(map.get(giftCard.getType())!=null){
+                if (map.containsKey((giftCard.getType()))) {
+                    List<GiftCard> list1 = new ArrayList();
+                   List<GiftCard> list2 = (List)map.get(giftCard.getType());
+                    for(GiftCard giftCard1:list2) {
+                        list1.add(giftCard1);
+                    }
+                    list1.add(list.get(0));
+                    map.put(giftCard.getType(), list1);
+                }else {
+                    map.put(giftCard.getType(), list);
+                }
+                }else {
 
-        }
-        if(giftCardList==null){
-            status = APIStatus.GIFT_CARD_NOT_FOUND;
+                    map.put(giftCard.getType(), list);
+                }
+                System.out.println(map.toString());
+
+            }
+            if (giftCardList == null) {
+                status = APIStatus.GIFT_CARD_NOT_FOUND;
+            }
+        }catch (Exception e){
+            System.out.println(e.fillInStackTrace());
         }
         return APIUtil.getResponse(status,map);
     }
