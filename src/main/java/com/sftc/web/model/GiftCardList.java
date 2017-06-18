@@ -2,26 +2,25 @@ package com.sftc.web.model;
 
 import java.util.List;
 
-/**
- * Created by Administrator on 2017/6/16.
- */
+
 public class GiftCardList {
-    private List<GiftCard> expressList;
-    private List<GiftCard> FestivalBlessingList;
 
-    public List<GiftCard> getExpressList() {
-        return expressList;
+    private String type;
+    private List<GiftCard> giftCards;
+
+    public String getType() {
+        return type;
     }
 
-    public void setExpressList(List<GiftCard> expressList) {
-        this.expressList = expressList;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public List<GiftCard> getFestivalBlessingList() {
-        return FestivalBlessingList;
+    public List<GiftCard> getGiftCards() {
+        return giftCards;
     }
 
-    public void setFestivalBlessingList(List<GiftCard> festivalBlessingList) {
-        FestivalBlessingList = festivalBlessingList;
+    public void setGiftCards(List<GiftCard> giftCards) {
+        this.giftCards = giftCards;
     }
 }
