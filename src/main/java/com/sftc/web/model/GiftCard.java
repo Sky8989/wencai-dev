@@ -61,4 +61,16 @@ public class GiftCard extends Object {
     public void setType(String type) {
         this.type = type;
     }
+
+  /*  @Override
+    public String toString() {
+
+        return
+                "id:" + id +
+                ", \n name:'" + name + '\'' +
+                ", \n icon:'" + icon + '\'' +
+                ", \n type:'" + type + '\''
+                ;
+
+    }*/
 }

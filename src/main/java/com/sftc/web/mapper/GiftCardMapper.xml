@@ -26,7 +26,7 @@
 
         </select>
         <!-- 贺卡列表  -->
-        <select id="giftCardList" parameterType="String" resultType="com.sftc.web.model.GiftCard">
-                SELECT name,icon,type FROM sftc_gift_card where type = #{type}
+        <select id="giftCardList" resultType="com.sftc.web.model.GiftCard">
+                SELECT name,icon,type FROM sftc_gift_card
         </select>
 </mapper>

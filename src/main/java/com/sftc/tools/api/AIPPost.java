@@ -23,7 +23,7 @@ public class AIPPost {
 
 
         post.setHeader("Content-Type", "application/json");
-        post.addHeader("Authorization", "Basic YWRtaW46");
+       // post.addHeader("Authorization", "Basic YWRtaW46");
         //     post.addHeader("PushEnvelope-Device-Token","97uAK7HQmDtsw5JMOqad");
 
         String result = "";
@@ -50,7 +50,7 @@ public class AIPPost {
 
             result = strber.toString();
 
-            JSONObject jsonObject = JSONObject.fromObject(result);
+
 
             // res = (Result) JSONObject.toBean(jsonObject,res.getClass());
             //     System.out.println(res.getError().getType());
