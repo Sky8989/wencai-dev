@@ -28,54 +28,48 @@ import java.util.*;
 public class GiftCardServiceImpl implements GiftCardService {
     @Resource
     private GiftCardMapper giftCardMapper;
-    @Override
+
     /*
     * 订单详情接口
     * */
     public APIResponse getGiftCard(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
-        String orderSn = (String)request.getParameter("orderSn");
-        Order order= giftCardMapper.giftCardDetail(orderSn);
-        if(order==null){
+        String orderSn = (String) request.getParameter("orderSn");
+        Order order = giftCardMapper.giftCardDetail(orderSn);
+        if (order == null) {
             status = APIStatus.GIFT_CARD_NOT_FOUND;
         }
-        return  APIUtil.getResponse(status, order);
+        return APIUtil.getResponse(status, order);
     }
 
-    @Override
     public APIResponse getGiftCardList(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
-        List<GiftCard> giftCardList= giftCardMapper.giftCardList();
-        Map map = new HashMap();
-        try {
-            for (GiftCard giftCard : giftCardList) {
-                List<GiftCard> list = new ArrayList();
-                list.add(giftCard);
-                if(map.get(giftCard.getType())!=null){
-                if (map.containsKey((giftCard.getType()))) {
-                    List<GiftCard> list1 = new ArrayList();
-                   List<GiftCard> list2 = (List)map.get(giftCard.getType());
-                    for(GiftCard giftCard1:list2) {
-                        list1.add(giftCard1);
-                    }
-                    list1.add(list.get(0));
-                    map.put(giftCard.getType(), list1);
-                }else {
-                    map.put(giftCard.getType(), list);
-                }
-                }else {
+        List<GiftCard> giftCards = giftCardMapper.giftCardList();
+        List<GiftCardList> giftCardLists = new ArrayList<GiftCardList>();
 
-                    map.put(giftCard.getType(), list);
+        for (GiftCard giftCard : giftCards) {
+            // 遍历当前的giftCardLists数组，判断这个type的GiftCardList是否已经存在，如果存在，取出这个type的giftCardList
+            GiftCardList giftCardList = null;
+            for (GiftCardList tempList : giftCardLists) {
+                if (tempList.getType().equals(giftCard.getType())) {
+                    giftCardList = tempList;
+                    break;
                 }
-                System.out.println(map.toString());
+            }
 
+            if (giftCardList != null) { // 已存在，GiftCardList对象的giftCards数组添加giftCard
+                List<GiftCard> gitCards = giftCardList.getGiftCards();
+                gitCards.add(giftCard);
+            } else { // 不存在，新建一个GiftCardList，进行赋值，再add进giftCardLists数组
+                GiftCardList list = new GiftCardList();
+                List<GiftCard> gitCards = new ArrayList<GiftCard>();
+                gitCards.add(giftCard);
+                list.setType(giftCard.getType());
+                list.setGiftCards(gitCards);
+                giftCardLists.add(list);
             }
-            if (giftCardList == null) {
-                status = APIStatus.GIFT_CARD_NOT_FOUND;
-            }
-        }catch (Exception e){
-            System.out.println(e.fillInStackTrace());
         }
-        return APIUtil.getResponse(status,map);
+
+        return APIUtil.getResponse(status, giftCardLists);
     }
 }
