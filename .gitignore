@@ -11,6 +11,6 @@
 
 target
 
->>>>>>> 3b6479ec334b1bb24283fb412bc8c4c2adf285b4
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+*.iml
