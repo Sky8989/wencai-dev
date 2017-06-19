@@ -513,7 +513,6 @@ public class OrderServiceImpl implements OrderService {
         * @预约时间规则
         *
         * */
-       @Override
        public APIResponse timeConstants(APIRequest request) {
            APIStatus status = APIStatus.SUCCESS;
            JSONObject jsonObject = null;
