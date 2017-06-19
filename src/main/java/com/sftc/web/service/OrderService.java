@@ -85,8 +85,7 @@ public interface OrderService {
      */
     APIResponse getEmptyPackage(APIRequest request);
 
-    APIResponse getMyOrderList(MyOrderParam myOrderParam);
-    // APIResponse getMyOrderList(APIRequest request);
+    APIResponse getMyOrderList(APIRequest request);
 
     APIResponse friendPlace(Object object);
 
