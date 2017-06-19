@@ -20,7 +20,7 @@
     </resultMap>
 
     <select id="selectExpressForId" parameterType="int" resultType="com.sftc.web.model.OrderExpress">
-        SELECT uuid FROM sftc_order_express WHERE (sender_user_id=#{id} or ship_user_id=#{id})
+        SELECT * FROM sftc_order_express WHERE (sender_user_id=#{id} or ship_user_id=#{id})
     </select>
 
     <!-- 根据订单编号查询该订单的包裹 -->
@@ -36,11 +36,6 @@
         FROM sftc_order_express,sftc_order
         WHERE (sftc_order_express.sender_user_id=#{id} or sftc_order_express.ship_user_id=#{id})
         AND sftc_order_express.order_id = sftc_order.id
-        <if test="states!=null">
-            <foreach collection="states" item="state" open="AND (" close=")" separator="or">
-                sftc_order_express.state=#{state}
-            </foreach>
-        </if>
         order by sftc_order_express.create_time desc
             limit #{pageNum},#{pageSize}
     </select>

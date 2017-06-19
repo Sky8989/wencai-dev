@@ -158,7 +158,9 @@ public class OrderController extends AbstractBasicController {
     @RequestMapping(value = "/my", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
     APIResponse myOrder(@RequestBody MyOrderParam myOrderParam) throws Exception {
-        return orderService.getMyOrderList(myOrderParam);
+        APIRequest request = new APIRequest();
+        request.setRequestParam(myOrderParam);
+        return orderService.getMyOrderList(request);
     }
 
     /**

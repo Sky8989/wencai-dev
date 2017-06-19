@@ -1,20 +1,8 @@
 package com.sftc.web.model.reqeustParam;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @author _KeMing
- * @version 1.0
- * @Package com.sftc.web.model.reqeustParam
- * @Description:
- * @date 2017/5/27
- * @Time 上午1:39
- */
 public class MyOrderParam {
 
     private int id;
-    private String state;
-    private String [] states;
     private String token;
     private int pageNum;
     private int pageSize;
@@ -25,22 +13,6 @@ public class MyOrderParam {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String[] getStates() {
-        return states;
-    }
-
-    public void setStates(String[] states) {
-        this.states = states;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
     }
 
     public String getToken() {

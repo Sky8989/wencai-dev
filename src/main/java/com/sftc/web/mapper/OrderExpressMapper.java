@@ -19,6 +19,8 @@ public interface OrderExpressMapper {
     List<OrderExpress> findEmptyPackage(String order_number);
 
     void updateOrderExpressForSF(OrderExpress orderExpress);
+
     void updatePlace(OrderExpress orderExpress);
+
     String getUuidByOrderId(int order_id);
 }
