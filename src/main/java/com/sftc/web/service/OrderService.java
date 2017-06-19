@@ -75,7 +75,7 @@ public interface OrderService {
     *@param
     * @return
     * */
-    APIResponse getOrderDetile(Order order,OrderExpress orderExpress,Token token);
+    APIResponse getOrderDetile(Order order,OrderExpress orderExpress,Token token,String sort);
     APIResponse updateOrder(APIRequest request,Order order,OrderExpress orderExpress);
 
 
@@ -137,5 +137,11 @@ public interface OrderService {
      * @return
      */
     APIResponse globalFriendPlace(Object object);
+    /**
+     * 提醒寄件人下单
+     * @param
+     * @return
+     */
+    APIResponse remindPlace(APIRequest request);
 }
 

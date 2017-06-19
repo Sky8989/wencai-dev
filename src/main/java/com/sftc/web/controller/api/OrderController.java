@@ -123,8 +123,8 @@ public class OrderController extends AbstractBasicController {
      */
     @RequestMapping(value = "/getOrderDetile", method = RequestMethod.GET,headers = "api-version=1")
     public @ResponseBody
-    APIResponse getOrderDetile(Order order,OrderExpress orderExpress,Token token) throws Exception {
-        return orderService.getOrderDetile(order,orderExpress,token);
+    APIResponse getOrderDetile(Order order,OrderExpress orderExpress,Token token,String sort) throws Exception {
+        return orderService.getOrderDetile(order,orderExpress,token,sort);
     }
 
     /**
@@ -279,5 +279,17 @@ public class OrderController extends AbstractBasicController {
     APIResponse OrderRouteQuery(HttpServletRequest request) throws Exception {
 
         return orderService.OrderRouteQuery(new APIRequest(request));
+    }
+    /**
+     * 提醒寄件人下单
+     * * @param
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/remindPlace", method = RequestMethod.POST, headers = "api-version=2")
+    public @ResponseBody
+    APIResponse remindPlace(HttpServletRequest request) throws Exception {
+
+        return orderService.remindPlace(new APIRequest(request));
     }
 }

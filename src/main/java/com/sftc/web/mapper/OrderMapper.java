@@ -35,4 +35,7 @@ public interface OrderMapper {
     Order placeOrderDetile(String uuid);
     void deleOrderAndOrderExpress(String uuid);
 
+    //查询订单详情和快递详情
+    List<Order> getOrderAndExpress(Order order);
+
 }

@@ -16,10 +16,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.ws.rs.HEAD;
 import java.lang.Object;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+
+import java.util.*;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -268,20 +267,44 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /*
-    * @好友订单订单详情接口
+    * @好友订单详情接口
     * */
-    public APIResponse getOrderDetile(Order order, OrderExpress orderExpress, Token token) {
+    public APIResponse getOrderDetile(Order order, OrderExpress orderExpress, Token token,String sort) {
         APIStatus status = APIStatus.SUCCESS;
-
         JSONObject jsonObject = new JSONObject();
-
+        JSONObject jsonObject1 = new JSONObject();
         try {
-
             String uuid = orderExpressMapper.getUuidByOrderId(orderExpress.getOrder_id());
             if (order.getOrder_type().equals("ORDER_FRIEND")) {
 
                 Order order1 = orderMapper.orderAndOrderExpressAndGiftDetile(orderExpress.getOrder_id());
                 jsonObject = JSONObject.fromObject(order1);
+            }if (order.getOrder_type().equals("ORDER_MYSTERY_NATION")){
+                 Order order1 = orderMapper.orderAndOrderExpressAndGiftDetile(orderExpress.getOrder_id());
+                jsonObject = JSONObject.fromObject(order1);
+                    ORDERROUTE_URL = ORDERROUTE_URL+orderExpress.getUuid()+"&sort="+sort;
+                    HttpGet get = new HttpGet(ORDERROUTE_URL);
+                    String access_token = APIGetToken.getToken();
+                    get.addHeader("Authorization", "bearer " + access_token);
+                    String res =APIGet.getGet(get);
+                    JSONObject jsonObject3 = new JSONObject();
+                    Map map = new HashMap();
+                    map.put("aa","bb");
+
+                    System.out.println(map);
+
+
+                    if(res.equals("[]")){
+
+                    }if(jsonObject1.get("Message_Type")!=null) {
+                        if (jsonObject1.get("Message_Type").equals("ORDER_CREATE_ERROR")) {
+                            status = APIStatus.ORDERROUT_FALT;
+                        }else{
+                            jsonObject1 = JSONObject.fromObject(res);
+                            jsonObject.put(" ",jsonObject1);
+                        }
+                    }
+                    ORDERROUTE_URL="http://api-c-test.sf-rush.com/api/sforderservice/OrderRouteQuery?orderid=";
             } else {
                 REQUESTS_URL = REQUESTS_URL + uuid;
                 System.out.println(uuid);
@@ -292,6 +315,7 @@ public class OrderServiceImpl implements OrderService {
                 REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
             }
         } catch (Exception e) {
+            System.out.println("cc");
             status = APIStatus.PARAMETER_FAIL;
             System.out.println(e.fillInStackTrace());
         }
@@ -704,6 +728,18 @@ public class OrderServiceImpl implements OrderService {
             status = APIStatus.ORDERROUT_FALT;
         }
         return APIUtil.getResponse(status, jsonObject);
+    }
+
+    /*
+     * 寄件人回到首页时发起支付
+     */
+    public APIResponse remindPlace(APIRequest request) {
+        APIStatus status = APIStatus.SUCCESS;
+        Order order = new Order();
+        order.setState("待支付");
+        order.setSender_user_id(Integer.parseInt((String) request.getParameter("sender_user_id")));
+       List<Order> orderList = orderMapper.getOrderAndExpress(order);
+        return APIUtil.getResponse(status, orderList);
     }
 }
 
