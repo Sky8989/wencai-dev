@@ -19,7 +19,7 @@ public class OrderCallback {
     private String sender_addr;
     private String order_number;
     private String uuid;
-    private String state;
+    private transient String state;
     private String order_type;
     private boolean is_gift;
     private transient int gift_card_id;
