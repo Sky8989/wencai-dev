@@ -376,6 +376,19 @@ public class OrderServiceImpl implements OrderService {
      */
     public APIResponse getMyOrderList(APIRequest request) {
         MyOrderParam myOrderParam = (MyOrderParam) request.getRequestParam();
+        // verify params
+        APIStatus failStatus = APIStatus.SELECT_FAIL;
+        if (myOrderParam.getToken().length() == 0) {
+            failStatus.setMessage("token不能为空");
+            return APIUtil.getResponse(failStatus, null);
+        } else if (myOrderParam.getId() == 0) {
+            failStatus.setMessage("用户id不能为空");
+            return APIUtil.getResponse(failStatus, null);
+        } else if (myOrderParam.getPageNum() < 1 || myOrderParam.getPageSize() < 1) {
+            failStatus.setMessage("分页参数无效");
+            return APIUtil.getResponse(failStatus, null);
+        }
+
         APIStatus status = APIStatus.SUCCESS;
         List<OrderCallback> orderCallbacks = new ArrayList<OrderCallback>();
 
@@ -397,10 +410,11 @@ public class OrderServiceImpl implements OrderService {
             return APIUtil.getResponse(status, orderCallbacks);
 
         ordersURL = ordersURL.replace("uuid", uuids.substring(0, uuids.length() - 1));
-        List<Orders> orderses = null;
+        List<Orders> orderses;
         try { // post
             orderses = APIResolve.getOrdersJson(ordersURL, myOrderParam.getToken());
         } catch (Exception e) {
+            APIStatus.SELECT_FAIL.setMessage("查询失败");
             return APIUtil.getResponse(APIStatus.SELECT_FAIL, e.getLocalizedMessage());
         }
 
@@ -549,7 +563,6 @@ public class OrderServiceImpl implements OrderService {
         * @预约时间规则
         *
         * */
-       @Override
        public APIResponse timeConstants(APIRequest request) {
            APIStatus status = APIStatus.SUCCESS;
            JSONObject jsonObject = null;
