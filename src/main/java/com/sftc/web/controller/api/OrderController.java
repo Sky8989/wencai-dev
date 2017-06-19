@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -70,8 +71,8 @@ public class OrderController extends AbstractBasicController {
      */
     @RequestMapping(value = "/fill", method = RequestMethod.POST, headers = "api-version=1")
     public @ResponseBody
-    APIResponse fillOrder(@RequestBody OrderExpress orderExpress) throws Exception {
-        return orderService.friendFillOrder(orderExpress);
+    APIResponse fillOrder(@RequestBody Map  rowData) throws Exception {
+        return orderService.friendFillOrder(rowData);
     }
 
 

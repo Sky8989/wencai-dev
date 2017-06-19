@@ -12,6 +12,7 @@ import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.sfmodel.Requests;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 
 /**
@@ -52,7 +53,7 @@ public interface OrderService {
      * @param
      * @return
      */
-    APIResponse friendFillOrder(OrderExpress orderExpress);
+    APIResponse friendFillOrder(Map rowData);
 
 
     /**

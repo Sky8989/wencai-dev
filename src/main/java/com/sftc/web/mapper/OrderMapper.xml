@@ -114,8 +114,17 @@
             <if test="image!=null">image=#{image},</if>
             <if test="gift_card_id!=null">gift_card_id=#{gift_card_id},</if>
             <if test="pay_method!=null">pay_method=#{pay_method},</if>
+            <if test="order_type!=null">order_type=#{order_type},</if><!-- 新增 在好友填写时修改订单类型-->
         </trim>
         WHERE order_number=#{order_number}
+    </update>
+    <!--修改订单by id  好友填写完订单后，需要改变订单类型信息 只修改订单类型信息 -->
+    <update id="updateOrderTypeById" parameterType="com.sftc.web.model.Order">
+        update sftc_order
+        <trim prefix="set" suffixOverrides=",">
+            <if test="order_type!=null">order_type=#{order_type},</if><!-- 新增 在好友填写时修改订单类型-->
+        </trim>
+        WHERE id=#{id}
     </update>
     <!-- 修改订单  -->
     <update id="updateOrderExpress" parameterType="com.sftc.web.model.OrderExpress">

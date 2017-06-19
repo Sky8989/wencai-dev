@@ -18,6 +18,7 @@ import javax.ws.rs.HEAD;
 import java.lang.Object;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -205,21 +206,37 @@ public class OrderServiceImpl implements OrderService {
 
 
     /*
-     * 好友填写寄件订单   将要分成两个接口  神秘同城 神秘大网
+     * 好友填写寄件订单   前台还需要给一个flag 来分辨 神秘同城、神秘大网
+     * 好友填写完订单后，需要改变订单类型信息
      */
-    public synchronized APIResponse friendFillOrder(OrderExpress orderExpress) {
+    public synchronized APIResponse friendFillOrder(Map rowData) {
+        //对传进来的json参数 转换为对象和flag
+        int is_same = Integer.parseInt(rowData.get("is_same").toString());
+        String orderExpressStr = rowData.get("orderExpress").toString();
+        OrderExpress orderExpress = new Gson().fromJson(orderExpressStr, OrderExpress.class);
         APIStatus status = APIStatus.SUCCESS;
         //orderExpress.setUuid((String)jsonObject.getJSONObject("request").get("uuid"));
-//            status = APIStatus.SUBMIT_FAIL;
+        //status = APIStatus.SUBMIT_FAIL;
         try {
-            //???为何为空  已经修改数据库 已允许uuid为空
+            //更新订单信息，只要是好友地址
             //orderExpress.setUuid("");
             orderExpress.setState("好友已填写");
             orderExpressMapper.updateOrderExpress(orderExpress);
 
             //order的订单类型更新
+            Order order = new Order();
+            order.setId(orderExpress.getOrder_id());
+            if(is_same == 0){
+                //更新order_type为 神秘同城 订单
+                order.setOrder_type("ORDER_MYSTERY_SAME");
+            }else {
+                //更新order_type为 神秘大网 订单
+                order.setOrder_type("ORDER_MYSTERY_NATION");
+            }
+            orderMapper.updateOrderTypeById(order);
         } catch (Exception e) {
             status = APIStatus.SUBMIT_FAIL;
+            e.printStackTrace();
         }
         return APIUtil.getResponse(status, orderExpress.getOrder_id());
     }
@@ -528,6 +545,7 @@ public class OrderServiceImpl implements OrderService {
         * @预约时间规则
         *
         * */
+       @Override
        public APIResponse timeConstants(APIRequest request) {
            APIStatus status = APIStatus.SUCCESS;
            JSONObject jsonObject = null;
@@ -560,7 +578,7 @@ public class OrderServiceImpl implements OrderService {
            JSONObject jsonObject1 = JSONObject.fromObject(object);
            jsonObject1.getJSONObject("sf").put("orderid",orderid);
            String str = gson.toJson(jsonObject1.getJSONObject("sf"));
-           //System.out.println("hxy:here shows a str");
+           //System.out.println("hxy:here shows a str
            //修改 order_type 为 "ORDER_BASIS_NATION" ,by hxy
            try {
                Order order = new Order(

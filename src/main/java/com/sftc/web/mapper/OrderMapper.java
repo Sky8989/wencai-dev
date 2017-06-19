@@ -16,6 +16,8 @@ public interface OrderMapper {
 
 
     void updateOrder(Order order);
+    //通过订单Id修改订单信息，只修改订单类型
+    void updateOrderTypeById(Order Order);
     void updateOrderExpress(OrderExpress orderExpress);
 
     Order orderAndOrderExpressAndGiftDetile(int id);
@@ -32,4 +34,5 @@ public interface OrderMapper {
     void updatePlace(Order order);
     Order placeOrderDetile(String uuid);
     void deleOrderAndOrderExpress(String uuid);
+
 }
