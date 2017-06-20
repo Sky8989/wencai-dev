@@ -18,17 +18,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @author _KeMing
- * @version 1.0
- * @Package com.sftc.web.controller.api
- * @Description: 订单接口
- * @date 2017/4/29
- * @Time 上午1:27
- */
-
 @Controller
 @RequestMapping("order")
 public class OrderController extends AbstractBasicController {

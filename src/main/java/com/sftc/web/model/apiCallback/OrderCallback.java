@@ -1,15 +1,5 @@
 package com.sftc.web.model.apiCallback;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @author _KeMing
- * @version 1.0
- * @Package com.sftc.web.model.apiCallback
- * @Description: 返回订单接口model
- * @date 2017/5/29
- * @Time 下午10:18
- */
 public class OrderCallback {
 
     private int id;
@@ -19,9 +9,8 @@ public class OrderCallback {
     private String sender_addr;
     private String order_number;
     private String uuid;
-    private transient String state;
+    private String state;
     private String order_type;
-    private boolean is_gift;
     private transient int gift_card_id;
 
     public int getId() {
@@ -94,14 +83,6 @@ public class OrderCallback {
 
     public void setOrder_type(String order_type) {
         this.order_type = order_type;
-    }
-
-    public boolean isIs_gift() {
-        return is_gift;
-    }
-
-    public void setIs_gift(boolean is_gift) {
-        this.is_gift = is_gift;
     }
 
     public int getGift_card_id() {

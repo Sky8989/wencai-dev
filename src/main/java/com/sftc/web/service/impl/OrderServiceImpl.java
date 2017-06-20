@@ -429,10 +429,6 @@ public class OrderServiceImpl implements OrderService {
         myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());
         // select
         orderCallbacks = orderExpressMapper.findMyOrderExpress(myOrderParam);
-        // handle is_gift
-        for (OrderCallback orderCallback : orderCallbacks) {
-            orderCallback.setIs_gift(orderCallback.getGift_card_id() == 1);
-        }
 
         return APIUtil.getResponse(status, orderCallbacks);
     }
