@@ -540,7 +540,7 @@ public class OrderServiceImpl implements OrderService {
                 put.addHeader("PushEnvelope-Device-Token", (String) request.get("access_token"));
                 String res = AIPPost.getPost(str, put);
                 jsonObject = JSONObject.fromObject(res);
-               
+
             }else{
 
             }
