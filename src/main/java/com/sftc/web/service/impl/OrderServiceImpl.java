@@ -211,21 +211,21 @@ public class OrderServiceImpl implements OrderService {
     public synchronized APIResponse friendFillOrder(Map rowData) {
         //对传进来的json参数 转换为对象和flag
         int is_same = Integer.parseInt(rowData.get("is_same").toString());
-        String orderExpressStr = rowData.get("orderExpress").toString();
+        //去掉 Map中的is_same元素 便于Gson整体封装剩余元素到OrderExpress中
+        rowData.remove("is_same");
+        String orderExpressStr = rowData.toString();
         OrderExpress orderExpress = new Gson().fromJson(orderExpressStr, OrderExpress.class);
         APIStatus status = APIStatus.SUCCESS;
-        //orderExpress.setUuid((String)jsonObject.getJSONObject("request").get("uuid"));
-        //status = APIStatus.SUBMIT_FAIL;
+
         try {
-            //更新订单信息，只要是好友地址
+            //更新订单信息，主要是好友地址信息
             //orderExpress.setUuid("");
             orderExpress.setState("好友已填写");
             orderExpressMapper.updateOrderExpress(orderExpress);
-
             //order的订单类型更新
             Order order = new Order();
             order.setId(orderExpress.getOrder_id());
-            if(is_same == 0){
+            if(is_same == 1){
                 //更新order_type为 神秘同城 订单
                 order.setOrder_type("ORDER_MYSTERY_SAME");
             }else {
