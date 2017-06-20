@@ -53,7 +53,8 @@ public class OrderServiceImpl implements OrderService {
     private TokenMapper tokenMapper;
     @Resource
     private OrderExpressMapper orderExpressMapper;
-
+    @Resource
+    private EvaluateMapper evaluateMapper;
     /*
      * 普通提交订单 普通同城订单
      */
@@ -273,6 +274,9 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = new JSONObject();
         JSONObject jsonObject1 = new JSONObject();
+        JSONObject jsonObject3 = new JSONObject();
+        Map map2 = new HashMap();
+        List list = new ArrayList();
         try {
             String uuid = orderExpressMapper.getUuidByOrderId(orderExpress.getOrder_id());
             if (order.getOrder_type().equals("ORDER_FRIEND")) {
@@ -280,21 +284,33 @@ public class OrderServiceImpl implements OrderService {
                 Order order1 = orderMapper.orderAndOrderExpressAndGiftDetile(orderExpress.getOrder_id());
                 jsonObject = JSONObject.fromObject(order1);
             }if (order.getOrder_type().equals("ORDER_MYSTERY_NATION")){
+                System.out.println("aa");
                  Order order1 = orderMapper.orderAndOrderExpressAndGiftDetile(orderExpress.getOrder_id());
+
                 jsonObject = JSONObject.fromObject(order1);
                     ORDERROUTE_URL = ORDERROUTE_URL+orderExpress.getUuid()+"&sort="+sort;
                     HttpGet get = new HttpGet(ORDERROUTE_URL);
                     String access_token = APIGetToken.getToken();
                     get.addHeader("Authorization", "bearer " + access_token);
                     String res =APIGet.getGet(get);
-                    JSONObject jsonObject3 = new JSONObject();
-                    Map map = new HashMap();
-                    map.put("aa","bb");
-
-                    System.out.println(map);
 
 
                     if(res.equals("[]")){
+
+
+                        Map map = new HashMap();
+                        map.put("city","深圳市");
+                        map.put("note","顺丰速运 已收取快件");
+                        map.put("creation_time","2017-6-7 15:11:57");
+                        list.add(map);
+                        String str = (String)JSONObject.fromObject(list.get(list.size()-1)).get("note");
+                        Map map1 = new HashMap();
+                        if(str.contains("已收取")){
+                            map1.put("state","已签收");
+                            jsonObject3.put("state","已签收");
+                        }
+                        jsonObject3.put("list",list);
+                        map2.put("expressInfo",jsonObject3);
 
                     }if(jsonObject1.get("Message_Type")!=null) {
                         if (jsonObject1.get("Message_Type").equals("ORDER_CREATE_ERROR")) {
@@ -319,7 +335,7 @@ public class OrderServiceImpl implements OrderService {
             status = APIStatus.PARAMETER_FAIL;
             System.out.println(e.fillInStackTrace());
         }
-        return APIUtil.getResponse(status, jsonObject);
+        return APIUtil.getResponse(status, map2);
     }
     /*
         * @顺丰订单详情接口
@@ -501,12 +517,19 @@ public class OrderServiceImpl implements OrderService {
         String str = gson.toJson(object);
         JSONObject jsonObject = null;
         JSONObject jsonObject1 = JSONObject.fromObject(object);
+        JSONObject request = jsonObject1.getJSONObject("request");
+        JSONObject attributes = jsonObject1.getJSONObject("request").getJSONObject("attributes");
         try {
-            PAY_URL = PAY_URL + (String) jsonObject1.getJSONObject("request").get("uuid") + "/attributes/merchant_comment";
-            HttpPut put = new HttpPut(PAY_URL);
-            put.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("request").get("access_token"));
-            String res = AIPPost.getPost(str, put);
-            jsonObject = JSONObject.fromObject(res);
+            if(request.get("order_type").equals("ORDER_BASIS_SAME")||request.get("order_type").equals("ORDER_MYSTERY_SAME")) {
+                PAY_URL = PAY_URL + (String) request.get("uuid") + "/attributes/merchant_comment";
+                HttpPut put = new HttpPut(PAY_URL);
+                put.addHeader("PushEnvelope-Device-Token", (String) request.get("access_token"));
+                String res = AIPPost.getPost(str, put);
+                jsonObject = JSONObject.fromObject(res);
+                evaluateMapper.addEvaluate(new Evaluate());
+            }else{
+
+            }
             if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {
                 status = APIStatus.EVALUATE_FALT;
             }
@@ -736,7 +759,7 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse remindPlace(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
         Order order = new Order();
-        order.setState("待支付");
+        order.setState("WAIT_HAND_OVER");
         order.setSender_user_id(Integer.parseInt((String) request.getParameter("sender_user_id")));
        List<Order> orderList = orderMapper.getOrderAndExpress(order);
         return APIUtil.getResponse(status, orderList);
