@@ -1,19 +1,9 @@
 package com.sftc.web.model;
 
 import com.sftc.web.model.reqeustParam.OrderParam;
-import net.sf.json.JSONObject;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @version 1.0
- * @Package com.sftc.ssm.pojo
- * @Description: 订单类
- * @date 17/4/1
- * @Time 下午9:00
- */
 public class Order extends Object {
 
     private int id;
@@ -62,7 +52,7 @@ public class Order extends Object {
     private int sender_user_id;
     // 礼卡表id
     private int gift_card_id;
-    //语音时间
+    // 语音时间
     private int voice_time;
     private GiftCard giftCard;
     private List<OrderExpress> orderExpressList;
@@ -72,34 +62,16 @@ public class Order extends Object {
     public Order() {
     }
 
-
-    /**
-     * 支付订单的构造方法
-     *
-     * @param
-     * @param
-     */
-
-
-
-    public Order(double longitude, double latitude,int id) {
-        this.id=id;
+    public Order(double longitude, double latitude, int id) {
+        this.id = id;
         this.longitude = longitude;
         this.latitude = latitude;
-
     }
-
-    /**
-     * 提交订单的构造方法
-     *
-     * @param @request
-     */
-
 
     public Order(String create_time, Long order_number, String state, String gmt_order_create, String pay_method,
                  String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,
-                 double longitude, double latitude,String order_type,int sender_user_id) {
+                 double longitude, double latitude, String order_type, int sender_user_id) {
         this.create_time = create_time;
         this.order_number = order_number;
         this.state = state;
@@ -121,12 +93,12 @@ public class Order extends Object {
         this.gift_card_id = gift_card_id;
         this.order_type = order_type;
         this.sender_user_id = sender_user_id;
-        this.voice_time=voice_time;
+        this.voice_time = voice_time;
     }
 
     public Order(OrderParam orderParam) {
         this.create_time = Long.toString(System.currentTimeMillis());
-        this.order_number =(long) (Math.random() * 100000 * 1000000);
+        this.order_number = (long) (Math.random() * 100000 * 1000000);
         this.state = "待支付";
         this.gmt_order_create = Long.toString(System.currentTimeMillis());
         this.pay_method = orderParam.getPay_method();
@@ -142,17 +114,11 @@ public class Order extends Object {
         this.voice = orderParam.getVoice();
         this.longitude = orderParam.getLongitude();
         this.latitude = orderParam.getLatitude();
-        this.voice_time=orderParam.getVoice_time();
-
-
+        this.voice_time = orderParam.getVoice_time();
         this.sender_user_id = orderParam.getSender_user_id();
         this.gift_card_id = orderParam.getGift_card_id();
         this.job_number = orderParam.getJob_number();
     }
-
-
-
-
 
     public Order(String create_time, Long order_number, String gmt_order_create, String state) {
         this.create_time = create_time;
@@ -160,7 +126,6 @@ public class Order extends Object {
         this.gmt_order_create = gmt_order_create;
         this.state = state;
     }
-
 
     public int getId() {
         return id;
@@ -322,7 +287,6 @@ public class Order extends Object {
         this.latitude = latitude;
     }
 
-
     public GiftCard getGiftCard() {
         return giftCard;
     }
@@ -338,7 +302,6 @@ public class Order extends Object {
     public void setGift_card_id(int gift_card_id) {
         this.gift_card_id = gift_card_id;
     }
-
 
     public String getJob_number() {
         return job_number;
@@ -364,7 +327,6 @@ public class Order extends Object {
         this.sender_user_id = sender_user_id;
     }
 
-
     public List<OrderExpress> getOrderExpressList() {
         return orderExpressList;
     }
@@ -380,8 +342,6 @@ public class Order extends Object {
     public void setOrderExpress(OrderExpress orderExpress) {
         this.orderExpress = orderExpress;
     }
-
-
 
     public String getOrder_type() {
         return order_type;
