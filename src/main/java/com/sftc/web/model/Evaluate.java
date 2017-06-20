@@ -15,13 +15,13 @@ public class Evaluate extends Object {
     // 创建时间
     private String create_time;
     // 评价留言
-    private String message;
-    // 标签
-    private String label;
+    private String comments;
+    // 送货速度
+    private int fast_delivery;
     // 评价时间
-    private String gmt_create;
+    private int service_attitude;
     // 评价星级
-    private String star_level;
+    private int door_speed;
     // 评价人的用户id
     private User merchant;
     private int user_id;
@@ -29,7 +29,15 @@ public class Evaluate extends Object {
     private Order order;
     private int order_id;
 
-    private int courier_id;
+    public Evaluate(String comments, int fast_delivery, int service_attitude, int door_speed, User merchant, int user_id, int order_id) {
+        this.comments = comments;
+        this.fast_delivery = fast_delivery;
+        this.service_attitude = service_attitude;
+        this.door_speed = door_speed;
+        this.merchant = merchant;
+        this.user_id = user_id;
+        this.order_id = order_id;
+    }
 
     public int getId() {
         return id;
@@ -47,36 +55,36 @@ public class Evaluate extends Object {
         this.create_time = create_time;
     }
 
-    public String getMessage() {
-        return message;
+    public String getComments() {
+        return comments;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
-    public String getLabel() {
-        return label;
+    public int getFast_delivery() {
+        return fast_delivery;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setFast_delivery(int fast_delivery) {
+        this.fast_delivery = fast_delivery;
     }
 
-    public String getGmt_create() {
-        return gmt_create;
+    public int getService_attitude() {
+        return service_attitude;
     }
 
-    public void setGmt_create(String gmt_create) {
-        this.gmt_create = gmt_create;
+    public void setService_attitude(int service_attitude) {
+        this.service_attitude = service_attitude;
     }
 
-    public String getStar_level() {
-        return star_level;
+    public int getDoor_speed() {
+        return door_speed;
     }
 
-    public void setStar_level(String star_level) {
-        this.star_level = star_level;
+    public void setDoor_speed(int door_speed) {
+        this.door_speed = door_speed;
     }
 
     public User getMerchant() {
@@ -109,15 +117,5 @@ public class Evaluate extends Object {
 
     public void setOrder_id(int order_id) {
         this.order_id = order_id;
-    }
-
-
-
-    public int getCourier_id() {
-        return courier_id;
-    }
-
-    public void setCourier_id(int courier_id) {
-        this.courier_id = courier_id;
     }
 }
