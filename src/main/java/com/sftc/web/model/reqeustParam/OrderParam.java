@@ -56,7 +56,31 @@ public class OrderParam {
     private int gift_card_id;
     //语音时长
     private int voice_time;
+    //订单快递信息，已弃用
     private OrderExpress orderExpress;
+
+    //包裹类型
+    private String package_type;
+    //物品类型
+    private  String object_type;
+
+    public String getPackage_type() {
+        return package_type;
+    }
+
+    public void setPackage_type(String package_type) {
+        this.package_type = package_type;
+    }
+
+    public String getObject_type() {
+        return object_type;
+    }
+
+    public void setObject_type(String object_type) {
+        this.object_type = object_type;
+    }
+
+
 
     public OrderExpress getOrderExpress() {
         return orderExpress;

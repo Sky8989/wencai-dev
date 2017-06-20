@@ -154,38 +154,64 @@ public class OrderServiceImpl implements OrderService {
      * 寄件人填写 订单
      */
     public APIResponse friendPlaceOrder(APIRequest request) {
-        OrderParam orderParam = (OrderParam) request.getRequestParam();
-        List<OrderExpress> orderExpressList = orderParam.getOrderExpressList();
         APIStatus status = APIStatus.SUCCESS;
+        OrderParam orderParam = (OrderParam) request.getRequestParam();
+//        弃用
+//        List<OrderExpress> orderExpressList = orderParam.getOrderExpressList();
         Order order = new Order(orderParam);
         try {
+            //生成order的编号
             long long_order_number = (long) (Math.random() * 100000 * 1000000);
             order.setOrder_number(long_order_number);
-            //等待好友填写玩地址在判断是神秘同城还是神秘大网
-            //order.setOrder_type("ORDER_FRIEND");
+            //等待好友填写完地址后，再判断是神秘同城还是神秘大网
+            order.setOrder_type("waittingFriendToWrite");
             System.out.println(orderParam.getSender_user_id());
             order.setSender_user_id(orderParam.getSender_user_id());
+            //存储订单信息
+            System.out.println(order);
             orderMapper.addOrder(order);
-            for (int i = 0; i < orderExpressList.size(); i++) {
-                orderExpressList.get(i).setOrder_number(long_order_number);
-                orderExpressList.get(i).setState("待好友填写");
-                orderExpressList.get(i).setUuid("");
-                orderExpressList.get(i).setSender_user_id(orderParam.getSender_user_id());
-                orderExpressList.get(i).setReserve_time("");
-                OrderExpress orderExpress = new OrderExpress(
-                        orderExpressList.get(i).getOrder_number(),
-                        orderExpressList.get(i).getPackage_type(),
-                        orderExpressList.get(i).getObject_type(),
-                        order.getId(),
-                        order.getCreate_time(),
-                        orderExpressList.get(i).getIs_use(),
-                        orderExpressList.get(i).getState(),
-                        orderExpressList.get(i).getUuid(),
-                        orderExpressList.get(i).getSender_user_id(),
-                        orderExpressList.get(i).getReserve_time()
-                );
+            //构建订单快递orderExpress信息
+            OrderExpress orderExpress = new OrderExpress();
+            orderExpress.setOrder_number(order.getOrder_number());
+            orderExpress.setPackage_type(orderParam.getPackage_type());
+            orderExpress.setObject_type(orderParam.getObject_type());
+            orderExpress.setOrder_id(order.getId());
+            orderExpress.setCreate_time(order.getCreate_time());
+            //orderExpress.setIs_use();     //前端未传此参数来
+            orderExpress.setState("WAIT_FILL");
+            orderExpress.setUuid("");
+            orderExpress.setSender_user_id(orderParam.getSender_user_id());
+            orderExpress.setReserve_time("0000");
+            //装入order的id，注意不是order编号，orderExpress需要order的id外键
+            orderExpress.setOrder_id(order.getId());
+            System.out.println("-   -包裹数量"+orderParam.getPackage_count());
+            for (int i = orderParam.getPackage_count(); i > 0 ;i--){
+                //存储订单快递信息
                 orderExpressMapper.addOrderExpress(orderExpress);
+                System.out.println("-   -存储快递信息的次数" + i);
             }
+
+//            for (int i = 0; i < orderExpressList.size(); i++) {
+//                orderExpressList.get(i).setOrder_number(long_order_number);
+//                orderExpressList.get(i).setState("待好友填写");
+//                orderExpressList.get(i).setUuid("");
+//                orderExpressList.get(i).setSender_user_id(orderParam.getSender_user_id());
+//                orderExpressList.get(i).setReserve_time("");
+//                OrderExpress orderExpress = new OrderExpress(
+//                        orderExpressList.get(i).getOrder_number(),
+//                        orderExpressList.get(i).getPackage_type(),
+//                        orderExpressList.get(i).getObject_type(),
+//                        order.getId(),
+//                        order.getCreate_time(),
+//                        orderExpressList.get(i).getIs_use(),
+//                        orderExpressList.get(i).getState(),
+//                        orderExpressList.get(i).getUuid(),
+//                        orderExpressList.get(i).getSender_user_id(),
+//                        orderExpressList.get(i).getReserve_time()
+//                );
+//                orderExpressMapper.addOrderExpress(orderExpress);
+//            }
+
         } catch (Exception e) {
             status = APIStatus.SUBMIT_FAIL;
             e.printStackTrace();
