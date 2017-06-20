@@ -171,12 +171,13 @@
 
     <resultMap id="OrderExpressMap" type="com.sftc.web.model.Order">
         <id property="id" column="id"/>
+        <result property="order_type" column="order_type"/>
+        <result property="order_number" column="order_number"/>
         <result property="longitude" column="longitude"/>
         <result property="latitude" column="latitude"/>
         <result property="sender_mobile" column="sender_mobile"/>
         <result property="sender_name" column="sender_name"/>
         <result property="sender_province" column="sender_province"/>
-        <result property="state" column="state"/>
         <result property="sender_city" column="sender_city"/>
         <result property="sender_area" column="sender_area"/>
         <result property="sender_addr" column="sender_addr"/>
@@ -186,13 +187,12 @@
         <result property="distribution_method" column="distribution_method"/>
         <result property="gmt_order_create" column="gmt_order_create"/>
         <result property="gmt_pay_create" column="gmt_pay_create"/>
-        <result property="order_number" column="order_number"/>
         <result property="gift_card_id" column="gift_card_id"/>
         <result property="voice_time" column="voice_time"/>
         <association property="giftCard" javaType="com.sftc.web.model.GiftCard">
-            <result column="name" property="name"/>
+            <result property="name" column="name"/>
             <result property="icon" column="icon"/>
-            <result column="type" property="type"/>
+            <result property="type" column="type"/>
             <result property="create_time" column="create_time"/>
         </association>
         <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress">
@@ -213,15 +213,12 @@
     </resultMap>
 
     <!-- 我的订单列表  -->
-    <select id="selectMyOrderList" resultType="com.sftc.web.model.Order"
-            parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+    <select id="selectMyOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
             resultMap="OrderExpressMap">
         SELECT *
         FROM sftc_order o, sftc_order_express oe
-        <where>
-            oe.order_number=o.order_number AND oe.sender_user_id=#{id}
-        </where>
-        order by oe.create_time desc
+        WHERE oe.order_number=o.order_number AND oe.sender_user_id=#{id}
+        ORDER by oe.create_time desc
         limit #{pageNum},#{pageSize}
     </select>
 
