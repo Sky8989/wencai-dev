@@ -9,6 +9,7 @@ public class OrderCallback {
     private String sender_addr;
     private Long order_number;
     private String order_type;
+    private boolean is_gift;
 
     private List<OrderCallbackExpress> expressList;
 
@@ -89,6 +90,14 @@ public class OrderCallback {
 
     public void setOrder_type(String order_type) {
         this.order_type = order_type;
+    }
+
+    public boolean isIs_gift() {
+        return is_gift;
+    }
+
+    public void setIs_gift(boolean is_gift) {
+        this.is_gift = is_gift;
     }
 
     public List<OrderCallbackExpress> getExpressList() {
