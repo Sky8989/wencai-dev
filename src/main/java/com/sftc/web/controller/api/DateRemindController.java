@@ -10,16 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @author _KeMing
- * @version 1.0
- * @Package com.sftc.web.controller.api
- * @Description: 日期提醒接口
- * @date 2017/5/22
- * @Time 下午10:02
- */
 @Controller
 @RequestMapping("date")
 public class DateRemindController {
@@ -27,13 +17,13 @@ public class DateRemindController {
     @Resource
     private DateRemindService dateRemindService;
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST, headers = "api-version=1")
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse addDateRemind(@RequestBody DateRemind dateRemind) throws Exception {
         return dateRemindService.addFriendDateRemind(dateRemind);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.GET, headers = "api-version=1")
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse deleteDateRemind(HttpServletRequest request) throws Exception {
         return dateRemindService.deleteFriendDateRemind(new APIRequest(request));

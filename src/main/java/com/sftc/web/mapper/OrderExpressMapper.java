@@ -10,8 +10,6 @@ public interface OrderExpressMapper {
 
     List<OrderExpress> selectExpressForId(int id);
 
-    List<OrderCallback> findMyOrderExpress(MyOrderParam myOrderParam);
-
     void addOrderExpress(OrderExpress orderExpress);
 
     void updateOrderExpress(OrderExpress orderExpress);

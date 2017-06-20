@@ -52,10 +52,13 @@ public class OrderExpress extends Object {
     private int pageNum;
     private int pageSize;
     private int order_id;
+
     public int getSender_user_id() {
         return sender_user_id;
     }
+
     private String uuid;
+
     public void setSender_user_id(int sender_user_id) {
         this.sender_user_id = sender_user_id;
     }
@@ -71,7 +74,7 @@ public class OrderExpress extends Object {
 
     public OrderExpress(String create_time, Long order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String package_type, String object_type,
-                        String state, int sender_user_id, int order_id,String uuid,Double latitude,Double longitude) {
+                        String state, int sender_user_id, int order_id, String uuid, Double latitude, Double longitude) {
         this.create_time = create_time;
         this.order_number = order_number;
         this.ship_name = ship_name;
@@ -88,34 +91,23 @@ public class OrderExpress extends Object {
         this.uuid = uuid;
         this.latitude = latitude;
         this.longitude = longitude;
-
     }
 
-    public OrderExpress(String uuid,int order_id,Double longitude,Double latitude,String state) {
-        this.state=state;
-       this.order_id=order_id;
+    public OrderExpress(String uuid, int order_id, Double longitude, Double latitude, String state) {
+        this.state = state;
+        this.order_id = order_id;
         this.uuid = uuid;
-        this.longitude=longitude;
-        this.latitude=latitude;
-
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
-
-    // public OrderExpress(String package_type, String object_type) {
-    //     this.package_type = package_type;
-    //     this.object_type = object_type;
-    // }
 
     public OrderExpress(String state, String uuid) {
         this.state = state;
         this.uuid = uuid;
     }
-//    public OrderExpress(String package_type, String object_type) {
-//        this.package_type = package_type;
-//        this.object_type = object_type;
-//    }
 
-    public OrderExpress(Long order_number,String package_type, String object_type,
-                        int order_id, String create_time, int is_use,String state,String uuid,int sender_user_id,String reserve_time) {
+    public OrderExpress(Long order_number, String package_type, String object_type,
+                        int order_id, String create_time, int is_use, String state, String uuid, int sender_user_id, String reserve_time) {
         this.order_number = order_number;
         this.package_type = package_type;
         this.object_type = object_type;
@@ -126,7 +118,7 @@ public class OrderExpress extends Object {
         this.order_id = order_id;
         this.state = state;
         this.uuid = uuid;
-       this.reserve_time=reserve_time;
+        this.reserve_time = reserve_time;
         this.sender_user_id = sender_user_id;
     }
 
@@ -149,7 +141,7 @@ public class OrderExpress extends Object {
         this.ship_city = (String) request.getParameter("ship_city");
         this.ship_area = (String) request.getParameter("ship_area");
         this.ship_addr = (String) request.getParameter("ship_addr");
-        this.package_type = (String)request.getParameter("package_type");
+        this.package_type = (String) request.getParameter("package_type");
         this.object_type = (String) request.getParameter("object_type");
     }
 
@@ -224,7 +216,6 @@ public class OrderExpress extends Object {
     public void setShip_addr(String ship_addr) {
         this.ship_addr = ship_addr;
     }
-
 
 
     public String getObject_type() {
@@ -324,6 +315,7 @@ public class OrderExpress extends Object {
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
     }
+
     public String getReserve_time() {
         return reserve_time;
     }
