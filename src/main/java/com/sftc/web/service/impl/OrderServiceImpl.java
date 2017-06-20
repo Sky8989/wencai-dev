@@ -467,6 +467,7 @@ public class OrderServiceImpl implements OrderService {
             callback.setSender_addr(order.getSender_addr());
             callback.setOrder_number(order.getOrder_number());
             callback.setOrder_type(order.getOrder_type());
+            callback.setIs_gift(order.getGift_card_id() > 0);
             // expressList
             List<OrderCallback.OrderCallbackExpress> expressList = new ArrayList<OrderCallback.OrderCallbackExpress>();
             for (OrderExpress oe : order.getOrderExpressList()) {
