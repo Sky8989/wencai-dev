@@ -196,6 +196,7 @@
             <result property="create_time" column="create_time"/>
         </association>
         <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress">
+            <result property="state" column="state"/>
             <result property="latitude" column="latitude"/>
             <result property="longitude" column="longitude"/>
             <result property="uuid" column="uuid"/>
