@@ -11,12 +11,8 @@ public class Order extends Object {
     private String create_time;
     // 订单编号
     private Long order_number;
-    // 订单状态
-    private String state;
-    // 下单时间
-    private String gmt_order_create;
     // 支付时间
-    private String gmt_pay_create;
+    private String pay_time;
     // 付款方式
     private String pay_method;
     // 配送方式
@@ -45,8 +41,6 @@ public class Order extends Object {
     private double longitude;
     // 纬度
     private double latitude;
-    // 快递员编号
-    private String job_number;
     // 寄件人id(根据用户表id)
     private User user;
     private int sender_user_id;
@@ -61,6 +55,7 @@ public class Order extends Object {
     private String order_type;
     //订单地域 同城 大网
     private String region_type;
+
     public Order() {
     }
 
@@ -70,14 +65,12 @@ public class Order extends Object {
         this.latitude = latitude;
     }
 
-    public Order(String create_time, Long order_number, String state, String gmt_order_create, String pay_method,
+    public Order(String create_time, Long order_number, String pay_method,
                  String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,
                  double longitude, double latitude, String order_type, int sender_user_id) {
         this.create_time = create_time;
         this.order_number = order_number;
-        this.state = state;
-        this.gmt_order_create = gmt_order_create;
         this.pay_method = pay_method;
         this.distribution_method = distribution_method;
         this.freight = freight;
@@ -87,22 +80,15 @@ public class Order extends Object {
         this.sender_city = sender_city;
         this.sender_area = sender_area;
         this.sender_addr = sender_addr;
-        this.word_message = word_message;
-        this.image = image;
-        this.voice = voice;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.gift_card_id = gift_card_id;
         this.order_type = order_type;
         this.sender_user_id = sender_user_id;
-        this.voice_time = voice_time;
     }
 
     public Order(OrderParam orderParam) {
         this.create_time = Long.toString(System.currentTimeMillis());
         this.order_number = (long) (Math.random() * 100000 * 1000000);
-        this.state = "待支付";
-        this.gmt_order_create = Long.toString(System.currentTimeMillis());
         this.pay_method = orderParam.getPay_method();
         this.distribution_method = orderParam.getDistribution_method();
         this.sender_name = orderParam.getSender_name();
@@ -119,17 +105,8 @@ public class Order extends Object {
         this.voice_time = orderParam.getVoice_time();
         this.sender_user_id = orderParam.getSender_user_id();
         this.gift_card_id = orderParam.getGift_card_id();
-        this.job_number = orderParam.getJob_number();
-        //新添加
         this.order_type = orderParam.getOrder_type();
         this.region_type = orderParam.getRegion_type();
-    }
-
-    public Order(String create_time, Long order_number, String gmt_order_create, String state) {
-        this.create_time = create_time;
-        this.order_number = order_number;
-        this.gmt_order_create = gmt_order_create;
-        this.state = state;
     }
 
     public int getId() {
@@ -156,28 +133,12 @@ public class Order extends Object {
         this.order_number = order_number;
     }
 
-    public String getState() {
-        return state;
+    public String getPay_time() {
+        return pay_time;
     }
 
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getGmt_order_create() {
-        return gmt_order_create;
-    }
-
-    public void setGmt_order_create(String gmt_order_create) {
-        this.gmt_order_create = gmt_order_create;
-    }
-
-    public String getGmt_pay_create() {
-        return gmt_pay_create;
-    }
-
-    public void setGmt_pay_create(String gmt_pay_create) {
-        this.gmt_pay_create = gmt_pay_create;
+    public void setPay_time(String pay_time) {
+        this.pay_time = pay_time;
     }
 
     public String getPay_method() {
@@ -308,14 +269,6 @@ public class Order extends Object {
         this.gift_card_id = gift_card_id;
     }
 
-    public String getJob_number() {
-        return job_number;
-    }
-
-    public void setJob_number(String job_number) {
-        this.job_number = job_number;
-    }
-
     public User getUser() {
         return user;
     }
@@ -364,43 +317,11 @@ public class Order extends Object {
         this.voice_time = voice_time;
     }
 
-    public String getRegion_type() {return region_type;}
+    public String getRegion_type() {
+        return region_type;
+    }
 
-    public void setRegion_type(String region_type) {this.region_type = region_type;}
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", create_time='" + create_time + '\'' +
-                ", order_number=" + order_number +
-                ", state='" + state + '\'' +
-                ", gmt_order_create='" + gmt_order_create + '\'' +
-                ", gmt_pay_create='" + gmt_pay_create + '\'' +
-                ", pay_method='" + pay_method + '\'' +
-                ", distribution_method='" + distribution_method + '\'' +
-                ", freight=" + freight +
-                ", sender_name='" + sender_name + '\'' +
-                ", sender_mobile='" + sender_mobile + '\'' +
-                ", sender_province='" + sender_province + '\'' +
-                ", sender_city='" + sender_city + '\'' +
-                ", sender_area='" + sender_area + '\'' +
-                ", sender_addr='" + sender_addr + '\'' +
-                ", word_message='" + word_message + '\'' +
-                ", image='" + image + '\'' +
-                ", voice='" + voice + '\'' +
-                ", longitude=" + longitude +
-                ", latitude=" + latitude +
-                ", job_number='" + job_number + '\'' +
-                ", user=" + user +
-                ", sender_user_id=" + sender_user_id +
-                ", gift_card_id=" + gift_card_id +
-                ", voice_time=" + voice_time +
-                ", giftCard=" + giftCard +
-                ", orderExpressList=" + orderExpressList +
-                ", orderExpress=" + orderExpress +
-                ", order_type='" + order_type + '\'' +
-                ", region_type='" + region_type + '\'' +
-                '}';
+    public void setRegion_type(String region_type) {
+        this.region_type = region_type;
     }
 }

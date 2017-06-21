@@ -12,9 +12,14 @@ import java.util.Map;
 public interface OrderService {
 
     /**
-     * 普通提交订单
+     * 普通订单提交
      */
-    APIResponse placeOrder(Object object);
+    APIResponse normalOrderCommit(APIRequest request);
+
+    /**
+     * 好友订单提交
+     */
+    APIResponse friendOrderCommit(APIRequest request);
 
     /**
      * 支付订单
@@ -72,11 +77,6 @@ public interface OrderService {
      * 时间规则
      */
     APIResponse timeConstants(APIRequest request);
-
-    /**
-     * 大网下单接口
-     */
-    APIResponse createOrder(Object object);
 
     /**
      * 大网计价接口

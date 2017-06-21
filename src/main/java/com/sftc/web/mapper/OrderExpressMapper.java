@@ -18,6 +18,8 @@ public interface OrderExpressMapper {
 
     void updateOrderExpressForSF(OrderExpress orderExpress);
 
+    void updateOrderExpressUuidAndReserveTimeById(int id, String uuid, String reserve_time);
+
     void updatePlace(OrderExpress orderExpress);
 
     String getUuidByOrderId(int order_id);

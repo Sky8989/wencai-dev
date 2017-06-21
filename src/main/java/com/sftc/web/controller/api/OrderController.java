@@ -26,12 +26,25 @@ public class OrderController extends AbstractBasicController {
     private OrderService orderService;
 
     /**
-     * 提交订单
+     * 普通订单提交
      */
-    @RequestMapping(value = "/place", method = RequestMethod.POST)
+    @RequestMapping(value = "/normalCommit", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse placeOrder(@RequestBody Object object) throws Exception {
-        return orderService.placeOrder(object);
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.normalOrderCommit(request);
+    }
+
+    /**
+     * 好友订单提交
+     */
+    @RequestMapping(value = "/friendCommit", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse friendOrderCommit(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.friendOrderCommit(request);
     }
 
     /**
@@ -159,15 +172,6 @@ public class OrderController extends AbstractBasicController {
     public @ResponseBody
     APIResponse constants(HttpServletRequest request) throws Exception {
         return orderService.timeConstants(new APIRequest(request));
-    }
-
-    /**
-     * 大网普遍下单
-     */
-    @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse createOrder(@RequestBody Object object) throws Exception {
-        return orderService.createOrder(object);
     }
 
     /**
