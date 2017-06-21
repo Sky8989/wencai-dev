@@ -8,4 +8,7 @@ import java.util.List;
 public interface GiftCardMapper {
     Order giftCardDetail(String order_number);
     List<GiftCard> giftCardList();
+
+    /** 根据id查询贺卡 */
+    GiftCard selectGiftCardById(int giftCardId);
 }

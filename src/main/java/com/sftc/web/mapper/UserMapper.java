@@ -5,15 +5,15 @@ import com.sftc.web.model.User;
 
 public interface UserMapper {
 
-    public User selectUserByPhone(String user_phone);
+    User selectUserByPhone(String user_phone);
 
-    public User selectUserByOpenid(String open_id);
+    User selectUserByOpenid(String open_id);
 
-    public int insertOpenid(User user);
+    User selectUserByUserId(int user_id);
+
+    int insertOpenid(User user);
 
     void addMerchant(User merchant);
 
     User getUuidAndtoken(int order_id);
-
-
 }

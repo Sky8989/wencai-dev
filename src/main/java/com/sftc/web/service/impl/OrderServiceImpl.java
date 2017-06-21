@@ -1,11 +1,11 @@
 package com.sftc.web.service.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
 import com.sftc.web.mapper.*;
-import com.sftc.web.model.Order;
-import com.sftc.web.model.OrderExpress;
-import com.sftc.web.model.Token;
+import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
@@ -18,6 +18,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.lang.Object;
 import java.util.*;
 
 @Service("orderService")
@@ -45,6 +46,9 @@ public class OrderServiceImpl implements OrderService {
     private OrderExpressMapper orderExpressMapper;
     @Resource
     private EvaluateMapper evaluateMapper;
+    @Resource
+    private GiftCardMapper giftCardMapper;
+
     /*
      * 普通提交订单 普通同城订单
      */
@@ -181,8 +185,8 @@ public class OrderServiceImpl implements OrderService {
             orderExpress.setReserve_time("0000");
             //装入order的id，注意不是order编号，orderExpress需要order的id外键
             orderExpress.setOrder_id(order.getId());
-            System.out.println("-   -包裹数量"+orderParam.getPackage_count());
-            for (int i = orderParam.getPackage_count(); i > 0 ;i--){
+            System.out.println("-   -包裹数量" + orderParam.getPackage_count());
+            for (int i = orderParam.getPackage_count(); i > 0; i--) {
                 //存储订单快递信息
                 orderExpressMapper.addOrderExpress(orderExpress);
                 System.out.println("-   -存储快递信息的次数" + i);
@@ -235,16 +239,16 @@ public class OrderServiceImpl implements OrderService {
          判断是否list为空，为空则快递礼物已经抢完
          然后再取一个list中元素取进行快递信息更新操作
          */
-        try{
+        try {
             List<OrderExpress> list = orderExpressMapper.
                     UnWritenOrderExpressListByOrderIdAndShipnameNull(orderExpress.getOrder_id());
-            if(list.isEmpty()){
+            if (list.isEmpty()) {
                 //list为空则返回已经抢完的信息
                 status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
                 return APIUtil.getResponse(status, orderExpress.getOrder_id());
-            }else{
+            } else {
                 //获取随机下标
-                int random= new Random().nextInt(list.size());
+                int random = new Random().nextInt(list.size());
                 //System.out.println("-   -随机数"+random+"-     -list的size"+list.size());
                 //更新订单信息，主要是好友地址信息
                 orderExpress.setState("ALREADY_FILL");
@@ -254,7 +258,7 @@ public class OrderServiceImpl implements OrderService {
                 //order的订单类型更新
                 Order order = new Order();
                 order.setId(orderExpress.getOrder_id());
-                if(is_same == 1){
+                if (is_same == 1) {
                     //更新order_type为 神秘同城 订单
                     order.setOrder_type("ORDER_MYSTERY_SAME");
                 } else {
@@ -263,7 +267,7 @@ public class OrderServiceImpl implements OrderService {
                 }
                 orderMapper.updateOrderTypeById(order);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             status = APIStatus.SUBMIT_FAIL;
             e.printStackTrace();
         }
@@ -317,75 +321,111 @@ public class OrderServiceImpl implements OrderService {
 //        return APIUtil.getResponse(status, list);
 //    }
 
-    /*
-    * @好友订单详情接口
-    * */
-    public APIResponse getOrderDetile(Order order, OrderExpress orderExpress, Token token,String sort) {
+    /**
+     * 订单详情接口
+     */
+    public APIResponse selectOrderDetail(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
-        JSONObject jsonObject = new JSONObject();
-        JSONObject jsonObject1 = new JSONObject();
-        JSONObject jsonObject3 = new JSONObject();
-        Map map2 = new HashMap();
-        List list = new ArrayList();
-        try {
-            String uuid = orderExpressMapper.getUuidByOrderId(orderExpress.getOrder_id());
-            if (order.getOrder_type().equals("ORDER_FRIEND")) {
+        String order_number = (String) request.getParameter("order_number");
+        String order_id = (String) request.getParameter("order_id");
 
-                Order order1 = orderMapper.orderAndOrderExpressAndGiftDetile(orderExpress.getOrder_id());
-                jsonObject = JSONObject.fromObject(order1);
-            }if (order.getOrder_type().equals("ORDER_MYSTERY_NATION")){
-                System.out.println("aa");
-                Order order1 = orderMapper.orderAndOrderExpressAndGiftDetile(orderExpress.getOrder_id());
-
-                jsonObject = JSONObject.fromObject(order1);
-                ORDERROUTE_URL = ORDERROUTE_URL+orderExpress.getUuid()+"&sort="+sort;
-                HttpGet get = new HttpGet(ORDERROUTE_URL);
-                String access_token = APIGetToken.getToken();
-                get.addHeader("Authorization", "bearer " + access_token);
-                String res =APIGet.getGet(get);
-
-
-                if(res.equals("[]")){
-
-
-                    Map map = new HashMap();
-                    map.put("city","深圳市");
-                    map.put("note","顺丰速运 已收取快件");
-                    map.put("creation_time","2017-6-7 15:11:57");
-                    list.add(map);
-                    String str = (String)JSONObject.fromObject(list.get(list.size()-1)).get("note");
-                    Map map1 = new HashMap();
-                    if(str.contains("已收取")){
-                        map1.put("state","已签收");
-                        jsonObject3.put("state","已签收");
-                    }
-                    jsonObject3.put("list",list);
-                    map2.put("expressInfo",jsonObject3);
-
-                }if(jsonObject1.get("Message_Type")!=null) {
-                    if (jsonObject1.get("Message_Type").equals("ORDER_CREATE_ERROR")) {
-                        status = APIStatus.ORDERROUT_FALT;
-                    }else{
-                        jsonObject1 = JSONObject.fromObject(res);
-                        jsonObject.put(" ",jsonObject1);
-                    }
-                }
-                ORDERROUTE_URL="http://api-c-test.sf-rush.com/api/sforderservice/OrderRouteQuery?orderid=";
-            } else {
-                REQUESTS_URL = REQUESTS_URL + uuid;
-                System.out.println(uuid);
-                HttpGet get = new HttpGet(REQUESTS_URL);
-                get.addHeader("PushEnvelope-Device-Token", token.getAccess_token());
-                String res = APIGet.getGet(get);
-                jsonObject = JSONObject.fromObject(res);
-                REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
-            }
-        } catch (Exception e) {
-            System.out.println("cc");
-            status = APIStatus.PARAMETER_FAIL;
-            System.out.println(e.fillInStackTrace());
+        Order order;
+        if (order_number.length() != 0) {
+            order = orderMapper.selectOrderDetailByOrderNumber(order_number);
+        } else if (order_id.length() != 0) {
+            order = orderMapper.selectOrderDetailByOrderId(Integer.parseInt(order_id));
+        } else {
+            APIStatus failStatus = APIStatus.SELECT_FAIL;
+            failStatus.setMessage("order_number 或 order_id 必须传一个");
+            return APIUtil.getResponse(APIStatus.SELECT_FAIL, null);
         }
-        return APIUtil.getResponse(status, map2);
+
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        if (order != null) {
+            User sender = userMapper.selectUserByUserId(order.getSender_user_id());
+
+            // order
+            GsonBuilder gb = new GsonBuilder();
+            Gson g = gb.create();
+            String resultJson = new Gson().toJson(order);
+            Map<String, Object> orderMap = g.fromJson(resultJson, new TypeToken<Map<String, Object>>() {
+            }.getType());
+            orderMap.put("sender_avatar", sender.getAvatar());
+
+            // giftCard
+            GiftCard giftCard = giftCardMapper.selectGiftCardById(order.getGift_card_id());
+
+            resultMap.put("order",orderMap);
+            resultMap.put("giftCard",giftCard);
+        }
+
+        return APIUtil.getResponse(status, resultMap);
+
+
+//        JSONObject jsonObject = new JSONObject();
+//        JSONObject jsonObject1 = new JSONObject();
+//        JSONObject jsonObject3 = new JSONObject();
+//        Map map2 = new HashMap();
+//        List list = new ArrayList();
+//        try {
+//            String uuid = orderExpressMapper.getUuidByOrderId(orderExpress.getOrder_id());
+//            if (order.getOrder_type().equals("ORDER_FRIEND")) {
+//
+//                Order order1 = orderMapper.orderAndOrderExpressAndGiftDetile(orderExpress.getOrder_id());
+//                jsonObject = JSONObject.fromObject(order1);
+//            }
+//
+//            if (order.getOrder_type().equals("ORDER_MYSTERY_NATION")){
+//                System.out.println("aa");
+//                Order order1 = orderMapper.orderAndOrderExpressAndGiftDetile(orderExpress.getOrder_id());
+//
+//                jsonObject = JSONObject.fromObject(order1);
+//                ORDERROUTE_URL = ORDERROUTE_URL+orderExpress.getUuid()+"&sort="+sort;
+//                HttpGet get = new HttpGet(ORDERROUTE_URL);
+//                String access_token = APIGetToken.getToken();
+//                get.addHeader("Authorization", "bearer " + access_token);
+//                String res =APIGet.getGet(get);
+//
+//
+//                if(res.equals("[]")){
+//                    Map map = new HashMap();
+//                    map.put("city","深圳市");
+//                    map.put("note","顺丰速运 已收取快件");
+//                    map.put("creation_time","2017-6-7 15:11:57");
+//                    list.add(map);
+//                    String str = (String)JSONObject.fromObject(list.get(list.size()-1)).get("note");
+//                    Map map1 = new HashMap();
+//                    if(str.contains("已收取")){
+//                        map1.put("state","已签收");
+//                        jsonObject3.put("state","已签收");
+//                    }
+//                    jsonObject3.put("list",list);
+//                    map2.put("expressInfo",jsonObject3);
+//
+//                }if(jsonObject1.get("Message_Type")!=null) {
+//                    if (jsonObject1.get("Message_Type").equals("ORDER_CREATE_ERROR")) {
+//                        status = APIStatus.ORDERROUT_FALT;
+//                    }else{
+//                        jsonObject1 = JSONObject.fromObject(res);
+//                        jsonObject.put(" ",jsonObject1);
+//                    }
+//                }
+//                ORDERROUTE_URL="http://api-c-test.sf-rush.com/api/sforderservice/OrderRouteQuery?orderid=";
+//            } else {
+//                REQUESTS_URL = REQUESTS_URL + uuid;
+//                System.out.println(uuid);
+//                HttpGet get = new HttpGet(REQUESTS_URL);
+//                get.addHeader("PushEnvelope-Device-Token", token.getAccess_token());
+//                String res = APIGet.getGet(get);
+//                jsonObject = JSONObject.fromObject(res);
+//                REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
+//            }
+//        } catch (Exception e) {
+//            System.out.println("cc");
+//            status = APIStatus.PARAMETER_FAIL;
+//            System.out.println(e.fillInStackTrace());
+//        }
+//        return APIUtil.getResponse(status, map2);
     }
     /*
         * @顺丰订单详情接口
@@ -603,14 +643,14 @@ public class OrderServiceImpl implements OrderService {
         JSONObject request = jsonObject1.getJSONObject("request");
         JSONObject attributes = jsonObject1.getJSONObject("request").getJSONObject("attributes");
         try {
-            if(request.get("order_type").equals("ORDER_BASIS_SAME")||request.get("order_type").equals("ORDER_MYSTERY_SAME")) {
+            if (request.get("order_type").equals("ORDER_BASIS_SAME") || request.get("order_type").equals("ORDER_MYSTERY_SAME")) {
                 PAY_URL = PAY_URL + (String) request.get("uuid") + "/attributes/merchant_comment";
                 HttpPut put = new HttpPut(PAY_URL);
                 put.addHeader("PushEnvelope-Device-Token", (String) request.get("access_token"));
                 String res = AIPPost.getPost(str, put);
                 jsonObject = JSONObject.fromObject(res);
 
-            }else{
+            } else {
 
             }
             if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {

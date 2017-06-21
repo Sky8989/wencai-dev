@@ -49,8 +49,6 @@ public class OrderExpress extends Object {
     private int gift_card_id;
     private Double latitude;
     private Double longitude;
-    private int pageNum;
-    private int pageSize;
     private int order_id;
 
     public int getSender_user_id() {
@@ -298,22 +296,6 @@ public class OrderExpress extends Object {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
-    }
-
-    public int getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(int pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
     }
 
     public String getReserve_time() {
