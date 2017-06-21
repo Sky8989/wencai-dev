@@ -81,6 +81,12 @@ public class OrderController extends AbstractBasicController {
         return orderService.getEmptyPackage(new APIRequest(request));
     }
 
+    @RequestMapping(value = "/detail", method = RequestMethod.GET)
+    public @ResponseBody
+    APIResponse detail(HttpServletRequest request) throws Exception {
+        return orderService.selectOrderDetail(new APIRequest(request));
+    }
+
     /**
      * 我的订单列表
      */

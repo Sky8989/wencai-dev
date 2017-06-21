@@ -39,7 +39,7 @@ public interface OrderService {
     /**
      * 获取订单详情
      */
-    APIResponse getOrderDetile(Order order, OrderExpress orderExpress, Token token, String sort);
+    APIResponse selectOrderDetail(APIRequest request);
 
     APIResponse updateOrder(APIRequest request, Order order, OrderExpress orderExpress);
 

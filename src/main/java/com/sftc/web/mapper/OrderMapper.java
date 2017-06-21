@@ -3,7 +3,6 @@ package com.sftc.web.mapper;
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.apiCallback.OrderCallback;
-
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 
 import java.util.List;
@@ -30,9 +29,14 @@ public interface OrderMapper {
      */
     List<Order> selectMyOrderList(MyOrderParam param);
 
+    /** 根据订单编号查询订单详情 */
+    Order selectOrderDetailByOrderNumber(String order_number);
+
+    /** 根据订单id查询订单详情 */
+    Order selectOrderDetailByOrderId(int order_id);
+
     int findPackageCount(String order_number);
 
-    // C01 我的订单
     List<Order> myOrderLists(OrderExpress orderExpress);
 
     List<Order> myOrderListsForState(OrderExpress orderExpress);
@@ -45,6 +49,4 @@ public interface OrderMapper {
 
     //查询订单详情和快递详情
     List<Order> getOrderAndExpress(Order order);
-
-
 }

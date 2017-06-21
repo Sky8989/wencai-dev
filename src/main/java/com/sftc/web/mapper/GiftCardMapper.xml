@@ -24,4 +24,9 @@
     <select id="giftCardList" resultType="com.sftc.web.model.GiftCard">
         SELECT * FROM sftc_gift_card
     </select>
+
+    <select id="selectGiftCardById" parameterType="int" resultType="com.sftc.web.model.GiftCard">
+        SELECT * FROM sftc_gift_card WHERE id=#{giftCardId}
+    </select>
+
 </mapper>
