@@ -77,6 +77,8 @@
         ship_area=#{ship_area},
         ship_addr=#{ship_addr},
         state=#{state},
+        longitude=#{longitude},
+        latitude=#{latitude},
         is_use=1,
         uuid=#{uuid},
         ship_user_id=#{ship_user_id}
