@@ -79,14 +79,14 @@ public class OrderServiceImpl implements OrderService {
         if (requestObject.containsKey("request")) { // 同城
             return friendSameOrderCommit(requestObject);
         } else { // 大网
-            return null;
+            return friendNationOrderCommit(requestObject);
         }
     }
 
     // 好友同城订单提交
     private APIResponse friendSameOrderCommit(JSONObject requestObject) {
         APIStatus status = APIStatus.SUCCESS;
-        int order_id = Integer.parseInt((String)requestObject.getJSONObject("order").get("order_id"));
+        int order_id = Integer.parseInt((String) requestObject.getJSONObject("order").get("order_id"));
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         for (OrderExpress oe : order.getOrderExpressList()) {
             // 拼接同城订单参数中的 source 和 target
@@ -132,6 +132,7 @@ public class OrderServiceImpl implements OrderService {
                 if (requestObject.getJSONObject("order").containsKey("reserve_time")) {
                     String uuid = (String) jsonObject.getJSONObject("request").get("uuid");
                     String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
+                    // TODO: region_type not set yet.
                     orderMapper.updateOrderUuidById(order_id, uuid); // 订单表更新uuid
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(order_id, uuid, reserve_time); // 快递表更新uuid和预约时间
                 } else {
@@ -139,6 +140,51 @@ public class OrderServiceImpl implements OrderService {
                 }
             } else {
                 status = APIStatus.SUBMIT_FAIL;
+            }
+        }
+        return APIUtil.getResponse(status, null);
+    }
+
+    // 好友大网订单提交
+    private APIResponse friendNationOrderCommit(JSONObject requestObject) {
+        APIStatus status = APIStatus.SUCCESS;
+        int order_id = Integer.parseInt((String) requestObject.getJSONObject("order").get("order_id"));
+        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+        for (OrderExpress oe : order.getOrderExpressList()) {
+            // 拼接大网订单地址参数
+            JSONObject sf = requestObject.getJSONObject("sf");
+            sf.put("j_contact", order.getSender_name());
+            sf.put("j_mobile", order.getSender_mobile());
+            sf.put("j_province", order.getSender_province());
+            sf.put("j_city", order.getSender_city());
+            sf.put("j_county", order.getSender_area());
+            sf.put("j_address", order.getSender_addr());
+            sf.put("d_contact", oe.getShip_name());
+            sf.put("d_mobile", oe.getShip_mobile());
+            sf.put("d_province", oe.getShip_province());
+            sf.put("d_city", oe.getShip_city());
+            sf.put("d_county", oe.getShip_area());
+            sf.put("d_address", oe.getShip_addr());
+
+            // 发送请求给sf，获取订单结果
+            String paramStr = gson.toJson(JSONObject.fromObject(requestObject));
+            HttpPost post = new HttpPost(CREATEORDER_URL);
+            post.addHeader("Authorization", "bearer " + APIGetToken.getToken());
+            String resultStr = AIPPost.getPost(paramStr, post);
+            JSONObject jsonObject = JSONObject.fromObject(resultStr);
+            // TODO: 顺丰大网回调数据还未测试，以下逻辑不一定对
+            if (jsonObject.get("Message_Type") != null && jsonObject.get("Message_Type").equals("ORDER_CREATE_ERROR")) {
+                status = APIStatus.SUBMIT_FAIL;
+            } else {
+                // 存储订单信息
+                if (requestObject.getJSONObject("order").containsKey("reserve_time")) {
+                    String uuid = (String) jsonObject.getJSONObject("request").get("uuid");
+                    String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
+                    orderMapper.updateOrderUuidById(order_id, uuid); // 订单表更新uuid
+                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(order_id, uuid, reserve_time); // 快递表更新uuid和预约时间
+                } else {
+                    return APIUtil.errorResponse("预约时间不能为空");
+                }
             }
         }
         return APIUtil.getResponse(status, null);
@@ -170,9 +216,7 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-    /**
-     * 普通同城订单
-     */
+    // 普通同城订单
     private APIResponse normalSameOrderCommit(Object object) {
 
         Long long_order_number = (long) (Math.random() * 100000 * 1000000);
