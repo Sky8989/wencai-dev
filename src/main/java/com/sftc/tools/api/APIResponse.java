@@ -2,16 +2,6 @@ package com.sftc.tools.api;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @author _KeMing
- * @version 1.0
- * @Package com.sftc.ssm.other
- * @Description: API模型类
- * @date 2017/4/6
- * @Time 下午4:54
- */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class APIResponse {
 
@@ -51,5 +41,6 @@ public class APIResponse {
         return APIResponseHolder.INSTANCE;
     }
 
-    private APIResponse() {}
+    private APIResponse() {
+    }
 }

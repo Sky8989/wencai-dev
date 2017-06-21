@@ -1,23 +1,7 @@
 package com.sftc.web.model.reqeustParam;
 
-import com.sftc.web.model.OrderExpress;
-
-import java.util.List;
-
-/**
- * Created by IntelliJ IDEA.
- *
- * @author _KeMing
- * @version 1.0
- * @Package com.sftc.web.model.reqeustParam
- * @Description: 订单的包装类
- * @date 2017/5/15
- * @Time 上午10:48
- */
 public class OrderParam {
 
-    // 订单状态
-    private String state;
     // 寄件人姓名
     private String sender_name;
     // 寄件人手机
@@ -44,69 +28,22 @@ public class OrderParam {
     private double latitude;
     // 文字寄语
     private String word_message;
-    // 剩余包裹数量
+    // 包裹数量
     private int package_count;
-    // 快递员编号
-    private String job_number;
-    // 寄件人id(根据用户表id)
+    // 寄件人id
     private int sender_user_id;
-    // 收件人id(根据用户表id)
-    private int ship_user_id;
     // 礼卡表id
     private int gift_card_id;
-    //语音时长
+    // 语音时长
     private int voice_time;
-    //订单快递信息，已弃用
-    private OrderExpress orderExpress;
-
-    //包裹类型
+    // 包裹类型
     private String package_type;
-    //物品类型
+    // 物品类型
     private  String object_type;
-
-
-
-    //订单类型 普通 神秘
+    // 订单类型 普通/神秘
     private String order_type;
-    //订单地域 同城 大网
+    // 订单地域 同城/大网
     private String region_type;
-
-
-    public String getPackage_type() {
-        return package_type;
-    }
-
-    public void setPackage_type(String package_type) {
-        this.package_type = package_type;
-    }
-
-    public String getObject_type() {
-        return object_type;
-    }
-
-    public void setObject_type(String object_type) {
-        this.object_type = object_type;
-    }
-
-
-
-    public OrderExpress getOrderExpress() {
-        return orderExpress;
-    }
-
-    public void setOrderExpress(OrderExpress orderExpress) {
-        this.orderExpress = orderExpress;
-    }
-
-    private List<OrderExpress> orderExpressList;
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
 
     public String getSender_name() {
         return sender_name;
@@ -220,28 +157,12 @@ public class OrderParam {
         this.package_count = package_count;
     }
 
-    public String getJob_number() {
-        return job_number;
-    }
-
-    public void setJob_number(String job_number) {
-        this.job_number = job_number;
-    }
-
     public int getSender_user_id() {
         return sender_user_id;
     }
 
     public void setSender_user_id(int sender_user_id) {
         this.sender_user_id = sender_user_id;
-    }
-
-    public int getShip_user_id() {
-        return ship_user_id;
-    }
-
-    public void setShip_user_id(int ship_user_id) {
-        this.ship_user_id = ship_user_id;
     }
 
     public int getGift_card_id() {
@@ -252,14 +173,6 @@ public class OrderParam {
         this.gift_card_id = gift_card_id;
     }
 
-    public List<OrderExpress> getOrderExpressList() {
-        return orderExpressList;
-    }
-
-    public void setOrderExpressList(List<OrderExpress> orderExpressList) {
-        this.orderExpressList = orderExpressList;
-    }
-
     public int getVoice_time() {
         return voice_time;
     }
@@ -268,43 +181,35 @@ public class OrderParam {
         this.voice_time = voice_time;
     }
 
-    public String getOrder_type() {return order_type;}
+    public String getPackage_type() {
+        return package_type;
+    }
 
-    public void setOrder_type(String order_type) {this.order_type = order_type;}
+    public void setPackage_type(String package_type) {
+        this.package_type = package_type;
+    }
 
-    public String getRegion_type() {return region_type;}
+    public String getObject_type() {
+        return object_type;
+    }
 
-    public void setRegion_type(String region_type) {this.region_type = region_type;}
+    public void setObject_type(String object_type) {
+        this.object_type = object_type;
+    }
 
-    @Override
-    public String toString() {
-        return "OrderParam{" +
-                "state='" + state + '\'' +
-                ", sender_name='" + sender_name + '\'' +
-                ", sender_mobile='" + sender_mobile + '\'' +
-                ", sender_province='" + sender_province + '\'' +
-                ", sender_city='" + sender_city + '\'' +
-                ", sender_area='" + sender_area + '\'' +
-                ", sender_addr='" + sender_addr + '\'' +
-                ", image='" + image + '\'' +
-                ", voice='" + voice + '\'' +
-                ", pay_method='" + pay_method + '\'' +
-                ", distribution_method='" + distribution_method + '\'' +
-                ", longitude=" + longitude +
-                ", latitude=" + latitude +
-                ", word_message='" + word_message + '\'' +
-                ", package_count=" + package_count +
-                ", job_number='" + job_number + '\'' +
-                ", sender_user_id=" + sender_user_id +
-                ", ship_user_id=" + ship_user_id +
-                ", gift_card_id=" + gift_card_id +
-                ", voice_time=" + voice_time +
-                ", orderExpress=" + orderExpress +
-                ", package_type='" + package_type + '\'' +
-                ", object_type='" + object_type + '\'' +
-                ", order_type='" + order_type + '\'' +
-                ", region_type='" + region_type + '\'' +
-                ", orderExpressList=" + orderExpressList +
-                '}';
+    public String getOrder_type() {
+        return order_type;
+    }
+
+    public void setOrder_type(String order_type) {
+        this.order_type = order_type;
+    }
+
+    public String getRegion_type() {
+        return region_type;
+    }
+
+    public void setRegion_type(String region_type) {
+        this.region_type = region_type;
     }
 }
