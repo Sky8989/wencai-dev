@@ -299,10 +299,7 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse friendPlaceOrder(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
         OrderParam orderParam = (OrderParam) request.getRequestParam();
-        //System.out.println("-   -这是orderParm"+orderParam.toString());
-        //自动将sender_id order_type region_type 封装到order
         Order order = new Order(orderParam);
-        //System.out.println("-   -这是order"+order.toString());
         try {
             //生成order的编号
             long long_order_number = (long) (Math.random() * 100000 * 1000000);
@@ -319,14 +316,11 @@ public class OrderServiceImpl implements OrderService {
             orderExpress.setState("WAIT_FILL");
             orderExpress.setUuid("");
             orderExpress.setSender_user_id(orderParam.getSender_user_id());
-            orderExpress.setReserve_time("0000");
-            //装入order的id，注意不是order编号，orderExpress需要order的id外键
+            orderExpress.setReserve_time("");
             orderExpress.setOrder_id(order.getId());
-            //System.out.println("-   -包裹数量"+orderParam.getPackage_count());
             for (int i = orderParam.getPackage_count(); i > 0; i--) {
                 //存储订单快递信息
                 orderExpressMapper.addOrderExpress(orderExpress);
-                //System.out.println("-   -存储快递信息的次数" + i);
             }
         } catch (Exception e) {
             status = APIStatus.SUBMIT_FAIL;
@@ -339,40 +333,25 @@ public class OrderServiceImpl implements OrderService {
      * 好友填写寄件订单
      */
     public synchronized APIResponse friendFillOrder(Map rowData) {
-        //对传进来的json参数 转换为对象和flag
-        int is_same = Integer.parseInt(rowData.get("is_same").toString());
-        //去掉 Map中的is_same元素 便于Gson整体封装剩余元素到OrderExpress中
-        rowData.remove("is_same");
         String orderExpressStr = rowData.toString();
         OrderExpress orderExpress = new Gson().fromJson(orderExpressStr, OrderExpress.class);
         APIStatus status = APIStatus.SUCCESS;
         try {
             List<OrderExpress> list = orderExpressMapper.
                     UnWritenOrderExpressListByOrderIdAndShipnameNull(orderExpress.getOrder_id());
+            // TODO: 还欠两个逻辑：1.同一个用户重复强包裹，要返回【不能重复抢】 2.还没抢完，寄件人已经下单，其他用户继续抢包裹，要返回【已经下单不能继续抢】
             if (list.isEmpty()) {
                 //list为空则返回已经抢完的信息
                 status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
-                return APIUtil.getResponse(status, orderExpress.getOrder_id());
+                return APIUtil.getResponse(status, null);
             } else {
                 //获取随机下标
                 int random = new Random().nextInt(list.size());
-                //System.out.println("-   -随机数"+random+"-     -list的size"+list.size());
                 //更新订单信息，主要是好友地址信息
                 orderExpress.setState("ALREADY_FILL");
                 //获取id
                 orderExpress.setId(list.get(random).getId());
                 orderExpressMapper.updateOrderExpressByOrderExpressId(orderExpress);
-//                //order的订单类型更新 //拆分字段后，无须更新操作
-//                Order order = new Order();
-//                order.setId(orderExpress.getOrder_id());
-//                if(is_same == 1){
-//                    //更新order_type为 神秘同城 订单
-//                    order.setOrder_type("ORDER_MYSTERY_SAME");
-//                } else {
-//                    //更新order_type为 神秘大网 订单
-//                    order.setOrder_type("ORDER_MYSTERY_NATION");
-//                }
-//                orderMapper.updateOrderTypeById(order);
             }
         } catch (Exception e) {
             status = APIStatus.SUBMIT_FAIL;
@@ -495,12 +474,10 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
         try {
-            System.out.println(uuid);
             if (uuid == null) {
                 uuid = orderExpressMapper.getUuidByOrderId(order_id);
             }
             jsonObject = APISfDetail.sfDetail(uuid, access_token);
-
         } catch (Exception e) {
             status = APIStatus.PARAMETER_FAIL;
             e.printStackTrace();
@@ -513,7 +490,6 @@ public class OrderServiceImpl implements OrderService {
      */
     public APIResponse updateOrder(APIRequest request, Order order, OrderExpress orderExpress) {
         APIStatus status = APIStatus.SUCCESS;
-
         orderMapper.updateOrder(order);
         orderMapper.updateOrderExpress(orderExpress);
         return APIUtil.getResponse(status, null);
@@ -538,7 +514,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * C01 我的订单
+     * 我的订单列表
      */
     public APIResponse getMyOrderList(APIRequest request) {
         MyOrderParam myOrderParam = (MyOrderParam) request.getRequestParam();
