@@ -66,6 +66,22 @@
         ship_user_id=#{ship_user_id}
         WHERE order_id=#{order_id}
     </update>
+    <!--更新快递信息，by 快递id，用于好友填写订单时回填信息-->
+    <update id="updateOrderExpressByOrderExpressId" parameterType="com.sftc.web.model.OrderExpress">
+        UPDATE sftc_order_express
+        set
+        ship_name=#{ship_name},
+        ship_mobile=#{ship_mobile},
+        ship_province=#{ship_province},
+        ship_city=#{ship_city},
+        ship_area=#{ship_area},
+        ship_addr=#{ship_addr},
+        state=#{state},
+        is_use=1,
+        uuid=#{uuid},
+        ship_user_id=#{ship_user_id}
+        WHERE id=#{id}
+    </update>
 
     <update id="updatePlace" parameterType="com.sftc.web.model.OrderExpress">
         UPDATE sftc_order_express
@@ -99,4 +115,8 @@
         WHERE uuid=#{uuid}
     </update>
 
+    <!-- 获取订单对应的未填写快递信息列表list,根据订单id order_id -->
+    <select id="UnWritenOrderExpressListByOrderIdAndShipnameNull" resultType="com.sftc.web.model.OrderExpress" parameterType="int">
+        select * from sftc_order_express where order_id = #{id} and ship_name is null
+    </select>
 </mapper>

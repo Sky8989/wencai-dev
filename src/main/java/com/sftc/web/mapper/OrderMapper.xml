@@ -170,6 +170,7 @@
 
     </select>
 
+
     <resultMap id="OrderExpressMap" type="com.sftc.web.model.Order">
         <id property="id" column="id"/>
         <result property="order_type" column="order_type"/>

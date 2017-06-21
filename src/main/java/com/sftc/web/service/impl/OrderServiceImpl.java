@@ -18,10 +18,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
@@ -220,7 +217,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /*
-     * 好友填写寄件订单  前台还需要给一个flag 来分辨 神秘同城、神秘大网
+     * @好友填写寄件订单  前台还需要给一个flag 来分辨 神秘同城、神秘大网
      * 好友填写完订单后，需要改变订单类型信息
      */
     public synchronized APIResponse friendFillOrder(Map rowData) {
@@ -231,28 +228,67 @@ public class OrderServiceImpl implements OrderService {
         String orderExpressStr = rowData.toString();
         OrderExpress orderExpress = new Gson().fromJson(orderExpressStr, OrderExpress.class);
         APIStatus status = APIStatus.SUCCESS;
-
-        try {
-            //更新订单信息，主要是好友地址信息
-            //orderExpress.setUuid("");
-            orderExpress.setState("好友已填写");
-            orderExpressMapper.updateOrderExpress(orderExpress);
-            //order的订单类型更新
-            Order order = new Order();
-            order.setId(orderExpress.getOrder_id());
-            if(is_same == 1){
-                //更新order_type为 神秘同城 订单
-                order.setOrder_type("ORDER_MYSTERY_SAME");
-            } else {
-                //更新order_type为 神秘大网 订单
-                order.setOrder_type("ORDER_MYSTERY_NATION");
+        /**
+         *     实现思路
+         获取所有该订单的快递信息为list,
+         select * from sftc_order_express where order_id = 766 and ship_name  is  null
+         判断是否list为空，为空则快递礼物已经抢完
+         然后再取一个list中元素取进行快递信息更新操作
+         */
+        try{
+            List<OrderExpress> list = orderExpressMapper.
+                    UnWritenOrderExpressListByOrderIdAndShipnameNull(orderExpress.getOrder_id());
+            if(list.isEmpty()){
+                //list为空则返回已经抢完的信息
+                status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
+                return APIUtil.getResponse(status, orderExpress.getOrder_id());
+            }else{
+                //获取随机下标
+                int random= new Random().nextInt(list.size());
+                //System.out.println("-   -随机数"+random+"-     -list的size"+list.size());
+                //更新订单信息，主要是好友地址信息
+                orderExpress.setState("ALREADY_FILL");
+                //获取id
+                orderExpress.setId(list.get(random).getId());
+                orderExpressMapper.updateOrderExpressByOrderExpressId(orderExpress);
+                //order的订单类型更新
+                Order order = new Order();
+                order.setId(orderExpress.getOrder_id());
+                if(is_same == 1){
+                    //更新order_type为 神秘同城 订单
+                    order.setOrder_type("ORDER_MYSTERY_SAME");
+                } else {
+                    //更新order_type为 神秘大网 订单
+                    order.setOrder_type("ORDER_MYSTERY_NATION");
+                }
+                orderMapper.updateOrderTypeById(order);
             }
-            orderMapper.updateOrderTypeById(order);
-        } catch (Exception e) {
+        }catch (Exception e) {
             status = APIStatus.SUBMIT_FAIL;
             e.printStackTrace();
         }
         return APIUtil.getResponse(status, orderExpress.getOrder_id());
+//        try {
+//            //更新订单信息，主要是好友地址信息
+//            //orderExpress.setUuid("");
+//            orderExpress.setState("好友已填写");
+//            orderExpressMapper.updateOrderExpress(orderExpress);
+//            //order的订单类型更新
+//            Order order = new Order();
+//            order.setId(orderExpress.getOrder_id());
+//            if(is_same == 1){
+//                //更新order_type为 神秘同城 订单
+//                order.setOrder_type("ORDER_MYSTERY_SAME");
+//            } else {
+//                //更新order_type为 神秘大网 订单
+//                order.setOrder_type("ORDER_MYSTERY_NATION");
+//            }
+//            orderMapper.updateOrderTypeById(order);
+//        } catch (Exception e) {
+//            status = APIStatus.SUBMIT_FAIL;
+//            e.printStackTrace();
+//        }
+//        return APIUtil.getResponse(status, orderExpress.getOrder_id());
     }
 
 //    /*
