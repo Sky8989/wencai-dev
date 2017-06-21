@@ -274,9 +274,9 @@ public class OrderServiceImpl implements OrderService {
         String order_id = (String) request.getParameter("order_id");
 
         Order order;
-        if (order_number.length() != 0) {
+        if (order_number != null && order_number.length() != 0) {
             order = orderMapper.selectOrderDetailByOrderNumber(order_number);
-        } else if (order_id.length() != 0) {
+        } else if (order_id != null && order_id.length() != 0) {
             order = orderMapper.selectOrderDetailByOrderId(Integer.parseInt(order_id));
         } else {
             APIStatus failStatus = APIStatus.SELECT_FAIL;
