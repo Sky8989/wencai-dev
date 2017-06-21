@@ -57,8 +57,10 @@ public class Order extends Object {
     private GiftCard giftCard;
     private List<OrderExpress> orderExpressList;
     private OrderExpress orderExpress;
+    //订单类型 普通 神秘
     private String order_type;
-
+    //订单地域 同城 大网
+    private String region_type;
     public Order() {
     }
 
@@ -118,6 +120,9 @@ public class Order extends Object {
         this.sender_user_id = orderParam.getSender_user_id();
         this.gift_card_id = orderParam.getGift_card_id();
         this.job_number = orderParam.getJob_number();
+        //新添加
+        this.order_type = orderParam.getOrder_type();
+        this.region_type = orderParam.getRegion_type();
     }
 
     public Order(String create_time, Long order_number, String gmt_order_create, String state) {
@@ -357,5 +362,45 @@ public class Order extends Object {
 
     public void setVoice_time(int voice_time) {
         this.voice_time = voice_time;
+    }
+
+    public String getRegion_type() {return region_type;}
+
+    public void setRegion_type(String region_type) {this.region_type = region_type;}
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", create_time='" + create_time + '\'' +
+                ", order_number=" + order_number +
+                ", state='" + state + '\'' +
+                ", gmt_order_create='" + gmt_order_create + '\'' +
+                ", gmt_pay_create='" + gmt_pay_create + '\'' +
+                ", pay_method='" + pay_method + '\'' +
+                ", distribution_method='" + distribution_method + '\'' +
+                ", freight=" + freight +
+                ", sender_name='" + sender_name + '\'' +
+                ", sender_mobile='" + sender_mobile + '\'' +
+                ", sender_province='" + sender_province + '\'' +
+                ", sender_city='" + sender_city + '\'' +
+                ", sender_area='" + sender_area + '\'' +
+                ", sender_addr='" + sender_addr + '\'' +
+                ", word_message='" + word_message + '\'' +
+                ", image='" + image + '\'' +
+                ", voice='" + voice + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", job_number='" + job_number + '\'' +
+                ", user=" + user +
+                ", sender_user_id=" + sender_user_id +
+                ", gift_card_id=" + gift_card_id +
+                ", voice_time=" + voice_time +
+                ", giftCard=" + giftCard +
+                ", orderExpressList=" + orderExpressList +
+                ", orderExpress=" + orderExpress +
+                ", order_type='" + order_type + '\'' +
+                ", region_type='" + region_type + '\'' +
+                '}';
     }
 }
