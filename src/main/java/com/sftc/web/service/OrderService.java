@@ -17,6 +17,11 @@ public interface OrderService {
     APIResponse normalOrderCommit(APIRequest request);
 
     /**
+     * 好友订单提交
+     */
+    APIResponse friendOrderCommit(APIRequest request);
+
+    /**
      * 支付订单
      */
     APIResponse payOrder(APIRequest request);

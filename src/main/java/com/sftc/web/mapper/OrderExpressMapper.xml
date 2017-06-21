@@ -105,7 +105,6 @@
         WHERE order_id=#{order_id}
     </update>
 
-
     <select id="getUuidByOrderId" resultType="string" parameterType="int">
         SELECT uuid FROM sftc_order_express where order_id=#{order_id}
     </select>
@@ -115,6 +114,14 @@
         set
         state=#{state}
         WHERE uuid=#{uuid}
+    </update>
+
+    <update id="updateOrderExpressUuidAndReserveTimeById" parameterType="String">
+        update sftc_order_express
+        set
+        uuid=#{uuid},
+        reserve_time=#{reserve_time}
+        WHERE id=#{id}
     </update>
 
     <!-- 获取订单对应的未填写快递信息列表list,根据订单id order_id -->

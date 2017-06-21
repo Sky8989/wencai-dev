@@ -9,7 +9,8 @@ import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
-import com.sftc.web.model.sfmodel.Orders;
+import com.sftc.web.model.sfmodel.*;
+import com.sftc.web.model.sfmodel.Address;
 import com.sftc.web.service.OrderService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -67,6 +68,80 @@ public class OrderServiceImpl implements OrderService {
         } else { // 大网
             return normalNationOrderCommit(requestBody);
         }
+    }
+
+    /**
+     * 好友订单提交
+     */
+    public APIResponse friendOrderCommit(APIRequest request) {
+        Object paramsBody = request.getRequestParam();
+        JSONObject requestObject = JSONObject.fromObject(paramsBody);
+        if (requestObject.containsKey("request")) { // 同城
+            return friendSameOrderCommit(requestObject);
+        } else { // 大网
+            return null;
+        }
+    }
+
+    // 好友同城订单提交
+    private APIResponse friendSameOrderCommit(JSONObject requestObject) {
+        APIStatus status = APIStatus.SUCCESS;
+        int order_id = Integer.parseInt((String)requestObject.getJSONObject("order").get("order_id"));
+        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+        for (OrderExpress oe : order.getOrderExpressList()) {
+            // 拼接同城订单参数中的 source 和 target
+            Source source = new Source();
+            Address address = new Address();
+            address.setProvince(order.getSender_province());
+            address.setCity(order.getSender_city());
+            address.setRegion(order.getSender_area());
+            address.setStreet(order.getSender_addr());
+            address.setReceiver(order.getSender_name());
+            address.setMobile(order.getSender_mobile());
+            Coordinate coordinate = new Coordinate();
+            coordinate.setLongitude(order.getLongitude());
+            coordinate.setLatitude(order.getLatitude());
+            source.setAddress(address);
+            source.setCoordinate(coordinate);
+
+            Target target = new Target();
+            Address targetAddress = new Address();
+            targetAddress.setProvince(oe.getShip_province());
+            targetAddress.setCity(oe.getShip_city());
+            targetAddress.setRegion(oe.getShip_area());
+            targetAddress.setStreet(oe.getShip_addr());
+            targetAddress.setReceiver(oe.getShip_name());
+            targetAddress.setMobile(oe.getShip_mobile());
+            Coordinate targetCoordinate = new Coordinate();
+            targetCoordinate.setLongitude(oe.getLongitude());
+            targetCoordinate.setLatitude(oe.getLatitude());
+            target.setAddress(targetAddress);
+            target.setCoordinate(targetCoordinate);
+
+            requestObject.getJSONObject("request").put("source", source);
+            requestObject.getJSONObject("request").put("target", target);
+
+            // POST
+            String paramStr = gson.toJson(JSONObject.fromObject(requestObject));
+            HttpPost post = new HttpPost(REQUEST_URL);
+            post.addHeader("PushEnvelope-Device-Token", (String) requestObject.getJSONObject("request").getJSONObject("merchant").get("access_token"));
+            String resultStr = AIPPost.getPost(paramStr, post);
+            JSONObject jsonObject = JSONObject.fromObject(resultStr);
+
+            if (jsonObject.get("errors") == null || jsonObject.get("error") == null) {
+                if (requestObject.getJSONObject("order").containsKey("reserve_time")) {
+                    String uuid = (String) jsonObject.getJSONObject("request").get("uuid");
+                    String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
+                    orderMapper.updateOrderUuidById(order_id, uuid); // 订单表更新uuid
+                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(order_id, uuid, reserve_time); // 快递表更新uuid和预约时间
+                } else {
+                    return APIUtil.errorResponse("预约时间不能为空");
+                }
+            } else {
+                status = APIStatus.SUBMIT_FAIL;
+            }
+        }
+        return APIUtil.getResponse(status, null);
     }
 
     // 普通订单提交接口验参
@@ -134,7 +209,7 @@ public class OrderServiceImpl implements OrderService {
             String res = AIPPost.getPost(str, post);
             jsonObject = JSONObject.fromObject(res);
             if (jsonObject.get("errors") == null || jsonObject.get("error") == null) {
-                if ((String) jsonObject1.getJSONObject("order").get("reserve_time") != null) {
+                if (jsonObject1.getJSONObject("order").get("reserve_time") != null) {
                     orderMapper.addOrder(order);
                     OrderExpress orderExpress = new OrderExpress(
                             time,

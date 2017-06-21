@@ -13,9 +13,11 @@ import java.util.List;
  */
 public class Address extends Object {
 
-    private int id ;
+    private int id;
     // 创建时间
     private String create_time;
+    // 国家
+    private String country;
     // 省份
     private String province;
     // 城市
@@ -42,7 +44,7 @@ public class Address extends Object {
     public Address() {
     }
 
-    public Address(String province, String city, String district, String detail, String phone,int user_id,String name) {
+    public Address(String province, String city, String district, String detail, String phone, int user_id, String name) {
         this.province = province;
         this.city = city;
         this.district = district;
@@ -66,6 +68,14 @@ public class Address extends Object {
 
     public void setCreate_time(String create_time) {
         this.create_time = create_time;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getProvince() {

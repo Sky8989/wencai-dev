@@ -37,6 +37,17 @@ public class OrderController extends AbstractBasicController {
     }
 
     /**
+     * 好友订单提交
+     */
+    @RequestMapping(value = "/friendCommit", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse friendOrderCommit(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.friendOrderCommit(request);
+    }
+
+    /**
      * 计价
      */
     @RequestMapping(value = "/countPrice", method = RequestMethod.POST)

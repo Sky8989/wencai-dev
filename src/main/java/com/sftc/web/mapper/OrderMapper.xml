@@ -139,6 +139,11 @@
         </trim>
         WHERE order_number=#{order_number}
     </update>
+    <update id="updateOrderUuidById" parameterType="String">
+        update sftc_order
+        set uuid=#{uuid}
+        WHERE id=#{id}
+    </update>
 
     <sql id="Order_And_OrderExpress_List">
         o.sender_mobile, o.sender_name, o.sender_province,
