@@ -52,7 +52,6 @@ public class OrderServiceImpl implements OrderService {
     /*
      * 普通提交订单 普通同城订单
      */
-
     public APIResponse placeOrder(Object object) {
 
         Long long_order_number = (long) (Math.random() * 100000 * 1000000);
@@ -157,19 +156,15 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse friendPlaceOrder(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
         OrderParam orderParam = (OrderParam) request.getRequestParam();
-//        弃用
-//        List<OrderExpress> orderExpressList = orderParam.getOrderExpressList();
+        //System.out.println("-   -这是orderParm"+orderParam.toString());
+        //自动将sender_id order_type region_type 封装到order
         Order order = new Order(orderParam);
+        //System.out.println("-   -这是order"+order.toString());
         try {
             //生成order的编号
             long long_order_number = (long) (Math.random() * 100000 * 1000000);
             order.setOrder_number(long_order_number);
-            //等待好友填写完地址后，再判断是神秘同城还是神秘大网
-            order.setOrder_type("waittingFriendToWrite");
-            System.out.println(orderParam.getSender_user_id());
-            order.setSender_user_id(orderParam.getSender_user_id());
             //存储订单信息
-            System.out.println(order);
             orderMapper.addOrder(order);
             //构建订单快递orderExpress信息
             OrderExpress orderExpress = new OrderExpress();
@@ -178,41 +173,18 @@ public class OrderServiceImpl implements OrderService {
             orderExpress.setObject_type(orderParam.getObject_type());
             orderExpress.setOrder_id(order.getId());
             orderExpress.setCreate_time(order.getCreate_time());
-            //orderExpress.setIs_use();     //前端未传此参数来
             orderExpress.setState("WAIT_FILL");
             orderExpress.setUuid("");
             orderExpress.setSender_user_id(orderParam.getSender_user_id());
             orderExpress.setReserve_time("0000");
             //装入order的id，注意不是order编号，orderExpress需要order的id外键
             orderExpress.setOrder_id(order.getId());
-            System.out.println("-   -包裹数量" + orderParam.getPackage_count());
-            for (int i = orderParam.getPackage_count(); i > 0; i--) {
+            //System.out.println("-   -包裹数量"+orderParam.getPackage_count());
+            for (int i = orderParam.getPackage_count(); i > 0 ;i--){
                 //存储订单快递信息
                 orderExpressMapper.addOrderExpress(orderExpress);
-                System.out.println("-   -存储快递信息的次数" + i);
+                //System.out.println("-   -存储快递信息的次数" + i);
             }
-
-//            for (int i = 0; i < orderExpressList.size(); i++) {
-//                orderExpressList.get(i).setOrder_number(long_order_number);
-//                orderExpressList.get(i).setState("待好友填写");
-//                orderExpressList.get(i).setUuid("");
-//                orderExpressList.get(i).setSender_user_id(orderParam.getSender_user_id());
-//                orderExpressList.get(i).setReserve_time("");
-//                OrderExpress orderExpress = new OrderExpress(
-//                        orderExpressList.get(i).getOrder_number(),
-//                        orderExpressList.get(i).getPackage_type(),
-//                        orderExpressList.get(i).getObject_type(),
-//                        order.getId(),
-//                        order.getCreate_time(),
-//                        orderExpressList.get(i).getIs_use(),
-//                        orderExpressList.get(i).getState(),
-//                        orderExpressList.get(i).getUuid(),
-//                        orderExpressList.get(i).getSender_user_id(),
-//                        orderExpressList.get(i).getReserve_time()
-//                );
-//                orderExpressMapper.addOrderExpress(orderExpress);
-//            }
-
         } catch (Exception e) {
             status = APIStatus.SUBMIT_FAIL;
             e.printStackTrace();
@@ -221,8 +193,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /*
-     * @好友填写寄件订单  前台还需要给一个flag 来分辨 神秘同城、神秘大网
-     * 好友填写完订单后，需要改变订单类型信息
+     * @好友填写寄件订单
+     *
      */
     public synchronized APIResponse friendFillOrder(Map rowData) {
         //对传进来的json参数 转换为对象和flag
@@ -232,14 +204,7 @@ public class OrderServiceImpl implements OrderService {
         String orderExpressStr = rowData.toString();
         OrderExpress orderExpress = new Gson().fromJson(orderExpressStr, OrderExpress.class);
         APIStatus status = APIStatus.SUCCESS;
-        /**
-         *     实现思路
-         获取所有该订单的快递信息为list,
-         select * from sftc_order_express where order_id = 766 and ship_name  is  null
-         判断是否list为空，为空则快递礼物已经抢完
-         然后再取一个list中元素取进行快递信息更新操作
-         */
-        try {
+        try{
             List<OrderExpress> list = orderExpressMapper.
                     UnWritenOrderExpressListByOrderIdAndShipnameNull(orderExpress.getOrder_id());
             if (list.isEmpty()) {
@@ -255,44 +220,23 @@ public class OrderServiceImpl implements OrderService {
                 //获取id
                 orderExpress.setId(list.get(random).getId());
                 orderExpressMapper.updateOrderExpressByOrderExpressId(orderExpress);
-                //order的订单类型更新
-                Order order = new Order();
-                order.setId(orderExpress.getOrder_id());
-                if (is_same == 1) {
-                    //更新order_type为 神秘同城 订单
-                    order.setOrder_type("ORDER_MYSTERY_SAME");
-                } else {
-                    //更新order_type为 神秘大网 订单
-                    order.setOrder_type("ORDER_MYSTERY_NATION");
-                }
-                orderMapper.updateOrderTypeById(order);
+//                //order的订单类型更新 //拆分字段后，无须更新操作
+//                Order order = new Order();
+//                order.setId(orderExpress.getOrder_id());
+//                if(is_same == 1){
+//                    //更新order_type为 神秘同城 订单
+//                    order.setOrder_type("ORDER_MYSTERY_SAME");
+//                } else {
+//                    //更新order_type为 神秘大网 订单
+//                    order.setOrder_type("ORDER_MYSTERY_NATION");
+//                }
+//                orderMapper.updateOrderTypeById(order);
             }
         } catch (Exception e) {
             status = APIStatus.SUBMIT_FAIL;
             e.printStackTrace();
         }
         return APIUtil.getResponse(status, orderExpress.getOrder_id());
-//        try {
-//            //更新订单信息，主要是好友地址信息
-//            //orderExpress.setUuid("");
-//            orderExpress.setState("好友已填写");
-//            orderExpressMapper.updateOrderExpress(orderExpress);
-//            //order的订单类型更新
-//            Order order = new Order();
-//            order.setId(orderExpress.getOrder_id());
-//            if(is_same == 1){
-//                //更新order_type为 神秘同城 订单
-//                order.setOrder_type("ORDER_MYSTERY_SAME");
-//            } else {
-//                //更新order_type为 神秘大网 订单
-//                order.setOrder_type("ORDER_MYSTERY_NATION");
-//            }
-//            orderMapper.updateOrderTypeById(order);
-//        } catch (Exception e) {
-//            status = APIStatus.SUBMIT_FAIL;
-//            e.printStackTrace();
-//        }
-//        return APIUtil.getResponse(status, orderExpress.getOrder_id());
     }
 
 //    /*

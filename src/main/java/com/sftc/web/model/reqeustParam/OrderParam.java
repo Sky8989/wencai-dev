@@ -64,6 +64,14 @@ public class OrderParam {
     //物品类型
     private  String object_type;
 
+
+
+    //订单类型 普通 神秘
+    private String order_type;
+    //订单地域 同城 大网
+    private String region_type;
+
+
     public String getPackage_type() {
         return package_type;
     }
@@ -258,5 +266,45 @@ public class OrderParam {
 
     public void setVoice_time(int voice_time) {
         this.voice_time = voice_time;
+    }
+
+    public String getOrder_type() {return order_type;}
+
+    public void setOrder_type(String order_type) {this.order_type = order_type;}
+
+    public String getRegion_type() {return region_type;}
+
+    public void setRegion_type(String region_type) {this.region_type = region_type;}
+
+    @Override
+    public String toString() {
+        return "OrderParam{" +
+                "state='" + state + '\'' +
+                ", sender_name='" + sender_name + '\'' +
+                ", sender_mobile='" + sender_mobile + '\'' +
+                ", sender_province='" + sender_province + '\'' +
+                ", sender_city='" + sender_city + '\'' +
+                ", sender_area='" + sender_area + '\'' +
+                ", sender_addr='" + sender_addr + '\'' +
+                ", image='" + image + '\'' +
+                ", voice='" + voice + '\'' +
+                ", pay_method='" + pay_method + '\'' +
+                ", distribution_method='" + distribution_method + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", word_message='" + word_message + '\'' +
+                ", package_count=" + package_count +
+                ", job_number='" + job_number + '\'' +
+                ", sender_user_id=" + sender_user_id +
+                ", ship_user_id=" + ship_user_id +
+                ", gift_card_id=" + gift_card_id +
+                ", voice_time=" + voice_time +
+                ", orderExpress=" + orderExpress +
+                ", package_type='" + package_type + '\'' +
+                ", object_type='" + object_type + '\'' +
+                ", order_type='" + order_type + '\'' +
+                ", region_type='" + region_type + '\'' +
+                ", orderExpressList=" + orderExpressList +
+                '}';
     }
 }
