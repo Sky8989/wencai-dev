@@ -456,20 +456,44 @@ public class OrderServiceImpl implements OrderService {
         OrderExpress orderExpress = new Gson().fromJson(orderExpressStr, OrderExpress.class);
         APIStatus status = APIStatus.SUCCESS;
         try {
-            List<OrderExpress> list = orderExpressMapper.
-                    UnWritenOrderExpressListByOrderIdAndShipnameNull(orderExpress.getOrder_id());
+            //判断 订单是否下单 的逻辑
+            Order order = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
+            if(order.getRegion_type() != null && !"".equals(order.getRegion_type()) && order.getRegion_type().length() != 0){
+                APIStatus.ORDER_PACKAGE_COUNT_PULL.setMessage("订单已经下单，现在您无法再填写信息");
+                status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
+                return APIUtil.getResponse(status, orderExpress.getOrder_id());
+            }
+            //判断 同一个用户重复填写 的逻辑
+            //定义preList为预获取的快递信息，realList为未填写的快递信息
+            LinkedList<OrderExpress> realList = new LinkedList<OrderExpress>();
+            List<OrderExpress> preList = orderExpressMapper.findAllOrderExpressByOrderId(orderExpress.getOrder_id());
+            //循环遍历 prelist ，如果有重复的名字或者没有空包裹 都跳出返回问题
+            //不能直接删除，删完了会影响list的数据结构。传入一个新的list
+            for (OrderExpress oe : preList){
+                //某个用户只要填写过一条信息，则会跳出逻辑
+                if (oe.getShip_user_id() == orderExpress.getShip_user_id()){
+                    APIStatus.ORDER_PACKAGE_COUNT_PULL.setMessage("您已经填写过信息，请勿重复填写");
+                    status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
+                    return APIUtil.getResponse(status, orderExpress.getOrder_id());
+                }
+                if(oe.getShip_user_id() == 0 ) {
+                    //默认为0，等于0的时候加到 realList
+                    realList.add(oe);
+                }
+            }
             // TODO: 还欠两个逻辑：1.同一个用户重复强包裹，要返回【不能重复抢】 2.还没抢完，寄件人已经下单，其他用户继续抢包裹，要返回【已经下单不能继续抢】
-            if (list.isEmpty()) {
+            if (realList.isEmpty()) {
                 //list为空则返回已经抢完的信息
+                APIStatus.ORDER_PACKAGE_COUNT_PULL.setMessage("包裹已经分发完");
                 status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
                 return APIUtil.getResponse(status, null);
             } else {
                 //获取随机下标
-                int random = new Random().nextInt(list.size());
+                int random = new Random().nextInt(realList.size());
                 //更新订单信息，主要是好友地址信息
                 orderExpress.setState("ALREADY_FILL");
                 //获取id
-                orderExpress.setId(list.get(random).getId());
+                orderExpress.setId(realList.get(random).getId());
                 orderExpressMapper.updateOrderExpressByOrderExpressId(orderExpress);
             }
         } catch (Exception e) {

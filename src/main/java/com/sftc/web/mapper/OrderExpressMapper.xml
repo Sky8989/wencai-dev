@@ -28,6 +28,11 @@
         SELECT * FROM sftc_order_express WHERE order_number=#{order_number} AND is_use=0
     </select>
 
+    <!-- 根据order_id-->
+    <select id="findAllOrderExpressByOrderId" resultType="com.sftc.web.model.OrderExpress" parameterType="int">
+        SELECT * FROM  sftc_order_express WHERE  order_id = #{order_id}
+    </select>
+
     <!--<select id="findMyOrderExpress" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"-->
             <!--resultType="com.sftc.web.model.apiCallback.OrderCallback">-->
         <!--SELECT DISTINCT sftc_order_express.id,sftc_order_express.order_number,sftc_order_express.ship_name,-->
