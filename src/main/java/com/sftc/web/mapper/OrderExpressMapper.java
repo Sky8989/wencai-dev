@@ -29,4 +29,6 @@ public interface OrderExpressMapper {
     List<OrderExpress> UnWritenOrderExpressListByOrderIdAndShipnameNull(int order_id);
     //更新快递信息，by 快递id，用于好友填写订单时回填信息
     void updateOrderExpressByOrderExpressId(OrderExpress orderExpress);
+
+    List<OrderExpress> findAllOrderExpressByOrderId(int order_id);
 }
