@@ -4,6 +4,7 @@ import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface OrderMapper {
 
     void updateOrder(Order order);
 
-    void updateOrderUuidById(int id, String uuid);
+    void updateOrderRegionType(@Param("id") int id, @Param("region_type") String region_type);
 
     //通过订单Id修改订单信息，只修改订单类型
     void updateOrderTypeById(Order Order);

@@ -9,8 +9,8 @@ import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
-import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.model.sfmodel.Address;
+import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.service.OrderService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -62,8 +62,8 @@ public class OrderServiceImpl implements OrderService {
             return APIUtil.errorResponse(paramVerifyMessage);
         }
 
-        String regionType = (String) JSONObject.fromObject(requestBody).getJSONObject("order").get("region_type");
-        if (regionType.equals("REGION_SAME")) { // 同城
+        JSONObject requestObject = JSONObject.fromObject(requestBody);
+        if (requestObject.containsKey("request")) { // 同城
             return normalSameOrderCommit(requestBody);
         } else { // 大网
             return normalNationOrderCommit(requestBody);
@@ -74,8 +74,14 @@ public class OrderServiceImpl implements OrderService {
      * 好友订单提交
      */
     public APIResponse friendOrderCommit(APIRequest request) {
-        Object paramsBody = request.getRequestParam();
-        JSONObject requestObject = JSONObject.fromObject(paramsBody);
+        Object requestBody = request.getRequestParam();
+        // Param Verify
+        String paramVerifyMessage = normalOrderCommitVerify(requestBody);
+        if (paramVerifyMessage != null) { // Param Error
+            return APIUtil.errorResponse(paramVerifyMessage);
+        }
+
+        JSONObject requestObject = JSONObject.fromObject(requestBody);
         if (requestObject.containsKey("request")) { // 同城
             return friendSameOrderCommit(requestObject);
         } else { // 大网
@@ -128,13 +134,12 @@ public class OrderServiceImpl implements OrderService {
             String resultStr = AIPPost.getPost(paramStr, post);
             JSONObject jsonObject = JSONObject.fromObject(resultStr);
 
-            if (jsonObject.get("errors") == null || jsonObject.get("error") == null) {
+            if (!jsonObject.containsKey("error")) {
                 if (requestObject.getJSONObject("order").containsKey("reserve_time")) {
                     String uuid = (String) jsonObject.getJSONObject("request").get("uuid");
                     String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
-                    // TODO: region_type not set yet.
-                    orderMapper.updateOrderUuidById(order_id, uuid); // 订单表更新uuid
-                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(order_id, uuid, reserve_time); // 快递表更新uuid和预约时间
+                    orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
+                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeByOrderId(order_id, uuid, reserve_time); // 快递表更新uuid和预约时间
                 } else {
                     return APIUtil.errorResponse("预约时间不能为空");
                 }
@@ -147,44 +152,50 @@ public class OrderServiceImpl implements OrderService {
 
     // 好友大网订单提交
     private APIResponse friendNationOrderCommit(JSONObject requestObject) {
+        // handle param
+        if (!requestObject.getJSONObject("order").containsKey("reserve_time")) {
+            return APIUtil.errorResponse("预约时间不能为空");
+        }
+
         APIStatus status = APIStatus.SUCCESS;
         int order_id = Integer.parseInt((String) requestObject.getJSONObject("order").get("order_id"));
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         for (OrderExpress oe : order.getOrderExpressList()) {
             // 拼接大网订单地址参数
             JSONObject sf = requestObject.getJSONObject("sf");
+            sf.put("orderid", oe.getOrder_number());
             sf.put("j_contact", order.getSender_name());
             sf.put("j_mobile", order.getSender_mobile());
+            sf.put("j_tel", order.getSender_mobile());
+            sf.put("j_country", "中国");
             sf.put("j_province", order.getSender_province());
             sf.put("j_city", order.getSender_city());
             sf.put("j_county", order.getSender_area());
             sf.put("j_address", order.getSender_addr());
             sf.put("d_contact", oe.getShip_name());
             sf.put("d_mobile", oe.getShip_mobile());
+            sf.put("d_tel", oe.getShip_mobile());
+            sf.put("d_country", "中国");
             sf.put("d_province", oe.getShip_province());
             sf.put("d_city", oe.getShip_city());
             sf.put("d_county", oe.getShip_area());
             sf.put("d_address", oe.getShip_addr());
 
             // 发送请求给sf，获取订单结果
-            String paramStr = gson.toJson(JSONObject.fromObject(requestObject));
+            String paramStr = gson.toJson(JSONObject.fromObject(sf));
             HttpPost post = new HttpPost(CREATEORDER_URL);
             post.addHeader("Authorization", "bearer " + APIGetToken.getToken());
             String resultStr = AIPPost.getPost(paramStr, post);
             JSONObject jsonObject = JSONObject.fromObject(resultStr);
-            // TODO: 顺丰大网回调数据还未测试，以下逻辑不一定对
-            if (jsonObject.get("Message_Type") != null && jsonObject.get("Message_Type").equals("ORDER_CREATE_ERROR")) {
+            String messageType = (String) jsonObject.get("Message_Type");
+            if (messageType != null && messageType.contains("ERROR")) {
                 status = APIStatus.SUBMIT_FAIL;
             } else {
                 // 存储订单信息
-                if (requestObject.getJSONObject("order").containsKey("reserve_time")) {
-                    String uuid = (String) jsonObject.getJSONObject("request").get("uuid");
-                    String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
-                    orderMapper.updateOrderUuidById(order_id, uuid); // 订单表更新uuid
-                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(order_id, uuid, reserve_time); // 快递表更新uuid和预约时间
-                } else {
-                    return APIUtil.errorResponse("预约时间不能为空");
-                }
+                String uuid = (String) jsonObject.get("ordernum");
+                String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
+                orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
+                orderExpressMapper.updateOrderExpressUuidAndReserveTimeByOrderId(order_id, uuid, reserve_time); // 快递表更新uuid和预约时间
             }
         }
         return APIUtil.getResponse(status, null);
@@ -206,13 +217,6 @@ public class OrderServiceImpl implements OrderService {
             return "参数sf和request不能同时存在";
         }
 
-        String regionType = (String) jsonObject.getJSONObject("order").get("region_type");
-        if (regionType == null || regionType.length() == 0) {
-            return "参数region_type不能为空";
-        } else if (!regionType.equals("REGION_SAME") && !regionType.equals("REGION_NATION")) {
-            return "请填写正确的region_type参数";
-        }
-
         return null;
     }
 
@@ -221,63 +225,64 @@ public class OrderServiceImpl implements OrderService {
 
         Long long_order_number = (long) (Math.random() * 100000 * 1000000);
         APIStatus status = APIStatus.SUCCESS;
-        JSONObject jsonObject = null;
-        JSONObject jsonObject1 = JSONObject.fromObject(object);
-        String str = gson.toJson(jsonObject1);
+        JSONObject respObject = null;
         try {
+            JSONObject reqObject = JSONObject.fromObject(object);
             Order order = new Order(
                     time,
                     long_order_number,
-                    (String) jsonObject1.getJSONObject("request").get("pay_type"),
-                    (String) jsonObject1.getJSONObject("request").get("product_type"),
+                    (String) reqObject.getJSONObject("request").get("pay_type"),
+                    (String) reqObject.getJSONObject("request").get("product_type"),
                     0.0,
-                    (String) jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver"),
-                    (String) jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("mobile"),
-                    (String) jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("province"),
-                    (String) jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("city"),
-                    (String) jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("region"),
-                    (String) jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("street"),
-                    (Double) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"),
-                    (Double) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
+                    (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver"),
+                    (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("mobile"),
+                    (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("province"),
+                    (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("city"),
+                    (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("region"),
+                    (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("street"),
+                    (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"),
+                    (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
                     "ORDER_BASIS",
-                    Integer.parseInt((String) jsonObject1.getJSONObject("order").get("sender_user_id")));
-            order.setImage((String) jsonObject1.getJSONObject("order").get("image"));
-            order.setVoice((String) jsonObject1.getJSONObject("order").get("voice"));
-            order.setWord_message((String) jsonObject1.getJSONObject("order").get("word_message"));
-            order.setGift_card_id(Integer.parseInt((String) jsonObject1.getJSONObject("order").get("gift_card_id")));
-            order.setVoice_time(Integer.parseInt((String) jsonObject1.getJSONObject("order").get("voice_time")));
+                    Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")));
+            order.setImage((String) reqObject.getJSONObject("order").get("image"));
+            order.setVoice((String) reqObject.getJSONObject("order").get("voice"));
+            order.setWord_message((String) reqObject.getJSONObject("order").get("word_message"));
+            order.setGift_card_id(Integer.parseInt((String) reqObject.getJSONObject("order").get("gift_card_id")));
+            order.setVoice_time(Integer.parseInt((String) reqObject.getJSONObject("order").get("voice_time")));
             order.setRegion_type("REGION_SAME");
 
             HttpPost post = new HttpPost(REQUEST_URL);
-            post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("request").getJSONObject("merchant").get("access_token"));//97uAK7HQmDtsw5JMOqad
-            String res = AIPPost.getPost(str, post);
-            jsonObject = JSONObject.fromObject(res);
-            if (jsonObject.get("errors") == null || jsonObject.get("error") == null) {
-                if (jsonObject1.getJSONObject("order").get("reserve_time") != null) {
+            post.addHeader("PushEnvelope-Device-Token", (String) reqObject.getJSONObject("request").getJSONObject("merchant").get("access_token"));
+            JSONObject tempObject = JSONObject.fromObject(object);
+            tempObject.remove("order");
+            String requestSFParamStr = gson.toJson(tempObject);
+            respObject = JSONObject.fromObject(AIPPost.getPost(requestSFParamStr, post));
+            if (respObject.get("errors") == null || respObject.get("error") == null) {
+                if (reqObject.getJSONObject("order").get("reserve_time") != null) {
                     orderMapper.addOrder(order);
                     OrderExpress orderExpress = new OrderExpress(
                             time,
                             long_order_number,
-                            (String) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("receiver"),
-                            (String) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("mobile"),
-                            (String) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("province"),
-                            (String) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("city"),
-                            (String) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("region"),
-                            (String) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("street"),
-                            (String) jsonObject1.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("weight"),
-                            (String) jsonObject1.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("type"),
+                            (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("receiver"),
+                            (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("mobile"),
+                            (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("province"),
+                            (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("city"),
+                            (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("region"),
+                            (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("street"),
+                            (String) reqObject.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("weight"),
+                            (String) reqObject.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("type"),
                             "",
-                            Integer.parseInt((String) jsonObject1.getJSONObject("request").getJSONObject("order").get("sender_user_id")),
+                            Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
                             order.getId(),
-                            (String) jsonObject.getJSONObject("request").get("uuid"),
-                            (Double) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
-                            (Double) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"));
-                    if (jsonObject1.getJSONObject("order").get("reserve_time") != null) {
-                        orderExpress.setReserve_time((String) jsonObject1.getJSONObject("order").get("reserve_time"));
+                            (String) respObject.getJSONObject("request").get("uuid"),
+                            (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
+                            (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"));
+                    if (reqObject.getJSONObject("order").get("reserve_time") != null) {
+                        orderExpress.setReserve_time((String) reqObject.getJSONObject("order").get("reserve_time"));
                     }
                     orderExpressMapper.addOrderExpress(orderExpress);
                 }
-                jsonObject.put("order_id", order.getId());
+                respObject.put("order_id", order.getId());
             } else {
                 status = APIStatus.SUBMIT_FAIL;
             }
@@ -285,7 +290,7 @@ public class OrderServiceImpl implements OrderService {
             e.printStackTrace();
             status = APIStatus.SUBMIT_FAIL;
         }
-        return APIUtil.getResponse(status, jsonObject);
+        return APIUtil.getResponse(status, respObject);
     }
 
     /**
@@ -348,7 +353,7 @@ public class OrderServiceImpl implements OrderService {
                         (String) jsonObject1.getJSONObject("sf").get("d_address"),
                         "",
                         "",
-                        "待支付",
+                        "INIT",
                         Integer.parseInt((String) jsonObject1.getJSONObject("order").get("sender_user_id")),
                         order.getId(),
                         orderid,
@@ -534,7 +539,6 @@ public class OrderServiceImpl implements OrderService {
 //            }
 //
 //            if (order.getOrder_type().equals("ORDER_MYSTERY_NATION")){
-//                System.out.println("aa");
 //                Order order1 = orderMapper.orderAndOrderExpressAndGiftDetile(orderExpress.getOrder_id());
 //
 //                jsonObject = JSONObject.fromObject(order1);
@@ -698,6 +702,7 @@ public class OrderServiceImpl implements OrderService {
             callback.setSender_addr(order.getSender_addr());
             callback.setOrder_number(order.getOrder_number());
             callback.setOrder_type(order.getOrder_type());
+            callback.setRegion_type(order.getRegion_type());
             callback.setIs_gift(order.getGift_card_id() > 0);
             // expressList
             List<OrderCallback.OrderCallbackExpress> expressList = new ArrayList<OrderCallback.OrderCallbackExpress>();
@@ -748,7 +753,6 @@ public class OrderServiceImpl implements OrderService {
 
         return APIUtil.getResponse(status, jsonObject);
     }
-
 
     /**
      * 普通订单详情接口
