@@ -268,7 +268,7 @@ public class OrderServiceImpl implements OrderService {
                             (String) reqObject.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("weight"),
                             (String) reqObject.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("type"),
                             "",
-                            Integer.parseInt((String) reqObject.getJSONObject("request").getJSONObject("order").get("sender_user_id")),
+                            Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
                             order.getId(),
                             (String) respObject.getJSONObject("request").get("uuid"),
                             (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
