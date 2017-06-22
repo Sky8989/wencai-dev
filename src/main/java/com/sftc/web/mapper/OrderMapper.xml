@@ -27,12 +27,12 @@
         <result column="sender_user_id" property="sender_user_id"/>
         <result column="gift_card_id" property="gift_card_id"/>
         <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress" select="selectExpressList"
-                    column="order_number">
+                    column="id">
         </collection>
     </resultMap>
 
     <select id="selectExpressList" parameterType="java.lang.String" resultType="com.sftc.web.model.OrderExpress">
-        select * from sftc_order_express where order_number=#{order_number}
+        select * from sftc_order_express where order_id=#{id}
     </select>
 
     <!-- 提交订单  -->

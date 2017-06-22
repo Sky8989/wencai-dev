@@ -128,7 +128,11 @@ public class OrderServiceImpl implements OrderService {
             requestObject.getJSONObject("request").put("target", target);
 
             // POST
-            String paramStr = gson.toJson(JSONObject.fromObject(requestObject));
+            Object tempObj = JSONObject.toBean(requestObject);
+            JSONObject tempJsonObj = JSONObject.fromObject(tempObj);
+            tempJsonObj.remove("order");
+            String paramStr = gson.toJson(JSONObject.fromObject(tempJsonObj));
+
             HttpPost post = new HttpPost(REQUEST_URL);
             post.addHeader("PushEnvelope-Device-Token", (String) requestObject.getJSONObject("request").getJSONObject("merchant").get("access_token"));
             String resultStr = AIPPost.getPost(paramStr, post);
@@ -139,7 +143,7 @@ public class OrderServiceImpl implements OrderService {
                     String uuid = (String) jsonObject.getJSONObject("request").get("uuid");
                     String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
                     orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
-                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeByOrderId(order_id, uuid, reserve_time); // 快递表更新uuid和预约时间
+                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
                 } else {
                     return APIUtil.errorResponse("预约时间不能为空");
                 }
@@ -195,7 +199,7 @@ public class OrderServiceImpl implements OrderService {
                 String uuid = (String) jsonObject.get("ordernum");
                 String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
                 orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
-                orderExpressMapper.updateOrderExpressUuidAndReserveTimeByOrderId(order_id, uuid, reserve_time); // 快递表更新uuid和预约时间
+                orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
             }
         }
         return APIUtil.getResponse(status, null);

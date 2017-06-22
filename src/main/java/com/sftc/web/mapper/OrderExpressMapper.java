@@ -19,7 +19,7 @@ public interface OrderExpressMapper {
 
     void updateOrderExpressForSF(OrderExpress orderExpress);
 
-    void updateOrderExpressUuidAndReserveTimeByOrderId(@Param("order_id") int order_id, @Param("uuid") String uuid, @Param("reserve_time") String reserve_time);
+    void updateOrderExpressUuidAndReserveTimeById(@Param("id") int id, @Param("uuid") String uuid, @Param("reserve_time") String reserve_time);
 
     void updatePlace(OrderExpress orderExpress);
 
