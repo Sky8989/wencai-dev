@@ -139,9 +139,10 @@
         </trim>
         WHERE order_number=#{order_number}
     </update>
-    <update id="updateOrderUuidById" parameterType="String">
+
+    <update id="updateOrderRegionType">
         update sftc_order
-        set uuid=#{uuid}
+        set region_type=#{region_type}
         WHERE id=#{id}
     </update>
 

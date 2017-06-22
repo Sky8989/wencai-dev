@@ -9,8 +9,8 @@ import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
-import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.model.sfmodel.Address;
+import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.service.OrderService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -138,9 +138,8 @@ public class OrderServiceImpl implements OrderService {
                 if (requestObject.getJSONObject("order").containsKey("reserve_time")) {
                     String uuid = (String) jsonObject.getJSONObject("request").get("uuid");
                     String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
-                    // TODO: region_type not set yet.
-                    orderMapper.updateOrderUuidById(order_id, uuid); // 订单表更新uuid
-                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(order_id, uuid, reserve_time); // 快递表更新uuid和预约时间
+                    orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
+                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeByOrderId(order_id, uuid, reserve_time); // 快递表更新uuid和预约时间
                 } else {
                     return APIUtil.errorResponse("预约时间不能为空");
                 }
@@ -153,44 +152,50 @@ public class OrderServiceImpl implements OrderService {
 
     // 好友大网订单提交
     private APIResponse friendNationOrderCommit(JSONObject requestObject) {
+        // handle param
+        if (!requestObject.getJSONObject("order").containsKey("reserve_time")) {
+            return APIUtil.errorResponse("预约时间不能为空");
+        }
+
         APIStatus status = APIStatus.SUCCESS;
         int order_id = Integer.parseInt((String) requestObject.getJSONObject("order").get("order_id"));
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         for (OrderExpress oe : order.getOrderExpressList()) {
             // 拼接大网订单地址参数
             JSONObject sf = requestObject.getJSONObject("sf");
+            sf.put("orderid", oe.getOrder_number());
             sf.put("j_contact", order.getSender_name());
             sf.put("j_mobile", order.getSender_mobile());
+            sf.put("j_tel", order.getSender_mobile());
+            sf.put("j_country", "中国");
             sf.put("j_province", order.getSender_province());
             sf.put("j_city", order.getSender_city());
             sf.put("j_county", order.getSender_area());
             sf.put("j_address", order.getSender_addr());
             sf.put("d_contact", oe.getShip_name());
             sf.put("d_mobile", oe.getShip_mobile());
+            sf.put("d_tel", oe.getShip_mobile());
+            sf.put("d_country", "中国");
             sf.put("d_province", oe.getShip_province());
             sf.put("d_city", oe.getShip_city());
             sf.put("d_county", oe.getShip_area());
             sf.put("d_address", oe.getShip_addr());
 
             // 发送请求给sf，获取订单结果
-            String paramStr = gson.toJson(JSONObject.fromObject(requestObject));
+            String paramStr = gson.toJson(JSONObject.fromObject(sf));
             HttpPost post = new HttpPost(CREATEORDER_URL);
             post.addHeader("Authorization", "bearer " + APIGetToken.getToken());
             String resultStr = AIPPost.getPost(paramStr, post);
             JSONObject jsonObject = JSONObject.fromObject(resultStr);
-            // TODO: 顺丰大网回调数据还未测试，以下逻辑不一定对
-            if (jsonObject.get("Message_Type") != null && jsonObject.get("Message_Type").equals("ORDER_CREATE_ERROR")) {
+            String messageType = (String) jsonObject.get("Message_Type");
+            if (messageType != null && messageType.contains("ERROR")) {
                 status = APIStatus.SUBMIT_FAIL;
             } else {
                 // 存储订单信息
-                if (requestObject.getJSONObject("order").containsKey("reserve_time")) {
-                    String uuid = (String) jsonObject.getJSONObject("request").get("uuid");
-                    String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
-                    orderMapper.updateOrderUuidById(order_id, uuid); // 订单表更新uuid
-                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(order_id, uuid, reserve_time); // 快递表更新uuid和预约时间
-                } else {
-                    return APIUtil.errorResponse("预约时间不能为空");
-                }
+                String uuid = (String) jsonObject.get("ordernum");
+                String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
+                orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
+                orderExpressMapper.updateOrderExpressUuidAndReserveTimeByOrderId(order_id, uuid, reserve_time); // 快递表更新uuid和预约时间
             }
         }
         return APIUtil.getResponse(status, null);
@@ -534,7 +539,6 @@ public class OrderServiceImpl implements OrderService {
 //            }
 //
 //            if (order.getOrder_type().equals("ORDER_MYSTERY_NATION")){
-//                System.out.println("aa");
 //                Order order1 = orderMapper.orderAndOrderExpressAndGiftDetile(orderExpress.getOrder_id());
 //
 //                jsonObject = JSONObject.fromObject(order1);
@@ -749,7 +753,6 @@ public class OrderServiceImpl implements OrderService {
 
         return APIUtil.getResponse(status, jsonObject);
     }
-
 
     /**
      * 普通订单详情接口

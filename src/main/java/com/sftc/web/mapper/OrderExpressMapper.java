@@ -3,6 +3,7 @@ package com.sftc.web.mapper;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface OrderExpressMapper {
 
     void updateOrderExpressForSF(OrderExpress orderExpress);
 
-    void updateOrderExpressUuidAndReserveTimeById(int id, String uuid, String reserve_time);
+    void updateOrderExpressUuidAndReserveTimeByOrderId(@Param("order_id") int order_id, @Param("uuid") String uuid, @Param("reserve_time") String reserve_time);
 
     void updatePlace(OrderExpress orderExpress);
 
