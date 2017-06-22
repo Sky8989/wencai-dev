@@ -156,10 +156,10 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse friendPlaceOrder(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
         OrderParam orderParam = (OrderParam) request.getRequestParam();
-        //System.out.println("-   -这是orderParm"+orderParam.toString());
-        //自动将sender_id order_type region_type 封装到order
+        System.out.println("-   -这是orderParm"+orderParam.toString());
+        //自动将sender_id order_type  封装到order，region_type
         Order order = new Order(orderParam);
-        //System.out.println("-   -这是order"+order.toString());
+        System.out.println("-   -这是order"+order.toString());
         try {
             //生成order的编号
             long long_order_number = (long) (Math.random() * 100000 * 1000000);
@@ -198,7 +198,7 @@ public class OrderServiceImpl implements OrderService {
      */
     public synchronized APIResponse friendFillOrder(Map rowData) {
         //对传进来的json参数 转换为对象和flag
-        int is_same = Integer.parseInt(rowData.get("is_same").toString());
+        //int is_same = Integer.parseInt(rowData.get("is_same").toString());
         //去掉 Map中的is_same元素 便于Gson整体封装剩余元素到OrderExpress中
         rowData.remove("is_same");
         String orderExpressStr = rowData.toString();

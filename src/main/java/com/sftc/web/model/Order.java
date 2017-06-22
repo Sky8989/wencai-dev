@@ -123,6 +123,9 @@ public class Order extends Object {
         //新添加
         this.order_type = orderParam.getOrder_type();
         this.region_type = orderParam.getRegion_type();
+        //新添加 经纬度
+        this.longitude = orderParam.getLongitude();
+        this.latitude = orderParam.getLatitude();
     }
 
     public Order(String create_time, Long order_number, String gmt_order_create, String state) {
