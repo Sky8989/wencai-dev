@@ -107,6 +107,9 @@ public class Order extends Object {
         this.gift_card_id = orderParam.getGift_card_id();
         this.order_type = orderParam.getOrder_type();
         this.region_type = orderParam.getRegion_type();
+        //新添加 经纬度
+        this.longitude = orderParam.getLongitude();
+        this.latitude = orderParam.getLatitude();
     }
 
     public int getId() {
