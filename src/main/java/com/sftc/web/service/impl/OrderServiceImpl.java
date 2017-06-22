@@ -432,7 +432,6 @@ public class OrderServiceImpl implements OrderService {
             orderMapper.addOrder(order);
             //构建订单快递orderExpress信息
             OrderExpress orderExpress = new OrderExpress();
-            orderExpress.setOrder_number(order.getOrder_number());
             orderExpress.setPackage_type(orderParam.getPackage_type());
             orderExpress.setObject_type(orderParam.getObject_type());
             orderExpress.setOrder_id(order.getId());
@@ -443,6 +442,7 @@ public class OrderServiceImpl implements OrderService {
             orderExpress.setReserve_time("");
             orderExpress.setOrder_id(order.getId());
             for (int i = orderParam.getPackage_count(); i > 0; i--) {
+                orderExpress.setOrder_number((long) (Math.random() * 100000 * 1000000));
                 //存储订单快递信息
                 orderExpressMapper.addOrderExpress(orderExpress);
             }
