@@ -221,63 +221,64 @@ public class OrderServiceImpl implements OrderService {
 
         Long long_order_number = (long) (Math.random() * 100000 * 1000000);
         APIStatus status = APIStatus.SUCCESS;
-        JSONObject jsonObject = null;
-        JSONObject jsonObject1 = JSONObject.fromObject(object);
-        String str = gson.toJson(jsonObject1);
+        JSONObject respObject = null;
         try {
+            JSONObject reqObject = JSONObject.fromObject(object);
             Order order = new Order(
                     time,
                     long_order_number,
-                    (String) jsonObject1.getJSONObject("request").get("pay_type"),
-                    (String) jsonObject1.getJSONObject("request").get("product_type"),
+                    (String) reqObject.getJSONObject("request").get("pay_type"),
+                    (String) reqObject.getJSONObject("request").get("product_type"),
                     0.0,
-                    (String) jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver"),
-                    (String) jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("mobile"),
-                    (String) jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("province"),
-                    (String) jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("city"),
-                    (String) jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("region"),
-                    (String) jsonObject1.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("street"),
-                    (Double) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"),
-                    (Double) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
+                    (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver"),
+                    (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("mobile"),
+                    (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("province"),
+                    (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("city"),
+                    (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("region"),
+                    (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("street"),
+                    (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"),
+                    (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
                     "ORDER_BASIS",
-                    Integer.parseInt((String) jsonObject1.getJSONObject("order").get("sender_user_id")));
-            order.setImage((String) jsonObject1.getJSONObject("order").get("image"));
-            order.setVoice((String) jsonObject1.getJSONObject("order").get("voice"));
-            order.setWord_message((String) jsonObject1.getJSONObject("order").get("word_message"));
-            order.setGift_card_id(Integer.parseInt((String) jsonObject1.getJSONObject("order").get("gift_card_id")));
-            order.setVoice_time(Integer.parseInt((String) jsonObject1.getJSONObject("order").get("voice_time")));
+                    Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")));
+            order.setImage((String) reqObject.getJSONObject("order").get("image"));
+            order.setVoice((String) reqObject.getJSONObject("order").get("voice"));
+            order.setWord_message((String) reqObject.getJSONObject("order").get("word_message"));
+            order.setGift_card_id(Integer.parseInt((String) reqObject.getJSONObject("order").get("gift_card_id")));
+            order.setVoice_time(Integer.parseInt((String) reqObject.getJSONObject("order").get("voice_time")));
             order.setRegion_type("REGION_SAME");
 
             HttpPost post = new HttpPost(REQUEST_URL);
-            post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("request").getJSONObject("merchant").get("access_token"));//97uAK7HQmDtsw5JMOqad
-            String res = AIPPost.getPost(str, post);
-            jsonObject = JSONObject.fromObject(res);
-            if (jsonObject.get("errors") == null || jsonObject.get("error") == null) {
-                if (jsonObject1.getJSONObject("order").get("reserve_time") != null) {
+            post.addHeader("PushEnvelope-Device-Token", (String) reqObject.getJSONObject("request").getJSONObject("merchant").get("access_token"));
+            JSONObject tempObject = JSONObject.fromObject(object);
+            tempObject.remove("order");
+            String requestSFParamStr = gson.toJson(tempObject);
+            respObject = JSONObject.fromObject(AIPPost.getPost(requestSFParamStr, post));
+            if (respObject.get("errors") == null || respObject.get("error") == null) {
+                if (reqObject.getJSONObject("order").get("reserve_time") != null) {
                     orderMapper.addOrder(order);
                     OrderExpress orderExpress = new OrderExpress(
                             time,
                             long_order_number,
-                            (String) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("receiver"),
-                            (String) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("mobile"),
-                            (String) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("province"),
-                            (String) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("city"),
-                            (String) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("region"),
-                            (String) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("street"),
-                            (String) jsonObject1.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("weight"),
-                            (String) jsonObject1.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("type"),
+                            (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("receiver"),
+                            (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("mobile"),
+                            (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("province"),
+                            (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("city"),
+                            (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("region"),
+                            (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("street"),
+                            (String) reqObject.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("weight"),
+                            (String) reqObject.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("type"),
                             "",
-                            Integer.parseInt((String) jsonObject1.getJSONObject("request").getJSONObject("order").get("sender_user_id")),
+                            Integer.parseInt((String) reqObject.getJSONObject("request").getJSONObject("order").get("sender_user_id")),
                             order.getId(),
-                            (String) jsonObject.getJSONObject("request").get("uuid"),
-                            (Double) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
-                            (Double) jsonObject1.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"));
-                    if (jsonObject1.getJSONObject("order").get("reserve_time") != null) {
-                        orderExpress.setReserve_time((String) jsonObject1.getJSONObject("order").get("reserve_time"));
+                            (String) respObject.getJSONObject("request").get("uuid"),
+                            (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
+                            (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"));
+                    if (reqObject.getJSONObject("order").get("reserve_time") != null) {
+                        orderExpress.setReserve_time((String) reqObject.getJSONObject("order").get("reserve_time"));
                     }
                     orderExpressMapper.addOrderExpress(orderExpress);
                 }
-                jsonObject.put("order_id", order.getId());
+                respObject.put("order_id", order.getId());
             } else {
                 status = APIStatus.SUBMIT_FAIL;
             }
@@ -285,7 +286,7 @@ public class OrderServiceImpl implements OrderService {
             e.printStackTrace();
             status = APIStatus.SUBMIT_FAIL;
         }
-        return APIUtil.getResponse(status, jsonObject);
+        return APIUtil.getResponse(status, respObject);
     }
 
     /**
