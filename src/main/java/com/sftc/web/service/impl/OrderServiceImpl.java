@@ -134,7 +134,7 @@ public class OrderServiceImpl implements OrderService {
             String resultStr = AIPPost.getPost(paramStr, post);
             JSONObject jsonObject = JSONObject.fromObject(resultStr);
 
-            if (jsonObject.get("errors") == null || jsonObject.get("error") == null) {
+            if (!jsonObject.containsKey("error")) {
                 if (requestObject.getJSONObject("order").containsKey("reserve_time")) {
                     String uuid = (String) jsonObject.getJSONObject("request").get("uuid");
                     String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
