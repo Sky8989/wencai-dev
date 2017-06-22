@@ -121,13 +121,13 @@
         WHERE uuid=#{uuid}
     </update>
 
-    <update id="updateOrderExpressUuidAndReserveTimeByOrderId">
+    <update id="updateOrderExpressUuidAndReserveTimeById">
         update sftc_order_express
         set
         uuid=#{uuid},
         reserve_time=#{reserve_time},
         state='WAIT_HAND_OVER'
-        WHERE order_id=#{order_id}
+        WHERE id=#{id}
     </update>
 
     <!-- 获取订单对应的未填写快递信息列表list,根据订单id order_id -->
