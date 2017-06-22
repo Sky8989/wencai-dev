@@ -62,8 +62,8 @@ public class OrderServiceImpl implements OrderService {
             return APIUtil.errorResponse(paramVerifyMessage);
         }
 
-        String regionType = (String) JSONObject.fromObject(requestBody).getJSONObject("order").get("region_type");
-        if (regionType.equals("REGION_SAME")) { // 同城
+        JSONObject requestObject = JSONObject.fromObject(requestBody);
+        if (requestObject.containsKey("request")) { // 同城
             return normalSameOrderCommit(requestBody);
         } else { // 大网
             return normalNationOrderCommit(requestBody);
@@ -74,8 +74,14 @@ public class OrderServiceImpl implements OrderService {
      * 好友订单提交
      */
     public APIResponse friendOrderCommit(APIRequest request) {
-        Object paramsBody = request.getRequestParam();
-        JSONObject requestObject = JSONObject.fromObject(paramsBody);
+        Object requestBody = request.getRequestParam();
+        // Param Verify
+        String paramVerifyMessage = normalOrderCommitVerify(requestBody);
+        if (paramVerifyMessage != null) { // Param Error
+            return APIUtil.errorResponse(paramVerifyMessage);
+        }
+
+        JSONObject requestObject = JSONObject.fromObject(requestBody);
         if (requestObject.containsKey("request")) { // 同城
             return friendSameOrderCommit(requestObject);
         } else { // 大网
@@ -204,13 +210,6 @@ public class OrderServiceImpl implements OrderService {
             return "参数sf和request不能都为空";
         } else if (requestObject && sfObject) {
             return "参数sf和request不能同时存在";
-        }
-
-        String regionType = (String) jsonObject.getJSONObject("order").get("region_type");
-        if (regionType == null || regionType.length() == 0) {
-            return "参数region_type不能为空";
-        } else if (!regionType.equals("REGION_SAME") && !regionType.equals("REGION_NATION")) {
-            return "请填写正确的region_type参数";
         }
 
         return null;
@@ -349,7 +348,7 @@ public class OrderServiceImpl implements OrderService {
                         (String) jsonObject1.getJSONObject("sf").get("d_address"),
                         "",
                         "",
-                        "待支付",
+                        "INIT",
                         Integer.parseInt((String) jsonObject1.getJSONObject("order").get("sender_user_id")),
                         order.getId(),
                         orderid,
@@ -699,6 +698,7 @@ public class OrderServiceImpl implements OrderService {
             callback.setSender_addr(order.getSender_addr());
             callback.setOrder_number(order.getOrder_number());
             callback.setOrder_type(order.getOrder_type());
+            callback.setRegion_type(order.getRegion_type());
             callback.setIs_gift(order.getGift_card_id() > 0);
             // expressList
             List<OrderCallback.OrderCallbackExpress> expressList = new ArrayList<OrderCallback.OrderCallbackExpress>();

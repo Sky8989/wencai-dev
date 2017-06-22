@@ -165,6 +165,7 @@
     <resultMap id="OrderExpressMap" type="com.sftc.web.model.Order">
         <id property="id" column="id"/>
         <result property="order_type" column="order_type"/>
+        <result property="region_type" column="region_type"/>
         <result property="order_number" column="order_number"/>
         <result property="longitude" column="longitude"/>
         <result property="latitude" column="latitude"/>
