@@ -46,7 +46,21 @@ public class UserServiceImpl implements UserService {
                 user.setOpen_id(wechatUser.getOpenid());
                 user.setSession_key(wechatUser.getSession_key());
                 user.setCreate_time(Long.toString(System.currentTimeMillis()));
-                int id = userMapper.insertOpenid(user);
+                int id = 0;
+                try {
+                    //加入头像和昵称
+                    if(userParam.getName() != null && !"".equals(userParam.getName()) && userParam.getAvatar() != null){
+                        user.setAvatar(userParam.getAvatar());
+                        user.setName(userParam.getName());
+                        id = userMapper.insertWithAvatarAndName(user);
+                    }else {
+                        id = userMapper.insertOpenid(user);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                    return APIUtil.errorResponse("login插入失败");
+                }
+//                int id = userMapper.insertOpenid(user);
                 String myToken = makeToken(user.getCreate_time(), user.getOpen_id());
                 Token token = new Token(id, myToken);
                 tokenMapper.addToken(token);

@@ -85,7 +85,7 @@
         longitude=#{longitude},
         latitude=#{latitude},
         is_use=1,
-        uuid=#{uuid},
+        uuid=#{uuid, jdbcType=VARCHAR},
         ship_user_id=#{ship_user_id}
         WHERE id=#{id}
     </update>
