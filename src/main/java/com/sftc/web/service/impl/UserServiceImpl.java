@@ -37,12 +37,18 @@ public class UserServiceImpl implements UserService {
         String AUTHORIZATION_URL = "https://api.weixin.qq.com/sns/jscode2session?appid=wxb6cbb81471348fec&secret=b201962b8a3da757c72a0747eb6f1110&js_code=JSCODE&grant_type=authorization_code";
         AUTHORIZATION_URL = AUTHORIZATION_URL.replace("JSCODE", userParam.getJs_code());
         WechatUser wechatUser = APIResolve.getWechatJson(AUTHORIZATION_URL);
-        User user = null;
+        User user = new User();
         Map<String, String> tokenInfo = new HashMap<String, String>();
         if (wechatUser.getOpenid() != null) {
-            user = userMapper.selectUserByOpenid(wechatUser.getOpenid());
+            try {
+                user = userMapper.selectUserByOpenid(wechatUser.getOpenid());
+            }catch (Exception e){
+                e.printStackTrace();
+                return APIUtil.errorResponse("有重复用户");
+            }
+
             if (user == null) {
-                user = new User();
+
                 user.setOpen_id(wechatUser.getOpenid());
                 user.setSession_key(wechatUser.getSession_key());
                 user.setCreate_time(Long.toString(System.currentTimeMillis()));
@@ -53,8 +59,10 @@ public class UserServiceImpl implements UserService {
                         user.setAvatar(userParam.getAvatar());
                         user.setName(userParam.getName());
                         id = userMapper.insertWithAvatarAndName(user);
+                        System.out.println("-   -新用户执行插入了头像和名字");
                     }else {
                         id = userMapper.insertOpenid(user);
+                        System.out.println("-   -新用户没有插入了头像和名字");
                     }
                 }catch (Exception e){
                     e.printStackTrace();
@@ -67,6 +75,19 @@ public class UserServiceImpl implements UserService {
                 tokenInfo.put("token", myToken);
                 tokenInfo.put("user_id", (id + ""));
             } else {
+                try {
+                    //更新头像和昵称
+                    if(userParam.getName() != null && !"".equals(userParam.getName()) && userParam.getAvatar() != null) {
+                        user.setAvatar(userParam.getAvatar());
+                        user.setName(userParam.getName());
+                        userMapper.updateUserOfAvatar(user);
+                        System.out.println("-   -老用户执行插入了头像和名字");
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                    return APIUtil.errorResponse("user更新失败");
+                }
+
                 Token token = tokenMapper.getTokenById(user.getId());
                 if (token == null) {
                     token = new Token(user.getId(), makeToken(user.getCreate_time(), user.getOpen_id()));

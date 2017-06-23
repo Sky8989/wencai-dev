@@ -64,4 +64,8 @@
             <result property="access_token" column="access_token"/>
         </association>
     </resultMap>
+
+    <update id="updateUserOfAvatar" parameterType="com.sftc.web.model.User" >
+        UPDATE sftc_user SET avatar = #{avatar} ,name = #{name} WHERE open_id LIKE #{open_id}
+    </update>
 </mapper>
