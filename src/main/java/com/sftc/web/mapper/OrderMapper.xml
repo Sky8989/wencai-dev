@@ -214,6 +214,7 @@
         <result property="gmt_pay_create" column="gmt_pay_create"/>
         <result property="gift_card_id" column="gift_card_id"/>
         <result property="voice_time" column="voice_time"/>
+        <result property="create_time" column="create_time"/>
         <association property="giftCard" javaType="com.sftc.web.model.GiftCard">
             <result property="name" column="name"/>
             <result property="icon" column="icon"/>

@@ -820,6 +820,7 @@ public class OrderServiceImpl implements OrderService {
             User sender = userMapper.selectUserByUserId(order.getSender_user_id());
             // order
             callback.setId(order.getId());
+            callback.setSender_user_id(order.getSender_user_id());
             callback.setSender_name(order.getSender_name());
             if (sender != null && sender.getAvatar() != null) {
                 callback.setSender_avatar(sender.getAvatar());
@@ -838,6 +839,7 @@ public class OrderServiceImpl implements OrderService {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
                 OrderFriendCallback.OrderFriendCallbackExpress express = new OrderFriendCallback().new OrderFriendCallbackExpress();
                 express.setId(oe.getId());
+                express.setShip_user_id(oe.getShip_user_id());
                 express.setUuid(oe.getUuid());
                 express.setState(oe.getState());
                 express.setShip_name(oe.getShip_name());
