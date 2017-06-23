@@ -6,7 +6,6 @@ public class OrderFriendCallback {
     private int id;
     private String sender_avatar;
     private String sender_name;
-    private String order_type;
     private String region_type;
     private String object_type; // 物品类型
     private String word_message;// 文字寄语
@@ -86,14 +85,6 @@ public class OrderFriendCallback {
 
     public void setSender_name(String sender_name) {
         this.sender_name = sender_name;
-    }
-
-    public String getOrder_type() {
-        return order_type;
-    }
-
-    public void setOrder_type(String order_type) {
-        this.order_type = order_type;
     }
 
     public String getRegion_type() {

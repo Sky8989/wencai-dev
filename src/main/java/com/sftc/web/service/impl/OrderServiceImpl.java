@@ -830,7 +830,6 @@ public class OrderServiceImpl implements OrderService {
             callback.setWord_message(order.getWord_message());
             callback.setImage(order.getImage());
             callback.setCreate_time(order.getCreate_time());
-            callback.setOrder_type(order.getOrder_type());
             callback.setRegion_type(order.getRegion_type());
             callback.setIs_gift(order.getGift_card_id() > 0);
             // expressList

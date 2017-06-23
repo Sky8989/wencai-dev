@@ -37,6 +37,7 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="configLocation" value="classpath:mybatis/sqlMapConfig.xml"/>
+        <property name="typeHandlersPackage" value="com.sftc.tools.typeHandler"/>
     </bean>
 
     <!-- 自动加载mapper文件夹下的文件，然后进行一系列操作 -->
