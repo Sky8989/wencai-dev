@@ -170,6 +170,7 @@
         <result property="order_number" column="order_number"/>
         <result property="longitude" column="longitude"/>
         <result property="latitude" column="latitude"/>
+        <result property="sender_user_id" column="sender_user_id"/>
         <result property="sender_mobile" column="sender_mobile"/>
         <result property="sender_name" column="sender_name"/>
         <result property="sender_province" column="sender_province"/>
@@ -190,12 +191,14 @@
             <result property="create_time" column="create_time"/>
         </association>
         <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress">
+            <id property="id" column="id" />
             <result property="state" column="state"/>
             <result property="latitude" column="latitude"/>
             <result property="longitude" column="longitude"/>
             <result property="uuid" column="uuid"/>
             <result column="ship_province" property="ship_province"/>
             <result property="order_number" column="order_number"/>
+            <result property="ship_user_id" column="ship_user_id"/>
             <result property="ship_mobile" column="ship_mobile"/>
             <result property="ship_name" column="ship_name"/>
             <result property="ship_city" column="ship_city"/>
@@ -213,6 +216,16 @@
         SELECT *
         FROM sftc_order o, sftc_order_express oe
         WHERE oe.order_id=o.id AND oe.sender_user_id=#{id}
+        ORDER by o.create_time desc
+        limit #{pageNum},#{pageSize}
+    </select>
+
+    <!-- 我的好友订单列表  -->
+    <select id="selectMyFriendOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+            resultMap="OrderExpressMap">
+        SELECT *
+        FROM sftc_order o, sftc_order_express oe
+        WHERE oe.order_id=o.id AND (oe.sender_user_id=#{id} OR oe.ship_user_id=#{id})
         ORDER by o.create_time desc
         limit #{pageNum},#{pageSize}
     </select>

@@ -53,7 +53,15 @@ public interface OrderService {
      */
     APIResponse getEmptyPackage(APIRequest request);
 
+    /**
+     * 我的订单列表
+     */
     APIResponse getMyOrderList(APIRequest request);
+
+    /**
+     * 好友圈
+     */
+    APIResponse getMyFriendCircleOrderList(APIRequest request);
 
     APIResponse friendPlace(Object object);
 
