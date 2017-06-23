@@ -230,7 +230,7 @@ public class OrderServiceImpl implements OrderService {
     // 普通同城订单
     private APIResponse normalSameOrderCommit(Object object) {
 
-        Long long_order_number = (long) (Math.random() * 100000 * 1000000);
+        String long_order_number = (Math.random() * 100000 * 1000000) + "";
         APIStatus status = APIStatus.SUCCESS;
         JSONObject respObject = null;
         try {
@@ -304,7 +304,7 @@ public class OrderServiceImpl implements OrderService {
      * 普通大网下单
      */
     private APIResponse normalNationOrderCommit(Object object) {
-        Long long_order_number = (long) (Math.random() * 100000 * 1000000);
+        String long_order_number = (Math.random() * 100000 * 1000000) + "";
         String orderid = APIRandomUtil.getRandomString();
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
@@ -433,7 +433,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order(orderParam);
         try {
             //生成order的编号
-            long long_order_number = (long) (Math.random() * 100000 * 1000000);
+            String long_order_number = (Math.random() * 100000 * 1000000) + "";
             order.setOrder_number(long_order_number);
             //存储订单信息
             orderMapper.addOrder(order);
@@ -449,7 +449,7 @@ public class OrderServiceImpl implements OrderService {
             orderExpress.setReserve_time("");
             orderExpress.setOrder_id(order.getId());
             for (int i = orderParam.getPackage_count(); i > 0; i--) {
-                orderExpress.setOrder_number((long) (Math.random() * 100000 * 1000000));
+                orderExpress.setOrder_number((long) (Math.random() * 100000 * 1000000) + "");
                 //存储订单快递信息
                 orderExpressMapper.addOrderExpress(orderExpress);
             }
@@ -820,6 +820,7 @@ public class OrderServiceImpl implements OrderService {
             User sender = userMapper.selectUserByUserId(order.getSender_user_id());
             // order
             callback.setId(order.getId());
+            callback.setSender_user_id(order.getSender_user_id());
             callback.setSender_name(order.getSender_name());
             if (sender != null && sender.getAvatar() != null) {
                 callback.setSender_avatar(sender.getAvatar());
@@ -830,7 +831,6 @@ public class OrderServiceImpl implements OrderService {
             callback.setWord_message(order.getWord_message());
             callback.setImage(order.getImage());
             callback.setCreate_time(order.getCreate_time());
-            callback.setOrder_type(order.getOrder_type());
             callback.setRegion_type(order.getRegion_type());
             callback.setIs_gift(order.getGift_card_id() > 0);
             // expressList
@@ -839,6 +839,7 @@ public class OrderServiceImpl implements OrderService {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
                 OrderFriendCallback.OrderFriendCallbackExpress express = new OrderFriendCallback().new OrderFriendCallbackExpress();
                 express.setId(oe.getId());
+                express.setShip_user_id(oe.getShip_user_id());
                 express.setUuid(oe.getUuid());
                 express.setState(oe.getState());
                 express.setShip_name(oe.getShip_name());

@@ -6,7 +6,7 @@ public class OrderFriendCallback {
     private int id;
     private String sender_avatar;
     private String sender_name;
-    private String order_type;
+    private int sender_user_id;
     private String region_type;
     private String object_type; // 物品类型
     private String word_message;// 文字寄语
@@ -20,6 +20,7 @@ public class OrderFriendCallback {
         private int id;
         private String ship_name;
         private String ship_avatar;
+        private int ship_user_id;
         private String uuid;
         private String state;
 
@@ -45,6 +46,14 @@ public class OrderFriendCallback {
 
         public void setShip_avatar(String ship_avatar) {
             this.ship_avatar = ship_avatar;
+        }
+
+        public int getShip_user_id() {
+            return ship_user_id;
+        }
+
+        public void setShip_user_id(int ship_user_id) {
+            this.ship_user_id = ship_user_id;
         }
 
         public String getUuid() {
@@ -88,12 +97,12 @@ public class OrderFriendCallback {
         this.sender_name = sender_name;
     }
 
-    public String getOrder_type() {
-        return order_type;
+    public int getSender_user_id() {
+        return sender_user_id;
     }
 
-    public void setOrder_type(String order_type) {
-        this.order_type = order_type;
+    public void setSender_user_id(int sender_user_id) {
+        this.sender_user_id = sender_user_id;
     }
 
     public String getRegion_type() {
