@@ -51,6 +51,9 @@ public class OrderExpress extends Object {
     private Double longitude;
     private int order_id;
 
+    // extension 收件人头像
+    private String ship_avatar;
+
     public int getSender_user_id() {
         return sender_user_id;
     }
@@ -215,7 +218,6 @@ public class OrderExpress extends Object {
         this.ship_addr = ship_addr;
     }
 
-
     public String getObject_type() {
         return object_type;
     }
@@ -231,7 +233,6 @@ public class OrderExpress extends Object {
     public void setIs_use(int is_use) {
         this.is_use = is_use;
     }
-
 
     public int getShip_user_id() {
         return ship_user_id;
@@ -304,5 +305,13 @@ public class OrderExpress extends Object {
 
     public void setReserve_time(String reserve_time) {
         this.reserve_time = reserve_time;
+    }
+
+    public String getShip_avatar() {
+        return ship_avatar;
+    }
+
+    public void setShip_avatar(String ship_avatar) {
+        this.ship_avatar = ship_avatar;
     }
 }

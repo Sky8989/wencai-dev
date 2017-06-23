@@ -32,6 +32,11 @@ public interface OrderMapper {
      */
     List<Order> selectMyOrderList(MyOrderParam param);
 
+    /**
+     * 查询我的好友订单列表
+     */
+    List<Order> selectMyFriendOrderList(MyOrderParam param);
+
     /** 根据订单编号查询订单详情 */
     Order selectOrderDetailByOrderNumber(String order_number);
 

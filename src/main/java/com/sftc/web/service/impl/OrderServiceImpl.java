@@ -7,6 +7,7 @@ import com.sftc.tools.api.*;
 import com.sftc.web.mapper.*;
 import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.OrderCallback;
+import com.sftc.web.model.apiCallback.OrderFriendCallback;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.model.sfmodel.Address;
@@ -185,21 +186,23 @@ public class OrderServiceImpl implements OrderService {
             sf.put("d_county", oe.getShip_area());
             sf.put("d_address", oe.getShip_addr());
 
-            // 发送请求给sf，获取订单结果
-            String paramStr = gson.toJson(JSONObject.fromObject(sf));
-            HttpPost post = new HttpPost(CREATEORDER_URL);
-            post.addHeader("Authorization", "bearer " + APIGetToken.getToken());
-            String resultStr = AIPPost.getPost(paramStr, post);
-            JSONObject jsonObject = JSONObject.fromObject(resultStr);
-            String messageType = (String) jsonObject.get("Message_Type");
-            if (messageType != null && messageType.contains("ERROR")) {
-                status = APIStatus.SUBMIT_FAIL;
-            } else {
-                // 存储订单信息
-                String uuid = (String) jsonObject.get("ordernum");
-                String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
-                orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
-                orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
+            if (!oe.getState().equals("WAIT_FILL")) {
+                // 发送请求给sf，获取订单结果
+                String paramStr = gson.toJson(JSONObject.fromObject(sf));
+                HttpPost post = new HttpPost(CREATEORDER_URL);
+                post.addHeader("Authorization", "bearer " + APIGetToken.getToken());
+                String resultStr = AIPPost.getPost(paramStr, post);
+                JSONObject jsonObject = JSONObject.fromObject(resultStr);
+                String messageType = (String) jsonObject.get("Message_Type");
+                if (messageType != null && messageType.contains("ERROR")) {
+                    status = APIStatus.SUBMIT_FAIL;
+                } else {
+                    // 存储订单信息
+                    String uuid = (String) jsonObject.get("ordernum");
+                    String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
+                    orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
+                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
+                }
             }
         }
         return APIUtil.getResponse(status, null);
@@ -302,7 +305,7 @@ public class OrderServiceImpl implements OrderService {
      */
     private APIResponse normalNationOrderCommit(Object object) {
         Long long_order_number = (long) (Math.random() * 100000 * 1000000);
-        String orderid = APIRandomOrderId.getRandomString(9);
+        String orderid = APIRandomUtil.getRandomString();
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
         JSONObject jsonObject1 = JSONObject.fromObject(object);
@@ -535,6 +538,13 @@ public class OrderServiceImpl implements OrderService {
         if (order != null) {
             User sender = userMapper.selectUserByUserId(order.getSender_user_id());
 
+            for (OrderExpress oe : order.getOrderExpressList()) {
+                User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
+                if (receiver != null && receiver.getAvatar() != null) {
+                    oe.setShip_avatar(receiver.getAvatar());
+                }
+            }
+
             // order
             GsonBuilder gb = new GsonBuilder();
             Gson g = gb.create();
@@ -740,6 +750,100 @@ public class OrderServiceImpl implements OrderService {
                 express.setState(oe.getState());
                 express.setShip_name(oe.getShip_name());
                 express.setShip_addr(oe.getShip_addr());
+                expressList.add(express);
+            }
+            callback.setExpressList(expressList);
+
+            orderCallbacks.add(callback);
+        }
+
+        return APIUtil.getResponse(status, orderCallbacks);
+    }
+
+    public APIResponse getMyFriendCircleOrderList(APIRequest request) {
+        MyOrderParam myOrderParam = (MyOrderParam) request.getRequestParam();
+        // verify params
+        APIStatus failStatus = APIStatus.SELECT_FAIL;
+        if (myOrderParam.getToken().length() == 0) {
+            failStatus.setMessage("token不能为空");
+            return APIUtil.getResponse(failStatus, null);
+        } else if (myOrderParam.getId() == 0) {
+            failStatus.setMessage("用户id不能为空");
+            return APIUtil.getResponse(failStatus, null);
+        } else if (myOrderParam.getPageNum() < 1 || myOrderParam.getPageSize() < 1) {
+            failStatus.setMessage("分页参数无效");
+            return APIUtil.getResponse(failStatus, null);
+        }
+
+        APIStatus status = APIStatus.SUCCESS;
+
+        // handle SF orders url
+        String ordersURL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
+        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(myOrderParam.getId());
+        StringBuilder uuidSB = new StringBuilder();
+        for (int i = 0; i < orderExpressList.size(); i++) {
+            OrderExpress oe = orderExpressList.get(i);
+            if (oe.getUuid() != null && oe.getUuid().length() != 0) {
+                uuidSB.append(oe.getUuid());
+                uuidSB.append(",");
+            }
+        }
+        String uuids = uuidSB.toString();
+
+        // no data, return
+        if (uuids.length() == 0)
+            return APIUtil.getResponse(status, null);
+
+        ordersURL = ordersURL.replace("uuid", uuids.substring(0, uuids.length() - 1));
+        List<Orders> orderses;
+        try { // post
+            orderses = APIResolve.getOrdersJson(ordersURL, myOrderParam.getToken());
+        } catch (Exception e) {
+            APIStatus.SELECT_FAIL.setMessage("查询失败");
+            return APIUtil.getResponse(APIStatus.SELECT_FAIL, e.getLocalizedMessage());
+        }
+
+        // Update Dankal express info
+        for (Orders orders : orderses) {
+            String uuid = orders.getUuid();
+            String order_status = orders.getStatus();
+            orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
+        }
+
+        // pageNum -> startIndex
+        myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());
+        // select
+        List<Order> orderList = orderMapper.selectMyFriendOrderList(myOrderParam);
+        List<OrderFriendCallback> orderCallbacks = new ArrayList<OrderFriendCallback>();
+        for (Order order : orderList) {
+            OrderFriendCallback callback = new OrderFriendCallback();
+            User sender = userMapper.selectUserByUserId(order.getSender_user_id());
+            // order
+            callback.setId(order.getId());
+            callback.setSender_name(order.getSender_name());
+            if (sender != null && sender.getAvatar() != null) {
+                callback.setSender_avatar(sender.getAvatar());
+            }
+            if (order.getOrderExpressList() != null && order.getOrderExpressList().size() > 0 && order.getOrderExpressList().get(0).getObject_type().length() > 0) { // powerful verify
+                callback.setObject_type(order.getOrderExpressList().get(0).getObject_type());
+            }
+            callback.setWord_message(order.getWord_message());
+            callback.setImage(order.getImage());
+            callback.setCreate_time(order.getCreate_time());
+            callback.setOrder_type(order.getOrder_type());
+            callback.setRegion_type(order.getRegion_type());
+            callback.setIs_gift(order.getGift_card_id() > 0);
+            // expressList
+            List<OrderFriendCallback.OrderFriendCallbackExpress> expressList = new ArrayList<OrderFriendCallback.OrderFriendCallbackExpress>();
+            for (OrderExpress oe : order.getOrderExpressList()) {
+                User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
+                OrderFriendCallback.OrderFriendCallbackExpress express = new OrderFriendCallback().new OrderFriendCallbackExpress();
+                express.setId(oe.getId());
+                express.setUuid(oe.getUuid());
+                express.setState(oe.getState());
+                express.setShip_name(oe.getShip_name());
+                if (receiver != null && receiver.getAvatar() != null)
+                    express.setShip_avatar(receiver.getAvatar());
                 expressList.add(express);
             }
             callback.setExpressList(expressList);
@@ -960,7 +1064,7 @@ public class OrderServiceImpl implements OrderService {
      */
     public APIResponse globalFriendPlace(Object object) {
         APIStatus status = APIStatus.SUCCESS;
-        String orderid = APIRandomOrderId.getRandomString(9);
+        String orderid = APIRandomUtil.getRandomString();
         JSONObject jsonObject = null;
         JSONObject jsonObject1 = JSONObject.fromObject(object);
         jsonObject1.getJSONObject("sf").put("orderid", orderid);

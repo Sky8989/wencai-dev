@@ -112,6 +112,17 @@ public class OrderController extends AbstractBasicController {
     }
 
     /**
+     * 我的好友订单列表
+     */
+    @RequestMapping(value = "/friendCircle", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse friendOrder(@RequestBody MyOrderParam myOrderParam) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(myOrderParam);
+        return orderService.getMyFriendCircleOrderList(request);
+    }
+
+    /**
      * 好友订单提交
      */
     @RequestMapping(value = "/friendPlace", method = RequestMethod.POST)

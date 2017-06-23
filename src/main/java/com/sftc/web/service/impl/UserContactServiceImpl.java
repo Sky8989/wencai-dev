@@ -86,8 +86,6 @@ public class UserContactServiceImpl implements UserContactService {
 
     /**
      * 好友圈来往记录
-     * @param userContactParam
-     * @return
      */
     public APIResponse getContactInfo(UserContactParam userContactParam) {
         APIStatus status = APIStatus.SUCCESS;
