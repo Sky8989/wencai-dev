@@ -185,21 +185,23 @@ public class OrderServiceImpl implements OrderService {
             sf.put("d_county", oe.getShip_area());
             sf.put("d_address", oe.getShip_addr());
 
-            // 发送请求给sf，获取订单结果
-            String paramStr = gson.toJson(JSONObject.fromObject(sf));
-            HttpPost post = new HttpPost(CREATEORDER_URL);
-            post.addHeader("Authorization", "bearer " + APIGetToken.getToken());
-            String resultStr = AIPPost.getPost(paramStr, post);
-            JSONObject jsonObject = JSONObject.fromObject(resultStr);
-            String messageType = (String) jsonObject.get("Message_Type");
-            if (messageType != null && messageType.contains("ERROR")) {
-                status = APIStatus.SUBMIT_FAIL;
-            } else {
-                // 存储订单信息
-                String uuid = (String) jsonObject.get("ordernum");
-                String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
-                orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
-                orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
+            if (!oe.getState().equals("WAIT_FILL")) {
+                // 发送请求给sf，获取订单结果
+                String paramStr = gson.toJson(JSONObject.fromObject(sf));
+                HttpPost post = new HttpPost(CREATEORDER_URL);
+                post.addHeader("Authorization", "bearer " + APIGetToken.getToken());
+                String resultStr = AIPPost.getPost(paramStr, post);
+                JSONObject jsonObject = JSONObject.fromObject(resultStr);
+                String messageType = (String) jsonObject.get("Message_Type");
+                if (messageType != null && messageType.contains("ERROR")) {
+                    status = APIStatus.SUBMIT_FAIL;
+                } else {
+                    // 存储订单信息
+                    String uuid = (String) jsonObject.get("ordernum");
+                    String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
+                    orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
+                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
+                }
             }
         }
         return APIUtil.getResponse(status, null);
@@ -302,7 +304,7 @@ public class OrderServiceImpl implements OrderService {
      */
     private APIResponse normalNationOrderCommit(Object object) {
         Long long_order_number = (long) (Math.random() * 100000 * 1000000);
-        String orderid = APIRandomOrderId.getRandomString(9);
+        String orderid = APIRandomUtil.getRandomString();
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
         JSONObject jsonObject1 = JSONObject.fromObject(object);
@@ -534,6 +536,11 @@ public class OrderServiceImpl implements OrderService {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         if (order != null) {
             User sender = userMapper.selectUserByUserId(order.getSender_user_id());
+
+            for (OrderExpress oe : order.getOrderExpressList()) {
+                User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
+                oe.setShip_avatar(receiver.getAvatar());
+            }
 
             // order
             GsonBuilder gb = new GsonBuilder();
@@ -960,7 +967,7 @@ public class OrderServiceImpl implements OrderService {
      */
     public APIResponse globalFriendPlace(Object object) {
         APIStatus status = APIStatus.SUCCESS;
-        String orderid = APIRandomOrderId.getRandomString(9);
+        String orderid = APIRandomUtil.getRandomString();
         JSONObject jsonObject = null;
         JSONObject jsonObject1 = JSONObject.fromObject(object);
         jsonObject1.getJSONObject("sf").put("orderid", orderid);
