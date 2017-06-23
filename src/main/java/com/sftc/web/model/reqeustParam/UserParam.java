@@ -21,11 +21,14 @@ public class UserParam {
     private String name;
     public  String getAvatar() {
         return avatar;
-    }public void   setAvatar(String avatar) {
+    }
+    public void   setAvatar(String avatar) {
         this.avatar = avatar;
-    }public String getName() {
+    }
+    public String getName() {
         return name;
-    }public void   setName(String name) {
+    }
+    public void   setName(String name) {
         this.name = name;
     }
 

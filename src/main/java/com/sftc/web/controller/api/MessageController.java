@@ -62,7 +62,7 @@ public class MessageController extends AbstractBasicController {
     /**
      * 获取个人信息
      */
-    @RequestMapping(value = "/loginByGet", method = RequestMethod.GET)
+    @RequestMapping(value = "/loginByGet", method = RequestMethod.POST)
     @ResponseBody
     APIResponse loginByGet(@RequestBody Map paramMap) throws Exception {
         return messageService.loginByGet(paramMap);

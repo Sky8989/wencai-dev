@@ -17,5 +17,6 @@ public interface UserMapper {
 
     User getUuidAndtoken(int order_id);
     int insertWithAvatarAndName(User user);
+    void updateUserOfAvatar(User user);
 
 }
