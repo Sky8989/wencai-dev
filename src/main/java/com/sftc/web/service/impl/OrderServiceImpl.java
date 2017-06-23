@@ -539,7 +539,9 @@ public class OrderServiceImpl implements OrderService {
 
             for (OrderExpress oe : order.getOrderExpressList()) {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
-                oe.setShip_avatar(receiver.getAvatar());
+                if (receiver != null && receiver.getAvatar() != null) {
+                    oe.setShip_avatar(receiver.getAvatar());
+                }
             }
 
             // order
