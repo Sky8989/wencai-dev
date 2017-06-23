@@ -10,7 +10,7 @@ public class Order extends Object {
     // 创建时间
     private String create_time;
     // 订单编号
-    private Long order_number;
+    private String order_number;
     // 支付时间
     private String pay_time;
     // 付款方式
@@ -65,7 +65,7 @@ public class Order extends Object {
         this.latitude = latitude;
     }
 
-    public Order(String create_time, Long order_number, String pay_method,
+    public Order(String create_time, String order_number, String pay_method,
                  String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,
                  double longitude, double latitude, String order_type, int sender_user_id) {
@@ -88,7 +88,7 @@ public class Order extends Object {
 
     public Order(OrderParam orderParam) {
         this.create_time = Long.toString(System.currentTimeMillis());
-        this.order_number = (long) (Math.random() * 100000 * 1000000);
+        this.order_number = (Math.random() * 100000 * 1000000) + "";
         this.pay_method = orderParam.getPay_method();
         this.distribution_method = orderParam.getDistribution_method();
         this.sender_name = orderParam.getSender_name();
@@ -128,11 +128,11 @@ public class Order extends Object {
         this.create_time = create_time;
     }
 
-    public Long getOrder_number() {
+    public String getOrder_number() {
         return order_number;
     }
 
-    public void setOrder_number(Long order_number) {
+    public void setOrder_number(String order_number) {
         this.order_number = order_number;
     }
 

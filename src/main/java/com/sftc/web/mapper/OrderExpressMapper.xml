@@ -51,68 +51,68 @@
         (ship_name,ship_mobile,ship_province,ship_city,ship_area,
         ship_addr,order_number,package_type,object_type,create_time,sender_user_id,order_id,state,uuid,longitude,latitude,reserve_time)
         VALUES (
-        #{ship_name, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{ship_mobile, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{ship_province, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{ship_city, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{ship_area, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{ship_addr, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{order_number, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{package_type, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{object_type, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{create_time, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{sender_user_id, jdbcType=INTEGER, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{order_id, jdbcType=INTEGER, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{state, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{uuid, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{longitude, jdbcType=DOUBLE, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{latitude, jdbcType=DOUBLE, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{reserve_time, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler}
+        #{ship_name, jdbcType=VARCHAR},
+        #{ship_mobile, jdbcType=VARCHAR},
+        #{ship_province, jdbcType=VARCHAR},
+        #{ship_city, jdbcType=VARCHAR},
+        #{ship_area, jdbcType=VARCHAR},
+        #{ship_addr, jdbcType=VARCHAR},
+        #{order_number, jdbcType=VARCHAR},
+        #{package_type, jdbcType=VARCHAR},
+        #{object_type, jdbcType=VARCHAR},
+        #{create_time, jdbcType=VARCHAR},
+        #{sender_user_id, jdbcType=INTEGER},
+        #{order_id, jdbcType=INTEGER},
+        #{state, jdbcType=VARCHAR},
+        #{uuid, jdbcType=VARCHAR},
+        #{longitude, jdbcType=DOUBLE},
+        #{latitude, jdbcType=DOUBLE},
+        #{reserve_time, jdbcType=VARCHAR}
         )
     </insert>
 
     <update id="updateOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
         UPDATE sftc_order_express
         set
-        ship_name=#{ship_name, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        ship_mobile=#{ship_mobile, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        ship_province=#{ship_province, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        ship_city=#{ship_city, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        ship_area=#{ship_area, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        ship_addr=#{ship_addr, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        state=#{state, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
+        ship_name=#{ship_name, jdbcType=VARCHAR},
+        ship_mobile=#{ship_mobile, jdbcType=VARCHAR},
+        ship_province=#{ship_province, jdbcType=VARCHAR},
+        ship_city=#{ship_city, jdbcType=VARCHAR},
+        ship_area=#{ship_area, jdbcType=VARCHAR},
+        ship_addr=#{ship_addr, jdbcType=VARCHAR},
+        state=#{state, jdbcType=VARCHAR},
         is_use=1,
-        uuid=#{uuid, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        ship_user_id=#{ship_user_id, jdbcType=INTEGER, typeHandler=com.sftc.tools.typeHandler.NullValueHandler}
+        uuid=#{uuid, jdbcType=VARCHAR},
+        ship_user_id=#{ship_user_id, jdbcType=INTEGER}
         WHERE order_id=#{order_id}
     </update>
     <!--更新快递信息，by 快递id，用于好友填写订单时回填信息-->
     <update id="updateOrderExpressByOrderExpressId" parameterType="com.sftc.web.model.OrderExpress">
         UPDATE sftc_order_express
         set
-        ship_name=#{ship_name, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        ship_mobile=#{ship_mobile, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        ship_province=#{ship_province, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        ship_city=#{ship_city, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        ship_area=#{ship_area, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        ship_addr=#{ship_addr, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        state=#{state, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        longitude=#{longitude, jdbcType=DOUBLE, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        latitude=#{latitude, jdbcType=DOUBLE, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
+        ship_name=#{ship_name, jdbcType=VARCHAR},
+        ship_mobile=#{ship_mobile, jdbcType=VARCHAR},
+        ship_province=#{ship_province, jdbcType=VARCHAR},
+        ship_city=#{ship_city, jdbcType=VARCHAR},
+        ship_area=#{ship_area, jdbcType=VARCHAR},
+        ship_addr=#{ship_addr, jdbcType=VARCHAR},
+        state=#{state, jdbcType=VARCHAR},
+        longitude=#{longitude, jdbcType=DOUBLE},
+        latitude=#{latitude, jdbcType=DOUBLE},
         is_use=1,
-        uuid=#{uuid, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        ship_user_id=#{ship_user_id, jdbcType=INTEGER, typeHandler=com.sftc.tools.typeHandler.NullValueHandler}
+        uuid=#{uuid, jdbcType=VARCHAR},
+        ship_user_id=#{ship_user_id, jdbcType=INTEGER}
         WHERE id=#{id}
     </update>
 
     <update id="updatePlace" parameterType="com.sftc.web.model.OrderExpress">
         UPDATE sftc_order_express
         set
-        longitude=#{longitude, jdbcType=DOUBLE, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        latitude=#{latitude, jdbcType=DOUBLE, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        reserve_time=#{reserve_time, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
+        longitude=#{longitude, jdbcType=DOUBLE},
+        latitude=#{latitude, jdbcType=DOUBLE},
+        reserve_time=#{reserve_time, jdbcType=VARCHAR},
         is_use=1,
-        uuid=#{uuid, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler}
+        uuid=#{uuid, jdbcType=VARCHAR}
         WHERE order_id=#{order_id}
     </update>
 
@@ -123,15 +123,15 @@
     <update id="updateOrderExpressForSF" parameterType="com.sftc.web.model.OrderExpress">
         update sftc_order_express
         set
-        state=#{state, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler}
+        state=#{state, jdbcType=VARCHAR}
         WHERE uuid=#{uuid}
     </update>
 
     <update id="updateOrderExpressUuidAndReserveTimeById">
         update sftc_order_express
         set
-        uuid=#{uuid, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        reserve_time=#{reserve_time, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
+        uuid=#{uuid, jdbcType=VARCHAR},
+        reserve_time=#{reserve_time, jdbcType=VARCHAR},
         state='WAIT_HAND_OVER'
         WHERE id=#{id}
     </update>

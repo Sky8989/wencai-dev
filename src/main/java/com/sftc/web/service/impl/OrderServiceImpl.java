@@ -230,7 +230,7 @@ public class OrderServiceImpl implements OrderService {
     // 普通同城订单
     private APIResponse normalSameOrderCommit(Object object) {
 
-        Long long_order_number = (long) (Math.random() * 100000 * 1000000);
+        String long_order_number = (Math.random() * 100000 * 1000000) + "";
         APIStatus status = APIStatus.SUCCESS;
         JSONObject respObject = null;
         try {
@@ -304,7 +304,7 @@ public class OrderServiceImpl implements OrderService {
      * 普通大网下单
      */
     private APIResponse normalNationOrderCommit(Object object) {
-        Long long_order_number = (long) (Math.random() * 100000 * 1000000);
+        String long_order_number = (Math.random() * 100000 * 1000000) + "";
         String orderid = APIRandomUtil.getRandomString();
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
@@ -433,7 +433,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order(orderParam);
         try {
             //生成order的编号
-            long long_order_number = (long) (Math.random() * 100000 * 1000000);
+            String long_order_number = (Math.random() * 100000 * 1000000) + "";
             order.setOrder_number(long_order_number);
             //存储订单信息
             orderMapper.addOrder(order);
@@ -449,7 +449,7 @@ public class OrderServiceImpl implements OrderService {
             orderExpress.setReserve_time("");
             orderExpress.setOrder_id(order.getId());
             for (int i = orderParam.getPackage_count(); i > 0; i--) {
-                orderExpress.setOrder_number((long) (Math.random() * 100000 * 1000000));
+                orderExpress.setOrder_number((long) (Math.random() * 100000 * 1000000) + "");
                 //存储订单快递信息
                 orderExpressMapper.addOrderExpress(orderExpress);
             }

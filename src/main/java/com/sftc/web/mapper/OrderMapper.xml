@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.OrderMapper">
-    
+
     <resultMap id="orderDetailMap" type="com.sftc.web.model.Order">
         <id column="id" property="id"/>
         <result column="order_number" property="order_number"/>
@@ -40,16 +40,16 @@
         INSERT INTO sftc_order ( create_time,  order_number,  ship_name,  ship_mobile,  ship_province,
         ship_city,  ship_area,  ship_addr,  package_type,  object_type)
         VALUES (
-        #{create_time, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{order_number, jdbcType=INTEGER, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{ship_name, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{ship_mobile, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{ship_province, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{ship_city, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{ship_area, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{ship_addr, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{package_type, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{object_type, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler}
+        #{create_time, jdbcType=VARCHAR},
+        #{order_number, jdbcType=INTEGER},
+        #{ship_name, jdbcType=VARCHAR},
+        #{ship_mobile, jdbcType=VARCHAR},
+        #{ship_province, jdbcType=VARCHAR},
+        #{ship_city, jdbcType=VARCHAR},
+        #{ship_area, jdbcType=VARCHAR},
+        #{ship_addr, jdbcType=VARCHAR},
+        #{package_type, jdbcType=VARCHAR},
+        #{object_type, jdbcType=VARCHAR}
         )
     </insert>
 
@@ -95,27 +95,27 @@
         sender_area, sender_addr, word_message, image, voice,
         sender_user_id, gift_card_id, pay_method, distribution_method, longitude, latitude,order_type,voice_time,region_type)
         VALUES (
-        #{order_number, jdbcType=INTEGER, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{freight, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{create_time, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{sender_province, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{sender_name, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{sender_mobile, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{sender_city, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{sender_area, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{sender_addr, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{word_message, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{image, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{voice, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{sender_user_id, jdbcType=INTEGER, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{gift_card_id, jdbcType=INTEGER, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{pay_method, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{distribution_method, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{longitude, jdbcType=DOUBLE, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{latitude, jdbcType=DOUBLE, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{order_type, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{voice_time, jdbcType=DOUBLE, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        #{region_type, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler}
+        #{order_number, jdbcType=VARCHAR},
+        #{freight, jdbcType=DOUBLE},
+        #{create_time, jdbcType=VARCHAR},
+        #{sender_province, jdbcType=VARCHAR},
+        #{sender_name, jdbcType=VARCHAR},
+        #{sender_mobile, jdbcType=VARCHAR},
+        #{sender_city, jdbcType=VARCHAR},
+        #{sender_area, jdbcType=VARCHAR},
+        #{sender_addr, jdbcType=VARCHAR},
+        #{word_message, jdbcType=VARCHAR},
+        #{image, jdbcType=VARCHAR},
+        #{voice, jdbcType=VARCHAR},
+        #{sender_user_id, jdbcType=INTEGER},
+        #{gift_card_id, jdbcType=INTEGER},
+        #{pay_method, jdbcType=VARCHAR},
+        #{distribution_method, jdbcType=VARCHAR},
+        #{longitude, jdbcType=DOUBLE},
+        #{latitude, jdbcType=DOUBLE},
+        #{order_type, jdbcType=VARCHAR},
+        #{voice_time, jdbcType=INTEGER},
+        #{region_type, jdbcType=VARCHAR, javaType=String}
         )
     </insert>
 
@@ -142,7 +142,9 @@
     <update id="updateOrderTypeById" parameterType="com.sftc.web.model.Order">
         update sftc_order
         <trim prefix="set" suffixOverrides=",">
-            <if test="order_type!=null">order_type=#{order_type, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler}</if><!-- 新增 在好友填写时修改订单类型-->
+            <if test="order_type!=null">
+                order_type=#{order_type, jdbcType=VARCHAR}
+            </if>
         </trim>
         WHERE id=#{id}
     </update>
@@ -169,7 +171,7 @@
 
     <update id="updateOrderRegionType">
         update sftc_order
-        set region_type=#{region_type, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler}
+        set region_type=#{region_type, jdbcType=VARCHAR}
         WHERE id=#{id}
     </update>
 
@@ -206,6 +208,7 @@
         <result property="sender_addr" column="sender_addr"/>
         <result property="voice" column="voice"/>
         <result property="image" column="image"/>
+        <result property="word_message" column="word_message"/>
         <result property="pay_method" column="pay_method"/>
         <result property="distribution_method" column="distribution_method"/>
         <result property="gmt_pay_create" column="gmt_pay_create"/>
@@ -218,7 +221,7 @@
             <result property="create_time" column="create_time"/>
         </association>
         <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress">
-            <id property="id" column="id" />
+            <id property="id" column="id"/>
             <result property="state" column="state"/>
             <result property="latitude" column="latitude"/>
             <result property="longitude" column="longitude"/>
@@ -234,7 +237,6 @@
             <result property="package_type" column="package_type"/>
             <result property="object_type" column="object_type"/>
         </collection>
-
     </resultMap>
 
     <!-- 我的订单列表  -->
@@ -261,12 +263,12 @@
     <insert id="friendWriteAddress" parameterType="com.sftc.web.model.Order">
                 INSERT INTO sftc_order (ship_mobile, ship_name,ship_province, ship_city,
                 ship_area, ship_addr) VALUES (
-                #{ship_mobile, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-                #{ship_name, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-                #{ship_province, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-                #{ship_city, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-                #{ship_area, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-                #{ship_addr, jdbcType=VARCHAR, typeHandler=com.sftc.tools.typeHandler.NullValueHandler}
+                #{ship_mobile, jdbcType=VARCHAR},
+                #{ship_name, jdbcType=VARCHAR},
+                #{ship_province, jdbcType=VARCHAR},
+                #{ship_city, jdbcType=VARCHAR},
+                #{ship_area, jdbcType=VARCHAR},
+                #{ship_addr, jdbcType=VARCHAR}
                 )
     </insert>
 
@@ -328,8 +330,8 @@
     <update id="updatePlace" parameterType="com.sftc.web.model.Order">
         UPDATE sftc_order
         set
-        longitude=#{longitude, jdbcType=DOUBLE, typeHandler=com.sftc.tools.typeHandler.NullValueHandler},
-        latitude=#{latitude, jdbcType=DOUBLE, typeHandler=com.sftc.tools.typeHandler.NullValueHandler}
+        longitude=#{longitude, jdbcType=DOUBLE},
+        latitude=#{latitude, jdbcType=DOUBLE}
         WHERE id=#{id}
     </update>
     <sql id="orderDetail">

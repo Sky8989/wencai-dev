@@ -7,7 +7,7 @@ public class OrderCallback {
     private int id;
     private String sender_name;
     private String sender_addr;
-    private Long order_number;
+    private String order_number;
     private String order_type;
     private String region_type;
     private boolean is_gift;
@@ -77,11 +77,11 @@ public class OrderCallback {
         this.sender_addr = sender_addr;
     }
 
-    public Long getOrder_number() {
+    public String getOrder_number() {
         return order_number;
     }
 
-    public void setOrder_number(Long order_number) {
+    public void setOrder_number(String order_number) {
         this.order_number = order_number;
     }
 
