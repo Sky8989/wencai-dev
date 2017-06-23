@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.Object;
+import java.util.Map;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService{
@@ -120,16 +121,39 @@ public class MessageServiceImpl implements MessageService{
     /**
      **获取个人信息
      */
-    public APIResponse loginByGet(String object){
+    public APIResponse loginByGet(Map  paramMap){
         APIStatus status = APIStatus.SUCCESS;
+
         HttpGet get = new HttpGet(LOGIN);
-       get.addHeader("PushEnvelope-Device-Token", object);
+       get.addHeader("PushEnvelope-Device-Token", paramMap.get("access_token").toString());
         String res = APIGet.getGet(get);
         JSONObject jsonObject1 = JSONObject.fromObject(res);
+
 
         if(jsonObject1.get("errors")!=null||jsonObject1.get("error")!=null){
             status = APIStatus.LOGIN_FAIL;
         }
-        return APIUtil.getResponse(status,jsonObject1);
+        if(paramMap.containsKey("name") && paramMap.containsKey("avatar")){
+            User user = new User();
+            user.setName(paramMap.get("name").toString());
+            user.setAvatar(paramMap.get("avatar").toString());
+//            userMapper.
+        }
+
+
+
+
+
+//        APIStatus status = APIStatus.SUCCESS;
+//        HttpGet get = new HttpGet(LOGIN);
+//       get.addHeader("PushEnvelope-Device-Token", object);
+//        String res = APIGet.getGet(get);
+//        JSONObject jsonObject1 = JSONObject.fromObject(res);
+//
+//        if(jsonObject1.get("errors")!=null||jsonObject1.get("error")!=null){
+//            status = APIStatus.LOGIN_FAIL;
+//        }
+//        return APIUtil.getResponse(status,jsonObject1);
+        return  null;
     }
 }

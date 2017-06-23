@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Map;
+
 @Controller
 @RequestMapping("sf")
 public class MessageController extends AbstractBasicController {
@@ -49,14 +51,23 @@ public class MessageController extends AbstractBasicController {
         return messageService.login(obj);
     }
 
+//    /**
+//     * 获取个人信息
+//     */
+//    @RequestMapping(value = "/loginByGet", method = RequestMethod.GET)
+//    @ResponseBody
+//    APIResponse loginByGet(String access_token) throws Exception {
+//        return messageService.loginByGet(access_token);
+//    }
     /**
      * 获取个人信息
      */
     @RequestMapping(value = "/loginByGet", method = RequestMethod.GET)
     @ResponseBody
-    APIResponse loginByGet(String access_token) throws Exception {
-        return messageService.loginByGet(access_token);
+    APIResponse loginByGet(@RequestBody Map paramMap) throws Exception {
+        return messageService.loginByGet(paramMap);
     }
+
 
     @RequestMapping(value = "/quotes", method = RequestMethod.POST)
     void quotes(@RequestBody Result r) throws Exception {

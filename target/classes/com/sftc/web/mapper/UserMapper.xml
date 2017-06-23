@@ -39,7 +39,12 @@
         (#{open_id},#{create_time},#{session_key})
 
     </insert>
+    <insert id="insertWithAvatarAndName" parameterType="com.sftc.web.model.User"  useGeneratedKeys="true" keyProperty="id">
+        insert into sftc_user (open_id,create_time,session_key,avatar,name)
+        values
+        (#{open_id},#{create_time},#{session_key},#{avatar},#{name})
 
+    </insert>
 
     <!--添加顺丰传过来的Merchant信息-->
 
