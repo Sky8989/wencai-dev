@@ -55,6 +55,9 @@ public class Order extends Object {
     private String order_type;
     //订单地域 同城 大网
     private String region_type;
+    //新添加 is_cancle
+    private String is_cancle;
+
 
     public Order() {
     }
@@ -110,6 +113,7 @@ public class Order extends Object {
         //新添加 经纬度
         this.longitude = orderParam.getLongitude();
         this.latitude = orderParam.getLatitude();
+
     }
 
     public int getId() {
@@ -327,4 +331,8 @@ public class Order extends Object {
     public void setRegion_type(String region_type) {
         this.region_type = region_type;
     }
+
+    public String getIs_cancle() {return is_cancle;}
+
+    public void setIs_cancle(String is_cancle) {this.is_cancle = is_cancle;}
 }
