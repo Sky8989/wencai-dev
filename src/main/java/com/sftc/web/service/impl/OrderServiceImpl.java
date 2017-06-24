@@ -387,22 +387,31 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         String str = gson.toJson(object);
         JSONObject jsonObject = JSONObject.fromObject(str);
-        Token token = tokenMapper.getTokenByMobile("18124033797");
         HttpPost post = new HttpPost(QUOTES_URL);
-        if (jsonObject.getJSONObject("request").getJSONObject("merchant").get("uuid").equals("") && jsonObject.getJSONObject("request").getJSONObject("token").get("access_token").equals("")) {
-            jsonObject.getJSONObject("request").getJSONObject("merchant").put("uuid", "2c9a85895c2f618a015c2fe994ff0094");
-            post.addHeader("PushEnvelope-Device-Token", token.getAccess_token());
+        String uuid = (String) jsonObject.getJSONObject("request").getJSONObject("merchant").get("uuid");
+        String access_token = (String) jsonObject.getJSONObject("request").getJSONObject("token").get("access_token");
+
+        boolean uuidFlag = (uuid != null) && !(uuid.equals(""));
+        boolean tokenFlag = (access_token != null) && !(access_token.equals(""));
+
+        if ((uuidFlag && !tokenFlag) || (!uuidFlag && tokenFlag))
+            return APIUtil.errorResponse("uuid 和 access_token 不能只传一个");
+
+        if (tokenFlag) {
+            post.addHeader("PushEnvelope-Device-Token", access_token);
         } else {
-            post.addHeader("PushEnvelope-Device-Token", (String) jsonObject.getJSONObject("request").getJSONObject("token").get("access_token"));
+            jsonObject.getJSONObject("request").getJSONObject("merchant").put("uuid", "2c9a85895c2f618a015c2fe994ff0094");
+            post.addHeader("PushEnvelope-Device-Token", "padHjjRvusAC9z7ehxpG");
         }
-        String str2 = gson1.toJson(jsonObject);
-        System.out.println(jsonObject.getJSONObject("request").getJSONObject("merchant").get("uuid"));
-        String res = AIPPost.getPost(str2, post);
-        JSONObject jsonObject1 = JSONObject.fromObject(res);
-        if (jsonObject1.get("errors") != null || jsonObject1.get("error") != null) {
+
+        String res = AIPPost.getPost(gson1.toJson(jsonObject), post);
+        JSONObject respObject = JSONObject.fromObject(res);
+
+        if (respObject.getJSONObject("error") != null) {
             status = APIStatus.QUOTE_FAIL;
         }
-        return APIUtil.getResponse(status, jsonObject1);
+
+        return APIUtil.getResponse(status, respObject);
     }
 
     /**
@@ -470,7 +479,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             //判断 订单是否下单 的逻辑
             Order order = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
-            if(order.getRegion_type() != null && !"".equals(order.getRegion_type()) && order.getRegion_type().length() != 0){
+            if (order.getRegion_type() != null && !"".equals(order.getRegion_type()) && order.getRegion_type().length() != 0) {
                 APIStatus.ORDER_PACKAGE_COUNT_PULL.setMessage("订单已经下单，现在您无法再填写信息");
                 status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
                 return APIUtil.getResponse(status, orderExpress.getOrder_id());
@@ -481,14 +490,14 @@ public class OrderServiceImpl implements OrderService {
             List<OrderExpress> preList = orderExpressMapper.findAllOrderExpressByOrderId(orderExpress.getOrder_id());
             //循环遍历 prelist ，如果有重复的名字或者没有空包裹 都跳出返回问题
             //不能直接删除，删完了会影响list的数据结构。传入一个新的list
-            for (OrderExpress oe : preList){
+            for (OrderExpress oe : preList) {
                 //某个用户只要填写过一条信息，则会跳出逻辑
-                if (oe.getShip_user_id() == orderExpress.getShip_user_id()){
+                if (oe.getShip_user_id() == orderExpress.getShip_user_id()) {
                     APIStatus.ORDER_PACKAGE_COUNT_PULL.setMessage("您已经填写过信息，请勿重复填写");
                     status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
                     return APIUtil.getResponse(status, orderExpress.getOrder_id());
                 }
-                if(oe.getShip_user_id() == 0 ) {
+                if (oe.getShip_user_id() == 0) {
                     //默认为0，等于0的时候加到 realList
                     realList.add(oe);
                 }
@@ -971,14 +980,14 @@ public class OrderServiceImpl implements OrderService {
             JSONObject jsonObject1 = JSONObject.fromObject(object);
             //获取订单id，便于后续取消订单操作的取用
             int id = jsonObject1.getInt("order_id");
-            System.out.println("-   -order_id的值"+jsonObject1.getInt("order_id"));
+            System.out.println("-   -order_id的值" + jsonObject1.getInt("order_id"));
             jsonObject1.remove("order_id");
             List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(id);
             //遍历所有的uuid
-            for(OrderExpress eachOrderExpress: arrayList){
-                if(eachOrderExpress.getShip_name() == null && "".equals(eachOrderExpress.getShip_name())){
+            for (OrderExpress eachOrderExpress : arrayList) {
+                if (eachOrderExpress.getShip_name() == null && "".equals(eachOrderExpress.getShip_name())) {
                     //如果是空订单，就结束此次循环，进行下一次
-                    System.out.println("-   -空订单，订单编号是："+eachOrderExpress.getOrder_number());
+                    System.out.println("-   -空订单，订单编号是：" + eachOrderExpress.getOrder_number());
                     continue;
                 }
                 //下面是 顺丰方面取消订单的逻辑
