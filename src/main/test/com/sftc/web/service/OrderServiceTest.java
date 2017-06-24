@@ -1,6 +1,7 @@
 package com.sftc.web.service;
 
 import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.OrderExpress;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +29,8 @@ public class OrderServiceTest {
     @Resource
     private OrderService orderService;
 
+
+
     APIRequest request;
 
     @Before
@@ -51,5 +54,23 @@ public class OrderServiceTest {
     public void friendFillOrder() throws Exception {
 
     }
+
+    /**
+     * 取消订单 的测试方法
+     * @throws Exception
+     */
+    @Test
+    public  void deleteOrder() throws Exception {
+        String s ="{" +
+                "\"access_token\": \"7nWq8uExhVUoE7EW4ud2\",\"event\": {" +
+                "\"type\": \"dsad\"," +
+                "\"source\": \"dsad\"" +
+                "}," +
+                "\"order_id\": \"880\"" +
+                "}";
+        APIResponse apiResponse = orderService.deleteOrder(s);
+        System.out.println(apiResponse);
+    }
+
 
 }
