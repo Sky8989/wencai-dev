@@ -493,7 +493,7 @@ public class OrderServiceImpl implements OrderService {
                     realList.add(oe);
                 }
             }
-            // TODO: 还欠两个逻辑：1.同一个用户重复强包裹，要返回【不能重复抢】 2.还没抢完，寄件人已经下单，其他用户继续抢包裹，要返回【已经下单不能继续抢】
+            //  还欠两个逻辑：1.同一个用户重复强包裹，要返回【不能重复抢】 2.还没抢完，寄件人已经下单，其他用户继续抢包裹，要返回【已经下单不能继续抢】
             if (realList.isEmpty()) {
                 //list为空则返回已经抢完的信息
                 APIStatus.ORDER_PACKAGE_COUNT_PULL.setMessage("包裹已经分发完");
@@ -959,32 +959,59 @@ public class OrderServiceImpl implements OrderService {
      * 取消订单
      */
     public APIResponse deleteOrder(Object object) {
-        //   todo:重写逻辑
+        //   todo:重写逻辑  多个快递信息uuid 都要删除
+//        前端传订单id，
+//        后端根据订单id去取消订单和快递信息，
+//        中间需要先查uuid,然后向顺丰取消快递信息，
+//        都成功后才取取消整个订单
+
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
         try {
             JSONObject jsonObject1 = JSONObject.fromObject(object);
             //获取订单id，便于后续取消订单操作的取用
             int id = jsonObject1.getInt("order_id");
+            System.out.println("-   -order_id的值"+jsonObject1.getInt("order_id"));
             jsonObject1.remove("order_id");
-            String str = gson.toJson(object);
-            REQUESTS_URL = REQUESTS_URL + (String) jsonObject1.getJSONObject("event").get("uuid") + "/events";
-            HttpPost post = new HttpPost(REQUESTS_URL);
-            post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("event").get("access_token"));
-            //向顺丰发送请求 并获取结果
-            String res = AIPPost.getPost(str, post);
-            jsonObject = JSONObject.fromObject(res);
+            List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(id);
+            //遍历所有的uuid
+            for(OrderExpress eachOrderExpress: arrayList){
+                if(eachOrderExpress.getShip_name() == null && "".equals(eachOrderExpress.getShip_name())){
+                    //如果是空订单，就结束此次循环，进行下一次
+                    System.out.println("-   -空订单，订单编号是："+eachOrderExpress.getOrder_number());
+                    continue;
+                }
+                //下面是 顺丰方面取消订单的逻辑
+                String str = gson.toJson(object);
+                REQUESTS_URL = REQUESTS_URL + eachOrderExpress.getUuid() + "/events";
+                HttpPost post = new HttpPost(REQUESTS_URL);
+                post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("event").get("access_token"));
+                //向顺丰发送请求 并获取结果
+                String res = AIPPost.getPost(str, post);
+                jsonObject = JSONObject.fromObject(res);
+                if (jsonObject.get("error") != null) {
+                    APIStatus.CANCEL_ORDER_FALT.setMessage("顺丰方面的订单取消失败，系统异常，请反馈");
+                    status = APIStatus.CANCEL_ORDER_FALT;
+                }
+            }
+//            //下面是 顺丰方面取消订单的逻辑
+//            String str = gson.toJson(object);
+//            REQUESTS_URL = REQUESTS_URL + (String) jsonObject1.getJSONObject("event").get("uuid") + "/events";
+//            HttpPost post = new HttpPost(REQUESTS_URL);
+//            post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("event").get("access_token"));
+//            //向顺丰发送请求 并获取结果
+//            String res = AIPPost.getPost(str, post);
+//            jsonObject = JSONObject.fromObject(res);
             if (jsonObject.get("error") == null) {
                 //orderMapper.deleOrderAndOrderExpress((String) jsonObject1.get("uuid"));
-                //新的取消订单操作
+                //下面是 dankal操作order的操作
                 orderMapper.updateCancelOrderById(id);
-                System.out.println("-   -更新了");
             }
         } catch (Exception e) {
             e.printStackTrace();
+            APIStatus.CANCEL_ORDER_FALT.setMessage("通用：订单取消失败，系统异常，请反馈");
             status = APIStatus.CANCEL_ORDER_FALT;
         }
-
         REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
         return APIUtil.getResponse(status, jsonObject);
     }
