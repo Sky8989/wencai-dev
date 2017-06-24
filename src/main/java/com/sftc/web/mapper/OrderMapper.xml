@@ -221,22 +221,8 @@
             <result property="type" column="type"/>
             <result property="create_time" column="create_time"/>
         </association>
-        <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress">
-            <id property="id" column="id"/>
-            <result property="state" column="state"/>
-            <result property="latitude" column="latitude"/>
-            <result property="longitude" column="longitude"/>
-            <result property="uuid" column="uuid"/>
-            <result column="ship_province" property="ship_province"/>
-            <result property="order_number" column="order_number"/>
-            <result property="ship_user_id" column="ship_user_id"/>
-            <result property="ship_mobile" column="ship_mobile"/>
-            <result property="ship_name" column="ship_name"/>
-            <result property="ship_city" column="ship_city"/>
-            <result property="ship_area" column="ship_area"/>
-            <result property="ship_addr" column="ship_addr"/>
-            <result property="package_type" column="package_type"/>
-            <result property="object_type" column="object_type"/>
+        <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress" select="selectExpressList"
+                    column="id">
         </collection>
     </resultMap>
 
