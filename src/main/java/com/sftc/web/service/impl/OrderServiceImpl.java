@@ -400,14 +400,14 @@ public class OrderServiceImpl implements OrderService {
         if (tokenFlag) {
             post.addHeader("PushEnvelope-Device-Token", access_token);
         } else {
-            jsonObject.getJSONObject("request").getJSONObject("merchant").put("uuid", "2c9a85895c2f618a015c2fe994ff0094");
+            jsonObject.getJSONObject("request").getJSONObject("merchant").put("uuid", "2c9a85895c352c20015c3878647b017a");
             post.addHeader("PushEnvelope-Device-Token", "padHjjRvusAC9z7ehxpG");
         }
 
         String res = AIPPost.getPost(gson1.toJson(jsonObject), post);
         JSONObject respObject = JSONObject.fromObject(res);
 
-        if (respObject.getJSONObject("error") != null) {
+        if (respObject.get("error") != null) {
             status = APIStatus.QUOTE_FAIL;
         }
 
