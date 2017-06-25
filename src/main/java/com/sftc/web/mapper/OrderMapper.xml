@@ -4,28 +4,31 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.OrderMapper">
 
-    <resultMap id="orderDetailMap" type="com.sftc.web.model.Order">
-        <id column="id" property="id"/>
-        <result column="order_number" property="order_number"/>
-        <result column="state" property="state"/>
-        <result column="gmt_pay_create" property="gmt_pay_create"/>
-        <result column="pay_method" property="pay_method"/>
-        <result column="distribution_method" property="distribution_method"/>
-        <result column="freight" property="freight"/>
-        <result column="sender_name" property="sender_name"/>
-        <result column="sender_mobile" property="sender_mobile"/>
-        <result column="sender_province" property="sender_province"/>
-        <result column="sender_city" property="sender_city"/>
-        <result column="sender_area" property="sender_area"/>
-        <result column="sender_addr" property="sender_addr"/>
-        <result column="word_message" property="word_message"/>
-        <result column="image" property="image"/>
-        <result column="voice" property="voice"/>
-        <result column="longitude" property="longitude"/>
-        <result column="latitude" property="latitude"/>
-        <result column="job_number" property="job_number"/>
-        <result column="sender_user_id" property="sender_user_id"/>
-        <result column="gift_card_id" property="gift_card_id"/>
+    <resultMap id="orderMap" type="com.sftc.web.model.Order">
+        <id property="id" column="id"/>
+        <result property="order_type" column="order_type"/>
+        <result property="region_type" column="region_type"/>
+        <result property="order_number" column="order_number"/>
+        <result property="longitude" column="longitude"/>
+        <result property="latitude" column="latitude"/>
+        <result property="sender_user_id" column="sender_user_id"/>
+        <result property="sender_mobile" column="sender_mobile"/>
+        <result property="sender_name" column="sender_name"/>
+        <result property="sender_province" column="sender_province"/>
+        <result property="sender_city" column="sender_city"/>
+        <result property="sender_area" column="sender_area"/>
+        <result property="sender_addr" column="sender_addr"/>
+        <result property="voice" column="voice"/>
+        <result property="image" column="image"/>
+        <result property="word_message" column="word_message"/>
+        <result property="pay_method" column="pay_method"/>
+        <result property="distribution_method" column="distribution_method"/>
+        <result property="gmt_pay_create" column="gmt_pay_create"/>
+        <result property="gift_card_id" column="gift_card_id"/>
+        <result property="voice_time" column="voice_time"/>
+        <result property="create_time" column="create_time"/>
+        <association property="giftCard" select="selectGiftCard" column="gift_card_id">
+        </association>
         <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress" select="selectExpressList"
                     column="id">
         </collection>
@@ -33,6 +36,10 @@
 
     <select id="selectExpressList" parameterType="java.lang.String" resultType="com.sftc.web.model.OrderExpress">
         select * from sftc_order_express where order_id=#{id}
+    </select>
+
+    <select id="selectGiftCard" parameterType="java.lang.String" resultType="com.sftc.web.model.GiftCard">
+        select * from sftc_gift_card where id=#{gift_card_id}
     </select>
 
     <!-- 提交订单  -->
@@ -53,37 +60,16 @@
         )
     </insert>
 
-
-    <!--修改订单   -->
-    <!--<update id="updateOrder" parameterType="com.sftc.web.model.Order">-->
-    <!--update sftc_order-->
-    <!--<trim prefix="set" suffixOverrides=",">-->
-    <!--<if test="sender_mobile!=null">sender_mobile=#{sender_mobile},</if>-->
-    <!--<if test="sender_name!=null">sender_name=#{sender_name},</if>-->
-    <!--<if test="sender_province!=null">sender_province=#{sender_province},</if>-->
-    <!--<if test="sender_city!=null">sender_city=#{sender_city},</if>-->
-    <!--<if test="sender_area!=null">sender_area=#{sender_area},</if>-->
-    <!--<if test="sender_addr!=null">sender_addr=#{sender_addr},</if>-->
-
-    <!--<if test="word_message!=null">word_message=#{word_message},</if>-->
-    <!--<if test="image!=null">image=#{image},</if>-->
-    <!--<if test="gift_card_id!=null">gift_card_id=#{gift_card_id},</if>-->
-    <!--<if test="pay_method!=null">pay_method=#{pay_method},</if>-->
-
-    <!--</trim>-->
-    <!--WHERE order_number=#{order_number}-->
-    <!--</update>-->
-
     <!-- 根据订单编号查询该订单的包裹数 -->
     <select id="findPackageCount" resultType="int" parameterType="java.lang.String">
         SELECT package_count FROM sftc_order WHERE order_number=#{order_number}
     </select>
 
-    <select id="selectOrderDetailByOrderNumber" resultMap="orderDetailMap" parameterType="java.lang.String">
+    <select id="selectOrderDetailByOrderNumber" resultMap="orderMap" parameterType="java.lang.String">
         SELECT * FROM sftc_order WHERE order_number=#{order_number}
     </select>
 
-    <select id="selectOrderDetailByOrderId" resultMap="orderDetailMap" parameterType="int">
+    <select id="selectOrderDetailByOrderId" resultMap="orderMap" parameterType="int">
         SELECT * FROM sftc_order WHERE id=#{order_id}
     </select>
 
@@ -188,50 +174,16 @@
 
     <!-- 查看订单详情  -->
     <select id="orderAndOrderExpressAndGiftDetile" resultType="com.sftc.web.model.Order" parameterType="int"
-            resultMap="OrderExpressMap">
+            resultMap="orderMap">
         SELECT
         <include refid="Order_And_OrderExpress_List"/>
         FROM sftc_order o,sftc_order_express oe,sftc_gift_card gc WHERE o.id=#{id}
         and oe.order_id=o.id AND o.gift_card_id=gc.id
     </select>
 
-    <resultMap id="OrderExpressMap" type="com.sftc.web.model.Order">
-        <id property="id" column="id"/>
-        <result property="order_type" column="order_type"/>
-        <result property="region_type" column="region_type"/>
-        <result property="order_number" column="order_number"/>
-        <result property="longitude" column="longitude"/>
-        <result property="latitude" column="latitude"/>
-        <result property="sender_user_id" column="sender_user_id"/>
-        <result property="sender_mobile" column="sender_mobile"/>
-        <result property="sender_name" column="sender_name"/>
-        <result property="sender_province" column="sender_province"/>
-        <result property="sender_city" column="sender_city"/>
-        <result property="sender_area" column="sender_area"/>
-        <result property="sender_addr" column="sender_addr"/>
-        <result property="voice" column="voice"/>
-        <result property="image" column="image"/>
-        <result property="word_message" column="word_message"/>
-        <result property="pay_method" column="pay_method"/>
-        <result property="distribution_method" column="distribution_method"/>
-        <result property="gmt_pay_create" column="gmt_pay_create"/>
-        <result property="gift_card_id" column="gift_card_id"/>
-        <result property="voice_time" column="voice_time"/>
-        <result property="create_time" column="create_time"/>
-        <association property="giftCard" javaType="com.sftc.web.model.GiftCard">
-            <result property="name" column="name"/>
-            <result property="icon" column="icon"/>
-            <result property="type" column="type"/>
-            <result property="create_time" column="create_time"/>
-        </association>
-        <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress" select="selectExpressList"
-                    column="id">
-        </collection>
-    </resultMap>
-
     <!-- 我的订单列表  -->
     <select id="selectMyOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
-            resultMap="OrderExpressMap">
+            resultMap="orderMap">
         SELECT * FROM sftc_order o
         WHERE id IN (
             SELECT t.order_id FROM (
@@ -244,7 +196,7 @@
 
     <!-- 我的好友订单列表  -->
     <select id="selectMyFriendOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
-            resultMap="OrderExpressMap">
+            resultMap="orderMap">
 
         SELECT * FROM sftc_order o
         WHERE id IN (
@@ -274,10 +226,7 @@
         SELECT sender_name,sender_addr FROM sftc_order WHERE order_number=#{order_number}
     </select>
 
-    <!--
-        C01 我的订单
-    -->
-    <select id="myOrderLists" parameterType="com.sftc.web.model.OrderExpress" resultMap="orderDetailMap">
+    <select id="myOrderLists" parameterType="com.sftc.web.model.OrderExpress" resultMap="orderMap">
         select
         sftc_order_express.id,
         sftc_order_express.order_number,
@@ -331,97 +280,42 @@
         latitude=#{latitude, jdbcType=DOUBLE}
         WHERE id=#{id}
     </update>
+
     <sql id="orderDetail">
         o.sender_mobile, o.sender_name, o.sender_province,
         o.sender_city, o.sender_area, o.sender_addr, o.voice,o.voice_time,o.image ,o.pay_method,o.distribution_method,
         gc.name,gc.icon,gc.type,gc.create_time
     </sql>
-    <!-- 查看订单详情  -->
-    <select id="placeOrderDetile" resultType="com.sftc.web.model.Order" parameterType="string" resultMap="OrderMap">
-        SELECT
-        <include refid="orderDetail"/>
-        FROM sftc_order o,sftc_order_express oe,sftc_gift_card gc WHERE oe.uuid=#{uuid} AND o.gift_card_id=gc.id AND
-        o.id=oe.order_id
+
+    <!-- 查看快递详情  -->
+    <select id="placeOrderDetail" parameterType="String" resultMap="orderMap">
+        SELECT *
+        FROM sftc_order o, sftc_order_express oe
+        WHERE oe.uuid=#{uuid} AND o.id=oe.order_id
     </select>
-    <resultMap id="OrderMap" type="com.sftc.web.model.Order">
-        <result property="voice_time" column="voice_time"/>
-        <result property="sender_mobile" column="sender_mobile"/>
-        <result property="sender_name" column="sender_name"/>
-        <result property="sender_province" column="sender_province"/>
-        <result property="state" column="state"/>
-        <result property="sender_city" column="sender_city"/>
-        <result property="sender_area" column="sender_area"/>
-        <result property="sender_addr" column="sender_addr"/>
-        <result property="voice" column="voice"/>
-        <result property="image" column="image"/>
-        <result property="pay_method" column="pay_method"/>
-        <result property="distribution_method" column="distribution_method"/>
-        <result property="gmt_pay_create" column="gmt_pay_create"/>
-        <result property="order_number" column="order_number"/>
-        <result property="gift_card_id" column="gift_card_id"/>
-        <association property="giftCard" javaType="com.sftc.web.model.GiftCard">
-            <result column="name" property="name"/>
-            <result property="icon" column="icon"/>
-            <result column="type" property="type"/>
-            <result property="create_time" column="create_time"/>
-        </association>
-    </resultMap>
+
     <!--  删除订单  -->
-    <delete id="deleOrderAndOrderExpress" parameterType="string">
-        DELETE sftc_order,sftc_order_express from sftc_order LEFT JOIN sftc_order_express ON
-        sftc_order.id=sftc_order_express.order_id WHERE sftc_order_express.uuid=#{uuid}
+    <delete id="deleOrderAndOrderExpress" parameterType="String">
+        DELETE sftc_order, sftc_order_express
+        FROM sftc_order LEFT JOIN sftc_order_express
+        ON sftc_order.id=sftc_order_express.order_id
+        WHERE sftc_order_express.uuid=#{uuid}
     </delete>
 
     <!-- 取消订单，更新order的is_cancel-->
     <update id="updateCancelOrderById" parameterType="int">
-        UPDATE sftc_order SET is_cancle = 'Cancelled' WHERE id = #{id}
+        UPDATE sftc_order
+        SET is_cancle='Cancelled'
+        WHERE id=#{id}
     </update>
 
     <select id="getOrderAndExpress" resultType="com.sftc.web.model.Order" parameterType="com.sftc.web.model.Order"
-            resultMap="remindOrderMap">
+            resultMap="orderMap">
         SELECT
-        o.sender_mobile, o.sender_name, o.sender_province,
-        o.sender_city, o.sender_area, o.sender_addr, o.voice,o.voice_time,o.image
-        ,o.pay_method,o.distribution_method,oe.uuid,
-        o.order_number ,o.gift_card_id,o.longitude,o.latitude,oe.order_number,oe.ship_province,
-        oe.ship_name, oe.ship_city, oe.ship_area, oe.ship_addr, oe.package_type,oe.object_type
-        FROM sftc_order o,sftc_order_express oe WHERE oe.sender_user_id=#{sender_user_id} and oe.state=#{state}
-        and oe.order_id=o.id
+        o.sender_mobile, o.sender_name, o.sender_province, o.sender_city, o.sender_area, o.sender_addr, o.voice, o.voice_time, o.image, o.pay_method, o.distribution_method, o.order_number, o.gift_card_id, o.longitude, o.latitude,
+        oe.uuid, oe.order_number, oe.ship_province, oe.ship_name, oe.ship_city, oe.ship_area, oe.ship_addr, oe.package_type, oe.object_type
+        FROM sftc_order o, sftc_order_express oe
+        WHERE oe.sender_user_id=#{sender_user_id} AND oe.state=#{state} AND oe.order_id=o.id
     </select>
-
-    <resultMap id="remindOrderMap" type="com.sftc.web.model.Order">
-        <result property="longitude" column="longitude"/>
-        <result property="latitude" column="latitude"/>
-        <result property="sender_mobile" column="sender_mobile"/>
-        <result property="sender_name" column="sender_name"/>
-        <result property="sender_province" column="sender_province"/>
-        <result property="sender_city" column="sender_city"/>
-        <result property="sender_area" column="sender_area"/>
-        <result property="sender_addr" column="sender_addr"/>
-        <result property="voice" column="voice"/>
-        <result property="image" column="image"/>
-        <result property="pay_method" column="pay_method"/>
-        <result property="distribution_method" column="distribution_method"/>
-        <result property="gmt_pay_create" column="gmt_pay_create"/>
-        <result property="order_number" column="order_number"/>
-        <result property="gift_card_id" column="gift_card_id"/>
-        <result property="voice_time" column="voice_time"/>
-        <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress">
-            <result property="latitude" column="latitude"/>
-            <result property="longitude" column="longitude"/>
-            <result property="uuid" column="uuid"/>
-            <result column="ship_province" property="ship_province"/>
-            <result property="order_number" column="order_number"/>
-            <result property="ship_mobile" column="ship_mobile"/>
-            <result property="ship_name" column="ship_name"/>
-            <result property="ship_city" column="ship_city"/>
-            <result property="ship_area" column="ship_area"/>
-            <result property="ship_addr" column="ship_addr"/>
-            <result property="package_type" column="package_type"/>
-            <result property="object_type" column="object_type"/>
-        </collection>
-
-    </resultMap>
-
 
 </mapper>

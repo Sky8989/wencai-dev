@@ -922,7 +922,7 @@ public class OrderServiceImpl implements OrderService {
         JSONObject jsonObject = null;
 
         try {
-            Order order = orderMapper.placeOrderDetile(uuid);
+            Order order = orderMapper.placeOrderDetail(uuid);
             jsonObject = APISfDetail.sfDetail(uuid, access_token);
             jsonObject.put("order", order);
         } catch (Exception e) {
