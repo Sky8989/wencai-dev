@@ -32,9 +32,9 @@ public class OrderServiceImpl implements OrderService {
     private static String REQUEST_URL = "http://api-dev.sf-rush.com/requests";
     private static String PAY_URL = "http://api-dev.sf-rush.com/requests/";
     private static String CONSTANTS_URL = "http://api-dev.sf-rush.com/";
-    private static String CREATEORDER_URL = "http://api-c-test.sf-rush.com/api/sforderservice/ordercreate";
-    private static String COUNT_PRICE = "http://api-c-test.sf-rush.com/api/sforderservice/OrderFreightQuery";
-    private static String ORDERROUTE_URL = "http://api-c-test.sf-rush.com/api/sforderservice/OrderRouteQuery?orderid=";
+    private static String CREATEORDER_URL = "http://api-c.sf-rush.com/api/sforderservice/ordercreate";
+    private static String COUNT_PRICE = "http://api-c.sf-rush.com/api/sforderservice/OrderFreightQuery";
+    private static String ORDERROUTE_URL = "http://api-c.sf-rush.com/api/sforderservice/OrderRouteQuery?orderid=";
 
     private Gson gson = new Gson();
 
@@ -190,6 +190,18 @@ public class OrderServiceImpl implements OrderService {
             sf.put("d_county", oe.getShip_area());
             sf.put("d_address", oe.getShip_addr());
 
+            // handle pay_method
+            String pay_method = (String) sf.get("pay_method");
+            if (pay_method != null && !pay_method.equals("")) {
+                if (pay_method.equals("FREIGHT_PREPAID")) { // FREIGHT_PREPAID 寄付 1
+                    pay_method = "1";
+                } else if (pay_method.equals("FREIGHT_COLLECT")) { // FREIGHT_COLLECT 到付 2
+                    pay_method = "2";
+                }
+                sf.remove("pay_method");
+                sf.put("pay_method", pay_method);
+            }
+
             if (!oe.getState().equals("WAIT_FILL")) {
                 // 发送请求给sf，获取订单结果
                 String paramStr = gson.toJson(JSONObject.fromObject(sf));
@@ -331,32 +343,48 @@ public class OrderServiceImpl implements OrderService {
         String orderid = APIRandomUtil.getRandomString();
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
-        JSONObject jsonObject1 = JSONObject.fromObject(object);
-        jsonObject1.getJSONObject("sf").put("orderid", orderid);
-        String str = gson.toJson(jsonObject1.getJSONObject("sf"));
+        JSONObject requestObject = JSONObject.fromObject(object);
+        JSONObject orderObject = requestObject.getJSONObject("order");
+        JSONObject sf = requestObject.getJSONObject("sf");
+
+        // handle pay_method
+        String pay_method = (String) sf.get("pay_method");
+        if (pay_method != null && !pay_method.equals("")) {
+            if (pay_method.equals("FREIGHT_PREPAID")) { // FREIGHT_PREPAID 寄付 1
+                pay_method = "1";
+            } else if (pay_method.equals("FREIGHT_COLLECT")) { // FREIGHT_COLLECT 到付 2
+                pay_method = "2";
+            }
+            sf.remove("pay_method");
+            sf.put("pay_method", pay_method);
+        }
+
+        sf.put("orderid", orderid);
+
+        String str = gson.toJson(requestObject.getJSONObject("sf"));
         try {
             Order order = new Order(
                     time,
                     long_order_number,
-                    (String) jsonObject1.getJSONObject("sf").get("pay_method"),
+                    (String) sf.get("pay_method"),
                     "",
-                    0.0,
-                    (String) jsonObject1.getJSONObject("sf").get("j_contact"),
-                    (String) jsonObject1.getJSONObject("sf").get("j_tel"),
-                    (String) jsonObject1.getJSONObject("sf").get("j_province"),
-                    (String) jsonObject1.getJSONObject("sf").get("j_city"),
-                    (String) jsonObject1.getJSONObject("sf").get("j_county"),
-                    (String) jsonObject1.getJSONObject("sf").get("j_address"),
-                    0.00,
-                    0.00,
+                    0,
+                    (String) sf.get("j_contact"),
+                    (String) sf.get("j_tel"),
+                    (String) sf.get("j_province"),
+                    (String) sf.get("j_city"),
+                    (String) sf.get("j_county"),
+                    (String) sf.get("j_address"),
+                    0,
+                    0,
                     "ORDER_BASIS",
-                    Integer.parseInt((String) jsonObject1.getJSONObject("order").get("sender_user_id"))
+                    Integer.parseInt((String) orderObject.get("sender_user_id"))
             );
-            order.setImage((String) jsonObject1.getJSONObject("order").get("image"));
-            order.setVoice((String) jsonObject1.getJSONObject("order").get("voice"));
-            order.setWord_message((String) jsonObject1.getJSONObject("order").get("word_message"));
-            order.setGift_card_id(Integer.parseInt((String) jsonObject1.getJSONObject("order").get("gift_card_id")));
-            order.setVoice_time(Integer.parseInt((String) jsonObject1.getJSONObject("order").get("voice_time")));
+            order.setImage((String) orderObject.get("image"));
+            order.setVoice((String) orderObject.get("voice"));
+            order.setWord_message((String) orderObject.get("word_message"));
+            order.setGift_card_id(Integer.parseInt((String) orderObject.get("gift_card_id")));
+            order.setVoice_time(Integer.parseInt((String) orderObject.get("voice_time")));
             order.setRegion_type("REGION_NATION");
 
             //发送请求给sf，获取订单结果
@@ -375,20 +403,20 @@ public class OrderServiceImpl implements OrderService {
                 OrderExpress orderExpress = new OrderExpress(
                         time,
                         long_order_number,
-                        (String) jsonObject1.getJSONObject("sf").get("d_contact"),
-                        (String) jsonObject1.getJSONObject("sf").get("d_tel"),
-                        (String) jsonObject1.getJSONObject("sf").get("d_province"),
-                        (String) jsonObject1.getJSONObject("sf").get("d_city"),
-                        (String) jsonObject1.getJSONObject("sf").get("d_county"),
-                        (String) jsonObject1.getJSONObject("sf").get("d_address"),
+                        (String) sf.get("d_contact"),
+                        (String) sf.get("d_tel"),
+                        (String) sf.get("d_province"),
+                        (String) sf.get("d_city"),
+                        (String) sf.get("d_county"),
+                        (String) sf.get("d_address"),
                         "",
                         "",
                         "INIT",
-                        Integer.parseInt((String) jsonObject1.getJSONObject("order").get("sender_user_id")),
+                        Integer.parseInt((String) orderObject.get("sender_user_id")),
                         order.getId(),
                         orderid,
-                        0.00,
-                        0.00
+                        0.0,
+                        0.0
                 );
                 orderExpress.setReserve_time("");
                 //存储 订单快递信息
@@ -943,21 +971,67 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 普通订单详情接口
+     * 快递详情
      */
-    public APIResponse placeOrderDetail(String uuid, String access_token) {
-        APIStatus status = APIStatus.SUCCESS;
-        JSONObject jsonObject = null;
+    public APIResponse selectExpressDetail(APIRequest request) {
 
-        try {
-            Order order = orderMapper.placeOrderDetail(uuid);
-            jsonObject = APISfDetail.sfDetail(uuid, access_token);
-            jsonObject.put("order", order);
-        } catch (Exception e) {
-            status = APIStatus.PARAMETER_FAIL;
-            e.printStackTrace();
+        APIStatus status = APIStatus.SUCCESS;
+
+        String uuid = (String) request.getParameter("uuid");
+        if (uuid == null || uuid.equals("")) {
+            return APIUtil.errorResponse("uuid不能为空");
         }
-        return APIUtil.getResponse(status, jsonObject);
+
+        JSONObject respObject = new JSONObject();
+
+        // order
+        Order order = orderMapper.placeOrderDetail(uuid);
+        String regionType = order.getRegion_type();
+        if (regionType.equals("REGION_NATION")) { // 大网
+
+            // sort
+            String sort = (String) request.getParameter("sort");
+            sort = sort == null ? "desc" : sort;
+            // GET
+            String url = ORDERROUTE_URL + uuid + "&sort=" + sort;
+            HttpGet get = new HttpGet(url);
+            String access_token = APIGetToken.getToken();
+            get.addHeader("Authorization", "bearer " + access_token);
+            String res = APIGet.getGet(get);
+
+            if (!res.equals("[]")) {
+                JSONObject tempObject = JSONObject.fromObject(res);
+                if (tempObject.get("Message_Type") != null) {
+                    if (tempObject.get("Message_Type").equals("ORDER_CREATE_ERROR")) {
+                        status = APIStatus.ORDERROUT_FALT;
+                    } else {
+                        respObject.put("sf", tempObject);
+                    }
+                }
+            } else {
+                respObject.put("sf", new JSONObject());
+                status = APIStatus.ORDERROUT_FALT;
+            }
+
+        } else if (regionType.equals("REGION_SAME")) { // 同城
+
+            // 同城订单需要access_token
+            String access_token = (String) request.getParameter("access_token");
+            if (access_token == null || access_token.equals("")) {
+                return APIUtil.errorResponse("access_token不能为空");
+            }
+
+            try {
+                respObject = APISfDetail.sfDetail(uuid, access_token);
+            } catch (Exception e) {
+                status = APIStatus.SELECT_FAIL;
+                e.printStackTrace();
+            }
+        }
+
+        respObject.put("order", order);
+
+        return APIUtil.getResponse(status, respObject);
     }
 
     /**
@@ -1036,25 +1110,25 @@ public class OrderServiceImpl implements OrderService {
             StringBuilder stringBuilder = new StringBuilder();
             //遍历所有的快递列表
             boolean flagRealOrder = false;
-            for(OrderExpress eachOrderExpress: arrayList){
-                if(eachOrderExpress.getUuid() != null && !"".equals(eachOrderExpress.getUuid())  ){
+            for (OrderExpress eachOrderExpress : arrayList) {
+                if (eachOrderExpress.getUuid() != null && !"".equals(eachOrderExpress.getUuid())) {
                     flagRealOrder = true;
                     stringBuilder.append(eachOrderExpress.getUuid());
                     stringBuilder.append(",");
                     continue;
                 }
                 //如果是空订单，就结束此次循环，进行下一次
-                System.out.println("-   -未付款订单，订单编号是："+eachOrderExpress.getOrder_number());
+                System.out.println("-   -未付款订单，订单编号是：" + eachOrderExpress.getOrder_number());
             }
-            if (flagRealOrder){//这是订单已经提交付款了的操作
+            if (flagRealOrder) {//这是订单已经提交付款了的操作
                 //   todo:真实订单还未测试到
                 //System.out.println("-   -这是拼接前的stringBuilder"+stringBuilder);
-                stringBuilder.deleteCharAt(stringBuilder.length()-1);
+                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
                 //System.out.println("-   -这是拼接后的stringBuilder"+stringBuilder);
                 //下面是 顺丰方面取消订单的逻辑
                 String str = gson.toJson(object);
                 String myUrl = REQUESTS_URL + stringBuilder.toString() + "/events";
-                System.out.println("-   -这是myurl"+myUrl);
+                System.out.println("-   -这是myurl" + myUrl);
                 HttpPost post = new HttpPost(myUrl);
                 post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("event").get("access_token"));
                 //向顺丰发送请求 并获取结果
@@ -1068,7 +1142,7 @@ public class OrderServiceImpl implements OrderService {
                 if (jsonObject.get("error") == null) {
                     orderMapper.updateCancelOrderById(id);
                 }
-            }else {//订单还未提交给顺丰的情况，只更新order的信息即可
+            } else {//订单还未提交给顺丰的情况，只更新order的信息即可
                 orderMapper.updateCancelOrderById(id);
             }
         } catch (Exception e) {
@@ -1134,28 +1208,23 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse OrderRouteQuery(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject1 = null;
-        try {
-            ORDERROUTE_URL = ORDERROUTE_URL + request.getParameter("orderid") + "&sort=" + request.getParameter("sort");
-            HttpGet get = new HttpGet(ORDERROUTE_URL);
-            String access_token = APIGetToken.getToken();
-            get.addHeader("Authorization", "bearer " + access_token);
-            String res = APIGet.getGet(get);
-            if (!res.equals("[]")) {
-                jsonObject1 = JSONObject.fromObject(res);
-            } else {
-                status = APIStatus.ORDERROUT_FALT;
-            }
-
+        ORDERROUTE_URL = ORDERROUTE_URL + request.getParameter("orderid") + "&sort=" + request.getParameter("sort");
+        HttpGet get = new HttpGet(ORDERROUTE_URL);
+        String access_token = APIGetToken.getToken();
+        get.addHeader("Authorization", "bearer " + access_token);
+        String res = APIGet.getGet(get);
+        if (!res.equals("[]")) {
+            jsonObject1 = JSONObject.fromObject(res);
             if (jsonObject1.get("Message_Type") != null) {
                 if (jsonObject1.get("Message_Type").equals("ORDER_CREATE_ERROR")) {
                     status = APIStatus.ORDERROUT_FALT;
                 }
             }
-            ORDERROUTE_URL = "http://api-c-test.sf-rush.com/api/sforderservice/OrderRouteQuery?orderid=";
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
             status = APIStatus.ORDERROUT_FALT;
         }
+
+        ORDERROUTE_URL = "http://api-c-test.sf-rush.com/api/sforderservice/OrderRouteQuery?orderid=";
         return APIUtil.getResponse(status, jsonObject1);
     }
 

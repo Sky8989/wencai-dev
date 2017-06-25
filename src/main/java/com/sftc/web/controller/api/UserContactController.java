@@ -20,11 +20,11 @@ public class UserContactController extends AbstractBasicController {
     @Resource
     private UserContactLabelService userContactLabelService;
 
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse allFriend(@RequestBody Paging paging) throws Exception {
-        return userContactService.getFriendList(paging);
-    }
+//    @RequestMapping(value = "/list", method = RequestMethod.POST)
+//    public @ResponseBody
+//    APIResponse allFriend(@RequestBody Paging paging) throws Exception {
+//        return userContactService.getFriendList(paging);
+//    }
 
     @RequestMapping(value = "/contacts", method = RequestMethod.POST)
     public @ResponseBody
@@ -32,17 +32,17 @@ public class UserContactController extends AbstractBasicController {
         return userContactService.getContactInfo(userContactParam);
     }
 
-    @RequestMapping(value = "/detail", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse friendDetail(@RequestBody UserContactParam userContactParam) throws Exception {
-        return userContactService.getFriendDetail(userContactParam);
-    }
+//    @RequestMapping(value = "/detail", method = RequestMethod.POST)
+//    public @ResponseBody
+//    APIResponse friendDetail(@RequestBody UserContactParam userContactParam) throws Exception {
+//        return userContactService.getFriendDetail(userContactParam);
+//    }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse addFriend(@RequestBody UserContactParam userContactParam) throws Exception {
-        return userContactService.addFriend(userContactParam);
-    }
+//    @RequestMapping(value = "/add", method = RequestMethod.POST)
+//    public @ResponseBody
+//    APIResponse addFriend(@RequestBody UserContactParam userContactParam) throws Exception {
+//        return userContactService.addFriend(userContactParam);
+//    }
 
     @RequestMapping(value = "/label/add", method = RequestMethod.POST)
     public @ResponseBody

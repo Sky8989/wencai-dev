@@ -1,37 +1,30 @@
 package com.sftc.web.model.apiCallback;
 
-import com.sftc.web.model.GiftCard;
-
-/**
- * Created by IntelliJ IDEA.
- *
- * @author _KeMing
- * @version 1.0
- * @Package com.sftc.web.model.apiCallback
- * @Description: 联系人来往接口model
- * @date 2017/6/3
- * @Time 下午5:01
- */
 public class ContactCallback {
 
     private int id;
+
     // 寄件人姓名
     private String sender_name;
-    // 寄件人的用户id（用于查询该用户的头像）
+    // 寄件人的用户id
     private int sender_user_id;
     // 寄件人的头像
     private String sender_icon;
+
     // 收件人的姓名
     private String ship_name;
-    // 收件人的用户id（用于查询该用户的头像）
+    // 收件人的用户id
     private int ship_user_id;
     // 收件人的头像
     private String ship_icon;
+
+    // 物品类型
+    private String object_type;
+    // 快递状态
+    private String state;
+
     // 创建时间
     private String create_time;
-    private GiftCard giftCard;
-    // 订单的状态
-    private String status;
 
     public int getId() {
         return id;
@@ -89,6 +82,22 @@ public class ContactCallback {
         this.ship_icon = ship_icon;
     }
 
+    public String getObject_type() {
+        return object_type;
+    }
+
+    public void setObject_type(String object_type) {
+        this.object_type = object_type;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public String getCreate_time() {
         return create_time;
     }
@@ -97,19 +106,4 @@ public class ContactCallback {
         this.create_time = create_time;
     }
 
-    public GiftCard getGiftCard() {
-        return giftCard;
-    }
-
-    public void setGiftCard(GiftCard giftCard) {
-        this.giftCard = giftCard;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }

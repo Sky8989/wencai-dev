@@ -1,12 +1,14 @@
 package com.sftc.web.service.impl;
 
-import com.sftc.tools.api.*;
+import com.sftc.tools.api.APIResolve;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIStatus;
+import com.sftc.tools.api.APIUtil;
 import com.sftc.web.mapper.*;
 import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.ContactCallback;
 import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.reqeustParam.UserContactParam;
-import com.sftc.web.model.reqeustParam.UserParam;
 import com.sftc.web.model.sfmodel.Orders;
 import com.sftc.web.service.UserContactService;
 import org.springframework.stereotype.Service;
@@ -39,86 +41,121 @@ public class UserContactServiceImpl implements UserContactService {
     @Resource
     private OrderExpressMapper orderExpressMapper;
 
-    /*
-     * 添加好友
-     */
-    public APIResponse addFriend(UserContactParam userContactParam) {
-        APIStatus status = APIStatus.SUCCESS;
-        userContactParam.setCreate_time(Long.toString(System.currentTimeMillis()));
-        try {
-            userContactMapper.addFriend(userContactParam);
-        } catch (Exception e) {
-            e.printStackTrace();
-            status = APIStatus.SUBMIT_FAIL;
-        }
-        return APIUtil.getResponse(status, null);
-    }
+    @Resource
+    private OrderMapper orderMapper;
 
-    /*
-     * 根据id查询好友详情
-     */
-    public APIResponse getFriendDetail(UserContactParam userContactParam) {
-        APIStatus status = APIStatus.SUCCESS;
-        int id = userContactParam.getId();
-        UserContact userContact = userContactMapper.friendDetail(id);
-        List<UserContactLabel> userContactLabelList = userContactLabelMapper.getFriendLabelList(id);
-        List<DateRemind> dateRemindList = dateRemindMapper.getDateRemindList(id);
-        userContact.setUserContactLabelList(userContactLabelList);
-        userContact.setDateRemindList(dateRemindList);
-        return APIUtil.getResponse(status, userContact);
-    }
+    @Resource
+    private UserMapper userMapper;
 
-    /*
-     * 获取某个用户的所有好友（带分页）
-     */
-    public APIResponse getFriendList(Paging paging) {
-        APIStatus status = APIStatus.SUCCESS;
-        paging.setPageNum(paging.getPageNum() - 1);
-        List<UserContact> userContactList = null;
-        try {
-            userContactList = userContactMapper.friendList(paging);
-        } catch (Exception e) {
-            e.printStackTrace();
-            status = APIStatus.SELECT_FAIL;
-        }
-        return APIUtil.getResponse(status, userContactList);
-    }
+//    /*
+//     * 添加好友
+//     */
+//    public APIResponse addFriend(UserContactParam userContactParam) {
+//        APIStatus status = APIStatus.SUCCESS;
+//        userContactParam.setCreate_time(Long.toString(System.currentTimeMillis()));
+//        try {
+//            userContactMapper.addFriend(userContactParam);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            status = APIStatus.SUBMIT_FAIL;
+//        }
+//        return APIUtil.getResponse(status, null);
+//    }
+//
+//    /*
+//     * 根据id查询好友详情
+//     */
+//    public APIResponse getFriendDetail(UserContactParam userContactParam) {
+//        APIStatus status = APIStatus.SUCCESS;
+//        int id = userContactParam.getId();
+//        UserContact userContact = userContactMapper.friendDetail(id);
+//        List<UserContactLabel> userContactLabelList = userContactLabelMapper.getFriendLabelList(id);
+//        List<DateRemind> dateRemindList = dateRemindMapper.getDateRemindList(id);
+//        userContact.setUserContactLabelList(userContactLabelList);
+//        userContact.setDateRemindList(dateRemindList);
+//        return APIUtil.getResponse(status, userContact);
+//    }
+
+//    /*
+//     * 获取某个用户的所有好友（带分页）
+//     */
+//    public APIResponse getFriendList(Paging paging) {
+//        APIStatus status = APIStatus.SUCCESS;
+//        paging.setPageNum(paging.getPageNum() - 1);
+//        List<UserContact> userContactList = null;
+//        try {
+//            userContactList = userContactMapper.friendList(paging);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            status = APIStatus.SELECT_FAIL;
+//        }
+//        return APIUtil.getResponse(status, userContactList);
+//    }
 
     /**
-     * 好友圈来往记录
+     * 来往记录
      */
     public APIResponse getContactInfo(UserContactParam userContactParam) {
+
         APIStatus status = APIStatus.SUCCESS;
+
+        // handle param
+        if (userContactParam.getAccess_token() == null || userContactParam.getAccess_token().length() == 0) {
+            return APIUtil.errorResponse("access_token不能为空");
+        } else if (userContactParam.getUser_id() == 0) {
+            return APIUtil.errorResponse("用户id不能为空");
+        } else if (userContactParam.getFriend_id() == 0) {
+            return APIUtil.errorResponse("好友id不能为空");
+        } else if (userContactParam.getUser_id() == userContactParam.getFriend_id()) {
+            return APIUtil.errorResponse("I believe that you can't fuck yourself !");
+        } else if (userContactParam.getPageNum() < 1 || userContactParam.getPageSize() < 1) {
+            return APIUtil.errorResponse("分页参数无效");
+        }
+
+        userContactParam.setPageNum((userContactParam.getPageNum() - 1) * userContactParam.getPageSize()); // pageNum -> startIndex
+
+        // handle url
         String ORDERS_URL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
         String uuids = "";
-        List<OrderCallback> orderCallbacks = new ArrayList<OrderCallback>();
         List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(userContactParam.getUser_id());
-        List<ContactCallback> contactCallbacks = null;
         for (OrderExpress oe : orderExpressList) {
-            uuids = uuids + oe.getUuid() + ",";
+            String uuid = oe.getUuid();
+            if (uuid != null && uuid.length() > 1) {
+                uuids = uuids + oe.getUuid() + ",";
+            }
         }
         uuids = uuids.substring(0, uuids.length() - 1);
         ORDERS_URL = ORDERS_URL.replace("uuid", uuids);
+
+        // POST
+        List<Orders> orderses = null;
         try {
-            List<Orders> orderses = APIResolve.getOrdersJson(ORDERS_URL, userContactParam.getToken());
-            for (Orders orders : orderses) {
-                if (!orders.getStatus().equals("WAIT_FILL") || !orders.getStatus().equals("ALREADY_FILL")) {
-                    String uuid = orders.getUuid();
-                    String order_status = orders.getStatus();
-                    orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
-                }
-            }
-            contactCallbacks = userContactMapper.selectCirclesContact(userContactParam);
-            for (ContactCallback contactCallback : contactCallbacks) {
-                String sender_icon = userContactMapper.selectUserIcon(contactCallback.getSender_user_id());
-                contactCallback.setSender_icon(sender_icon);
-                String ship_icon = userContactMapper.selectUserIcon(contactCallback.getShip_user_id());
-                contactCallback.setShip_icon(ship_icon);
-            }
+            orderses = APIResolve.getOrdersJson(ORDERS_URL, userContactParam.getAccess_token());
         } catch (Exception e) {
             status = APIStatus.SELECT_FAIL;
             e.printStackTrace();
         }
+
+        // update express status
+        if (orderses != null) {
+            for (Orders orders : orderses) {
+                String uuid = orders.getUuid();
+                String order_status = orders.getStatus();
+                orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
+            }
+        }
+
+        // callback
+        List<ContactCallback> contactCallbacks = userContactMapper.selectCirclesContact(userContactParam);
+        for (ContactCallback contactCallback : contactCallbacks) {
+            User sender = userMapper.selectUserByUserId(contactCallback.getSender_user_id());
+            User receiver = userMapper.selectUserByUserId(contactCallback.getShip_user_id());
+            if (sender != null)
+                contactCallback.setSender_icon(sender.getAvatar());
+            if (receiver != null)
+                contactCallback.setShip_icon(receiver.getAvatar());
+        }
+
         return APIUtil.getResponse(status, contactCallbacks);
     }
 }
