@@ -3,11 +3,15 @@ package com.sftc.web.mapper;
 import com.sftc.web.model.User;
 
 
+import java.util.List;
+
+
 public interface UserMapper {
 
     User selectUserByPhone(String user_phone);
 
-    User selectUserByOpenid(String open_id);
+    List<User> selectUserByOpenid(String open_id);
+
 
     User selectUserByUserId(int user_id);
 
