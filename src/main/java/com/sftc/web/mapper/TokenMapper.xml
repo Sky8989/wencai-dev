@@ -33,20 +33,26 @@
     <resultMap id="getToken" type="com.sftc.web.model.Token">
         <result property="access_token" column="access_token"/>
     </resultMap>
-    <select id="getTokenByMobile" parameterType="string" resultType="com.sftc.web.model.Token">
+
+    <select id="getTokenByMobile" parameterType="String" resultType="com.sftc.web.model.Token">
       SELECT t.access_token from sftc_user u,sftc_token t WHERE u.id=t.user_id AND u.mobile=#{mobile}
     </select>
+
+    <select id="selectUserIdByToken" parameterType="String" resultType="int">
+        select user_id from sftc_token where local_token=#{token}
+    </select>
+
+
 </mapper>
 
 
+        <!--<select id="getToken" parameterType="int" resultType="com.sftc.web.model.Order" resultMap="getToken">-->
+        <!--SELECT  u.name from sftc_order o, sftc_user u-->
+        <!--WHERE u.id=o.sender_user_id and o.id=#{id}-->
 
-<!--<select id="getToken" parameterType="int" resultType="com.sftc.web.model.Order" resultMap="getToken">-->
-<!--SELECT  u.name from sftc_order o, sftc_user u-->
-<!--WHERE u.id=o.sender_user_id and o.id=#{id}-->
-
-<!--</select>-->
-<!--<resultMap id="getToken" type="com.sftc.web.model.Order">-->
-<!--<association property="merchant" javaType="com.sftc.web.model.Merchant">-->
-    <!--<result property="name" column="name"/>-->
-<!--</association>-->
-<!--</resultMap>-->
+        <!--</select>-->
+        <!--<resultMap id="getToken" type="com.sftc.web.model.Order">-->
+        <!--<association property="merchant" javaType="com.sftc.web.model.Merchant">-->
+        <!--<result property="name" column="name"/>-->
+        <!--</association>-->
+        <!--</resultMap>-->

@@ -20,7 +20,8 @@ public interface UserMapper {
     void addMerchant(User merchant);
 
     User getUuidAndtoken(int order_id);
-    int insertWithAvatarAndName(User user);
-    void updateUserOfAvatar(User user);
 
+    int insertWithAvatarAndName(User user);
+
+    void updateUserOfAvatar(User user);
 }

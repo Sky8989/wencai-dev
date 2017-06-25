@@ -421,13 +421,31 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
         try {
-            PAY_URL = PAY_URL + request.getParameter("uuid") + "/js_pay?open_id=" + request.getParameter("open_id");
+            String token = (String) request.getParameter("token");
+            String uuid = (String) request.getParameter("uuid");
+            String access_token = (String) request.getParameter("access_token");
+
+            int user_id = tokenMapper.selectUserIdByToken(token);
+            User user = userMapper.selectUserByUserId(user_id);
+
+            if (token == null || token.equals("")) {
+                return APIUtil.errorResponse("token无效");
+            }
+            if (uuid == null || uuid.equals("")) {
+                return APIUtil.errorResponse("uuid无效");
+            }
+            if (access_token == null || access_token.equals("")) {
+                return APIUtil.errorResponse("access_token无效");
+            }
+
+            PAY_URL = PAY_URL + uuid + "/js_pay?open_id=" + user.getOpen_id();
             HttpPost post = new HttpPost(PAY_URL);
-            post.addHeader("PushEnvelope-Device-Token", (String) request.getParameter("access_token"));
+            post.addHeader("PushEnvelope-Device-Token", access_token);
             String res = AIPPost.getPost("", post);
             jsonObject = JSONObject.fromObject(res);
         } catch (Exception e) {
             status = APIStatus.ORDER_PAY_FAIL;
+            e.printStackTrace();
         }
         PAY_URL = "http://api-dev.sf-rush.com/requests/";
         return APIUtil.getResponse(status, jsonObject);
