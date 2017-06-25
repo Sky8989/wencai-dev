@@ -304,9 +304,7 @@
 
     <!-- 取消订单，更新order的is_cancel-->
     <update id="updateCancelOrderById" parameterType="int">
-        UPDATE sftc_order
-        SET is_cancle='Cancelled'
-        WHERE id=#{id}
+        UPDATE sftc_order SET is_cancel = 'Cancelled' WHERE id = #{id}
     </update>
 
     <select id="getOrderAndExpress" resultType="com.sftc.web.model.Order" parameterType="com.sftc.web.model.Order"

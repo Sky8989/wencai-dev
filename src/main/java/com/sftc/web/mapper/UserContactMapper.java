@@ -2,6 +2,7 @@ package com.sftc.web.mapper;
 
 import com.sftc.web.model.Paging;
 import com.sftc.web.model.UserContact;
+import com.sftc.web.model.UserContactNew;
 import com.sftc.web.model.apiCallback.ContactCallback;
 import com.sftc.web.model.reqeustParam.UserContactParam;
 
@@ -34,4 +35,12 @@ public interface UserContactMapper {
     UserContact friendDetail(int id);
 
     List<ContactCallback> selectCirclesContact(UserContactParam userContactParam);
+
+    /**
+    *@Author:hxy starmoon1994
+    *@Description: 新好友列表
+    *@Date:16:53 2017/6/25
+    */
+    UserContactNew selectByUserIdAndShipId(UserContactNew userContactNew);
+    void insertUserContact(UserContactNew userContactNew);
 }
