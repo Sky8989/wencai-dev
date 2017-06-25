@@ -1,30 +1,18 @@
 package com.sftc.tools.api;
 
-import com.google.gson.Gson;
-import com.sftc.web.mapper.OrderExpressMapper;
-import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import java.net.URLDecoder;
-
-/**
- * Created by Administrator on 2017/5/29.
- */
 
 public class APISfDetail {
-    private static String REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
-    public static JSONObject sfDetail(String uuid,String access_token){
-        REQUESTS_URL=REQUESTS_URL+uuid;
-        HttpGet get = new HttpGet(REQUESTS_URL);
-        get.addHeader("PushEnvelope-Device-Token",access_token);
-        String res = APIGet.getGet(get);
-        JSONObject jsonObject = JSONObject.fromObject(res);
+    private static final String REQUESTS_URL = "http://api-dev.sf-rush.com/requests";
 
-        REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
-        System.out.println(jsonObject);
-        return jsonObject;
+    public static JSONObject sfDetail(String uuid, String access_token) {
+        String url = REQUESTS_URL + "/" + uuid;
+        HttpGet get = new HttpGet(url);
+        get.addHeader("PushEnvelope-Device-Token", access_token);
+        String res = APIGet.getGet(get);
+
+        return JSONObject.fromObject(res);
     }
 }
