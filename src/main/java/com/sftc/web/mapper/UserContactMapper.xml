@@ -9,90 +9,66 @@
         <result column="lntimacy" property="lntimacy"/>
         <result column="phone" property="phone"/>
         <result column="name" property="name"/>
-        <result column="icon" property="icon"/>
-        <result column="wechat" property="wechat"/>
-        <result column="remark" property="remark"/>
         <result column="is_tag_star" property="is_tag_star"/>
         <result column="friend_id" property="friend_id"/>
+        <result column="user_id" property="user_id"/>
+        <result column="create_time" property="create_time"/>
     </resultMap>
 
-    <resultMap id="contactCallback" type="com.sftc.web.model.apiCallback.ContactCallback">
+    <resultMap id="contactCallbackMap" type="com.sftc.web.model.apiCallback.ContactCallback">
         <id column="id" property="id"/>
         <result column="sender_name" property="sender_name"/>
         <result column="sender_user_id" property="sender_user_id"/>
         <result column="ship_name" property="ship_name"/>
         <result column="ship_user_id" property="ship_user_id"/>
         <result column="create_time" property="create_time"/>
-        <result column="status" property="status"/>
-        <association property="giftCard" javaType="com.sftc.web.model.GiftCard">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
-            <result column="icon" property="icon"/>
-            <result column="type" property="type"/>
-        </association>
+        <result column="state" property="state"/>
     </resultMap>
 
     <!-- 好友列表 -->
     <select id="friendList" parameterType="com.sftc.web.model.Paging" resultMap="friendListInfo">
-            select
-            sftc_user_contact.id, lntimacy, icon, remark,
-             is_tag_star, friend_id, user_id
+            select *
             from sftc_user_contact
-            where
-            user_id=#{user_id} limit #{pageNum},#{pageSize}
-    </select>
-
-    <select id="selectUserIcon" parameterType="int" resultType="java.lang.String">
-        select icon from sftc_user_contact where user_id=#{id} and friend_id=#{id}
+            where user_id=#{user_id}
+            limit #{pageNum},#{pageSize}
     </select>
 
     <select id="selectFriendCount" resultType="int">
         select count(*) from sftc_user_contact where user_id=#{user_id}
     </select>
 
-    <!-- 添加好友  -->
     <insert id="addFriend" parameterType="com.sftc.web.model.reqeustParam.UserContactParam">
                 INSERT INTO sftc_user_contact
-                (name,phone,icon,user_id,friend_id,remark,wechat,create_time)
+                (name,phone,user_id,friend_id,create_time)
                 VALUES
-                (#{name},#{phone},#{icon},#{user_id},#{friend_id},#{remark},#{wechat},#{create_time})
-        </insert>
+                (#{name},#{phone},#{user_id},#{friend_id},#{create_time})
+    </insert>
 
     <!-- 编辑好友  -->
     <update id="updateFriend" parameterType="com.sftc.web.model.UserContact">
         update sftc_user_contact
         <trim prefix="set" suffixOverrides=",">
-            <if test="icon!=null">icon=#{icon},</if>
             <if test="name!=null">name=#{name},</if>
             <if test="phone!=null">phone=#{phone},</if>
-            <if test="remark!=null">remark=#{remark},</if>
-            <if test="wechat!=null">wechat=#{wechat},</if>
-
         </trim>
         WHERE id=#{id}
     </update>
 
-    <!--  好友详情*  -->
+    <!-- 好友详情 -->
     <select id="friendDetail" parameterType="int" resultType="com.sftc.web.model.UserContact">
-            select
-            sftc_user_contact.id, lntimacy, icon, remark, name, phone,
-            wechat, is_tag_star, friend_id, user_id
-            from sftc_user_contact
-            where
-            id=#{id}
+            SELECT *
+            FROM sftc_user_contact
+            WHERE id=#{id}
     </select>
 
-    <select id="selectCirclesContact" parameterType="com.sftc.web.model.reqeustParam.UserContactParam" resultMap="contactCallback">
-        select
-        sftc_order_express.id,sftc_order_express.ship_name,sftc_order.sender_name,
-        sftc_order_express.create_time,sftc_order_express.state,sftc_order_express.ship_user_id,
-        sftc_order_express.sender_user_id,sftc_gift_card.*
-        FROM sftc_order_express,sftc_order,sftc_gift_card
-        WHERE
-        (sftc_order_express.sender_user_id=#{user_id} and sftc_order_express.ship_user_id=#{friend_id}
-        or
-        sftc_order_express.sender_user_id=#{friend_id} and sftc_order_express.ship_user_id=#{user_id})
+    <select id="selectCirclesContact" parameterType="com.sftc.web.model.reqeustParam.UserContactParam"
+            resultMap="contactCallbackMap">
+        select sftc_order_express.*, sftc_order.*
+        FROM sftc_order_express, sftc_order
+        WHERE (sftc_order_express.sender_user_id=#{user_id} AND sftc_order_express.ship_user_id=#{friend_id}
+          OR sftc_order_express.sender_user_id=#{friend_id} AND sftc_order_express.ship_user_id=#{user_id})
         AND sftc_order_express.order_id = sftc_order.id
+        limit #{pageNum}, #{pageSize}
     </select>
-    
+
 </mapper>
