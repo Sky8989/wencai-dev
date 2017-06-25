@@ -67,7 +67,10 @@ public interface OrderService {
 
     public APIResponse sfOrderDetail(int order_id, String access_token, String uuid);
 
-    APIResponse placeOrderDetail(String uuid, String access_token);
+    /**
+     * 快递详情
+     */
+    APIResponse selectExpressDetail(APIRequest request);
 
     APIResponse noPlaceOrderDetail(int order_id);
 

@@ -143,10 +143,10 @@ public class OrderController extends AbstractBasicController {
     /**
      * 快递详情
      */
-    @RequestMapping(value = "/placeOrderDetail", method = RequestMethod.GET)
+    @RequestMapping(value = "/expressDetail", method = RequestMethod.GET)
     public @ResponseBody
-    APIResponse placeOrderDetail(OrderExpress orderExpress, Token token) throws Exception {
-        return orderService.placeOrderDetail(orderExpress.getUuid(), token.getAccess_token());
+    APIResponse placeOrderDetail(HttpServletRequest request) throws Exception {
+        return orderService.selectExpressDetail(new APIRequest(request));
     }
 
     /**
