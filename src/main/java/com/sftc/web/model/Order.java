@@ -42,22 +42,22 @@ public class Order extends Object {
     // 纬度
     private double latitude;
     // 寄件人id(根据用户表id)
-    private User user;
     private int sender_user_id;
     // 礼卡表id
     private int gift_card_id;
     // 语音时间
     private int voice_time;
-    private GiftCard giftCard;
-    private List<OrderExpress> orderExpressList;
-    private OrderExpress orderExpress;
-    //订单类型 普通 神秘
+    // 订单类型 普通 神秘
     private String order_type;
-    //订单地域 同城 大网
+    // 订单地域 同城 大网
     private String region_type;
-    //新添加 is_cancle
+    // 是否已取消
     private String is_cancle;
 
+    // 贺卡
+    private GiftCard giftCard;
+    // 快递数组
+    private List<OrderExpress> orderExpressList;
 
     public Order() {
     }
@@ -276,14 +276,6 @@ public class Order extends Object {
         this.gift_card_id = gift_card_id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public int getSender_user_id() {
         return sender_user_id;
     }
@@ -298,14 +290,6 @@ public class Order extends Object {
 
     public void setOrderExpressList(List<OrderExpress> orderExpressList) {
         this.orderExpressList = orderExpressList;
-    }
-
-    public OrderExpress getOrderExpress() {
-        return orderExpress;
-    }
-
-    public void setOrderExpress(OrderExpress orderExpress) {
-        this.orderExpress = orderExpress;
     }
 
     public String getOrder_type() {
@@ -332,7 +316,11 @@ public class Order extends Object {
         this.region_type = region_type;
     }
 
-    public String getIs_cancle() {return is_cancle;}
+    public String getIs_cancle() {
+        return is_cancle;
+    }
 
-    public void setIs_cancle(String is_cancle) {this.is_cancle = is_cancle;}
+    public void setIs_cancle(String is_cancle) {
+        this.is_cancle = is_cancle;
+    }
 }
