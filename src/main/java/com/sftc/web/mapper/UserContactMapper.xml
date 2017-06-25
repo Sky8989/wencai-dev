@@ -82,7 +82,8 @@
             id=#{id}
     </select>
 
-    <select id="selectCirclesContact" parameterType="com.sftc.web.model.reqeustParam.UserContactParam" resultMap="contactCallback">
+    <select id="selectCirclesContact" parameterType="com.sftc.web.model.reqeustParam.UserContactParam"
+            resultMap="contactCallback">
         select
         sftc_order_express.id,sftc_order_express.ship_name,sftc_order.sender_name,
         sftc_order_express.create_time,sftc_order_express.state,sftc_order_express.ship_user_id,
@@ -94,5 +95,17 @@
         sftc_order_express.sender_user_id=#{friend_id} and sftc_order_express.ship_user_id=#{user_id})
         AND sftc_order_express.order_id = sftc_order.id
     </select>
-    
+
+    <!-- 查询用户关系 byuser_id friend_id-->
+    <select id="selectByUserIdAndShipId" parameterType="com.sftc.web.model.UserContactNew" resultType="com.sftc.web.model.UserContactNew">
+        SELECT * FROM sftc_user_contact WHERE user_id = #{user_id} AND friend_id = #{friend_id}
+    </select>
+
+    <!-- 插入用户关系-->
+    <insert id="insertUserContact" parameterType="com.sftc.web.model.UserContactNew" useGeneratedKeys="true">
+        INSERT INTO sftc_user_contact (user_id,friend_id,is_tag_star,lntimacy,create_time)
+        VALUES (#{user_id},#{friend_id},#{is_tag_star},#{lntimacy},#{create_time});
+    </insert>
+
+
 </mapper>

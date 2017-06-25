@@ -57,6 +57,6 @@ public interface OrderMapper {
 
     //查询订单详情和快递详情
     List<Order> getOrderAndExpress(Order order);
-    //取消订单，更新is_cancle字段
+    //取消订单，更新is_cancel字段
     void updateCancelOrderById(int id);
 }

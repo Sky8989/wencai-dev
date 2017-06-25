@@ -6,11 +6,12 @@ import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
 import com.sftc.web.mapper.*;
 import com.sftc.web.model.*;
+
+import com.sftc.web.model.sfmodel.Address;
 import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.apiCallback.OrderFriendCallback;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
-import com.sftc.web.model.sfmodel.Address;
 import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.service.OrderService;
 import net.sf.json.JSONObject;
@@ -51,7 +52,10 @@ public class OrderServiceImpl implements OrderService {
     private EvaluateMapper evaluateMapper;
     @Resource
     private GiftCardMapper giftCardMapper;
-
+    @Resource
+    private AddressMapper addressMapper;
+    @Resource
+    private UserContactMapper userContactMapper;
     /**
      * 普通订单提交
      */
@@ -202,6 +206,25 @@ public class OrderServiceImpl implements OrderService {
                     String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
                     orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
+
+//                    // todo 存储 好友地址 到address表
+                    com.sftc.web.model.Address shipAddress = new com.sftc.web.model.Address(oe);
+                    addressMapper.addAddress(shipAddress);
+                    //todo 存储 好友关系 到user_contact
+                    UserContactNew userContactNewParam = new UserContactNew();
+                    userContactNewParam.setUser_id(order.getSender_user_id());
+                    userContactNewParam.setFriend_id(oe.getShip_user_id());
+                    UserContactNew userContactNew = userContactMapper.selectByUserIdAndShipId(userContactNewParam);
+                    if(userContactNew == null){
+                        userContactNew = new UserContactNew();
+                        userContactNew.setUser_id(order.getSender_user_id());
+                        userContactNew.setFriend_id(oe.getShip_user_id());
+                        userContactNew.setIs_tag_star(0);
+                        userContactNew.setLntimacy(0);
+                        userContactNew.setCreate_time(time);
+                        userContactMapper.insertUserContact(userContactNew);
+                        //System.out.println("-   -有人成为好朋友了"+userContactNew.toString());
+                    }
                 }
             }
         }
@@ -480,6 +503,11 @@ public class OrderServiceImpl implements OrderService {
                 //存储订单快递信息
                 orderExpressMapper.addOrderExpress(orderExpress);
             }
+            //进行寄件人地址的存储
+            // todo 进行寄件人地址的存储
+            //import com.sftc.web.model.Address;
+            com.sftc.web.model.Address senderAddress = new com.sftc.web.model.Address(orderParam);
+            addressMapper.addAddress(senderAddress);
         } catch (Exception e) {
             status = APIStatus.SUBMIT_FAIL;
             e.printStackTrace();
@@ -987,7 +1015,7 @@ public class OrderServiceImpl implements OrderService {
      * 测试方法在 com.sftc.web.service.OrderServiceTest
      */
     public APIResponse deleteOrder(Object object) {
-        //   todo:重写逻辑  多个快递信息 都要删除
+//   todo:重写逻辑  多个快递信息 都要删除
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
         try {
@@ -997,7 +1025,7 @@ public class OrderServiceImpl implements OrderService {
             jsonObject1.remove("order_id");
             //对重复取消订单的情况进行处理
             Order order = orderMapper.selectOrderDetailByOrderId(id);
-            if("Cancelled".equals(order.getIs_cancle()) || !"".equals(order.getIs_cancle())){//is_cancle字段默认是空字符串
+            if("Cancelled".equals(order.getIs_cancel()) || !"".equals(order.getIs_cancel())){//is_cancle字段默认是空字符串
                 APIStatus.CANCEL_ORDER_FALT.setMessage("通用：订单已经取消，请勿重复取消操作。");
                 status = APIStatus.CANCEL_ORDER_FALT;
                 REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
