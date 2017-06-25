@@ -27,14 +27,13 @@ import java.util.*;
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
 
-    private static String QUOTES_URL = "http://api-dev.sf-rush.com/quotes";
-    private static String REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
-    private static String REQUEST_URL = "http://api-dev.sf-rush.com/requests";
-    private static String PAY_URL = "http://api-dev.sf-rush.com/requests/";
-    private static String CONSTANTS_URL = "http://api-dev.sf-rush.com/";
-    private static String CREATEORDER_URL = "http://api-c.sf-rush.com/api/sforderservice/ordercreate";
-    private static String COUNT_PRICE = "http://api-c.sf-rush.com/api/sforderservice/OrderFreightQuery";
-    private static String ORDERROUTE_URL = "http://api-c.sf-rush.com/api/sforderservice/OrderRouteQuery?orderid=";
+    private static final String QUOTES_URL = "http://api-dev.sf-rush.com/quotes";
+    private static final String REQUEST_URL = "http://api-dev.sf-rush.com/requests";
+    private static final String CONSTANTS_URL = "http://api-dev.sf-rush.com/constants/";
+
+    private static final String CREATEORDER_URL = "http://api-c.sf-rush.com/api/sforderservice/ordercreate";
+    private static final String COUNT_PRICE = "http://api-c.sf-rush.com/api/sforderservice/OrderFreightQuery";
+    private static final String ORDERROUTE_URL = "http://api-c.sf-rush.com/api/sforderservice/OrderRouteQuery?orderid=";
 
     private Gson gson = new Gson();
 
@@ -56,6 +55,7 @@ public class OrderServiceImpl implements OrderService {
     private AddressMapper addressMapper;
     @Resource
     private UserContactMapper userContactMapper;
+
     /**
      * 普通订单提交
      */
@@ -227,7 +227,7 @@ public class OrderServiceImpl implements OrderService {
                     userContactNewParam.setUser_id(order.getSender_user_id());
                     userContactNewParam.setFriend_id(oe.getShip_user_id());
                     UserContactNew userContactNew = userContactMapper.selectByUserIdAndShipId(userContactNewParam);
-                    if(userContactNew == null){
+                    if (userContactNew == null) {
                         userContactNew = new UserContactNew();
                         userContactNew.setUser_id(order.getSender_user_id());
                         userContactNew.setFriend_id(oe.getShip_user_id());
@@ -265,14 +265,14 @@ public class OrderServiceImpl implements OrderService {
     // 普通同城订单
     private APIResponse normalSameOrderCommit(Object object) {
 
-        String long_order_number = (Math.random() * 100000 * 1000000) + "";
+        String order_number = APIRandomUtil.getRandomString();
         APIStatus status = APIStatus.SUCCESS;
         JSONObject respObject = null;
         try {
             JSONObject reqObject = JSONObject.fromObject(object);
             Order order = new Order(
                     time,
-                    long_order_number,
+                    order_number,
                     (String) reqObject.getJSONObject("request").get("pay_type"),
                     (String) reqObject.getJSONObject("request").get("product_type"),
                     0.0,
@@ -282,8 +282,8 @@ public class OrderServiceImpl implements OrderService {
                     (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("city"),
                     (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("region"),
                     (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("street"),
-                    (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"),
-                    (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
+                    (Double) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("coordinate").get("longitude"),
+                    (Double) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("coordinate").get("latitude"),
                     "ORDER_BASIS",
                     Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")));
             order.setImage((String) reqObject.getJSONObject("order").get("image"));
@@ -304,7 +304,7 @@ public class OrderServiceImpl implements OrderService {
                     orderMapper.addOrder(order);
                     OrderExpress orderExpress = new OrderExpress(
                             time,
-                            long_order_number,
+                            order_number,
                             (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("receiver"),
                             (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("mobile"),
                             (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("province"),
@@ -339,7 +339,6 @@ public class OrderServiceImpl implements OrderService {
      * 普通大网下单
      */
     private APIResponse normalNationOrderCommit(Object object) {
-        String long_order_number = (Math.random() * 100000 * 1000000) + "";
         String orderid = APIRandomUtil.getRandomString();
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
@@ -365,7 +364,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             Order order = new Order(
                     time,
-                    long_order_number,
+                    orderid,
                     (String) sf.get("pay_method"),
                     "",
                     0,
@@ -402,7 +401,7 @@ public class OrderServiceImpl implements OrderService {
                 orderMapper.addOrder(order);
                 OrderExpress orderExpress = new OrderExpress(
                         time,
-                        long_order_number,
+                        orderid,
                         (String) sf.get("d_contact"),
                         (String) sf.get("d_tel"),
                         (String) sf.get("d_province"),
@@ -489,8 +488,8 @@ public class OrderServiceImpl implements OrderService {
                 return APIUtil.errorResponse("access_token无效");
             }
 
-            PAY_URL = PAY_URL + uuid + "/js_pay?open_id=" + user.getOpen_id();
-            HttpPost post = new HttpPost(PAY_URL);
+            String pay_url = REQUEST_URL + "/" + uuid + "/js_pay?open_id=" + user.getOpen_id();
+            HttpPost post = new HttpPost(pay_url);
             post.addHeader("PushEnvelope-Device-Token", access_token);
             String res = AIPPost.getPost("", post);
             jsonObject = JSONObject.fromObject(res);
@@ -498,7 +497,6 @@ public class OrderServiceImpl implements OrderService {
             status = APIStatus.ORDER_PAY_FAIL;
             e.printStackTrace();
         }
-        PAY_URL = "http://api-dev.sf-rush.com/requests/";
         return APIUtil.getResponse(status, jsonObject);
     }
 
@@ -511,8 +509,8 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order(orderParam);
         try {
             //生成order的编号
-            String long_order_number = (Math.random() * 100000 * 1000000) + "";
-            order.setOrder_number(long_order_number);
+            String order_number = APIRandomUtil.getRandomString();
+            order.setOrder_number(order_number);
             //存储订单信息
             orderMapper.addOrder(order);
             //构建订单快递orderExpress信息
@@ -527,7 +525,7 @@ public class OrderServiceImpl implements OrderService {
             orderExpress.setReserve_time("");
             orderExpress.setOrder_id(order.getId());
             for (int i = orderParam.getPackage_count(); i > 0; i--) {
-                orderExpress.setOrder_number((long) (Math.random() * 100000 * 1000000) + "");
+                orderExpress.setOrder_number(order_number);
                 //存储订单快递信息
                 orderExpressMapper.addOrderExpress(orderExpress);
             }
@@ -1064,8 +1062,8 @@ public class OrderServiceImpl implements OrderService {
         JSONObject attributes = jsonObject1.getJSONObject("request").getJSONObject("attributes");
         try {
             if (request.get("order_type").equals("ORDER_BASIS_SAME") || request.get("order_type").equals("ORDER_MYSTERY_SAME")) {
-                PAY_URL = PAY_URL + (String) request.get("uuid") + "/attributes/merchant_comment";
-                HttpPut put = new HttpPut(PAY_URL);
+                String pay_url = REQUEST_URL + "/" + request.get("uuid") + "/attributes/merchant_comment";
+                HttpPut put = new HttpPut(pay_url);
                 put.addHeader("PushEnvelope-Device-Token", (String) request.get("access_token"));
                 String res = AIPPost.getPost(str, put);
                 jsonObject = JSONObject.fromObject(res);
@@ -1080,7 +1078,6 @@ public class OrderServiceImpl implements OrderService {
             e.printStackTrace();
             status = APIStatus.EVALUATE_FALT;
         }
-        PAY_URL = "http://api-dev.sf-rush.com/requests/";
         return APIUtil.getResponse(status, jsonObject);
     }
 
@@ -1099,10 +1096,9 @@ public class OrderServiceImpl implements OrderService {
             jsonObject1.remove("order_id");
             //对重复取消订单的情况进行处理
             Order order = orderMapper.selectOrderDetailByOrderId(id);
-            if("Cancelled".equals(order.getIs_cancel()) || !"".equals(order.getIs_cancel())){//is_cancle字段默认是空字符串
+            if ("Cancelled".equals(order.getIs_cancel()) || !"".equals(order.getIs_cancel())) {//is_cancle字段默认是空字符串
                 APIStatus.CANCEL_ORDER_FALT.setMessage("通用：订单已经取消，请勿重复取消操作。");
                 status = APIStatus.CANCEL_ORDER_FALT;
-                REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
                 return APIUtil.getResponse(status, "订单已经被取消");
             }
             List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(id);
@@ -1127,7 +1123,7 @@ public class OrderServiceImpl implements OrderService {
                 //System.out.println("-   -这是拼接后的stringBuilder"+stringBuilder);
                 //下面是 顺丰方面取消订单的逻辑
                 String str = gson.toJson(object);
-                String myUrl = REQUESTS_URL + stringBuilder.toString() + "/events";
+                String myUrl = REQUEST_URL + "/" + stringBuilder.toString() + "/events";
                 System.out.println("-   -这是myurl" + myUrl);
                 HttpPost post = new HttpPost(myUrl);
                 post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("event").get("access_token"));
@@ -1150,7 +1146,7 @@ public class OrderServiceImpl implements OrderService {
             APIStatus.CANCEL_ORDER_FALT.setMessage("通用：订单取消失败，系统异常，请反馈");
             status = APIStatus.CANCEL_ORDER_FALT;
         }
-        REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
+
         return APIUtil.getResponse(status, jsonObject);
     }
 
@@ -1161,8 +1157,8 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
         try {
-            CONSTANTS_URL = CONSTANTS_URL + "constants/" + request.getParameter("constants") + "?latitude=" + request.getParameter("latitude") + "&longitude=" + request.getParameter("longitude");
-            HttpGet get = new HttpGet(CONSTANTS_URL);
+            String constantsUrl = CONSTANTS_URL + request.getParameter("constants") + "?latitude=" + request.getParameter("latitude") + "&longitude=" + request.getParameter("longitude");
+            HttpGet get = new HttpGet(constantsUrl);
             get.addHeader("PushEnvelope-Device-Token", (String) request.getParameter("access_token"));
             String res = APIGet.getGet(get);
             jsonObject = JSONObject.fromObject(res);
@@ -1173,7 +1169,6 @@ public class OrderServiceImpl implements OrderService {
             e.printStackTrace();
             status = APIStatus.CONSTANT_FALT;
         }
-        CONSTANTS_URL = "http://api-dev.sf-rush.com/";
         return APIUtil.getResponse(status, jsonObject);
     }
 
@@ -1208,8 +1203,8 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse OrderRouteQuery(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject1 = null;
-        ORDERROUTE_URL = ORDERROUTE_URL + request.getParameter("orderid") + "&sort=" + request.getParameter("sort");
-        HttpGet get = new HttpGet(ORDERROUTE_URL);
+        String routeUrl = ORDERROUTE_URL + request.getParameter("orderid") + "&sort=" + request.getParameter("sort");
+        HttpGet get = new HttpGet(routeUrl);
         String access_token = APIGetToken.getToken();
         get.addHeader("Authorization", "bearer " + access_token);
         String res = APIGet.getGet(get);
@@ -1224,7 +1219,6 @@ public class OrderServiceImpl implements OrderService {
             status = APIStatus.ORDERROUT_FALT;
         }
 
-        ORDERROUTE_URL = "http://api-c-test.sf-rush.com/api/sforderservice/OrderRouteQuery?orderid=";
         return APIUtil.getResponse(status, jsonObject1);
     }
 
