@@ -97,11 +97,6 @@ public interface OrderService {
     APIResponse OrderRouteQuery(APIRequest request);
 
     /**
-     * 大网好友下单
-     */
-    APIResponse globalFriendPlace(Object object);
-
-    /**
      * 提醒寄件人下单
      */
     APIResponse remindPlace(APIRequest request);

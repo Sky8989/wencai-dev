@@ -186,6 +186,18 @@ public class OrderServiceImpl implements OrderService {
             sf.put("d_county", oe.getShip_area());
             sf.put("d_address", oe.getShip_addr());
 
+            // handle pay_method
+            String pay_method = (String) sf.get("pay_method");
+            if (pay_method != null && !pay_method.equals("")) {
+                if (pay_method.equals("FREIGHT_PREPAID")) { // FREIGHT_PREPAID 寄付 1
+                    pay_method = "1";
+                } else if (pay_method.equals("FREIGHT_COLLECT")) { // FREIGHT_COLLECT 到付 2
+                    pay_method = "2";
+                }
+                sf.remove("pay_method");
+                sf.put("pay_method", pay_method);
+            }
+
             if (!oe.getState().equals("WAIT_FILL")) {
                 // 发送请求给sf，获取订单结果
                 String paramStr = gson.toJson(JSONObject.fromObject(sf));
@@ -308,32 +320,48 @@ public class OrderServiceImpl implements OrderService {
         String orderid = APIRandomUtil.getRandomString();
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
-        JSONObject jsonObject1 = JSONObject.fromObject(object);
-        jsonObject1.getJSONObject("sf").put("orderid", orderid);
-        String str = gson.toJson(jsonObject1.getJSONObject("sf"));
+        JSONObject requestObject = JSONObject.fromObject(object);
+        JSONObject orderObject = requestObject.getJSONObject("order");
+        JSONObject sf = requestObject.getJSONObject("sf");
+
+        // handle pay_method
+        String pay_method = (String) sf.get("pay_method");
+        if (pay_method != null && !pay_method.equals("")) {
+            if (pay_method.equals("FREIGHT_PREPAID")) { // FREIGHT_PREPAID 寄付 1
+                pay_method = "1";
+            } else if (pay_method.equals("FREIGHT_COLLECT")) { // FREIGHT_COLLECT 到付 2
+                pay_method = "2";
+            }
+            sf.remove("pay_method");
+            sf.put("pay_method", pay_method);
+        }
+
+        sf.put("orderid", orderid);
+
+        String str = gson.toJson(requestObject.getJSONObject("sf"));
         try {
             Order order = new Order(
                     time,
                     long_order_number,
-                    (String) jsonObject1.getJSONObject("sf").get("pay_method"),
+                    (String) sf.get("pay_method"),
                     "",
-                    0.0,
-                    (String) jsonObject1.getJSONObject("sf").get("j_contact"),
-                    (String) jsonObject1.getJSONObject("sf").get("j_tel"),
-                    (String) jsonObject1.getJSONObject("sf").get("j_province"),
-                    (String) jsonObject1.getJSONObject("sf").get("j_city"),
-                    (String) jsonObject1.getJSONObject("sf").get("j_county"),
-                    (String) jsonObject1.getJSONObject("sf").get("j_address"),
-                    0.00,
-                    0.00,
+                    0,
+                    (String) sf.get("j_contact"),
+                    (String) sf.get("j_tel"),
+                    (String) sf.get("j_province"),
+                    (String) sf.get("j_city"),
+                    (String) sf.get("j_county"),
+                    (String) sf.get("j_address"),
+                    0,
+                    0,
                     "ORDER_BASIS",
-                    Integer.parseInt((String) jsonObject1.getJSONObject("order").get("sender_user_id"))
+                    Integer.parseInt((String) orderObject.get("sender_user_id"))
             );
-            order.setImage((String) jsonObject1.getJSONObject("order").get("image"));
-            order.setVoice((String) jsonObject1.getJSONObject("order").get("voice"));
-            order.setWord_message((String) jsonObject1.getJSONObject("order").get("word_message"));
-            order.setGift_card_id(Integer.parseInt((String) jsonObject1.getJSONObject("order").get("gift_card_id")));
-            order.setVoice_time(Integer.parseInt((String) jsonObject1.getJSONObject("order").get("voice_time")));
+            order.setImage((String) orderObject.get("image"));
+            order.setVoice((String) orderObject.get("voice"));
+            order.setWord_message((String) orderObject.get("word_message"));
+            order.setGift_card_id(Integer.parseInt((String) orderObject.get("gift_card_id")));
+            order.setVoice_time(Integer.parseInt((String) orderObject.get("voice_time")));
             order.setRegion_type("REGION_NATION");
 
             //发送请求给sf，获取订单结果
@@ -352,20 +380,20 @@ public class OrderServiceImpl implements OrderService {
                 OrderExpress orderExpress = new OrderExpress(
                         time,
                         long_order_number,
-                        (String) jsonObject1.getJSONObject("sf").get("d_contact"),
-                        (String) jsonObject1.getJSONObject("sf").get("d_tel"),
-                        (String) jsonObject1.getJSONObject("sf").get("d_province"),
-                        (String) jsonObject1.getJSONObject("sf").get("d_city"),
-                        (String) jsonObject1.getJSONObject("sf").get("d_county"),
-                        (String) jsonObject1.getJSONObject("sf").get("d_address"),
+                        (String) sf.get("d_contact"),
+                        (String) sf.get("d_tel"),
+                        (String) sf.get("d_province"),
+                        (String) sf.get("d_city"),
+                        (String) sf.get("d_county"),
+                        (String) sf.get("d_address"),
                         "",
                         "",
                         "INIT",
-                        Integer.parseInt((String) jsonObject1.getJSONObject("order").get("sender_user_id")),
+                        Integer.parseInt((String) orderObject.get("sender_user_id")),
                         order.getId(),
                         orderid,
-                        0.00,
-                        0.00
+                        0.0,
+                        0.0
                 );
                 orderExpress.setReserve_time("");
                 //存储 订单快递信息
