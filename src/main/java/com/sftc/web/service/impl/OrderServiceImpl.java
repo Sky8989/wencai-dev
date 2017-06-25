@@ -421,13 +421,31 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
         try {
-            PAY_URL = PAY_URL + request.getParameter("uuid") + "/js_pay?open_id=" + request.getParameter("open_id");
+            String token = (String) request.getParameter("token");
+            String uuid = (String) request.getParameter("uuid");
+            String access_token = (String) request.getParameter("access_token");
+
+            int user_id = tokenMapper.selectUserIdByToken(token);
+            User user = userMapper.selectUserByUserId(user_id);
+
+            if (token == null || token.equals("")) {
+                return APIUtil.errorResponse("token无效");
+            }
+            if (uuid == null || uuid.equals("")) {
+                return APIUtil.errorResponse("uuid无效");
+            }
+            if (access_token == null || access_token.equals("")) {
+                return APIUtil.errorResponse("access_token无效");
+            }
+
+            PAY_URL = PAY_URL + uuid + "/js_pay?open_id=" + user.getOpen_id();
             HttpPost post = new HttpPost(PAY_URL);
-            post.addHeader("PushEnvelope-Device-Token", (String) request.getParameter("access_token"));
+            post.addHeader("PushEnvelope-Device-Token", access_token);
             String res = AIPPost.getPost("", post);
             jsonObject = JSONObject.fromObject(res);
         } catch (Exception e) {
             status = APIStatus.ORDER_PAY_FAIL;
+            e.printStackTrace();
         }
         PAY_URL = "http://api-dev.sf-rush.com/requests/";
         return APIUtil.getResponse(status, jsonObject);
@@ -966,34 +984,50 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 取消订单
+     * 测试方法在 com.sftc.web.service.OrderServiceTest
      */
     public APIResponse deleteOrder(Object object) {
-        //   todo:重写逻辑  多个快递信息uuid 都要删除
-//        前端传订单id，
-//        后端根据订单id去取消订单和快递信息，
-//        中间需要先查uuid,然后向顺丰取消快递信息，
-//        都成功后才取取消整个订单
-
+        //   todo:重写逻辑  多个快递信息 都要删除
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
         try {
             JSONObject jsonObject1 = JSONObject.fromObject(object);
             //获取订单id，便于后续取消订单操作的取用
             int id = jsonObject1.getInt("order_id");
-            System.out.println("-   -order_id的值" + jsonObject1.getInt("order_id"));
             jsonObject1.remove("order_id");
+            //对重复取消订单的情况进行处理
+            Order order = orderMapper.selectOrderDetailByOrderId(id);
+            if("Cancelled".equals(order.getIs_cancle()) || !"".equals(order.getIs_cancle())){//is_cancle字段默认是空字符串
+                APIStatus.CANCEL_ORDER_FALT.setMessage("通用：订单已经取消，请勿重复取消操作。");
+                status = APIStatus.CANCEL_ORDER_FALT;
+                REQUESTS_URL = "http://api-dev.sf-rush.com/requests/";
+                return APIUtil.getResponse(status, "订单已经被取消");
+            }
             List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(id);
-            //遍历所有的uuid
-            for (OrderExpress eachOrderExpress : arrayList) {
-                if (eachOrderExpress.getShip_name() == null && "".equals(eachOrderExpress.getShip_name())) {
-                    //如果是空订单，就结束此次循环，进行下一次
-                    System.out.println("-   -空订单，订单编号是：" + eachOrderExpress.getOrder_number());
+            //获取 拼接后的uuid串
+            StringBuilder stringBuilder = new StringBuilder();
+            //遍历所有的快递列表
+            boolean flagRealOrder = false;
+            for(OrderExpress eachOrderExpress: arrayList){
+                if(eachOrderExpress.getUuid() != null && !"".equals(eachOrderExpress.getUuid())  ){
+                    flagRealOrder = true;
+                    stringBuilder.append(eachOrderExpress.getUuid());
+                    stringBuilder.append(",");
                     continue;
                 }
+                //如果是空订单，就结束此次循环，进行下一次
+                System.out.println("-   -未付款订单，订单编号是："+eachOrderExpress.getOrder_number());
+            }
+            if (flagRealOrder){//这是订单已经提交付款了的操作
+                //   todo:真实订单还未测试到
+                //System.out.println("-   -这是拼接前的stringBuilder"+stringBuilder);
+                stringBuilder.deleteCharAt(stringBuilder.length()-1);
+                //System.out.println("-   -这是拼接后的stringBuilder"+stringBuilder);
                 //下面是 顺丰方面取消订单的逻辑
                 String str = gson.toJson(object);
-                REQUESTS_URL = REQUESTS_URL + eachOrderExpress.getUuid() + "/events";
-                HttpPost post = new HttpPost(REQUESTS_URL);
+                String myUrl = REQUESTS_URL + stringBuilder.toString() + "/events";
+                System.out.println("-   -这是myurl"+myUrl);
+                HttpPost post = new HttpPost(myUrl);
                 post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("event").get("access_token"));
                 //向顺丰发送请求 并获取结果
                 String res = AIPPost.getPost(str, post);
@@ -1002,18 +1036,11 @@ public class OrderServiceImpl implements OrderService {
                     APIStatus.CANCEL_ORDER_FALT.setMessage("顺丰方面的订单取消失败，系统异常，请反馈");
                     status = APIStatus.CANCEL_ORDER_FALT;
                 }
-            }
-//            //下面是 顺丰方面取消订单的逻辑
-//            String str = gson.toJson(object);
-//            REQUESTS_URL = REQUESTS_URL + (String) jsonObject1.getJSONObject("event").get("uuid") + "/events";
-//            HttpPost post = new HttpPost(REQUESTS_URL);
-//            post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("event").get("access_token"));
-//            //向顺丰发送请求 并获取结果
-//            String res = AIPPost.getPost(str, post);
-//            jsonObject = JSONObject.fromObject(res);
-            if (jsonObject.get("error") == null) {
-                //orderMapper.deleOrderAndOrderExpress((String) jsonObject1.get("uuid"));
-                //下面是 dankal操作order的操作
+                //下面是 操作order表的操作
+                if (jsonObject.get("error") == null) {
+                    orderMapper.updateCancelOrderById(id);
+                }
+            }else {//订单还未提交给顺丰的情况，只更新order的信息即可
                 orderMapper.updateCancelOrderById(id);
             }
         } catch (Exception e) {
