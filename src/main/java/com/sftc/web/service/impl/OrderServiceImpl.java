@@ -282,8 +282,8 @@ public class OrderServiceImpl implements OrderService {
                     (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("city"),
                     (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("region"),
                     (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("street"),
-                    (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude"),
-                    (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
+                    (Double) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("coordinate").get("longitude"),
+                    (Double) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("coordinate").get("latitude"),
                     "ORDER_BASIS",
                     Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")));
             order.setImage((String) reqObject.getJSONObject("order").get("image"));
@@ -525,7 +525,7 @@ public class OrderServiceImpl implements OrderService {
             orderExpress.setReserve_time("");
             orderExpress.setOrder_id(order.getId());
             for (int i = orderParam.getPackage_count(); i > 0; i--) {
-                orderExpress.setOrder_number((long) (Math.random() * 100000 * 1000000) + "");
+                orderExpress.setOrder_number(order_number);
                 //存储订单快递信息
                 orderExpressMapper.addOrderExpress(orderExpress);
             }
