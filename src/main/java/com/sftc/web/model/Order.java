@@ -51,8 +51,8 @@ public class Order extends Object {
     private String order_type;
     // 订单地域 同城 大网
     private String region_type;
-    // 是否已取消
-    private String is_cancle;
+    //新添加 is_cancel
+    private String is_cancel;
 
     // 贺卡
     private GiftCard giftCard;
@@ -316,11 +316,8 @@ public class Order extends Object {
         this.region_type = region_type;
     }
 
-    public String getIs_cancle() {
-        return is_cancle;
-    }
+    public String getIs_cancel() {return is_cancel;}
 
-    public void setIs_cancle(String is_cancle) {
-        this.is_cancle = is_cancle;
-    }
+    public void setIs_cancel(String is_cancel) {this.is_cancel = is_cancel;}
+
 }
