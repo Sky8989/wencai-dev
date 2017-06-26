@@ -858,38 +858,38 @@ public class OrderServiceImpl implements OrderService {
 
         APIStatus status = APIStatus.SUCCESS;
 
-        // handle SF orders url
-        String ordersURL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
-        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(myOrderParam.getId());
-        StringBuilder uuidSB = new StringBuilder();
-        for (int i = 0; i < orderExpressList.size(); i++) {
-            OrderExpress oe = orderExpressList.get(i);
-            if (oe.getUuid() != null && oe.getUuid().length() != 0) {
-                uuidSB.append(oe.getUuid());
-                uuidSB.append(",");
-            }
-        }
-        String uuids = uuidSB.toString();
-
-        // no data, return
-        if (uuids.length() == 0)
-            return APIUtil.getResponse(status, null);
-
-        ordersURL = ordersURL.replace("uuid", uuids.substring(0, uuids.length() - 1));
-        List<Orders> orderses;
-        try { // post
-            orderses = APIResolve.getOrdersJson(ordersURL, myOrderParam.getToken());
-        } catch (Exception e) {
-            APIStatus.SELECT_FAIL.setMessage("查询失败");
-            return APIUtil.getResponse(APIStatus.SELECT_FAIL, e.getLocalizedMessage());
-        }
+//      //   handle SF orders url
+//        String ordersURL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
+//        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(myOrderParam.getId());
+//        StringBuilder uuidSB = new StringBuilder();
+//        for (int i = 0; i < orderExpressList.size(); i++) {
+//            OrderExpress oe = orderExpressList.get(i);
+//            if (oe.getUuid() != null && oe.getUuid().length() != 0) {
+//                uuidSB.append(oe.getUuid());
+//                uuidSB.append(",");
+//            }
+//        }
+//        String uuids = uuidSB.toString();
+//
+//        // no data, return
+//        if (uuids.length() == 0)
+//            return APIUtil.getResponse(status, null);
+//
+//        ordersURL = ordersURL.replace("uuid", uuids.substring(0, uuids.length() - 1));
+//        List<Orders> orderses;
+//        try { // post
+//            orderses = APIResolve.getOrdersJson(ordersURL, myOrderParam.getToken());
+//        } catch (Exception e) {
+//            APIStatus.SELECT_FAIL.setMessage("查询失败");
+//            return APIUtil.getResponse(APIStatus.SELECT_FAIL, e.getLocalizedMessage());
+//        }
 
         // Update Dankal express info
-        for (Orders orders : orderses) {
-            String uuid = orders.getUuid();
-            String order_status = orders.getStatus();
-            orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
-        }
+//        for (Orders orders : orderses) {
+//            String uuid = orders.getUuid();
+//            String order_status = orders.getStatus();
+//            orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
+//        }
 
         // pageNum -> startIndex
         myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());

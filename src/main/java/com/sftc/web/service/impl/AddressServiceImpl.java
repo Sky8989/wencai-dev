@@ -1,42 +1,23 @@
 package com.sftc.web.service.impl;
 
 
-import com.google.gson.Gson;
-import com.sftc.tools.api.AIPPost;
-import com.sftc.tools.api.APIResponse;
-
-import com.sftc.tools.api.APIStatus;
-import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.api.*;
 import com.sftc.web.mapper.AddressMapper;
+import com.sftc.web.model.Address;
 import com.sftc.web.service.AddressService;
 import net.sf.json.JSONObject;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-
-import com.sftc.tools.api.*;
-
-import com.sftc.web.model.Address;
-
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * Created by IntelliJ IDEA.
- *
- * @version 1.0
- * @Package com.sftc.ssm.service.impl
- * @Description: 地址操作接口实现
- * @date 17/4/1
- * @Time 下午9:32
- */
-
 @Service("addressService")
 public class AddressServiceImpl implements AddressService {
+
+    private static final String MAP_GEOCODER_URL = "http://apis.map.qq.com/ws/geocoder/v1/?address=";
+    private static final String MAP_GEOCODER_KEY = "ZZABZ-SLCWG-HV4Q4-IJYLH-LLBD6-V3FPR";
 
     @Resource
     private AddressMapper addressMapper;
@@ -94,8 +75,38 @@ public class AddressServiceImpl implements AddressService {
 
     }
 
-   
+
     public APIResponse addAddress(Object object) {
         return null;
+    }
+
+
+    public APIResponse geocoderAddress(APIRequest request) {
+
+        // Handle Param
+        String address = (String) request.getParameter("address");
+        if (address == null || address.equals("")) {
+            return APIUtil.errorResponse("地址不能为空");
+        }
+
+        // GET
+        String geocoderUrl = MAP_GEOCODER_URL + address + "&key=" + MAP_GEOCODER_KEY;
+        HttpGet get = new HttpGet(geocoderUrl);
+        String result = APIGet.getGet(get);
+        JSONObject resObject = JSONObject.fromObject(result);
+
+        // Result
+        APIStatus status = APIStatus.SUCCESS;
+        JSONObject resultJsonObject = new JSONObject();
+        if ((Integer) resObject.get("status") == 0) {
+            // query ok
+            JSONObject locationObject = resObject.getJSONObject("result").getJSONObject("location");
+            resultJsonObject.put("longitude", locationObject.get("lng"));
+            resultJsonObject.put("latitude", locationObject.get("lat"));
+        } else {
+            status = APIStatus.SELECT_FAIL;
+        }
+
+        return APIUtil.getResponse(status, resultJsonObject);
     }
 }

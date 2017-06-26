@@ -43,4 +43,10 @@ public class AddressController {
     APIResponse deleteAddress(HttpServletRequest request) throws Exception {
         return addressService.deleteAddress(new APIRequest(request));
     }
+
+    @RequestMapping(value = "/geocoder", method = RequestMethod.GET)
+    public @ResponseBody
+    APIResponse geocoderAddress(HttpServletRequest request) throws Exception {
+        return addressService.geocoderAddress(new APIRequest(request));
+    }
 }
