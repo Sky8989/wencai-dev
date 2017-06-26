@@ -1,15 +1,6 @@
 package com.sftc.web.model;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @author _KeMing
- * @version 1.0
- * @Package com.sftc.web.model
- * @Description: 分页Model
- * @date 2017/5/23
- * @Time 下午3:45
- */
+
 public class Paging {
 
     private int user_id;
