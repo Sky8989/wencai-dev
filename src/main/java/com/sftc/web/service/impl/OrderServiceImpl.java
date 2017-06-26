@@ -587,6 +587,8 @@ public class OrderServiceImpl implements OrderService {
                 orderExpress.setState("ALREADY_FILL");
                 //获取id
                 orderExpress.setId(realList.get(random).getId());
+                //填写包裹获取时间
+                orderExpress.setReceive_time(Long.toString(System.currentTimeMillis()));
                 orderExpressMapper.updateOrderExpressByOrderExpressId(orderExpress);
             }
         } catch (Exception e) {
