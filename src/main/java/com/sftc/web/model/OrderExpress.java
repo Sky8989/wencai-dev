@@ -33,7 +33,8 @@ public class OrderExpress extends Object {
     private int sender_user_id;
     //预约时间
     private String reserve_time;
-
+    //包裹获取时间，指好友填写地址时的时间
+    private String receive_time;
     // 收件人id(根据用户表id)
     private int ship_user_id;
     // 礼卡表id
@@ -305,4 +306,8 @@ public class OrderExpress extends Object {
     public void setShip_avatar(String ship_avatar) {
         this.ship_avatar = ship_avatar;
     }
+
+    public String getReceive_time() {return receive_time;}
+
+    public void setReceive_time(String receive_time) {this.receive_time = receive_time;}
 }

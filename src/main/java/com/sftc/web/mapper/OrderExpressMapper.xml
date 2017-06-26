@@ -101,7 +101,8 @@
         latitude=#{latitude, jdbcType=DOUBLE},
         is_use=1,
         uuid=#{uuid, jdbcType=VARCHAR},
-        ship_user_id=#{ship_user_id, jdbcType=INTEGER}
+        ship_user_id=#{ship_user_id, jdbcType=INTEGER},
+        receive_time=#{receive_time, jdbcType=VARCHAR}
         WHERE id=#{id}
     </update>
 
