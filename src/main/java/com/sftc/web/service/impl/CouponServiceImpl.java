@@ -9,23 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @author _KeMing
- * @version 1.0
- * @Package com.sftc.web.service.impl
- * @Description: 顺丰优惠券接口操作实现
- * @date 2017/6/2
- * @Time 下午3:13
- */
 @Service("couponService")
 public class CouponServiceImpl implements CouponService {
 
     /**
      * 根据用户查询优惠券
-     * @param userParam
-     * @return
      */
     public APIResponse getUserCouponList(UserParam userParam) {
         APIStatus status = APIStatus.SUCCESS;
@@ -42,8 +30,6 @@ public class CouponServiceImpl implements CouponService {
 
     /**
      * 根据密语和token兑换优惠券
-     * @param promo
-     * @return
      */
     public APIResponse exchangeCoupon(Promo promo) {
         APIStatus status = APIStatus.SUCCESS;

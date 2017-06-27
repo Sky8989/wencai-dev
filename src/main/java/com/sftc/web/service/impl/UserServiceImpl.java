@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.sftc.tools.api.APIConstant.WX_AUTHORIZATION;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -30,19 +32,8 @@ public class UserServiceImpl implements UserService {
 
     public APIResponse login(UserParam userParam) throws Exception {
         APIStatus status = APIStatus.SUCCESS;
-        //真实的wechatUser
-        String AUTHORIZATION_URL = "https://api.weixin.qq.com/sns/jscode2session?appid=wxb6cbb81471348fec&secret=b201962b8a3da757c72a0747eb6f1110&js_code=JSCODE&grant_type=authorization_code";
-        AUTHORIZATION_URL = AUTHORIZATION_URL.replace("JSCODE", userParam.getJs_code());
-        WechatUser wechatUser = APIResolve.getWechatJson(AUTHORIZATION_URL);
-        //构建测试用的 wechatUser
-//        WechatUser wechatUser = new WechatUser();
-//        //wechatUser.setOpenid("openidTest123"+new Random().nextInt());
-//        wechatUser.setOpenid("openidTest123497150228");
-//        wechatUser.setSession_key("session_keyTest123"+new Random().nextInt());
-//        wechatUser.setExpires_in("expires_inTest123"+new Random().nextInt());
-//        wechatUser.setErrcode(4);
-//        wechatUser.setErrmsg("请求微信的过程出现了错误");
-
+        String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
+        WechatUser wechatUser = APIResolve.getWechatJson(auth_url);
         User user = null;
         Map<String, String> tokenInfo = new HashMap<String, String>();
         if (wechatUser.getOpenid() != null) {
