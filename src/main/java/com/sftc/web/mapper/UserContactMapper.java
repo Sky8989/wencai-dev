@@ -25,11 +25,7 @@ public interface UserContactMapper {
 
     List<ContactCallback> selectCirclesContact(UserContactParam userContactParam);
 
-    /**
-    *@Author:hxy starmoon1994
-    *@Description: 新好友列表
-    *@Date:16:53 2017/6/25
-    */
     UserContactNew selectByUserIdAndShipId(UserContactNew userContactNew);
+
     void insertUserContact(UserContactNew userContactNew);
 }

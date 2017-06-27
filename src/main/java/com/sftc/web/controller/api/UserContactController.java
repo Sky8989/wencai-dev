@@ -20,11 +20,13 @@ public class UserContactController extends AbstractBasicController {
     @Resource
     private UserContactLabelService userContactLabelService;
 
-//    @RequestMapping(value = "/list", method = RequestMethod.POST)
-//    public @ResponseBody
-//    APIResponse allFriend(@RequestBody Paging paging) throws Exception {
-//        return userContactService.getFriendList(paging);
-//    }
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse allFriend(@RequestBody Paging paging) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(paging);
+        return userContactService.getFriendList(request);
+    }
 
     @RequestMapping(value = "/contacts", method = RequestMethod.POST)
     public @ResponseBody

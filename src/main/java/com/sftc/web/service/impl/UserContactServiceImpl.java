@@ -1,16 +1,16 @@
 package com.sftc.web.service.impl;
 
-import com.sftc.tools.api.APIResolve;
-import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIStatus;
-import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.api.*;
 import com.sftc.web.mapper.*;
 import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.Paging;
 import com.sftc.web.model.User;
+import com.sftc.web.model.UserContact;
 import com.sftc.web.model.apiCallback.ContactCallback;
 import com.sftc.web.model.reqeustParam.UserContactParam;
 import com.sftc.web.model.sfmodel.Orders;
 import com.sftc.web.service.UserContactService;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -66,21 +66,31 @@ public class UserContactServiceImpl implements UserContactService {
 //        return APIUtil.getResponse(status, userContact);
 //    }
 
-//    /*
-//     * 获取某个用户的所有好友（带分页）
-//     */
-//    public APIResponse getFriendList(Paging paging) {
-//        APIStatus status = APIStatus.SUCCESS;
-//        paging.setPageNum(paging.getPageNum() - 1);
-//        List<UserContact> userContactList = null;
-//        try {
-//            userContactList = userContactMapper.friendList(paging);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            status = APIStatus.SELECT_FAIL;
-//        }
-//        return APIUtil.getResponse(status, userContactList);
-//    }
+    /**
+     * 获取用户的好友列表
+     */
+    public APIResponse getFriendList(APIRequest request) {
+        Paging paging = (Paging) request.getRequestParam();
+
+        // verify params
+        if (paging.getUser_id() == 0) {
+            return APIUtil.paramErrorResponse("用户id不能为空");
+        } else if (paging.getPageNum() < 1 || paging.getPageSize() < 1) {
+            return APIUtil.paramErrorResponse("分页参数无效");
+        }
+
+        APIStatus status = APIStatus.SUCCESS;
+        paging.setPageNum((paging.getPageNum() - 1) * paging.getPageSize());
+        List<UserContact> userContactList = null;
+        try {
+            userContactList = userContactMapper.friendList(paging);
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = APIStatus.SELECT_FAIL;
+        }
+
+        return APIUtil.getResponse(status, userContactList);
+    }
 
     /**
      * 来往记录
