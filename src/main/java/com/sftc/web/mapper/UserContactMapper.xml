@@ -6,13 +6,12 @@
 
     <resultMap id="friendListInfo" type="com.sftc.web.model.UserContact">
         <id column="id" property="id"/>
-        <result column="lntimacy" property="lntimacy"/>
-        <result column="phone" property="phone"/>
-        <result column="name" property="name"/>
-        <result column="is_tag_star" property="is_tag_star"/>
-        <result column="friend_id" property="friend_id"/>
         <result column="user_id" property="user_id"/>
+        <result column="friend_id" property="friend_id"/>
+        <result column="is_tag_star" property="is_tag_star"/>
+        <result column="lntimacy" property="lntimacy"/>
         <result column="create_time" property="create_time"/>
+        <association property="friend_info" select="selectUser" column="friend_id"/>
     </resultMap>
 
     <resultMap id="contactCallbackMap" type="com.sftc.web.model.apiCallback.ContactCallback">
@@ -24,6 +23,12 @@
         <result column="create_time" property="create_time"/>
         <result column="state" property="state"/>
     </resultMap>
+
+    <select id="selectUser" parameterType="int" resultType="com.sftc.web.model.User">
+        select id,name,avatar,create_time
+        from sftc_user
+        where id=#{friend_id}
+    </select>
 
     <!-- 好友列表 -->
     <select id="friendList" parameterType="com.sftc.web.model.Paging" resultMap="friendListInfo">
@@ -72,7 +77,8 @@
     </select>
 
     <!-- 查询用户关系 byuser_id friend_id-->
-    <select id="selectByUserIdAndShipId" parameterType="com.sftc.web.model.UserContactNew" resultType="com.sftc.web.model.UserContactNew">
+    <select id="selectByUserIdAndShipId" parameterType="com.sftc.web.model.UserContactNew"
+            resultType="com.sftc.web.model.UserContactNew">
         SELECT * FROM sftc_user_contact WHERE user_id = #{user_id} AND friend_id = #{friend_id}
     </select>
 
