@@ -55,7 +55,8 @@ public class OrderServiceImpl implements OrderService {
     private AddressMapper addressMapper;
     @Resource
     private UserContactMapper userContactMapper;
-
+    @Resource
+    private MessageMapper messageMapper;
     /**
      * 普通订单提交
      */
@@ -219,10 +220,10 @@ public class OrderServiceImpl implements OrderService {
                     orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
 
-//                    // todo 存储 好友地址 到address表
+                    //  存储 好友地址 到address表
                     com.sftc.web.model.Address shipAddress = new com.sftc.web.model.Address(oe);
                     addressMapper.addAddress(shipAddress);
-                    //todo 存储 好友关系 到user_contact
+                    // 存储 好友关系 到user_contact
                     UserContactNew userContactNewParam = new UserContactNew();
                     userContactNewParam.setUser_id(order.getSender_user_id());
                     userContactNewParam.setFriend_id(oe.getShip_user_id());
@@ -530,7 +531,6 @@ public class OrderServiceImpl implements OrderService {
                 orderExpressMapper.addOrderExpress(orderExpress);
             }
             //进行寄件人地址的存储
-            // todo 进行寄件人地址的存储
             //import com.sftc.web.model.Address;
             com.sftc.web.model.Address senderAddress = new com.sftc.web.model.Address(orderParam);
             addressMapper.addAddress(senderAddress);
@@ -590,6 +590,19 @@ public class OrderServiceImpl implements OrderService {
                 //填写包裹获取时间
                 orderExpress.setReceive_time(Long.toString(System.currentTimeMillis()));
                 orderExpressMapper.updateOrderExpressByOrderExpressId(orderExpress);
+                //todo 添加 receive_address通知信息 此时应该是寄件人收到通知
+                List<Message> messageList = messageMapper.selectMessageReceiveAddress(order.getSender_user_id());
+                if (messageList.isEmpty()){
+                    Message message = new Message("RECEIVE_ADDRESS",0, orderExpress.getId(),order.getSender_user_id());
+                    messageMapper.insertMessage(message);
+                }else {
+                    Message message = messageList.get(0);
+                    message.setIs_read(0);
+                    message.setExpress_id(orderExpress.getId());
+                    message.setUser_id(order.getSender_user_id());
+                    message.setCreate_time(Long.toString(System.currentTimeMillis()));
+                    messageMapper.updateMessageReceiveAddress(message);
+                }
             }
         } catch (Exception e) {
             status = APIStatus.SUBMIT_FAIL;

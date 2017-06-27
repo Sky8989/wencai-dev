@@ -40,4 +40,20 @@ public class Message {
     public String getCreate_time() {return create_time;}
 
     public void setCreate_time(String create_time) {this.create_time = create_time;}
+
+    public Message() {
+        super();
+    }
+    //新建消息
+    public Message(String message_type, int is_read, int express_id, int user_id) {
+        this.message_type = message_type;
+        this.is_read = is_read;
+        this.express_id = express_id;
+        this.user_id = user_id;
+        this.create_time = Long.toString(System.currentTimeMillis());
+    }
+
+    //更新 收到地址信息 的构造方法
+
+    //更新 收到快递信息 的构造方法
 }

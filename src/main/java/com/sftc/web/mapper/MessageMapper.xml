@@ -9,6 +9,18 @@
       VALUES (#{message_type},#{is_read},#{express_id},#{user_id},#{create_time})
     </insert>
 
+    <!-- 二次新建通知信息时，对原有信息进行更新，更新 express_id 和is_read 字段-->
+    <update id="updateMessageReceiveExpress" parameterType="com.sftc.web.model.Message" useGeneratedKeys="true">
+      UPDATE sftc_message SET is_read = #{is_read},express_id = #{express_id}
+      WHERE user_id = #{user_id} AND message_type LIKE 'RECEIVE_EXPRESS'
+    </update>
+
+    <!-- 二次新建通知信息时，对原有信息进行更新，更新 express_id 和is_read 字段-->
+    <update id="updateMessageReceiveAddress" parameterType="com.sftc.web.model.Message" useGeneratedKeys="true">
+        UPDATE sftc_message SET is_read = #{is_read},express_id = #{express_id}
+        WHERE user_id = #{user_id} AND message_type LIKE 'Receive_Address'
+    </update>
+
     <!-- 简单查找 收到快递信息 通知消息 by userid -->
     <select id="selectMessageReceiveExpress" parameterType="int" resultType="com.sftc.web.model.Message">
       SELECT * FROM sftc_message
