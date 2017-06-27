@@ -55,7 +55,8 @@ public class OrderServiceImpl implements OrderService {
     private AddressMapper addressMapper;
     @Resource
     private UserContactMapper userContactMapper;
-
+    @Resource
+    private MessageMapper messageMapper;
     /**
      * 普通订单提交
      */
@@ -220,10 +221,10 @@ public class OrderServiceImpl implements OrderService {
                     orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
 
-//                    // todo 存储 好友地址 到address表
+                    //  存储 好友地址 到address表
                     com.sftc.web.model.Address shipAddress = new com.sftc.web.model.Address(oe);
                     addressMapper.addAddress(shipAddress);
-                    //todo 存储 好友关系 到user_contact
+                    // 存储 好友关系 到user_contact
                     UserContactNew userContactNewParam = new UserContactNew();
                     userContactNewParam.setUser_id(order.getSender_user_id());
                     userContactNewParam.setFriend_id(oe.getShip_user_id());
@@ -531,7 +532,6 @@ public class OrderServiceImpl implements OrderService {
                 orderExpressMapper.addOrderExpress(orderExpress);
             }
             //进行寄件人地址的存储
-            // todo 进行寄件人地址的存储
             //import com.sftc.web.model.Address;
             com.sftc.web.model.Address senderAddress = new com.sftc.web.model.Address(orderParam);
             addressMapper.addAddress(senderAddress);
@@ -571,11 +571,10 @@ public class OrderServiceImpl implements OrderService {
                 realList.add(oe);
             }
         }
-        // 还欠两个逻辑：1.同一个用户重复强包裹，要返回【不能重复抢】 2.还没抢完，寄件人已经下单，其他用户继续抢包裹，要返回【已经下单不能继续抢】
+        //  还欠两个逻辑：1.同一个用户重复强包裹，要返回【不能重复抢】 2.还没抢完，寄件人已经下单，其他用户继续抢包裹，要返回【已经下单不能继续抢】
         if (realList.isEmpty()) {
             //list为空则返回已经抢完的信息
-            status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
-            return APIUtil.getResponse(status, null);
+            return APIUtil.getResponse(APIStatus.ORDER_PACKAGE_COUNT_PULL, null);
         } else {
             //获取随机下标
             int random = new Random().nextInt(realList.size());
@@ -586,8 +585,20 @@ public class OrderServiceImpl implements OrderService {
             //填写包裹获取时间
             orderExpress.setReceive_time(Long.toString(System.currentTimeMillis()));
             orderExpressMapper.updateOrderExpressByOrderExpressId(orderExpress);
+            //todo 添加 receive_address通知信息 此时应该是寄件人收到通知
+            List<Message> messageList = messageMapper.selectMessageReceiveAddress(order.getSender_user_id());
+            if (messageList.isEmpty()) {
+                Message message = new Message("RECEIVE_ADDRESS", 0, orderExpress.getId(), order.getSender_user_id());
+                messageMapper.insertMessage(message);
+            } else {
+                Message message = messageList.get(0);
+                message.setIs_read(0);
+                message.setExpress_id(orderExpress.getId());
+                message.setUser_id(order.getSender_user_id());
+                message.setCreate_time(Long.toString(System.currentTimeMillis()));
+                messageMapper.updateMessageReceiveAddress(message);
+            }
         }
-
         return APIUtil.getResponse(status, orderExpress.getOrder_id());
     }
 
@@ -778,7 +789,7 @@ public class OrderServiceImpl implements OrderService {
         String uuids = uuidSB.toString();
 
         // no data, return
-        if (uuids.length() == 0)
+         if (uuids.length() == 0)
             return APIUtil.getResponse(status, null);
 
         ordersURL = ordersURL.replace("uuid", uuids.substring(0, uuids.length() - 1));
