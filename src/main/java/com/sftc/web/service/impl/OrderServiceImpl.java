@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
         // Param Verify
         String paramVerifyMessage = normalOrderCommitVerify(requestBody);
         if (paramVerifyMessage != null) { // Param Error
-            return APIUtil.errorResponse(paramVerifyMessage);
+            return APIUtil.paramErrorResponse(paramVerifyMessage);
         }
 
         JSONObject requestObject = JSONObject.fromObject(requestBody);
@@ -83,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
         // Param Verify
         String paramVerifyMessage = normalOrderCommitVerify(requestBody);
         if (paramVerifyMessage != null) { // Param Error
-            return APIUtil.errorResponse(paramVerifyMessage);
+            return APIUtil.paramErrorResponse(paramVerifyMessage);
         }
 
         JSONObject requestObject = JSONObject.fromObject(requestBody);
@@ -150,10 +150,11 @@ public class OrderServiceImpl implements OrderService {
                     orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
                 } else {
-                    return APIUtil.errorResponse("预约时间不能为空");
+                    return APIUtil.paramErrorResponse("预约时间不能为空");
                 }
             } else {
                 status = APIStatus.SUBMIT_FAIL;
+                return APIUtil.getResponse(status, jsonObject);
             }
         }
         return APIUtil.getResponse(status, null);
@@ -163,7 +164,7 @@ public class OrderServiceImpl implements OrderService {
     private APIResponse friendNationOrderCommit(JSONObject requestObject) {
         // handle param
         if (!requestObject.getJSONObject("order").containsKey("reserve_time")) {
-            return APIUtil.errorResponse("预约时间不能为空");
+            return APIUtil.paramErrorResponse("预约时间不能为空");
         }
 
         APIStatus status = APIStatus.SUCCESS;
@@ -445,7 +446,7 @@ public class OrderServiceImpl implements OrderService {
         boolean tokenFlag = (access_token != null) && !(access_token.equals(""));
 
         if ((uuidFlag && !tokenFlag) || (!uuidFlag && tokenFlag))
-            return APIUtil.errorResponse("uuid 和 access_token 不能只传一个");
+            return APIUtil.paramErrorResponse("uuid 和 access_token 不能只传一个");
 
         if (tokenFlag) {
             post.addHeader("PushEnvelope-Device-Token", access_token);
@@ -479,13 +480,13 @@ public class OrderServiceImpl implements OrderService {
             User user = userMapper.selectUserByUserId(user_id);
 
             if (token == null || token.equals("")) {
-                return APIUtil.errorResponse("token无效");
+                return APIUtil.paramErrorResponse("token无效");
             }
             if (uuid == null || uuid.equals("")) {
-                return APIUtil.errorResponse("uuid无效");
+                return APIUtil.paramErrorResponse("uuid无效");
             }
             if (access_token == null || access_token.equals("")) {
-                return APIUtil.errorResponse("access_token无效");
+                return APIUtil.paramErrorResponse("access_token无效");
             }
 
             String pay_url = REQUEST_URL + "/" + uuid + "/js_pay?open_id=" + user.getOpen_id();
@@ -548,53 +549,45 @@ public class OrderServiceImpl implements OrderService {
         String orderExpressStr = rowData.toString();
         OrderExpress orderExpress = new Gson().fromJson(orderExpressStr, OrderExpress.class);
         APIStatus status = APIStatus.SUCCESS;
-        try {
-            //判断 订单是否下单 的逻辑
-            Order order = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
-            if (order.getRegion_type() != null && !"".equals(order.getRegion_type()) && order.getRegion_type().length() != 0) {
-                APIStatus.ORDER_PACKAGE_COUNT_PULL.setMessage("订单已经下单，现在您无法再填写信息");
-                status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
-                return APIUtil.getResponse(status, orderExpress.getOrder_id());
-            }
-            //判断 同一个用户重复填写 的逻辑
-            //定义preList为预获取的快递信息，realList为未填写的快递信息
-            LinkedList<OrderExpress> realList = new LinkedList<OrderExpress>();
-            List<OrderExpress> preList = orderExpressMapper.findAllOrderExpressByOrderId(orderExpress.getOrder_id());
-            //循环遍历 prelist ，如果有重复的名字或者没有空包裹 都跳出返回问题
-            //不能直接删除，删完了会影响list的数据结构。传入一个新的list
-            for (OrderExpress oe : preList) {
-                //某个用户只要填写过一条信息，则会跳出逻辑
-                if (oe.getShip_user_id() == orderExpress.getShip_user_id()) {
-                    APIStatus.ORDER_PACKAGE_COUNT_PULL.setMessage("您已经填写过信息，请勿重复填写");
-                    status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
-                    return APIUtil.getResponse(status, orderExpress.getOrder_id());
-                }
-                if (oe.getShip_user_id() == 0) {
-                    //默认为0，等于0的时候加到 realList
-                    realList.add(oe);
-                }
-            }
-            //  还欠两个逻辑：1.同一个用户重复强包裹，要返回【不能重复抢】 2.还没抢完，寄件人已经下单，其他用户继续抢包裹，要返回【已经下单不能继续抢】
-            if (realList.isEmpty()) {
-                //list为空则返回已经抢完的信息
-                APIStatus.ORDER_PACKAGE_COUNT_PULL.setMessage("包裹已经分发完");
-                status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
-                return APIUtil.getResponse(status, null);
-            } else {
-                //获取随机下标
-                int random = new Random().nextInt(realList.size());
-                //更新订单信息，主要是好友地址信息
-                orderExpress.setState("ALREADY_FILL");
-                //获取id
-                orderExpress.setId(realList.get(random).getId());
-                //填写包裹获取时间
-                orderExpress.setReceive_time(Long.toString(System.currentTimeMillis()));
-                orderExpressMapper.updateOrderExpressByOrderExpressId(orderExpress);
-            }
-        } catch (Exception e) {
-            status = APIStatus.SUBMIT_FAIL;
-            e.printStackTrace();
+
+        //判断订单是否下单
+        Order order = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
+        if (order.getRegion_type() != null && !"".equals(order.getRegion_type()) && order.getRegion_type().length() != 0) {
+            return APIUtil.submitErrorResponse("订单已经下单，现在您无法再填写信息", orderExpress.getOrder_id());
         }
+        //判断同一个用户重复填写
+        //定义preList为预获取的快递信息，realList为未填写的快递信息
+        LinkedList<OrderExpress> realList = new LinkedList<OrderExpress>();
+        List<OrderExpress> preList = orderExpressMapper.findAllOrderExpressByOrderId(orderExpress.getOrder_id());
+        //循环遍历 prelist ，如果有重复的名字或者没有空包裹 都跳出返回问题
+        //不能直接删除，删完了会影响list的数据结构。传入一个新的list
+        for (OrderExpress oe : preList) {
+            //某个用户只要填写过一条信息，则会跳出逻辑
+            if (oe.getShip_user_id() == orderExpress.getShip_user_id()) {
+                return APIUtil.submitErrorResponse("您已经填写过信息，请勿重复填写", orderExpress.getOrder_id());
+            }
+            if (oe.getShip_user_id() == 0) {
+                //默认为0，等于0的时候加到 realList
+                realList.add(oe);
+            }
+        }
+        // 还欠两个逻辑：1.同一个用户重复强包裹，要返回【不能重复抢】 2.还没抢完，寄件人已经下单，其他用户继续抢包裹，要返回【已经下单不能继续抢】
+        if (realList.isEmpty()) {
+            //list为空则返回已经抢完的信息
+            status = APIStatus.ORDER_PACKAGE_COUNT_PULL;
+            return APIUtil.getResponse(status, null);
+        } else {
+            //获取随机下标
+            int random = new Random().nextInt(realList.size());
+            //更新订单信息，主要是好友地址信息
+            orderExpress.setState("ALREADY_FILL");
+            //获取id
+            orderExpress.setId(realList.get(random).getId());
+            //填写包裹获取时间
+            orderExpress.setReceive_time(Long.toString(System.currentTimeMillis()));
+            orderExpressMapper.updateOrderExpressByOrderExpressId(orderExpress);
+        }
+
         return APIUtil.getResponse(status, orderExpress.getOrder_id());
     }
 
@@ -612,9 +605,7 @@ public class OrderServiceImpl implements OrderService {
         } else if (order_id != null && order_id.length() != 0) {
             order = orderMapper.selectOrderDetailByOrderId(Integer.parseInt(order_id));
         } else {
-            APIStatus failStatus = APIStatus.SELECT_FAIL;
-            failStatus.setMessage("order_number 或 order_id 必须传一个");
-            return APIUtil.getResponse(APIStatus.SELECT_FAIL, null);
+            return APIUtil.paramErrorResponse("order_number order_id 必须传一个");
         }
 
         Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -763,16 +754,12 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse getMyOrderList(APIRequest request) {
         MyOrderParam myOrderParam = (MyOrderParam) request.getRequestParam();
         // verify params
-        APIStatus failStatus = APIStatus.SELECT_FAIL;
         if (myOrderParam.getToken().length() == 0) {
-            failStatus.setMessage("token不能为空");
-            return APIUtil.getResponse(failStatus, null);
+            return APIUtil.paramErrorResponse("token不能为空");
         } else if (myOrderParam.getId() == 0) {
-            failStatus.setMessage("用户id不能为空");
-            return APIUtil.getResponse(failStatus, null);
+            return APIUtil.paramErrorResponse("用户id不能为空");
         } else if (myOrderParam.getPageNum() < 1 || myOrderParam.getPageSize() < 1) {
-            failStatus.setMessage("分页参数无效");
-            return APIUtil.getResponse(failStatus, null);
+            return APIUtil.paramErrorResponse("分页参数无效");
         }
 
         APIStatus status = APIStatus.SUCCESS;
@@ -799,7 +786,6 @@ public class OrderServiceImpl implements OrderService {
         try { // post
             orderses = APIResolve.getOrdersJson(ordersURL, myOrderParam.getToken());
         } catch (Exception e) {
-            APIStatus.SELECT_FAIL.setMessage("查询失败");
             return APIUtil.getResponse(APIStatus.SELECT_FAIL, e.getLocalizedMessage());
         }
 
@@ -846,19 +832,13 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse getMyFriendCircleOrderList(APIRequest request) {
         MyOrderParam myOrderParam = (MyOrderParam) request.getRequestParam();
         // verify params
-        APIStatus failStatus = APIStatus.SELECT_FAIL;
         if (myOrderParam.getToken().length() == 0) {
-            failStatus.setMessage("token不能为空");
-            return APIUtil.getResponse(failStatus, null);
+            return APIUtil.paramErrorResponse("token不能为空");
         } else if (myOrderParam.getId() == 0) {
-            failStatus.setMessage("用户id不能为空");
-            return APIUtil.getResponse(failStatus, null);
+            return APIUtil.paramErrorResponse("用户id不能为空");
         } else if (myOrderParam.getPageNum() < 1 || myOrderParam.getPageSize() < 1) {
-            failStatus.setMessage("分页参数无效");
-            return APIUtil.getResponse(failStatus, null);
+            return APIUtil.paramErrorResponse("分页参数无效");
         }
-
-        APIStatus status = APIStatus.SUCCESS;
 
 //      //   handle SF orders url
 //        String ordersURL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
@@ -935,7 +915,7 @@ public class OrderServiceImpl implements OrderService {
             orderCallbacks.add(callback);
         }
 
-        return APIUtil.getResponse(status, orderCallbacks);
+        return APIUtil.getResponse(APIStatus.SUCCESS, orderCallbacks);
     }
 
     /**
@@ -979,7 +959,7 @@ public class OrderServiceImpl implements OrderService {
 
         String uuid = (String) request.getParameter("uuid");
         if (uuid == null || uuid.equals("")) {
-            return APIUtil.errorResponse("uuid不能为空");
+            return APIUtil.paramErrorResponse("uuid不能为空");
         }
 
         JSONObject respObject = new JSONObject();
@@ -1018,7 +998,7 @@ public class OrderServiceImpl implements OrderService {
             // 同城订单需要access_token
             String access_token = (String) request.getParameter("access_token");
             if (access_token == null || access_token.equals("")) {
-                return APIUtil.errorResponse("access_token不能为空");
+                return APIUtil.paramErrorResponse("access_token不能为空");
             }
 
             try {
@@ -1099,9 +1079,7 @@ public class OrderServiceImpl implements OrderService {
             //对重复取消订单的情况进行处理
             Order order = orderMapper.selectOrderDetailByOrderId(id);
             if ("Cancelled".equals(order.getIs_cancel()) || !"".equals(order.getIs_cancel())) {//is_cancle字段默认是空字符串
-                APIStatus.CANCEL_ORDER_FALT.setMessage("通用：订单已经取消，请勿重复取消操作。");
-                status = APIStatus.CANCEL_ORDER_FALT;
-                return APIUtil.getResponse(status, "订单已经被取消");
+                return APIUtil.getResponse(APIStatus.CANCEL_ORDER_FALT, null);
             }
             List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(id);
             //获取 拼接后的uuid串
@@ -1133,11 +1111,8 @@ public class OrderServiceImpl implements OrderService {
                 String res = AIPPost.getPost(str, post);
                 jsonObject = JSONObject.fromObject(res);
                 if (jsonObject.get("error") != null) {
-                    APIStatus.CANCEL_ORDER_FALT.setMessage("顺丰方面的订单取消失败，系统异常，请反馈");
-                    status = APIStatus.CANCEL_ORDER_FALT;
-                }
-                //下面是 操作order表的操作
-                if (jsonObject.get("error") == null) {
+                    return APIUtil.submitErrorResponse("订单取消失败", jsonObject);
+                } else {
                     orderMapper.updateCancelOrderById(id);
                 }
             } else {//订单还未提交给顺丰的情况，只更新order的信息即可
@@ -1145,7 +1120,6 @@ public class OrderServiceImpl implements OrderService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            APIStatus.CANCEL_ORDER_FALT.setMessage("通用：订单取消失败，系统异常，请反馈");
             status = APIStatus.CANCEL_ORDER_FALT;
         }
 

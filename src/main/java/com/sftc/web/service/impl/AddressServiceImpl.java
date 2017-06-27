@@ -10,6 +10,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +88,14 @@ public class AddressServiceImpl implements AddressService {
         // Handle Param
         String address = (String) request.getParameter("address");
         if (address == null || address.equals("")) {
-            return APIUtil.errorResponse("地址不能为空");
+            return APIUtil.paramErrorResponse("地址不能为空");
+        }
+
+        try { // url encode
+            address = new String(address.getBytes("ISO-8859-1"), "UTF-8");
+            address = URLEncoder.encode(address, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
 
         // GET

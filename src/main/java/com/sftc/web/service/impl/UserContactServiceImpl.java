@@ -5,27 +5,17 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.mapper.*;
-import com.sftc.web.model.*;
+import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.User;
 import com.sftc.web.model.apiCallback.ContactCallback;
-import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.reqeustParam.UserContactParam;
 import com.sftc.web.model.sfmodel.Orders;
 import com.sftc.web.service.UserContactService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @version 1.0
- * @Package com.sftc.ssm.service.impl
- * @Description: 联系人操作接口实现
- * @date 17/4/1
- * @Time 下午9:33
- */
 @Service("userContactService")
 public class UserContactServiceImpl implements UserContactService {
 
@@ -101,15 +91,15 @@ public class UserContactServiceImpl implements UserContactService {
 
         // handle param
         if (userContactParam.getAccess_token() == null || userContactParam.getAccess_token().length() == 0) {
-            return APIUtil.errorResponse("access_token不能为空");
+            return APIUtil.paramErrorResponse("access_token不能为空");
         } else if (userContactParam.getUser_id() == 0) {
-            return APIUtil.errorResponse("用户id不能为空");
+            return APIUtil.paramErrorResponse("用户id不能为空");
         } else if (userContactParam.getFriend_id() == 0) {
-            return APIUtil.errorResponse("好友id不能为空");
+            return APIUtil.paramErrorResponse("好友id不能为空");
         } else if (userContactParam.getUser_id() == userContactParam.getFriend_id()) {
-            return APIUtil.errorResponse("I believe that you can't fuck yourself !");
+            return APIUtil.paramErrorResponse("I believe that you can't fuck yourself !");
         } else if (userContactParam.getPageNum() < 1 || userContactParam.getPageSize() < 1) {
-            return APIUtil.errorResponse("分页参数无效");
+            return APIUtil.paramErrorResponse("分页参数无效");
         }
 
         userContactParam.setPageNum((userContactParam.getPageNum() - 1) * userContactParam.getPageSize()); // pageNum -> startIndex
