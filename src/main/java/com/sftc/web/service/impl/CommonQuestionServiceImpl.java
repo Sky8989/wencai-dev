@@ -9,16 +9,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @author _KeMing
- * @version 1.0
- * @Package com.sftc.web.service.impl
- * @Description: 常见问题操作接口实现
- * @date 2017/4/25
- * @Time 上午10:59
- */
 @Service("commonQuestionService")
 public class CommonQuestionServiceImpl implements CommonQuestionService {
 

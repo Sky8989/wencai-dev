@@ -5,6 +5,7 @@ import com.sftc.web.model.UserContact;
 import com.sftc.web.model.UserContactNew;
 import com.sftc.web.model.apiCallback.ContactCallback;
 import com.sftc.web.model.reqeustParam.UserContactParam;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface UserContactMapper {
 
     void updateFriend(UserContact userContact);
 
-    UserContact friendDetail(int id);
+    UserContact friendDetail(@Param("user_id") int user_id, @Param("friend_id") int friend);
 
     List<ContactCallback> selectCirclesContact(UserContactParam userContactParam);
 

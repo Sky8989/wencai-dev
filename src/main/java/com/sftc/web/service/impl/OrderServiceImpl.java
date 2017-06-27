@@ -6,12 +6,11 @@ import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
 import com.sftc.web.mapper.*;
 import com.sftc.web.model.*;
-
-import com.sftc.web.model.sfmodel.Address;
 import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.apiCallback.OrderFriendCallback;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
+import com.sftc.web.model.sfmodel.Address;
 import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.service.OrderService;
 import net.sf.json.JSONObject;
@@ -24,20 +23,12 @@ import javax.annotation.Resource;
 import java.lang.Object;
 import java.util.*;
 
+import static com.sftc.tools.api.APIConstant.*;
+
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
 
-    private static final String QUOTES_URL = "http://api-dev.sf-rush.com/quotes";
-    private static final String REQUEST_URL = "http://api-dev.sf-rush.com/requests";
-    private static final String CONSTANTS_URL = "http://api-dev.sf-rush.com/constants/";
-
-    private static final String CREATEORDER_URL = "http://api-c.sf-rush.com/api/sforderservice/ordercreate";
-    private static final String COUNT_PRICE = "http://api-c.sf-rush.com/api/sforderservice/OrderFreightQuery";
-    private static final String ORDERROUTE_URL = "http://api-c.sf-rush.com/api/sforderservice/OrderRouteQuery?orderid=";
-
     private Gson gson = new Gson();
-
-    String time = Long.toString(System.currentTimeMillis());
 
     @Resource
     private OrderMapper orderMapper;
@@ -57,13 +48,14 @@ public class OrderServiceImpl implements OrderService {
     private UserContactMapper userContactMapper;
     @Resource
     private MessageMapper messageMapper;
+
     /**
      * 普通订单提交
      */
     public APIResponse normalOrderCommit(APIRequest request) {
         Object requestBody = request.getRequestParam();
         // Param Verify
-        String paramVerifyMessage = normalOrderCommitVerify(requestBody);
+        String paramVerifyMessage = orderCommitVerify(requestBody);
         if (paramVerifyMessage != null) { // Param Error
             return APIUtil.paramErrorResponse(paramVerifyMessage);
         }
@@ -82,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse friendOrderCommit(APIRequest request) {
         Object requestBody = request.getRequestParam();
         // Param Verify
-        String paramVerifyMessage = normalOrderCommitVerify(requestBody);
+        String paramVerifyMessage = orderCommitVerify(requestBody);
         if (paramVerifyMessage != null) { // Param Error
             return APIUtil.paramErrorResponse(paramVerifyMessage);
         }
@@ -139,7 +131,7 @@ public class OrderServiceImpl implements OrderService {
             tempJsonObj.remove("order");
             String paramStr = gson.toJson(JSONObject.fromObject(tempJsonObj));
 
-            HttpPost post = new HttpPost(REQUEST_URL);
+            HttpPost post = new HttpPost(SF_REQUEST_URL);
             post.addHeader("PushEnvelope-Device-Token", (String) requestObject.getJSONObject("request").getJSONObject("merchant").get("access_token"));
             String resultStr = AIPPost.getPost(paramStr, post);
             JSONObject jsonObject = JSONObject.fromObject(resultStr);
@@ -221,13 +213,13 @@ public class OrderServiceImpl implements OrderService {
             if (!oe.getState().equals("WAIT_FILL")) {
                 // 发送请求给sf，获取订单结果
                 String paramStr = gson.toJson(JSONObject.fromObject(sf));
-                HttpPost post = new HttpPost(CREATEORDER_URL);
+                HttpPost post = new HttpPost(SF_CREATEORDER_URL);
                 post.addHeader("Authorization", "bearer " + APIGetToken.getToken());
                 String resultStr = AIPPost.getPost(paramStr, post);
                 JSONObject jsonObject = JSONObject.fromObject(resultStr);
                 String messageType = (String) jsonObject.get("Message_Type");
                 if (messageType != null && messageType.contains("ERROR")) {
-                    status = APIStatus.SUBMIT_FAIL;
+                    return APIUtil.submitErrorResponse("下单失败", jsonObject);
                 } else {
                     // 存储订单信息
                     String uuid = (String) jsonObject.get("ordernum");
@@ -249,7 +241,7 @@ public class OrderServiceImpl implements OrderService {
                         userContactNew.setFriend_id(oe.getShip_user_id());
                         userContactNew.setIs_tag_star(0);
                         userContactNew.setLntimacy(0);
-                        userContactNew.setCreate_time(time);
+                        userContactNew.setCreate_time(Long.toString(System.currentTimeMillis()));
                         userContactMapper.insertUserContact(userContactNew);
                         //System.out.println("-   -有人成为好朋友了"+userContactNew.toString());
                     }
@@ -274,7 +266,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 普通订单提交接口验参
-    private String normalOrderCommitVerify(Object object) {
+    private String orderCommitVerify(Object object) {
         JSONObject jsonObject = JSONObject.fromObject(object);
         boolean requestObject = jsonObject.containsKey("request");  // 同城
         boolean sfObject = jsonObject.containsKey("sf");            // 大网
@@ -301,7 +293,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             JSONObject reqObject = JSONObject.fromObject(object);
             Order order = new Order(
-                    time,
+                    Long.toString(System.currentTimeMillis()),
                     order_number,
                     (String) reqObject.getJSONObject("request").get("pay_type"),
                     (String) reqObject.getJSONObject("request").get("product_type"),
@@ -323,7 +315,7 @@ public class OrderServiceImpl implements OrderService {
             order.setVoice_time(Integer.parseInt((String) reqObject.getJSONObject("order").get("voice_time")));
             order.setRegion_type("REGION_SAME");
 
-            HttpPost post = new HttpPost(REQUEST_URL);
+            HttpPost post = new HttpPost(SF_REQUEST_URL);
             post.addHeader("PushEnvelope-Device-Token", (String) reqObject.getJSONObject("request").getJSONObject("merchant").get("access_token"));
             JSONObject tempObject = JSONObject.fromObject(object);
             tempObject.remove("order");
@@ -333,7 +325,7 @@ public class OrderServiceImpl implements OrderService {
                 if (reqObject.getJSONObject("order").get("reserve_time") != null) {
                     orderMapper.addOrder(order);
                     OrderExpress orderExpress = new OrderExpress(
-                            time,
+                            Long.toString(System.currentTimeMillis()),
                             order_number,
                             (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("receiver"),
                             (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("mobile"),
@@ -393,7 +385,7 @@ public class OrderServiceImpl implements OrderService {
         String str = gson.toJson(requestObject.getJSONObject("sf"));
         try {
             Order order = new Order(
-                    time,
+                    Long.toString(System.currentTimeMillis()),
                     orderid,
                     (String) sf.get("pay_method"),
                     "",
@@ -417,7 +409,7 @@ public class OrderServiceImpl implements OrderService {
             order.setRegion_type("REGION_NATION");
 
             //发送请求给sf，获取订单结果
-            HttpPost post = new HttpPost(CREATEORDER_URL);
+            HttpPost post = new HttpPost(SF_CREATEORDER_URL);
             String access_token = APIGetToken.getToken();
             post.addHeader("Authorization", "bearer " + access_token);
             String res = AIPPost.getPost(str, post);
@@ -430,7 +422,7 @@ public class OrderServiceImpl implements OrderService {
                 //存储 订单信息
                 orderMapper.addOrder(order);
                 OrderExpress orderExpress = new OrderExpress(
-                        time,
+                        Long.toString(System.currentTimeMillis()),
                         orderid,
                         (String) sf.get("d_contact"),
                         (String) sf.get("d_tel"),
@@ -467,7 +459,7 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         String str = gson.toJson(object);
         JSONObject jsonObject = JSONObject.fromObject(str);
-        HttpPost post = new HttpPost(QUOTES_URL);
+        HttpPost post = new HttpPost(SF_QUOTES_URL);
         String uuid = (String) jsonObject.getJSONObject("request").getJSONObject("merchant").get("uuid");
         String access_token = (String) jsonObject.getJSONObject("request").getJSONObject("token").get("access_token");
 
@@ -518,7 +510,7 @@ public class OrderServiceImpl implements OrderService {
                 return APIUtil.paramErrorResponse("access_token无效");
             }
 
-            String pay_url = REQUEST_URL + "/" + uuid + "/js_pay?open_id=" + user.getOpen_id();
+            String pay_url = SF_REQUEST_URL + "/" + uuid + "/js_pay?open_id=" + user.getOpen_id();
             HttpPost post = new HttpPost(pay_url);
             post.addHeader("PushEnvelope-Device-Token", access_token);
             String res = AIPPost.getPost("", post);
@@ -537,36 +529,30 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         OrderParam orderParam = (OrderParam) request.getRequestParam();
         Order order = new Order(orderParam);
-        try {
-            //生成order的编号
-            String order_number = APIRandomUtil.getRandomString();
-            order.setOrder_number(order_number);
-            //存储订单信息
-            orderMapper.addOrder(order);
-            //构建订单快递orderExpress信息
-            OrderExpress orderExpress = new OrderExpress();
-            orderExpress.setPackage_type(orderParam.getPackage_type());
-            orderExpress.setObject_type(orderParam.getObject_type());
-            orderExpress.setOrder_id(order.getId());
-            orderExpress.setCreate_time(order.getCreate_time());
-            orderExpress.setState("WAIT_FILL");
-            orderExpress.setUuid("");
-            orderExpress.setSender_user_id(orderParam.getSender_user_id());
-            orderExpress.setReserve_time("");
-            orderExpress.setOrder_id(order.getId());
-            for (int i = orderParam.getPackage_count(); i > 0; i--) {
-                orderExpress.setOrder_number(order_number);
-                //存储订单快递信息
-                orderExpressMapper.addOrderExpress(orderExpress);
-            }
-            //进行寄件人地址的存储
-            //import com.sftc.web.model.Address;
-            com.sftc.web.model.Address senderAddress = new com.sftc.web.model.Address(orderParam);
-            addressMapper.addAddress(senderAddress);
-        } catch (Exception e) {
-            status = APIStatus.SUBMIT_FAIL;
-            e.printStackTrace();
+        //生成order的编号
+        String order_number = APIRandomUtil.getRandomString();
+        order.setOrder_number(order_number);
+        //存储订单信息
+        orderMapper.addOrder(order);
+        //构建订单快递orderExpress信息
+        OrderExpress orderExpress = new OrderExpress();
+        orderExpress.setPackage_type(orderParam.getPackage_type());
+        orderExpress.setObject_type(orderParam.getObject_type());
+        orderExpress.setOrder_id(order.getId());
+        orderExpress.setCreate_time(order.getCreate_time());
+        orderExpress.setState("WAIT_FILL");
+        orderExpress.setUuid("");
+        orderExpress.setSender_user_id(orderParam.getSender_user_id());
+        orderExpress.setReserve_time("");
+        orderExpress.setOrder_id(order.getId());
+        for (int i = orderParam.getPackage_count(); i > 0; i--) {
+            orderExpress.setOrder_number(APIRandomUtil.getRandomString());
+            orderExpressMapper.addOrderExpress(orderExpress);
         }
+        //进行寄件人地址的存储
+        com.sftc.web.model.Address senderAddress = new com.sftc.web.model.Address(orderParam);
+        addressMapper.addAddress(senderAddress);
+
         return APIUtil.getResponse(status, order.getId());
     }
 
@@ -817,7 +803,7 @@ public class OrderServiceImpl implements OrderService {
         String uuids = uuidSB.toString();
 
         // no data, return
-         if (uuids.length() == 0)
+        if (uuids.length() == 0)
             return APIUtil.getResponse(status, null);
 
         ordersURL = ordersURL.replace("uuid", uuids.substring(0, uuids.length() - 1));
@@ -966,7 +952,7 @@ public class OrderServiceImpl implements OrderService {
         JSONObject jsonObject = null;
         try {
             JSONObject jsonObject1 = JSONObject.fromObject(object);
-            HttpPost post = new HttpPost(REQUEST_URL);
+            HttpPost post = new HttpPost(SF_REQUEST_URL);
 
             post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("request").getJSONObject("merchant").get("access_token"));//97uAK7HQmDtsw5JMOqad
             String res = AIPPost.getPost(str, post);
@@ -1012,7 +998,7 @@ public class OrderServiceImpl implements OrderService {
             String sort = (String) request.getParameter("sort");
             sort = sort == null ? "desc" : sort;
             // GET
-            String url = ORDERROUTE_URL + uuid + "&sort=" + sort;
+            String url = SF_ORDERROUTE_URL + uuid + "&sort=" + sort;
             HttpGet get = new HttpGet(url);
             String access_token = APIGetToken.getToken();
             get.addHeader("Authorization", "bearer " + access_token);
@@ -1083,7 +1069,7 @@ public class OrderServiceImpl implements OrderService {
         JSONObject attributes = jsonObject1.getJSONObject("request").getJSONObject("attributes");
         try {
             if (request.get("order_type").equals("ORDER_BASIS_SAME") || request.get("order_type").equals("ORDER_MYSTERY_SAME")) {
-                String pay_url = REQUEST_URL + "/" + request.get("uuid") + "/attributes/merchant_comment";
+                String pay_url = SF_REQUEST_URL + "/" + request.get("uuid") + "/attributes/merchant_comment";
                 HttpPut put = new HttpPut(pay_url);
                 put.addHeader("PushEnvelope-Device-Token", (String) request.get("access_token"));
                 String res = AIPPost.getPost(str, put);
@@ -1142,7 +1128,7 @@ public class OrderServiceImpl implements OrderService {
                 //System.out.println("-   -这是拼接后的stringBuilder"+stringBuilder);
                 //下面是 顺丰方面取消订单的逻辑
                 String str = gson.toJson(object);
-                String myUrl = REQUEST_URL + "/" + stringBuilder.toString() + "/events";
+                String myUrl = SF_REQUEST_URL + "/" + stringBuilder.toString() + "/events";
                 System.out.println("-   -这是myurl" + myUrl);
                 HttpPost post = new HttpPost(myUrl);
                 post.addHeader("PushEnvelope-Device-Token", (String) jsonObject1.getJSONObject("event").get("access_token"));
@@ -1172,7 +1158,7 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
         try {
-            String constantsUrl = CONSTANTS_URL + request.getParameter("constants") + "?latitude=" + request.getParameter("latitude") + "&longitude=" + request.getParameter("longitude");
+            String constantsUrl = SF_CONSTANTS_URL + request.getParameter("constants") + "?latitude=" + request.getParameter("latitude") + "&longitude=" + request.getParameter("longitude");
             HttpGet get = new HttpGet(constantsUrl);
             get.addHeader("PushEnvelope-Device-Token", (String) request.getParameter("access_token"));
             String res = APIGet.getGet(get);
@@ -1195,7 +1181,7 @@ public class OrderServiceImpl implements OrderService {
         String str = gson.toJson(object);
         JSONObject jsonObject1 = null;
         try {
-            HttpPost post = new HttpPost(COUNT_PRICE);
+            HttpPost post = new HttpPost(SF_COUNT_PRICE);
             String access_token = APIGetToken.getToken();
             post.addHeader("Authorization", "bearer " + access_token);
             String res = AIPPost.getPost(str, post);
@@ -1218,7 +1204,7 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse OrderRouteQuery(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject1 = null;
-        String routeUrl = ORDERROUTE_URL + request.getParameter("orderid") + "&sort=" + request.getParameter("sort");
+        String routeUrl = SF_ORDERROUTE_URL + request.getParameter("orderid") + "&sort=" + request.getParameter("sort");
         HttpGet get = new HttpGet(routeUrl);
         String access_token = APIGetToken.getToken();
         get.addHeader("Authorization", "bearer " + access_token);
@@ -1248,7 +1234,7 @@ public class OrderServiceImpl implements OrderService {
         jsonObject1.getJSONObject("sf").put("orderid", orderid);
         String str = gson.toJson(jsonObject1.getJSONObject("sf"));
         try {
-            HttpPost post = new HttpPost(CREATEORDER_URL);
+            HttpPost post = new HttpPost(SF_CREATEORDER_URL);
             String access_token = APIGetToken.getToken();
             post.addHeader("Authorization", "bearer " + access_token);
             String res = AIPPost.getPost(str, post);
@@ -1279,4 +1265,3 @@ public class OrderServiceImpl implements OrderService {
         return APIUtil.getResponse(status, orderList);
     }
 }
-

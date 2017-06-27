@@ -15,11 +15,11 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sftc.tools.api.APIConstant.MAP_GEOCODER_KEY;
+import static com.sftc.tools.api.APIConstant.MAP_GEOCODER_URL;
+
 @Service("addressService")
 public class AddressServiceImpl implements AddressService {
-
-    private static final String MAP_GEOCODER_URL = "http://apis.map.qq.com/ws/geocoder/v1/?address=";
-    private static final String MAP_GEOCODER_KEY = "ZZABZ-SLCWG-HV4Q4-IJYLH-LLBD6-V3FPR";
 
     @Resource
     private AddressMapper addressMapper;
