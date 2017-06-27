@@ -164,7 +164,8 @@ public class OrderServiceImpl implements OrderService {
                 return APIUtil.getResponse(status, jsonObject);
             }
         }
-        return APIUtil.getResponse(status, null);
+        order = orderMapper.selectOrderDetailByOrderId(order_id);
+        return APIUtil.getResponse(status, order);
     }
 
     // 好友大网订单提交
@@ -262,7 +263,9 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
         }
-        return APIUtil.getResponse(status, null);
+        order = orderMapper.selectOrderDetailByOrderId(order_id);
+
+        return APIUtil.getResponse(status, order);
     }
 
     // 普通订单提交接口验参
