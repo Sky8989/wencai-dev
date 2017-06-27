@@ -150,6 +150,20 @@ public class OrderServiceImpl implements OrderService {
                     String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
                     orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
+                    //todo 添加 通知信息 RECEIVE_EXPRESS 生成收件人的通知信息
+                    //先查 再新建或者更新
+                    List<Message> messageList = messageMapper.selectMessageReceiveExpress(oe.getShip_user_id());
+                    if (messageList.isEmpty()) {
+                        Message message = new Message("RECEIVE_EXPRESS", 0, oe.getId(), oe.getShip_user_id());
+                        messageMapper.insertMessage(message);
+                    } else {
+                        Message message = messageList.get(0);
+                        message.setIs_read(0);
+                        message.setExpress_id(oe.getId());
+                        message.setCreate_time(Long.toString(System.currentTimeMillis()));
+                        messageMapper.updateMessageReceiveExpress(message);
+                    }
+
                 } else {
                     return APIUtil.paramErrorResponse("预约时间不能为空");
                 }
@@ -238,6 +252,20 @@ public class OrderServiceImpl implements OrderService {
                         userContactNew.setCreate_time(time);
                         userContactMapper.insertUserContact(userContactNew);
                         //System.out.println("-   -有人成为好朋友了"+userContactNew.toString());
+                    }
+
+                    //todo 添加 通知信息 RECEIVE_EXPRESS 生成收件人的通知信息
+                    //先查 再新建或者更新
+                    List<Message> messageList = messageMapper.selectMessageReceiveExpress(oe.getShip_user_id());
+                    if (messageList.isEmpty()) {
+                        Message message = new Message("RECEIVE_EXPRESS", 0, oe.getId(), oe.getShip_user_id());
+                        messageMapper.insertMessage(message);
+                    } else {
+                        Message message = messageList.get(0);
+                        message.setExpress_id(oe.getId());
+                        message.setIs_read(0);
+                        message.setCreate_time(Long.toString(System.currentTimeMillis()));
+                        messageMapper.updateMessageReceiveExpress(message);
                     }
                 }
             }
