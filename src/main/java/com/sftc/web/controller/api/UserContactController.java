@@ -34,11 +34,11 @@ public class UserContactController extends AbstractBasicController {
         return userContactService.getContactInfo(userContactParam);
     }
 
-//    @RequestMapping(value = "/detail", method = RequestMethod.POST)
-//    public @ResponseBody
-//    APIResponse friendDetail(@RequestBody UserContactParam userContactParam) throws Exception {
-//        return userContactService.getFriendDetail(userContactParam);
-//    }
+    @RequestMapping(value = "/detail", method = RequestMethod.GET)
+    public @ResponseBody
+    APIResponse friendDetail(HttpServletRequest request) throws Exception {
+        return userContactService.getFriendDetail(new APIRequest(request));
+    }
 
 //    @RequestMapping(value = "/add", method = RequestMethod.POST)
 //    public @ResponseBody

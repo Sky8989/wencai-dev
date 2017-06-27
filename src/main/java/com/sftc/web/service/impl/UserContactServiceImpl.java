@@ -2,10 +2,7 @@ package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
 import com.sftc.web.mapper.*;
-import com.sftc.web.model.OrderExpress;
-import com.sftc.web.model.Paging;
-import com.sftc.web.model.User;
-import com.sftc.web.model.UserContact;
+import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.ContactCallback;
 import com.sftc.web.model.reqeustParam.UserContactParam;
 import com.sftc.web.model.sfmodel.Orders;
@@ -15,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.sftc.tools.api.APIStatus.SUCCESS;
 
 @Service("userContactService")
 public class UserContactServiceImpl implements UserContactService {
@@ -51,20 +50,40 @@ public class UserContactServiceImpl implements UserContactService {
 //        }
 //        return APIUtil.getResponse(status, null);
 //    }
-//
-//    /*
-//     * 根据id查询好友详情
-//     */
-//    public APIResponse getFriendDetail(UserContactParam userContactParam) {
-//        APIStatus status = APIStatus.SUCCESS;
-//        int id = userContactParam.getId();
-//        UserContact userContact = userContactMapper.friendDetail(id);
-//        List<UserContactLabel> userContactLabelList = userContactLabelMapper.getFriendLabelList(id);
-//        List<DateRemind> dateRemindList = dateRemindMapper.getDateRemindList(id);
-//        userContact.setUserContactLabelList(userContactLabelList);
-//        userContact.setDateRemindList(dateRemindList);
-//        return APIUtil.getResponse(status, userContact);
-//    }
+
+    /*
+     * 根据id查询好友详情
+     */
+    public APIResponse getFriendDetail(APIRequest request) {
+
+        // Param
+        String userId = (String) request.getParameter("user_id");
+        String friendId = (String) request.getParameter("friend_id");
+
+        if (userId == null || userId.equals(""))
+            return APIUtil.paramErrorResponse("user_id不能为空");
+        if (friendId == null || friendId.equals(""))
+            return APIUtil.paramErrorResponse("friend_id不能为空");
+
+        int user_id = Integer.parseInt(userId);
+        int friend_id = Integer.parseInt(friendId);
+
+        if (user_id < 1)
+            return APIUtil.paramErrorResponse("user_id无效");
+        if (friend_id < 1)
+            return APIUtil.paramErrorResponse("friend_id无效");
+
+        UserContact userContact = userContactMapper.friendDetail(user_id, friend_id);
+
+        if (userContact == null)
+            return APIUtil.selectErrorResponse("非好友关系", null);
+
+        List<UserContactLabel> userContactLabelList = userContactLabelMapper.getFriendLabelList(user_id);
+        List<DateRemind> dateRemindList = dateRemindMapper.getDateRemindList(user_id);
+        userContact.setUserContactLabelList(userContactLabelList);
+        userContact.setDateRemindList(dateRemindList);
+        return APIUtil.getResponse(SUCCESS, userContact);
+    }
 
     /**
      * 获取用户的好友列表
@@ -79,7 +98,7 @@ public class UserContactServiceImpl implements UserContactService {
             return APIUtil.paramErrorResponse("分页参数无效");
         }
 
-        APIStatus status = APIStatus.SUCCESS;
+        APIStatus status = SUCCESS;
         paging.setPageNum((paging.getPageNum() - 1) * paging.getPageSize());
         List<UserContact> userContactList = null;
         try {
@@ -97,7 +116,7 @@ public class UserContactServiceImpl implements UserContactService {
      */
     public APIResponse getContactInfo(UserContactParam userContactParam) {
 
-        APIStatus status = APIStatus.SUCCESS;
+        APIStatus status = SUCCESS;
 
         // handle param
         if (userContactParam.getAccess_token() == null || userContactParam.getAccess_token().length() == 0) {

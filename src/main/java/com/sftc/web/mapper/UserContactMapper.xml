@@ -63,7 +63,7 @@
     <select id="friendDetail" parameterType="int" resultType="com.sftc.web.model.UserContact">
             SELECT *
             FROM sftc_user_contact
-            WHERE id=#{id}
+            WHERE user_id=#{user_id} AND friend_id=#{friend_id}
     </select>
 
     <select id="selectCirclesContact" parameterType="com.sftc.web.model.reqeustParam.UserContactParam"

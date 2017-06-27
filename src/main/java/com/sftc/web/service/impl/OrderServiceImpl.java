@@ -37,8 +37,6 @@ public class OrderServiceImpl implements OrderService {
 
     private Gson gson = new Gson();
 
-    String time = Long.toString(System.currentTimeMillis());
-
     @Resource
     private OrderMapper orderMapper;
     @Resource
@@ -64,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse normalOrderCommit(APIRequest request) {
         Object requestBody = request.getRequestParam();
         // Param Verify
-        String paramVerifyMessage = normalOrderCommitVerify(requestBody);
+        String paramVerifyMessage = orderCommitVerify(requestBody);
         if (paramVerifyMessage != null) { // Param Error
             return APIUtil.paramErrorResponse(paramVerifyMessage);
         }
@@ -83,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse friendOrderCommit(APIRequest request) {
         Object requestBody = request.getRequestParam();
         // Param Verify
-        String paramVerifyMessage = normalOrderCommitVerify(requestBody);
+        String paramVerifyMessage = orderCommitVerify(requestBody);
         if (paramVerifyMessage != null) { // Param Error
             return APIUtil.paramErrorResponse(paramVerifyMessage);
         }
@@ -236,7 +234,7 @@ public class OrderServiceImpl implements OrderService {
                         userContactNew.setFriend_id(oe.getShip_user_id());
                         userContactNew.setIs_tag_star(0);
                         userContactNew.setLntimacy(0);
-                        userContactNew.setCreate_time(time);
+                        userContactNew.setCreate_time(Long.toString(System.currentTimeMillis()));
                         userContactMapper.insertUserContact(userContactNew);
                         //System.out.println("-   -有人成为好朋友了"+userContactNew.toString());
                     }
@@ -247,7 +245,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 普通订单提交接口验参
-    private String normalOrderCommitVerify(Object object) {
+    private String orderCommitVerify(Object object) {
         JSONObject jsonObject = JSONObject.fromObject(object);
         boolean requestObject = jsonObject.containsKey("request");  // 同城
         boolean sfObject = jsonObject.containsKey("sf");            // 大网
@@ -274,7 +272,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             JSONObject reqObject = JSONObject.fromObject(object);
             Order order = new Order(
-                    time,
+                    Long.toString(System.currentTimeMillis()),
                     order_number,
                     (String) reqObject.getJSONObject("request").get("pay_type"),
                     (String) reqObject.getJSONObject("request").get("product_type"),
@@ -306,7 +304,7 @@ public class OrderServiceImpl implements OrderService {
                 if (reqObject.getJSONObject("order").get("reserve_time") != null) {
                     orderMapper.addOrder(order);
                     OrderExpress orderExpress = new OrderExpress(
-                            time,
+                            Long.toString(System.currentTimeMillis()),
                             order_number,
                             (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("receiver"),
                             (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("mobile"),
@@ -366,7 +364,7 @@ public class OrderServiceImpl implements OrderService {
         String str = gson.toJson(requestObject.getJSONObject("sf"));
         try {
             Order order = new Order(
-                    time,
+                    Long.toString(System.currentTimeMillis()),
                     orderid,
                     (String) sf.get("pay_method"),
                     "",
@@ -403,7 +401,7 @@ public class OrderServiceImpl implements OrderService {
                 //存储 订单信息
                 orderMapper.addOrder(order);
                 OrderExpress orderExpress = new OrderExpress(
-                        time,
+                        Long.toString(System.currentTimeMillis()),
                         orderid,
                         (String) sf.get("d_contact"),
                         (String) sf.get("d_tel"),
@@ -1246,4 +1244,3 @@ public class OrderServiceImpl implements OrderService {
         return APIUtil.getResponse(status, orderList);
     }
 }
-
