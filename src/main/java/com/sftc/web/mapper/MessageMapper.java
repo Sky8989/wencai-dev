@@ -4,10 +4,6 @@ import com.sftc.web.model.Message;
 
 import java.util.List;
 
-/**
- * Created by huxingyue on 2017/6/27.
- * 对 消息通知表 的操作
- */
 public interface MessageMapper {
     //    <!-- 新建 收到快递信息/收到好友地址 通知消息-->
     void insertMessage(Message message);
@@ -23,4 +19,9 @@ public interface MessageMapper {
 
     //    <!-- 简单查找 收到好友地址 通知消息 by userid -->
     List<Message> selectMessageReceiveAddress(int userId);
+
+    /**
+     * 查询未读消息
+     */
+    List<Message> selectUnReadMessageList(int user_id);
 }

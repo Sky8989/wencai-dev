@@ -73,6 +73,12 @@
         SELECT * FROM sftc_order WHERE id=#{order_id}
     </select>
 
+    <select id="selectOrderDetailByExpressId" resultMap="orderMap" parameterType="int">
+        SELECT *
+        FROM sftc_order o, sftc_order_express oe
+        WHERE o.id=oe.order_id AND oe.id=#{express_id}
+    </select>
+
     <!-- 添加订单 -->
     <insert id="addOrder" parameterType="com.sftc.web.model.Order" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_order
