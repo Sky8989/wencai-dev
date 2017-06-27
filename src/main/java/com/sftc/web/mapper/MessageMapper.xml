@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sftc.web.mapper.MessageMapper">
+    <!-- 新建 收到快递信息/收到好友地址 通知消息-->
+    <insert id="insertMessage" parameterType="com.sftc.web.model.Message" useGeneratedKeys="true">
+      INSERT INTO sftc_message (message_type,is_read,express_id,user_id,create_time)
+      VALUES (#{message_type},#{is_read},#{express_id},#{user_id},#{create_time})
+    </insert>
+
+    <!-- 简单查找 收到快递信息 通知消息 by userid -->
+    <select id="selectMessageReceiveExpress" parameterType="int" resultType="com.sftc.web.model.Message">
+      SELECT * FROM sftc_message
+      WHERE user_id = #{user_id} AND message_type LIKE  'RECEIVE_EXPRESS'
+    </select>
+
+    <!-- 简单查找 收到快递信息 通知消息 by userid -->
+    <select id="selectMessageReceiveAddress" parameterType="int" resultType="com.sftc.web.model.Message">
+      SELECT * FROM sftc_message
+      WHERE user_id = #{user_id} AND message_type LIKE  'Receive_Address'
+    </select>
+</mapper>

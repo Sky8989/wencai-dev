@@ -791,7 +791,7 @@ public class OrderServiceImpl implements OrderService {
         String uuids = uuidSB.toString();
 
         // no data, return
-        if (uuids.length() == 0)
+         if (uuids.length() == 0)
             return APIUtil.getResponse(status, null);
 
         ordersURL = ordersURL.replace("uuid", uuids.substring(0, uuids.length() - 1));
