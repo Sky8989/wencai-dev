@@ -2,6 +2,8 @@ package com.sftc.tools.api;
 
 public enum APIStatus {
 
+    PARAM_ERROR("-1", "参数异常"),
+
     SUCCESS("00001", "success"),
     USER_FAIL("00002", "用户名或密码错误"),
     USER_NOT_EXIST("00003", "用户名不存在"),
@@ -14,7 +16,7 @@ public enum APIStatus {
     ORDER_NOT_FOUND("00007", "没有该订单"),
     COURIER_NOT_FOUND("00008", "没有该订单"),
     WECHAT_ERR("", ""),
-    CANCEL_ORDER_FALT("00009", "falt"),
+    CANCEL_ORDER_FALT("00009", "订单已经取消，请勿重复取消操作。"),
     GET_MESSAGE("000010", "VALIDATION_ERROR"),
     REGISTER_FAIL("000011", "验证码错误或已失效"),
     REGISTER_SUCCESS("000012", "注册成功"),
@@ -25,12 +27,12 @@ public enum APIStatus {
     VALIDATION_ERROR("000017", "请输入正确的手机号码"),
     GIFT_CARD_NOT_FOUND("00009", "没有该礼卡"),
     QUOTE_FAIL("000018", "计价失败"),
-    ADDRESS_FAIL("0000019", "新增地址失败"),
-    PARAMETER_FAIL("0000020", "参数传递错误"),
-    LOGIN_FAIL("0000021", "获取个人信息失败"),
-    EVALUATE_FALT("0000022", "评价失败"),
-    CONSTANT_FALT("0000023", "获取常量失败"),
-    ORDERROUT_FALT("0000024", "暂无路由信息");
+    ADDRESS_FAIL("000019", "新增地址失败"),
+    PARAMETER_FAIL("000020", "参数传递错误"),
+    LOGIN_FAIL("000021", "获取个人信息失败"),
+    EVALUATE_FALT("000022", "评价失败"),
+    CONSTANT_FALT("000023", "获取常量失败"),
+    ORDERROUT_FALT("000024", "暂无路由信息");
 
     private String state;
     private String message;
@@ -46,13 +48,5 @@ public enum APIStatus {
 
     public String getMessage() {
         return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setState(String state) {
-        this.state = state;
     }
 }

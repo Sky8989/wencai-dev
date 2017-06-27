@@ -1,6 +1,9 @@
 package com.sftc.web.service.impl;
 
-import com.sftc.tools.api.*;
+import com.sftc.tools.api.APIResolve;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIStatus;
+import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.md5.MD5Util;
 import com.sftc.web.mapper.TokenMapper;
 import com.sftc.web.mapper.UserMapper;
@@ -12,17 +15,10 @@ import com.sftc.web.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @version 1.0
- * @Package com.sftc.ssm.service.impl
- * @Description: 用户操作接口实现
- * @date 17/4/1
- * @Time 下午9:34
- */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -30,8 +26,8 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Resource
-    protected TokenMapper tokenMapper;
-    
+    private TokenMapper tokenMapper;
+
     public APIResponse login(UserParam userParam) throws Exception {
         APIStatus status = APIStatus.SUCCESS;
         //真实的wechatUser
@@ -52,8 +48,9 @@ public class UserServiceImpl implements UserService {
         if (wechatUser.getOpenid() != null) {
             List<User> userList = userMapper.selectUserByOpenid(wechatUser.getOpenid());
             if (userList.size() > 1) {
-                return APIUtil.errorResponse("出现重复用户，请填写用户反馈");
-            }if (userList.size() == 1){
+                return APIUtil.paramErrorResponse("出现重复用户，请填写用户反馈");
+            }
+            if (userList.size() == 1) {
                 user = userList.get(0);
             }
             if (user == null) {
@@ -61,22 +58,22 @@ public class UserServiceImpl implements UserService {
                 user2.setOpen_id(wechatUser.getOpenid());
                 user2.setSession_key(wechatUser.getSession_key());
                 user2.setCreate_time(Long.toString(System.currentTimeMillis()));
-                    //加入头像和昵称
-                    if(userParam.getName() != null  && userParam.getAvatar() != null){
-                        user2.setAvatar(userParam.getAvatar());
-                        user2.setName(userParam.getName());
-                        userMapper.insertWithAvatarAndName(user2);
-                        //System.out.println("-   -新用户执行插入了头像和名字，用户的id是："+user2.getId());
-                    }else {
-                        userMapper.insertOpenid(user2);
-                        //System.out.println("-   -新用户没有插入了头像和名字,用户的id是："+user2.getId());
-                    }
-                    //构建新的token
-                    String myToken = makeToken(user2.getCreate_time(), user2.getOpen_id());
-                    Token token = new Token(user2.getId(), myToken);
-                    tokenMapper.addToken(token);
-                    tokenInfo.put("token", myToken);
-                    tokenInfo.put("user_id", (user2.getId() + ""));
+                //加入头像和昵称
+                if (userParam.getName() != null && userParam.getAvatar() != null) {
+                    user2.setAvatar(userParam.getAvatar());
+                    user2.setName(userParam.getName());
+                    userMapper.insertWithAvatarAndName(user2);
+                    //System.out.println("-   -新用户执行插入了头像和名字，用户的id是："+user2.getId());
+                } else {
+                    userMapper.insertOpenid(user2);
+                    //System.out.println("-   -新用户没有插入了头像和名字,用户的id是："+user2.getId());
+                }
+                //构建新的token
+                String myToken = makeToken(user2.getCreate_time(), user2.getOpen_id());
+                Token token = new Token(user2.getId(), myToken);
+                tokenMapper.addToken(token);
+                tokenInfo.put("token", myToken);
+                tokenInfo.put("user_id", (user2.getId() + ""));
 //                int id = userMapper.insertOpenid(user);
 //                String myToken = makeToken(user2.getCreate_time(), user2.getOpen_id());
 //                Token token = new Token(id, myToken);
@@ -88,7 +85,7 @@ public class UserServiceImpl implements UserService {
                 user.setSession_key(wechatUser.getSession_key());
                 user.setCreate_time(Long.toString(System.currentTimeMillis()));
                 //更新头像和昵称
-                if(userParam.getName() != null  && userParam.getAvatar() != null) {
+                if (userParam.getName() != null && userParam.getAvatar() != null) {
                     user.setAvatar(userParam.getAvatar());
                     user.setName(userParam.getName());
                     userMapper.updateUserOfAvatar(user);
@@ -112,19 +109,16 @@ public class UserServiceImpl implements UserService {
                 tokenInfo.put("user_id", (token.getUser_id() + ""));
             }
         } else {
-            status = APIStatus.WECHAT_ERR;
-            status.setState(wechatUser.getErrcode().toString());
-            status.setMessage(wechatUser.getErrmsg());
+            return APIUtil.submitErrorResponse(wechatUser.getErrmsg(), wechatUser);
         }
         return APIUtil.getResponse(status, tokenInfo);
     }
 
     public Token getToken(int id) {
-        Token token = tokenMapper.getToken(id);
-        return token;
+        return tokenMapper.getToken(id);
     }
 
-    public String makeToken(String str1, String str2) {
+    private String makeToken(String str1, String str2) {
         String s = MD5Util.MD5(str1 + str2);
         return s.substring(0, s.length() - 10);
     }
