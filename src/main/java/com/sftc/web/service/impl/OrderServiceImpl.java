@@ -57,6 +57,7 @@ public class OrderServiceImpl implements OrderService {
     private UserContactMapper userContactMapper;
     @Resource
     private MessageMapper messageMapper;
+
     /**
      * 普通订单提交
      */
@@ -213,7 +214,7 @@ public class OrderServiceImpl implements OrderService {
                 JSONObject jsonObject = JSONObject.fromObject(resultStr);
                 String messageType = (String) jsonObject.get("Message_Type");
                 if (messageType != null && messageType.contains("ERROR")) {
-                    status = APIStatus.SUBMIT_FAIL;
+                    return APIUtil.submitErrorResponse("下单失败", jsonObject);
                 } else {
                     // 存储订单信息
                     String uuid = (String) jsonObject.get("ordernum");
@@ -509,36 +510,30 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = APIStatus.SUCCESS;
         OrderParam orderParam = (OrderParam) request.getRequestParam();
         Order order = new Order(orderParam);
-        try {
-            //生成order的编号
-            String order_number = APIRandomUtil.getRandomString();
-            order.setOrder_number(order_number);
-            //存储订单信息
-            orderMapper.addOrder(order);
-            //构建订单快递orderExpress信息
-            OrderExpress orderExpress = new OrderExpress();
-            orderExpress.setPackage_type(orderParam.getPackage_type());
-            orderExpress.setObject_type(orderParam.getObject_type());
-            orderExpress.setOrder_id(order.getId());
-            orderExpress.setCreate_time(order.getCreate_time());
-            orderExpress.setState("WAIT_FILL");
-            orderExpress.setUuid("");
-            orderExpress.setSender_user_id(orderParam.getSender_user_id());
-            orderExpress.setReserve_time("");
-            orderExpress.setOrder_id(order.getId());
-            for (int i = orderParam.getPackage_count(); i > 0; i--) {
-                orderExpress.setOrder_number(order_number);
-                //存储订单快递信息
-                orderExpressMapper.addOrderExpress(orderExpress);
-            }
-            //进行寄件人地址的存储
-            //import com.sftc.web.model.Address;
-            com.sftc.web.model.Address senderAddress = new com.sftc.web.model.Address(orderParam);
-            addressMapper.addAddress(senderAddress);
-        } catch (Exception e) {
-            status = APIStatus.SUBMIT_FAIL;
-            e.printStackTrace();
+        //生成order的编号
+        String order_number = APIRandomUtil.getRandomString();
+        order.setOrder_number(order_number);
+        //存储订单信息
+        orderMapper.addOrder(order);
+        //构建订单快递orderExpress信息
+        OrderExpress orderExpress = new OrderExpress();
+        orderExpress.setPackage_type(orderParam.getPackage_type());
+        orderExpress.setObject_type(orderParam.getObject_type());
+        orderExpress.setOrder_id(order.getId());
+        orderExpress.setCreate_time(order.getCreate_time());
+        orderExpress.setState("WAIT_FILL");
+        orderExpress.setUuid("");
+        orderExpress.setSender_user_id(orderParam.getSender_user_id());
+        orderExpress.setReserve_time("");
+        orderExpress.setOrder_id(order.getId());
+        for (int i = orderParam.getPackage_count(); i > 0; i--) {
+            orderExpress.setOrder_number(APIRandomUtil.getRandomString());
+            orderExpressMapper.addOrderExpress(orderExpress);
         }
+        //进行寄件人地址的存储
+        com.sftc.web.model.Address senderAddress = new com.sftc.web.model.Address(orderParam);
+        addressMapper.addAddress(senderAddress);
+
         return APIUtil.getResponse(status, order.getId());
     }
 
@@ -789,7 +784,7 @@ public class OrderServiceImpl implements OrderService {
         String uuids = uuidSB.toString();
 
         // no data, return
-         if (uuids.length() == 0)
+        if (uuids.length() == 0)
             return APIUtil.getResponse(status, null);
 
         ordersURL = ordersURL.replace("uuid", uuids.substring(0, uuids.length() - 1));
