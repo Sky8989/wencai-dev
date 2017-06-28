@@ -59,6 +59,13 @@
         WHERE id=#{id}
     </update>
 
+    <!-- 星标好友 -->
+    <update id="starFriend" parameterType="int">
+        update sftc_user_contact
+        set is_tag_star=#{is_tag_star}
+        WHERE user_id=#{user_id} AND friend_id=#{friend_id}
+    </update>
+
     <!-- 好友详情 -->
     <select id="friendDetail" parameterType="int" resultMap="friendMap">
             SELECT *

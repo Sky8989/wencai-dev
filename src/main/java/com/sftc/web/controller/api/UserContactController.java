@@ -34,6 +34,14 @@ public class UserContactController extends AbstractBasicController {
         return userContactService.getContactInfo(userContactParam);
     }
 
+    @RequestMapping(value = "/star", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse getContactInfo(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return userContactService.starFriend(request);
+    }
+
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse friendDetail(HttpServletRequest request) throws Exception {

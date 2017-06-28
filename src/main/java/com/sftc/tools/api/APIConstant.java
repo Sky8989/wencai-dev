@@ -5,8 +5,8 @@ public class APIConstant {
     /** 同城根地址 */
     private static final String SF_SAME_DOMAIN = "http://api-dev.sf-rush.com/";
     /** 大网根地址 */
-//    private static final String SF_NATION_DOMAIN = "http://api-c.sf-rush.com/api/sforderservice/";    // 正式环境
-    private static final String SF_NATION_DOMAIN = "http://api-c-test.sf-rush.com/api/sforderservice/"; // dev
+    private static final String SF_NATION_DOMAIN = "http://api-c.sf-rush.com/api/sforderservice/";    // 正式环境
+//    private static final String SF_NATION_DOMAIN = "http://api-c-test.sf-rush.com/api/sforderservice/"; // dev
 
     // 七牛相关
     /** accessKey */

@@ -29,4 +29,9 @@ public interface UserContactMapper {
     UserContactNew selectByUserIdAndShipId(UserContactNew userContactNew);
 
     void insertUserContact(UserContactNew userContactNew);
+
+    /**
+     * 星标好友
+     */
+    void starFriend(@Param("user_id") int user_id, @Param("friend_id") int friend_id, @Param("is_tag_star") int is_star);
 }
