@@ -15,4 +15,9 @@ public interface AddressHistoryMapper {
      * 查询历史地址
      */
     List<AddressHistory> selectAddressHistoryListByUserId(int user_id);
+
+    /**
+     * 删除历史地址（软删除）
+     */
+    void deleteAddressHistoryWithId(int address_history_Id);
 }

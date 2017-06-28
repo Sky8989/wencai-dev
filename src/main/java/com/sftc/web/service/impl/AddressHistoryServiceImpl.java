@@ -40,7 +40,7 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
 
         // Handle avatar
         List<AddressHistory> addressHistories = addressHistoryMapper.selectAddressHistoryListByUserId(user_id);
-        for (AddressHistory ah: addressHistories) {
+        for (AddressHistory ah : addressHistories) {
             Address address = ah.getAddress();
             User user = userMapper.selectUserByUserId(address.getUser_id());
             String avatar = user.getAvatar() == null ? DK_USER_AVATAR_DEFAULT : user.getAvatar();
@@ -48,5 +48,22 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
         }
 
         return APIUtil.getResponse(SUCCESS, addressHistories);
+    }
+
+    /**
+     * 删除历史地址
+     */
+    public APIResponse deleteAddressHistory(APIRequest request) {
+        // Param
+        String addressHistoryId = (String) request.getParameter("address_history_id");
+        if (addressHistoryId == null || addressHistoryId.equals(""))
+            return APIUtil.paramErrorResponse("address_history_id不能为空");
+        int address_history_id = Integer.parseInt(addressHistoryId);
+        if (address_history_id < 1)
+            return APIUtil.paramErrorResponse("address_history_id不正确");
+
+        addressHistoryMapper.deleteAddressHistoryWithId(address_history_id);
+
+        return APIUtil.getResponse(SUCCESS, null);
     }
 }

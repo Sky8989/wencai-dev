@@ -42,12 +42,6 @@ public class AddressController {
         return addressService.editAddress(address);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.GET)
-    public @ResponseBody
-    APIResponse deleteAddress(HttpServletRequest request) throws Exception {
-        return addressService.deleteAddress(new APIRequest(request));
-    }
-
     @RequestMapping(value = "/geocoder", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse geocoderAddress(HttpServletRequest request) throws Exception {
@@ -58,5 +52,11 @@ public class AddressController {
     public @ResponseBody
     APIResponse selectAddressHistory(HttpServletRequest request) throws Exception {
         return addressHistoryService.selectAddressHistory(new APIRequest(request));
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse deleteAddress(HttpServletRequest request) throws Exception {
+        return addressHistoryService.deleteAddressHistory(new APIRequest(request));
     }
 }

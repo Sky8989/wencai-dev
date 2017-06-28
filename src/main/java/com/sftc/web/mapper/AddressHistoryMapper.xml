@@ -33,4 +33,10 @@
         WHERE ah.address_id=a.id AND ah.user_id=#{user_id} AND ah.is_delete=0
     </select>
 
+    <update id="deleteAddressHistoryWithId" parameterType="int">
+        UPDATE sftc_address_history
+        SET is_delete=1
+        WHERE id=#{address_history_id}
+    </update>
+
 </mapper>
