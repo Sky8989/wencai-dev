@@ -18,7 +18,7 @@
     </resultMap>
 
     <!-- 添加地址  -->
-    <insert id="addAddress" parameterType="com.sftc.web.model.Address">
+    <insert id="addAddress" useGeneratedKeys="true" keyProperty="id" parameterType="com.sftc.web.model.Address">
       insert into sftc_address
       (user_id,name,phone,province,city,area,address,create_time)
       values

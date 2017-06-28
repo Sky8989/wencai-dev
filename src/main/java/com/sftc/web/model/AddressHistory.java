@@ -1,40 +1,19 @@
 package com.sftc.web.model;
 
-import java.util.List;
-
-/**
- * Created by IntelliJ IDEA.
- *
- * @version 1.0
- * @Package com.sftc.ssm.pojo
- * @Description: 历史地址类
- * @date 17/4/1
- * @Time 下午9:00
- */
 public class AddressHistory extends Object {
 
     private int id;
+    // 用户编号
+    private int user_id;
+    // 地址编号
+    private transient int address_id;
+    // 是否删除
+    private transient int is_delete;
     // 创建时间
     private String create_time;
-    // 省份
-    private String province;
-    // 城市
-    private String city;
-    // 小区
-    private String district;
-    // 楼层号或门派号
-    private String detail;
-    // 电话
-    private String phone;
-    // 收件人姓名
-    private String name;
-    // 所属的用户
 
-    private int user_id;
-    private List<Order> orderList;
-
-    public AddressHistory() {
-    }
+    // 地址
+    private Address address;
 
     public int getId() {
         return id;
@@ -42,6 +21,30 @@ public class AddressHistory extends Object {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
+
+    public int getAddress_id() {
+        return address_id;
+    }
+
+    public void setAddress_id(int address_id) {
+        this.address_id = address_id;
+    }
+
+    public int getIs_delete() {
+        return is_delete;
+    }
+
+    public void setIs_delete(int is_delete) {
+        this.is_delete = is_delete;
     }
 
     public String getCreate_time() {
@@ -52,69 +55,11 @@ public class AddressHistory extends Object {
         this.create_time = create_time;
     }
 
-    public String getProvince() {
-        return province;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district;
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
-
-    public List<Order> getOrderList() {
-        return orderList;
-    }
-
-    public void setOrderList(List<Order> orderList) {
-        this.orderList = orderList;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }

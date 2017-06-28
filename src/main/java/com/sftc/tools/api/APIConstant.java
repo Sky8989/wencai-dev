@@ -12,7 +12,7 @@ public class APIConstant {
     /** accessKey */
     public static final String QN_ACCESSKEY = "Jyi6Ntprm38nI6n1heGjwXyQmzie8ZjY7l9Cq_Je";
     /** secretKey */
-    public static final String QN_SECRETKEY = "eBqe82USZuB6gnqvjTsyg_qki6C6HwnkFIvNIH";
+    public static final String QN_SECRETKEY = "eBqe82USZuB6gnqvjTsyg_qki6C6HwnkFIvNIH-y";
     /** bucket */
     public static final String QN_BUCKET = "sftc";
 
@@ -56,4 +56,6 @@ public class APIConstant {
     /** 路由地址 */
     public static final String SF_ORDERROUTE_URL = SF_NATION_DOMAIN + "OrderRouteQuery?orderid=";
 
+    // 默认头像占位图
+    public static final String DK_USER_AVATAR_DEFAULT = "https://sf.dankal.cn/anim_package.png";
 }
