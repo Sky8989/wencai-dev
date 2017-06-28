@@ -1,9 +1,13 @@
 package com.sftc.web.service;
 
+import com.google.gson.Gson;
+import com.sftc.tools.api.AIPPost;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.api.OrderController;
 import com.sftc.web.model.OrderExpress;
+import net.sf.json.JSONObject;
+import org.apache.http.client.methods.HttpPut;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +16,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
 import java.util.*;
+
+import static com.sftc.tools.api.APIConstant.SF_REQUEST_URL;
 
 /**
  * Created by IntelliJ IDEA.
@@ -103,10 +109,42 @@ public class OrderServiceTest {
                 "\"longitude\": 114.260976,\n" +
                 "\"latitude\": 22.723223\n" +
                 "}";
+    }
 
 
-
-
+    @Test
+    public void evaluateTest(){
+        // 生成 顺丰订单评价接口 需要的信息
+        Object object = new String("{" +
+                "\"request\": {" +
+                "\"access_token\": \"7nWq8uExhVUoE7EW4ud2\"," +
+                "\"uuid\": \"2c9a85895c549ce5015c58c16c6a10c9\"," +
+                "\"attributes\": {" +
+                "\"merchant_comments\": \"感觉这产品还不错\"," +
+                "\"merchant_score\": \"5\"," +
+                "\"merchant_tags\": {" +
+                "\"deliver_speed\": \"0\"," +
+                "\"service_attitude\": \"0\"," +
+                "\"door_speed\": \"0\"" +
+                "}" +
+                "}," +
+                "\"order_id\": \"1000\"" +
+                "}" +
+                "}");
+        String str = new Gson().toJson(object);
+        JSONObject jsonObject = null;
+        JSONObject jsonObjectParam = JSONObject.fromObject(object);
+        JSONObject request = jsonObjectParam.getJSONObject("request");
+        JSONObject attributes = jsonObjectParam.getJSONObject("request").getJSONObject("attributes");
+        int order_id = request.getInt("order_id");
+        System.out.println("-   -order_id是："+order_id);
+        // 向顺丰的接口发送评价信息
+        String pay_url = SF_REQUEST_URL + "/" + request.get("uuid") + "/attributes/merchant_comment";
+        HttpPut put = new HttpPut(pay_url);
+        put.addHeader("PushEnvelope-Device-Token", (String) request.get("access_token"));
+        String res = AIPPost.getPost(str, put);
+//        jsonObject = JSONObject.fromObject(res);
+        System.out.println("-   -这是res"+res);
     }
 
 
