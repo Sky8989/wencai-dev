@@ -293,8 +293,8 @@
         gc.name,gc.icon,gc.type,gc.create_time
     </sql>
 
-    <!-- 查看快递详情  -->
-    <select id="placeOrderDetail" parameterType="String" resultMap="orderMap">
+    <!-- 查看快递订单详情  -->
+    <select id="selectOrderDetailByUuid" parameterType="String" resultMap="orderMap">
         SELECT *
         FROM sftc_order o, sftc_order_express oe
         WHERE oe.uuid=#{uuid} AND o.id=oe.order_id

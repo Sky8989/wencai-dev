@@ -54,7 +54,7 @@ public interface OrderMapper {
 
     void updatePlace(Order order);
 
-    Order placeOrderDetail(@Param("uuid") String uuid);
+    Order selectOrderDetailByUuid(@Param("uuid") String uuid);
 
     void deleOrderAndOrderExpress(String uuid);
 

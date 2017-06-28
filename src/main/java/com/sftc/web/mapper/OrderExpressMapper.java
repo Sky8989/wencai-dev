@@ -23,12 +23,20 @@ public interface OrderExpressMapper {
 
     void updatePlace(OrderExpress orderExpress);
 
+    void updateOrderExpressStatus(int express_id, String status);
+
     String getUuidByOrderId(int order_id);
 
     //获取订单对应的未填写快递信息列表list,根据订单id order_id
     List<OrderExpress> UnWritenOrderExpressListByOrderIdAndShipnameNull(int order_id);
+
     //更新快递信息，by 快递id，用于好友填写订单时回填信息
     void updateOrderExpressByOrderExpressId(OrderExpress orderExpress);
 
     List<OrderExpress> findAllOrderExpressByOrderId(int order_id);
+
+    /**
+     * 根据uuid查询快递
+     */
+    OrderExpress selectExpressByUuid(@Param("uuid") String uuid);
 }

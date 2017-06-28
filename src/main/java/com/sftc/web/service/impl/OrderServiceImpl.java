@@ -13,6 +13,7 @@ import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.model.sfmodel.Address;
 import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.service.OrderService;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -759,6 +760,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * 更改订单状态
+     */
+    public APIResponse updateOrderStatus(APIRequest request) {
+        JSONObject requestObject = JSONObject.fromObject(request.getRequestParam());
+        int order_id = ((Double) requestObject.get("order_id")).intValue();
+        String status = (String) requestObject.get("status");
+        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+//        for (OrderExpress oe : order.getOrderExpressList()) {
+//
+//        }
+        return null;
+    }
+
+    /**
      * 返回未被填写的包裹
      */
     public APIResponse getEmptyPackage(APIRequest request) {
@@ -979,42 +994,39 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 快递详情
+     * 订单快递详情
      */
     public APIResponse selectExpressDetail(APIRequest request) {
 
         APIStatus status = APIStatus.SUCCESS;
 
+        // Param
         String uuid = (String) request.getParameter("uuid");
-        if (uuid == null || uuid.equals("")) {
+        if (uuid == null || uuid.equals(""))
             return APIUtil.paramErrorResponse("uuid不能为空");
-        }
+        // order
+        Order order = orderMapper.selectOrderDetailByUuid(uuid);
+        if (order == null)
+            return APIUtil.selectErrorResponse("订单不存在", null);
 
         JSONObject respObject = new JSONObject();
-
-        // order
-        Order order = orderMapper.placeOrderDetail(uuid);
         String regionType = order.getRegion_type();
         if (regionType.equals("REGION_NATION")) { // 大网
-
+            OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
             // sort
             String sort = (String) request.getParameter("sort");
             sort = sort == null ? "desc" : sort;
             // GET
-            String url = SF_ORDERROUTE_URL + uuid + "&sort=" + sort;
+            String url = SF_ORDERROUTE_URL + orderExpress.getOrder_number() + "&sort=" + sort;
             HttpGet get = new HttpGet(url);
             String access_token = APIGetToken.getToken();
             get.addHeader("Authorization", "bearer " + access_token);
             String res = APIGet.getGet(get);
 
             if (!res.equals("[]")) {
-                JSONObject tempObject = JSONObject.fromObject(res);
-                if (tempObject.get("Message_Type") != null) {
-                    if (tempObject.get("Message_Type").equals("ORDER_CREATE_ERROR")) {
-                        status = APIStatus.ORDERROUT_FALT;
-                    } else {
-                        respObject.put("sf", tempObject);
-                    }
+                JSONArray routeList = JSONArray.fromObject(res);
+                if (routeList != null) {
+                    respObject.put("sf", routeList);
                 }
             } else {
                 respObject.put("sf", new JSONObject());
