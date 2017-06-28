@@ -28,9 +28,21 @@ public class NotificationMessageController extends AbstractBasicController {
      */
     @RequestMapping(value = "/getMessage", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse placeOrder(@RequestBody Object object) throws Exception {
+    APIResponse getMessage(@RequestBody Object object) throws Exception {
         APIRequest request = new APIRequest();
         request.setRequestParam(object);
         return notificationMessageService.getMessage(request);
+    }
+
+    /**
+     * 更新通知消息的is_read状态
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/updateIsRead", method = RequestMethod.GET)
+    public @ResponseBody()
+    APIResponse updateIsRead(int id) throws Exception {
+
+        return notificationMessageService.updateMessage(id);
     }
 }

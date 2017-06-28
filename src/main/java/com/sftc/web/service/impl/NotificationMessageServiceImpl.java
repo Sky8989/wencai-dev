@@ -25,8 +25,7 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
 
     public APIResponse getMessage(APIRequest apiRequest) {
         APIStatus status = APIStatus.SUCCESS;
-        String s = (String) apiRequest.getRequestParam().toString();
-        System.out.println("-   -"+s);
+        String s = (String) apiRequest.getRequestParam();
         Message message = new Gson().fromJson(s,Message.class);
         List<Message> listone = messageMapper.selectMessageReceiveAddress(message.getUser_id());
         List<Message> listtwo = messageMapper.selectMessageReceiveExpress(message.getUser_id());
@@ -42,7 +41,14 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
         return APIUtil.getResponse(status,jsonObject);
     }
 
-    public APIResponse updateMessage(APIRequest apiRequest) {
-        return null;
+    /**
+    *@Author:hxy starmoon1994
+    *@Description: 更改消息状态 更新is_read字段
+    *@Date:19:02 2017/6/27
+    */
+    public APIResponse updateMessage(int id) {
+        APIStatus status = APIStatus.SUCCESS;
+        messageMapper.updateIsRead(id);
+        return APIUtil.getResponse(status,null);
     }
 }
