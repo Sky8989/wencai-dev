@@ -1062,7 +1062,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 订单评价
-     * todo
+     *
      */
     public APIResponse evaluate(Object object) {
         APIStatus status = APIStatus.SUCCESS;
@@ -1117,7 +1117,6 @@ public class OrderServiceImpl implements OrderService {
         if (flagEvaluate){
             evaluateMapper.addEvaluate(evaluate);
         }
-
         return APIUtil.getResponse(status, jsonObject);
     }
 
