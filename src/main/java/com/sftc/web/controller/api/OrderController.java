@@ -8,6 +8,7 @@ import com.sftc.web.model.Token;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.service.OrderService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -147,6 +148,17 @@ public class OrderController extends AbstractBasicController {
     public @ResponseBody
     APIResponse placeOrderDetail(HttpServletRequest request) throws Exception {
         return orderService.selectExpressDetail(new APIRequest(request));
+    }
+
+    /**
+     * 更改订单状态
+     */
+    @RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse updateOrderStatus(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.updateOrderStatus(request);
     }
 
     /**

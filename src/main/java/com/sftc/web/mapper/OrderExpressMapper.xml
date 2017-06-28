@@ -119,11 +119,8 @@
 
     <update id="updateOrderExpressStatus">
         UPDATE sftc_order_express
-        set
-
-        is_use=1,
-        uuid=#{uuid, jdbcType=VARCHAR}
-        WHERE order_id=#{order_id}
+        SET state=#{status, jdbcType=VARCHAR}
+        WHERE id=#{express_id}
     </update>
 
     <select id="getUuidByOrderId" resultType="string" parameterType="int">
