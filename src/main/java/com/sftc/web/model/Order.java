@@ -56,6 +56,8 @@ public class Order extends Object {
 
     // 贺卡
     private GiftCard giftCard;
+    // 订单评价信息
+    private Evaluate evaluate;
     // 快递数组
     private List<OrderExpress> orderExpressList;
 
@@ -320,4 +322,7 @@ public class Order extends Object {
 
     public void setIs_cancel(String is_cancel) {this.is_cancel = is_cancel;}
 
+    public Evaluate getEvaluate() {return evaluate;}
+
+    public void setEvaluate(Evaluate evaluate) {this.evaluate = evaluate;}
 }

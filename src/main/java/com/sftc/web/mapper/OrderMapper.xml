@@ -34,6 +34,38 @@
         </collection>
     </resultMap>
 
+    <resultMap id="orderMapWithEvaluate" type="com.sftc.web.model.Order">
+        <id property="id" column="id"/>
+        <result property="order_type" column="order_type"/>
+        <result property="region_type" column="region_type"/>
+        <result property="order_number" column="order_number"/>
+        <result property="longitude" column="longitude"/>
+        <result property="latitude" column="latitude"/>
+        <result property="sender_user_id" column="sender_user_id"/>
+        <result property="sender_mobile" column="sender_mobile"/>
+        <result property="sender_name" column="sender_name"/>
+        <result property="sender_province" column="sender_province"/>
+        <result property="sender_city" column="sender_city"/>
+        <result property="sender_area" column="sender_area"/>
+        <result property="sender_addr" column="sender_addr"/>
+        <result property="voice" column="voice"/>
+        <result property="image" column="image"/>
+        <result property="word_message" column="word_message"/>
+        <result property="pay_method" column="pay_method"/>
+        <result property="distribution_method" column="distribution_method"/>
+        <result property="gmt_pay_create" column="gmt_pay_create"/>
+        <result property="gift_card_id" column="gift_card_id"/>
+        <result property="voice_time" column="voice_time"/>
+        <result property="create_time" column="create_time"/>
+        <association property="giftCard" select="selectGiftCard" column="gift_card_id">
+        </association>
+        <association property="evaluate" select="selectEvaluate" column="id" >
+        </association>
+        <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress" select="selectExpressList"
+                    column="id">
+        </collection>
+    </resultMap>
+
     <select id="selectExpressList" parameterType="java.lang.String" resultType="com.sftc.web.model.OrderExpress">
         select * from sftc_order_express where order_id=#{id}
     </select>
@@ -42,6 +74,9 @@
         select * from sftc_gift_card where id=#{gift_card_id}
     </select>
 
+    <select id="selectEvaluate" parameterType="int" resultType="com.sftc.web.model.Evaluate">
+        SELECT * FROM  sftc_evaluate WHERE order_id = #{order_id}
+    </select>
     <!-- 提交订单  -->
     <insert id="addOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
         INSERT INTO sftc_order ( create_time, order_number, ship_name, ship_mobile, ship_province,
@@ -294,7 +329,7 @@
     </sql>
 
     <!-- 查看快递订单详情  -->
-    <select id="selectOrderDetailByUuid" parameterType="String" resultMap="orderMap">
+    <select id="selectOrderDetailByUuid" parameterType="String" resultMap="orderMapWithEvaluate">
         SELECT *
         FROM sftc_order o, sftc_order_express oe
         WHERE oe.uuid=#{uuid} AND o.id=oe.order_id
