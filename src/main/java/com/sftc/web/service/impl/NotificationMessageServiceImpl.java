@@ -5,14 +5,18 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.mapper.MessageMapper;
 import com.sftc.web.mapper.OrderMapper;
+import com.sftc.web.mapper.UserMapper;
 import com.sftc.web.model.Message;
 import com.sftc.web.model.Order;
+import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.User;
 import com.sftc.web.service.NotificationMessageService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
 
+import static com.sftc.tools.api.APIConstant.DK_USER_AVATAR_DEFAULT;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 
 @Service
@@ -22,6 +26,9 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
 
     @Resource
     private OrderMapper orderMapper;
+
+    @Resource
+    private UserMapper userMapper;
 
     public APIResponse getMessage(APIRequest request) {
 
@@ -39,6 +46,16 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
         for (Message message : messageList) {
             int express_id = message.getExpress_id();
             Order order = orderMapper.selectOrderDetailByExpressId(express_id);
+
+            for (OrderExpress oe : order.getOrderExpressList()) {
+                User user = userMapper.selectUserByUserId(oe.getShip_user_id());
+                if (user == null) {
+                    oe.setShip_avatar(DK_USER_AVATAR_DEFAULT);
+                } else {
+                    oe.setShip_avatar(user.getAvatar());
+                }
+            }
+
             if (message.getMessage_type().equals("RECEIVE_ADDRESS")) {
                 // 只有"收到地址"的消息才需要订单数据
                 message.setOrder(order);
