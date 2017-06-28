@@ -9,6 +9,8 @@ public class AddressHistory extends Object {
     private transient int address_id;
     // 是否删除
     private transient int is_delete;
+    // 是否神秘件
+    private int is_mystery;
     // 创建时间
     private String create_time;
 
@@ -45,6 +47,14 @@ public class AddressHistory extends Object {
 
     public void setIs_delete(int is_delete) {
         this.is_delete = is_delete;
+    }
+
+    public int getIs_mystery() {
+        return is_mystery;
+    }
+
+    public void setIs_mystery(int is_mystery) {
+        this.is_mystery = is_mystery;
     }
 
     public String getCreate_time() {
