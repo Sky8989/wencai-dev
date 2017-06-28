@@ -1168,6 +1168,7 @@ public class OrderServiceImpl implements OrderService {
             if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {
                 status = APIStatus.EVALUATE_FALT;
             }else  {// 评价成功后，向评价表存入 评价记录
+                jsonObject = jsonObject.getJSONObject("attributes");
                 evaluateMapper.addEvaluate(evaluate);
             }
         }else {
