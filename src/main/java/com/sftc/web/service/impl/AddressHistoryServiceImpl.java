@@ -48,7 +48,7 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
         for (AddressHistory ah : addressHistories) {
             Address address = ah.getAddress();
             User user = userMapper.selectUserByUserId(address.getUser_id());
-            String avatar = user.getAvatar() == null ? DK_USER_AVATAR_DEFAULT : user.getAvatar();
+            String avatar = (user == null || user.getAvatar() == null) ? DK_USER_AVATAR_DEFAULT : user.getAvatar();
             address.setAvatar(avatar);
         }
 
