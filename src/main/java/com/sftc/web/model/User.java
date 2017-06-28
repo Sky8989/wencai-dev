@@ -1,5 +1,7 @@
 package com.sftc.web.model;
 
+import static com.sftc.tools.api.APIConstant.DK_USER_AVATAR_DEFAULT;
+
 public class User extends Object {
     private int id;
     private String uuid;
@@ -67,7 +69,6 @@ public class User extends Object {
     }
 
 
-
     public String getUuid() {
         return uuid;
     }
@@ -125,7 +126,7 @@ public class User extends Object {
     }
 
     public String getAvatar() {
-        return avatar;
+        return avatar == null || avatar.equals("") ? DK_USER_AVATAR_DEFAULT : avatar;
     }
 
     public void setAvatar(String avatar) {
