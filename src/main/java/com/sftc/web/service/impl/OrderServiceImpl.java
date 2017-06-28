@@ -1158,8 +1158,6 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         uuidStr.deleteCharAt(uuidStr.length()-1);
-        // 定义一个flagEvaluate 记录顺丰接口访问是否成功
-        boolean flagEvaluate = true;
         if (flag){
             // 向顺丰的接口发送评价信息
             String evaluate_url = SF_REQUEST_URL + "/" + uuidStr.toString() + "/attributes/merchant_comment";
@@ -1169,15 +1167,12 @@ public class OrderServiceImpl implements OrderService {
             jsonObject = JSONObject.fromObject(res);
             if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {
                 status = APIStatus.EVALUATE_FALT;
-                flagEvaluate = false;
+            }else  {// 评价成功后，向评价表存入 评价记录
+                evaluateMapper.addEvaluate(evaluate);
             }
         }else {
             // 当 flag 为false 时，说明没有可评价的订单，也是评价失败
             status = APIStatus.EVALUATE_FALT;
-        }
-        // 当 flagEvaluate 为true，向评价表存入 评价记录
-        if (flagEvaluate){
-            evaluateMapper.addEvaluate(evaluate);
         }
         return APIUtil.getResponse(status, jsonObject);
     }
