@@ -44,11 +44,11 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
         if (pageNum < 1 || pageSzie < 1) return APIUtil.paramErrorResponse("分页参数无效");
 
         // Handle avatar
-        List<AddressHistory> addressHistories = addressHistoryMapper.selectAddressHistoryListByUserId(user_id, (pageNum - 1) * pageSzie, pageNum);
+        List<AddressHistory> addressHistories = addressHistoryMapper.selectAddressHistoryListByUserId(user_id, (pageNum - 1) * pageSzie, pageSzie);
         for (AddressHistory ah : addressHistories) {
             Address address = ah.getAddress();
             User user = userMapper.selectUserByUserId(address.getUser_id());
-            String avatar = user.getAvatar() == null ? DK_USER_AVATAR_DEFAULT : user.getAvatar();
+            String avatar = (user == null || user.getAvatar() == null) ? DK_USER_AVATAR_DEFAULT : user.getAvatar();
             address.setAvatar(avatar);
         }
 
