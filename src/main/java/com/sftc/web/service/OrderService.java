@@ -49,6 +49,11 @@ public interface OrderService {
     APIResponse updateOrder(APIRequest request, Order order, OrderExpress orderExpress);
 
     /**
+     * 更改订单状态
+     */
+    APIResponse updateOrderStatus(APIRequest request);
+
+    /**
      * 返回未被填写的包裹
      */
     APIResponse getEmptyPackage(APIRequest request);

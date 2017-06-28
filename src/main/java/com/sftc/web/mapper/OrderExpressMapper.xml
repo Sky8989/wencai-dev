@@ -4,19 +4,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.OrderExpressMapper">
 
-    <resultMap id="orderExpressMap" type="com.sftc.web.model.OrderExpress" >
-        <id column="id" property="id" />
-        <result column="order_number" property="order_number" />
-        <result column="ship_name" property="ship_name" />
-        <result column="ship_mobile" property="ship_mobile" />
-        <result column="ship_province" property="ship_province" />
-        <result column="ship_city" property="ship_city" />
-        <result column="ship_area" property="ship_area" />
-        <result column="ship_addr" property="ship_addr" />
-        <result column="package_type" property="package_type" />
-        <result column="object_type" property="object_type" />
-        <result column="create_time" property="create_time" />
-        <result column="is_use" property="is_use" />
+    <resultMap id="orderExpressMap" type="com.sftc.web.model.OrderExpress">
+        <id column="id" property="id"/>
+        <result column="order_number" property="order_number"/>
+        <result column="ship_name" property="ship_name"/>
+        <result column="ship_mobile" property="ship_mobile"/>
+        <result column="ship_province" property="ship_province"/>
+        <result column="ship_city" property="ship_city"/>
+        <result column="ship_area" property="ship_area"/>
+        <result column="ship_addr" property="ship_addr"/>
+        <result column="package_type" property="package_type"/>
+        <result column="object_type" property="object_type"/>
+        <result column="create_time" property="create_time"/>
+        <result column="is_use" property="is_use"/>
     </resultMap>
 
     <select id="selectExpressForId" parameterType="int" resultType="com.sftc.web.model.OrderExpress">
@@ -34,15 +34,15 @@
     </select>
 
     <!--<select id="findMyOrderExpress" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"-->
-            <!--resultType="com.sftc.web.model.apiCallback.OrderCallback">-->
-        <!--SELECT DISTINCT sftc_order_express.id,sftc_order_express.order_number,sftc_order_express.ship_name,-->
-        <!--sftc_order_express.ship_addr,sftc_order_express.state,sftc_order_express.uuid,sftc_order_express.create_time,-->
-        <!--sftc_order.sender_name,sftc_order.sender_addr,sftc_order.order_type,sftc_order.gift_card_id-->
-        <!--FROM sftc_order_express,sftc_order-->
-        <!--WHERE (sftc_order_express.sender_user_id=#{id} or sftc_order_express.ship_user_id=#{id})-->
-        <!--AND sftc_order_express.order_id = sftc_order.id-->
-        <!--order by sftc_order_express.create_time desc-->
-            <!--limit #{pageNum},#{pageSize}-->
+    <!--resultType="com.sftc.web.model.apiCallback.OrderCallback">-->
+    <!--SELECT DISTINCT sftc_order_express.id,sftc_order_express.order_number,sftc_order_express.ship_name,-->
+    <!--sftc_order_express.ship_addr,sftc_order_express.state,sftc_order_express.uuid,sftc_order_express.create_time,-->
+    <!--sftc_order.sender_name,sftc_order.sender_addr,sftc_order.order_type,sftc_order.gift_card_id-->
+    <!--FROM sftc_order_express,sftc_order-->
+    <!--WHERE (sftc_order_express.sender_user_id=#{id} or sftc_order_express.ship_user_id=#{id})-->
+    <!--AND sftc_order_express.order_id = sftc_order.id-->
+    <!--order by sftc_order_express.create_time desc-->
+    <!--limit #{pageNum},#{pageSize}-->
     <!--</select>-->
 
     <!-- 普通下单 -->
@@ -117,6 +117,12 @@
         WHERE order_id=#{order_id}
     </update>
 
+    <update id="updateOrderExpressStatus">
+        UPDATE sftc_order_express
+        SET state=#{status, jdbcType=VARCHAR}
+        WHERE id=#{express_id}
+    </update>
+
     <select id="getUuidByOrderId" resultType="string" parameterType="int">
         SELECT uuid FROM sftc_order_express where order_id=#{order_id}
     </select>
@@ -138,7 +144,13 @@
     </update>
 
     <!-- 获取订单对应的未填写快递信息列表list,根据订单id order_id -->
-    <select id="UnWritenOrderExpressListByOrderIdAndShipnameNull" resultType="com.sftc.web.model.OrderExpress" parameterType="int">
+    <select id="UnWritenOrderExpressListByOrderIdAndShipnameNull" resultType="com.sftc.web.model.OrderExpress"
+            parameterType="int">
         select * from sftc_order_express where order_id = #{id} and ship_name is null
+    </select>
+
+    <!-- 根据uuid查询快递 -->
+    <select id="selectExpressByUuid" resultType="com.sftc.web.model.OrderExpress" parameterType="String">
+        select * from sftc_order_express where uuid = #{uuid}
     </select>
 </mapper>
