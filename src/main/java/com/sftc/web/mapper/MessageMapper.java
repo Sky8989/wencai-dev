@@ -23,4 +23,7 @@ public interface MessageMapper {
 
     //    <!-- 简单查找 收到好友地址 通知消息 by userid -->
     List<Message> selectMessageReceiveAddress(int userId);
+
+    // <!-- 更新 消息is_read状态-->
+    void updateIsRead(int id);
 }
