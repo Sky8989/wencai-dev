@@ -207,9 +207,9 @@
         SELECT * FROM sftc_order o
         WHERE id IN (
             SELECT t.order_id FROM (
-              SELECT distinct oe.order_id FROM sftc_order_express oe WHERE oe.sender_user_id=#{id} OR oe.ship_user_id=#{id}
+              SELECT distinct oe.order_id FROM sftc_order_express oe WHERE (oe.sender_user_id=#{id} OR oe.ship_user_id=#{id})
             ) AS t
-        )
+        ) AND order_type='ORDER_MYSTERY'
         ORDER by o.create_time desc
         limit #{pageNum}, #{pageSize}
     </select>
