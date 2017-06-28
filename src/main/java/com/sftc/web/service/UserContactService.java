@@ -21,4 +21,9 @@ public interface UserContactService {
      * 好友圈来往记录
      */
     APIResponse getContactInfo(UserContactParam userContactParam);
+
+    /**
+     * 星标/取消星标好友
+     */
+    APIResponse starFriend(APIRequest request);
 }

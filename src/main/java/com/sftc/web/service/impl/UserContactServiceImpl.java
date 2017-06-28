@@ -7,9 +7,12 @@ import com.sftc.web.model.apiCallback.ContactCallback;
 import com.sftc.web.model.reqeustParam.UserContactParam;
 import com.sftc.web.model.sfmodel.Orders;
 import com.sftc.web.service.UserContactService;
+import net.sf.json.JSONObject;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.lang.Object;
 import java.util.List;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
@@ -175,5 +178,37 @@ public class UserContactServiceImpl implements UserContactService {
         }
 
         return APIUtil.getResponse(status, contactCallbacks);
+    }
+
+    /**
+     * 星标好友
+     */
+    public APIResponse starFriend(APIRequest request) {
+        // Param
+        Object param = request.getRequestParam();
+        JSONObject requestObject = JSONObject.fromObject(param);
+        int user_id = ((Double) requestObject.get("user_id")).intValue();
+        int friend_id = ((Double) requestObject.get("friend_id")).intValue();
+        int is_star = ((Double) requestObject.get("is_star")).intValue();
+        if (user_id < 1)
+            return APIUtil.paramErrorResponse("参数user_id无效");
+        if (friend_id < 1)
+            return APIUtil.paramErrorResponse("参数friend_id无效");
+        if (is_star != 0 && is_star != 1)
+            return APIUtil.paramErrorResponse("参数is_star无效");
+
+        UserContact userContact = userContactMapper.friendDetail(user_id, friend_id);
+        if (userContact == null)
+            return APIUtil.submitErrorResponse("非好友关系", null);
+
+        // Result
+        try {
+            userContactMapper.starFriend(user_id, friend_id, is_star);
+            userContact = userContactMapper.friendDetail(user_id, friend_id);
+        } catch (Exception e) {
+            return APIUtil.submitErrorResponse(e.getLocalizedMessage(), null);
+        }
+
+        return APIUtil.getResponse(SUCCESS, userContact);
     }
 }
