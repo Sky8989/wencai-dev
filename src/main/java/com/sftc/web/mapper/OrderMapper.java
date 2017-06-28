@@ -43,6 +43,9 @@ public interface OrderMapper {
     /** 根据订单id查询订单详情 */
     Order selectOrderDetailByOrderId(int order_id);
 
+    /** 根据快递id查询订单详情 */
+    Order selectOrderDetailByExpressId(int express_id);
+
     int findPackageCount(String order_number);
 
     List<Order> myOrderLists(OrderExpress orderExpress);
