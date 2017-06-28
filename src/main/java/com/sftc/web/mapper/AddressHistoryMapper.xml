@@ -32,6 +32,7 @@
         SELECT *
         FROM sftc_address_history ah, sftc_address a
         WHERE ah.address_id=a.id AND ah.user_id=#{user_id} AND ah.is_delete=0
+        ORDER BY ah.create_time desc
         limit #{startIndex}, #{pageSize}
     </select>
 
