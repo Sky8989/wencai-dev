@@ -44,7 +44,7 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
         if (pageNum < 1 || pageSzie < 1) return APIUtil.paramErrorResponse("分页参数无效");
 
         // Handle avatar
-        List<AddressHistory> addressHistories = addressHistoryMapper.selectAddressHistoryListByUserId(user_id, (pageNum - 1) * pageSzie, pageNum);
+        List<AddressHistory> addressHistories = addressHistoryMapper.selectAddressHistoryListByUserId(user_id, (pageNum - 1) * pageSzie, pageSzie);
         for (AddressHistory ah : addressHistories) {
             Address address = ah.getAddress();
             User user = userMapper.selectUserByUserId(address.getUser_id());
