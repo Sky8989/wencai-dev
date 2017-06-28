@@ -20,9 +20,9 @@
     <!-- 添加地址  -->
     <insert id="addAddress" useGeneratedKeys="true" keyProperty="id" parameterType="com.sftc.web.model.Address">
       insert into sftc_address
-      (user_id,name,phone,province,city,area,address,create_time)
+      (user_id,name,phone,province,city,area,address,longitude,latitude,create_time)
       values
-      (#{user_id},#{name},#{phone},#{province},#{city},#{area},#{address},#{create_time})
+      (#{user_id},#{name},#{phone},#{province},#{city},#{area},#{address},#{longitude},#{latitude},#{create_time})
     </insert>
 
     <!--  编辑地址  -->

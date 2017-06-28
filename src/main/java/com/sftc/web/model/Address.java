@@ -21,6 +21,10 @@ public class Address extends Object {
     private String area;
     // 具体地址
     private String address;
+    // 经度
+    private double longitude;
+    // 纬度
+    private double latitude;
     // 创建时间
     private String create_time;
 
@@ -95,6 +99,22 @@ public class Address extends Object {
         this.address = address;
     }
 
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
     public String getCreate_time() {
         return create_time;
     }
@@ -132,6 +152,8 @@ public class Address extends Object {
         this.setArea(orderParam.getSender_area());
         this.setAddress(orderParam.getSender_addr());
         this.setArea(orderParam.getSender_area());
+        this.setLongitude(orderParam.getLongitude());
+        this.setLatitude(orderParam.getLatitude());
         this.setCreate_time(Long.toString(System.currentTimeMillis()));
     }
 
@@ -144,6 +166,8 @@ public class Address extends Object {
         this.setArea(oe.getShip_area());
         this.setAddress(oe.getShip_addr());
         this.setArea(oe.getShip_area());
+        this.setLongitude(oe.getLongitude());
+        this.setLatitude(oe.getLatitude());
         this.setCreate_time(Long.toString(System.currentTimeMillis()));
     }
 
