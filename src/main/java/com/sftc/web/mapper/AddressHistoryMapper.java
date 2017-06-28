@@ -3,9 +3,16 @@ package com.sftc.web.mapper;
 import com.sftc.web.model.AddressHistory;
 
 import java.util.List;
-import java.util.Map;
 
 public interface AddressHistoryMapper {
-    AddressHistory addressHistoryDetail(int id);
-    List<AddressHistory> addressHistoryList(Map<String,Integer> params);
+
+    /**
+     * 插入历史地址
+     */
+    void insertAddressHistory(AddressHistory addressHistory);
+
+    /**
+     * 查询历史地址
+     */
+    List<AddressHistory> selectAddressHistoryListByUserId(int user_id);
 }

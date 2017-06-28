@@ -50,6 +50,8 @@ public class OrderServiceImpl implements OrderService {
     private UserContactMapper userContactMapper;
     @Resource
     private MessageMapper messageMapper;
+    @Resource
+    private AddressHistoryMapper addressHistoryMapper;
 
     /**
      * 普通订单提交
@@ -158,6 +160,9 @@ public class OrderServiceImpl implements OrderService {
                         messageMapper.updateMessageReceiveExpress(message);
                     }
 
+                    // 插入地址
+                    setupAddress(order, oe);
+
                 } else {
                     return APIUtil.paramErrorResponse("预约时间不能为空");
                 }
@@ -230,9 +235,9 @@ public class OrderServiceImpl implements OrderService {
                     orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
 
-                    //  存储 好友地址 到address表
-                    com.sftc.web.model.Address shipAddress = new com.sftc.web.model.Address(oe);
-                    addressMapper.addAddress(shipAddress);
+                    // 插入地址
+                    setupAddress(order, oe);
+
                     // 存储 好友关系 到user_contact
                     UserContactNew userContactNewParam = new UserContactNew();
                     userContactNewParam.setUser_id(order.getSender_user_id());
@@ -289,7 +294,7 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-    // 普通同城订单
+    // 普通同城订单提交
     private APIResponse normalSameOrderCommit(Object object) {
 
         String order_number = APIRandomUtil.getRandomString();
@@ -350,6 +355,9 @@ public class OrderServiceImpl implements OrderService {
                         orderExpress.setReserve_time((String) reqObject.getJSONObject("order").get("reserve_time"));
                     }
                     orderExpressMapper.addOrderExpress(orderExpress);
+
+                    // 插入地址
+                    setupAddress(order, orderExpress);
                 }
                 respObject.put("order_id", order.getId());
             } else {
@@ -445,8 +453,11 @@ public class OrderServiceImpl implements OrderService {
                         0.0
                 );
                 orderExpress.setReserve_time("");
-                //存储 订单快递信息
+                // 存储 订单快递信息
                 orderExpressMapper.addOrderExpress(orderExpress);
+                // 插入地址
+                setupAddress(order, orderExpress);
+
                 jsonObject.put("order_id", order.getId());
             }
         } catch (Exception e) {
@@ -454,6 +465,21 @@ public class OrderServiceImpl implements OrderService {
             status = APIStatus.SUBMIT_FAIL;
         }
         return APIUtil.getResponse(status, jsonObject);
+    }
+
+    // 插入地址
+    private AddressHistory setupAddress(Order order, OrderExpress oe) {
+        com.sftc.web.model.Address address = new com.sftc.web.model.Address(oe);
+        addressMapper.addAddress(address);
+        // 插入历史地址
+        AddressHistory addressHistory = new AddressHistory();
+        addressHistory.setUser_id(order.getSender_user_id());
+        addressHistory.setAddress_id(address.getId());
+        addressHistory.setCreate_time(Long.toString(System.currentTimeMillis()));
+        addressHistory.setIs_delete(0);
+        addressHistoryMapper.insertAddressHistory(addressHistory);
+
+        return addressHistory;
     }
 
     /**

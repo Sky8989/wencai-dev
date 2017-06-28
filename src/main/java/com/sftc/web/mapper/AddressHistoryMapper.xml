@@ -3,16 +3,34 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.AddressHistoryMapper">
-        <!-- 历史地址表详情  -->
-        <select id="addressHistoryDetail" parameterType="int" resultType="com.sftc.web.model.AddressHistory">
-                SELECT province,city,district,detail,phone,name FROM sftc_address_history
-                WHERE id=#{id}
 
-        </select>
-        <!-- 历史地址列表*  -->
-        <select id="addressHistoryList" parameterType="java.util.Map" resultType="com.sftc.web.model.AddressHistory">
-                select province,city,district,detail,phone,name FROM
-                sftc_address_history WHERE user_id=#{user_id} limit #{pageOffset},#{pageSize};
+    <resultMap id="addressHistoryMap" type="com.sftc.web.model.AddressHistory">
+        <result column="id" property="id"/>
+        <result column="user_id" property="user_id"/>
+        <result column="address_id" property="address_id"/>
+        <result column="is_delete" property="is_delete"/>
+        <result column="create_time" property="create_time"/>
+        <association property="address" column="address_id" select="selectAddress"/>
+    </resultMap>
 
-        </select>
+    <insert id="insertAddressHistory" parameterType="com.sftc.web.model.AddressHistory">
+        INSERT INTO sftc_address_history (user_id, address_id, is_delete, create_time)
+        VALUES (
+        #{user_id, jdbcType=INTEGER},
+        #{address_id, jdbcType=INTEGER},
+        #{is_delete, jdbcType=INTEGER},
+        #{create_time, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <select id="selectAddress" parameterType="int" resultType="com.sftc.web.model.Address">
+        SELECT * FROM sftc_address WHERE id=#{address_id}
+    </select>
+
+    <select id="selectAddressHistoryListByUserId" parameterType="int" resultMap="addressHistoryMap">
+        SELECT *
+        FROM sftc_address_history ah, sftc_address a
+        WHERE ah.address_id=a.id AND ah.user_id=#{user_id} AND ah.is_delete=0
+    </select>
+
 </mapper>

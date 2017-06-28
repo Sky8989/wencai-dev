@@ -4,21 +4,12 @@ import com.sftc.web.model.reqeustParam.OrderParam;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @version 1.0
- * @Package com.sftc.ssm.pojo
- * @Description: 地址类
- * @date 17/4/1
- * @Time 下午9:00
- */
 public class Address extends Object {
 
     private int id;
-    //用户id
+    // 用户id
     private int user_id;
-    //用户名字
+    // 用户名字
     private String name;
     // 用户电话
     private String phone;
@@ -32,6 +23,9 @@ public class Address extends Object {
     private String address;
     // 创建时间
     private String create_time;
+
+    // 头像
+    private String avatar;
 
     public Address() {
         super();
@@ -109,6 +103,14 @@ public class Address extends Object {
         this.create_time = create_time;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     public Address(int id, int user_id, String name, String phone, String province, String city, String area, String address, String create_time) {
         this.id = id;
         this.user_id = user_id;
@@ -121,11 +123,6 @@ public class Address extends Object {
         this.create_time = create_time;
     }
 
-    /**
-     * @Author:hxy starmoon1994
-     * @Description: 构建一个address ,参数是OrederParam
-     * @Date:16:43 2017/6/25
-     */
     public Address(OrderParam orderParam) {
         this.setUser_id(orderParam.getSender_user_id());
         this.setName(orderParam.getSender_name());
@@ -138,11 +135,6 @@ public class Address extends Object {
         this.setCreate_time(Long.toString(System.currentTimeMillis()));
     }
 
-    /**
-     * @Author:hxy starmoon1994
-     * @Description: 构建一个address ,参数是OrderExpress
-     * @Date:16:47 2017/6/25
-     */
     public Address(OrderExpress oe) {
         this.setUser_id(oe.getShip_user_id());
         this.setName(oe.getShip_name());

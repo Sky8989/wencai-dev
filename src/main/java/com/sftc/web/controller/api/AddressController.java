@@ -3,6 +3,7 @@ package com.sftc.web.controller.api;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.Address;
+import com.sftc.web.service.AddressHistoryService;
 import com.sftc.web.service.AddressService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,9 @@ public class AddressController {
 
     @Resource
     private AddressService addressService;
+
+    @Resource
+    private AddressHistoryService addressHistoryService;
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody
@@ -48,5 +52,11 @@ public class AddressController {
     public @ResponseBody
     APIResponse geocoderAddress(HttpServletRequest request) throws Exception {
         return addressService.geocoderAddress(new APIRequest(request));
+    }
+
+    @RequestMapping(value = "/history", method = RequestMethod.GET)
+    public @ResponseBody
+    APIResponse selectAddressHistory(HttpServletRequest request) throws Exception {
+        return addressHistoryService.selectAddressHistory(new APIRequest(request));
     }
 }

@@ -5,14 +5,14 @@ public class APIConstant {
     /** 同城根地址 */
     private static final String SF_SAME_DOMAIN = "http://api-dev.sf-rush.com/";
     /** 大网根地址 */
-    private static final String SF_NATION_DOMAIN = "http://api-c.sf-rush.com/api/sforderservice/";    // 正式环境
-//    private static final String SF_NATION_DOMAIN = "http://api-c-test.sf-rush.com/api/sforderservice/"; // dev
+//    private static final String SF_NATION_DOMAIN = "http://api-c.sf-rush.com/api/sforderservice/";    // 正式环境
+    private static final String SF_NATION_DOMAIN = "http://api-c-test.sf-rush.com/api/sforderservice/"; // dev
 
     // 七牛相关
     /** accessKey */
     public static final String QN_ACCESSKEY = "Jyi6Ntprm38nI6n1heGjwXyQmzie8ZjY7l9Cq_Je";
     /** secretKey */
-    public static final String QN_SECRETKEY = "eBqe82USZuB6gnqvjTsyg_qki6C6HwnkFIvNIH";
+    public static final String QN_SECRETKEY = "eBqe82USZuB6gnqvjTsyg_qki6C6HwnkFIvNIH-y";
     /** bucket */
     public static final String QN_BUCKET = "sftc";
 
@@ -56,4 +56,6 @@ public class APIConstant {
     /** 路由地址 */
     public static final String SF_ORDERROUTE_URL = SF_NATION_DOMAIN + "OrderRouteQuery?orderid=";
 
+    // 默认头像占位图
+    public static final String DK_USER_AVATAR_DEFAULT = "https://sf.dankal.cn/anim_package.png";
 }
