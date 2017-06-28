@@ -142,7 +142,7 @@ public class OrderServiceImpl implements OrderService {
                     String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
                     orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
-                    //todo 添加 通知信息 RECEIVE_EXPRESS 生成收件人的通知信息
+                    //添加 通知信息 RECEIVE_EXPRESS 生成收件人的通知信息
                     //先查 再新建或者更新
                     List<Message> messageList = messageMapper.selectMessageReceiveExpress(oe.getShip_user_id());
                     if (messageList.isEmpty()) {
@@ -247,7 +247,7 @@ public class OrderServiceImpl implements OrderService {
                         //System.out.println("-   -有人成为好朋友了"+userContactNew.toString());
                     }
 
-                    //todo 添加 通知信息 RECEIVE_EXPRESS 生成收件人的通知信息
+                    //添加 通知信息 RECEIVE_EXPRESS 生成收件人的通知信息
                     //先查 再新建或者更新
                     List<Message> messageList = messageMapper.selectMessageReceiveExpress(oe.getShip_user_id());
                     if (messageList.isEmpty()) {
@@ -602,7 +602,7 @@ public class OrderServiceImpl implements OrderService {
             //填写包裹获取时间
             orderExpress.setReceive_time(Long.toString(System.currentTimeMillis()));
             orderExpressMapper.updateOrderExpressByOrderExpressId(orderExpress);
-            //todo 添加 receive_address通知信息 此时应该是寄件人收到通知
+            //添加 receive_address通知信息 此时应该是寄件人收到通知
             List<Message> messageList = messageMapper.selectMessageReceiveAddress(order.getSender_user_id());
             if (messageList.isEmpty()) {
                 Message message = new Message("RECEIVE_ADDRESS", 0, orderExpress.getId(), order.getSender_user_id());
@@ -1062,32 +1062,62 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 订单评价
+     * todo
      */
     public APIResponse evaluate(Object object) {
         APIStatus status = APIStatus.SUCCESS;
+        // 生成 顺丰订单评价接口 需要的信息
         String str = gson.toJson(object);
         JSONObject jsonObject = null;
-        JSONObject jsonObject1 = JSONObject.fromObject(object);
-        JSONObject request = jsonObject1.getJSONObject("request");
-        JSONObject attributes = jsonObject1.getJSONObject("request").getJSONObject("attributes");
-        try {
-            if (request.get("order_type").equals("ORDER_BASIS_SAME") || request.get("order_type").equals("ORDER_MYSTERY_SAME")) {
-                String pay_url = SF_REQUEST_URL + "/" + request.get("uuid") + "/attributes/merchant_comment";
-                HttpPut put = new HttpPut(pay_url);
-                put.addHeader("PushEnvelope-Device-Token", (String) request.get("access_token"));
-                String res = AIPPost.getPost(str, put);
-                jsonObject = JSONObject.fromObject(res);
+        JSONObject jsonObjectParam = JSONObject.fromObject(object);
+        JSONObject request = jsonObjectParam.getJSONObject("request");
+        JSONObject attributes = jsonObjectParam.getJSONObject("request").getJSONObject("attributes");
+        int order_id = request.getInt("order_id");
 
-            } else {
+        Evaluate evaluate = new Evaluate();
+        evaluate.setMerchant_comments(attributes.getString("merchant_comments"));
+        evaluate.setMerchant_score(attributes.getString("merchant_score"));
+        evaluate.setMerchant_tags(attributes.getString("merchant_tags"));
+        evaluate.setOrder_id(request.getInt("order_id"));
+        evaluate.setUser_id(request.getInt("user_id"));
+        evaluate.setCreate_time(Long.toString(System.currentTimeMillis()));
 
+        // 获取 该订单对应的快递信息
+        List<OrderExpress> orderExpressList = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
+        StringBuilder uuidStr = new StringBuilder();
+        // 定义一个flag 只有存在含有uuid的订单才调用顺丰接口
+        boolean flag = false;
+        for (OrderExpress oe:orderExpressList){
+            // 循环遍历orderExpressList，对填写过的快递信息，取出uuid，发到顺丰去评价
+            if(oe.getUuid() != null && !"".equals(oe.getUuid())){
+                flag = true;
+                uuidStr.append(oe.getUuid());
+                uuidStr.append(",");
             }
+        }
+        uuidStr.deleteCharAt(uuidStr.length()-1);
+        // 定义一个flagEvaluate 记录顺丰接口访问是否成功
+        boolean flagEvaluate = true;
+        if (flag){
+            // 向顺丰的接口发送评价信息
+            String evaluate_url = SF_REQUEST_URL + "/" + uuidStr.toString() + "/attributes/merchant_comment";
+            HttpPut put = new HttpPut(evaluate_url);
+            put.addHeader("PushEnvelope-Device-Token", (String) request.get("access_token"));
+            String res = AIPPost.getPost(str, put);
+            jsonObject = JSONObject.fromObject(res);
             if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {
                 status = APIStatus.EVALUATE_FALT;
+                flagEvaluate = false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }else {
+            // 当 flag 为false 时，说明没有可评价的订单，也是评价失败
             status = APIStatus.EVALUATE_FALT;
         }
+        // 当 flagEvaluate 为true，向评价表存入 评价记录
+        if (flagEvaluate){
+            evaluateMapper.addEvaluate(evaluate);
+        }
+
         return APIUtil.getResponse(status, jsonObject);
     }
 
@@ -1096,7 +1126,7 @@ public class OrderServiceImpl implements OrderService {
      * 测试方法在 com.sftc.web.service.OrderServiceTest
      */
     public APIResponse deleteOrder(Object object) {
-//   todo:重写逻辑  多个快递信息 都要删除
+        // 重写逻辑  多个快递信息 都要删除
         APIStatus status = APIStatus.SUCCESS;
         JSONObject jsonObject = null;
         try {

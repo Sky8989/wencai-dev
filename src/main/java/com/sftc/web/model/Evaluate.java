@@ -1,42 +1,28 @@
 package com.sftc.web.model;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @version 1.0
- * @Package com.sftc.ssm.pojo
- * @Description: 评价类
- * @date 17/4/1
- * @Time 下午9:00
- */
+*@Author:hxy starmoon1994
+*@Description:
+*@Date:16:25 2017/6/28
+*/
 public class Evaluate extends Object {
 
     private int id;
+    // 评价内容
+    private String merchant_comments;
+    // 评价分数
+    private String merchant_score;
+    // 标签的内容，逗号隔开
+    private String merchant_tags;
+    // 订单id
+    private int order_id;
+    // 评价人的用户id
+    private int user_id;
     // 创建时间
     private String create_time;
-    // 评价留言
-    private String comments;
-    // 送货速度
-    private int fast_delivery;
-    // 评价时间
-    private int service_attitude;
-    // 评价星级
-    private int door_speed;
-    // 评价人的用户id
-    private User merchant;
-    private int user_id;
-    // 评价的是哪一个订单
-    private Order order;
-    private int order_id;
 
-    public Evaluate(String comments, int fast_delivery, int service_attitude, int door_speed, User merchant, int user_id, int order_id) {
-        this.comments = comments;
-        this.fast_delivery = fast_delivery;
-        this.service_attitude = service_attitude;
-        this.door_speed = door_speed;
-        this.merchant = merchant;
-        this.user_id = user_id;
-        this.order_id = order_id;
+    public Evaluate() {
+        super();
     }
 
     public int getId() {
@@ -47,52 +33,36 @@ public class Evaluate extends Object {
         this.id = id;
     }
 
-    public String getCreate_time() {
-        return create_time;
+    public String getMerchant_comments() {
+        return merchant_comments;
     }
 
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
+    public void setMerchant_comments(String merchant_comments) {
+        this.merchant_comments = merchant_comments;
     }
 
-    public String getComments() {
-        return comments;
+    public String getMerchant_score() {
+        return merchant_score;
     }
 
-    public void setComments(String comments) {
-        this.comments = comments;
+    public void setMerchant_score(String merchant_score) {
+        this.merchant_score = merchant_score;
     }
 
-    public int getFast_delivery() {
-        return fast_delivery;
+    public String getMerchant_tags() {
+        return merchant_tags;
     }
 
-    public void setFast_delivery(int fast_delivery) {
-        this.fast_delivery = fast_delivery;
+    public void setMerchant_tags(String merchant_tags) {
+        this.merchant_tags = merchant_tags;
     }
 
-    public int getService_attitude() {
-        return service_attitude;
+    public int getOrder_id() {
+        return order_id;
     }
 
-    public void setService_attitude(int service_attitude) {
-        this.service_attitude = service_attitude;
-    }
-
-    public int getDoor_speed() {
-        return door_speed;
-    }
-
-    public void setDoor_speed(int door_speed) {
-        this.door_speed = door_speed;
-    }
-
-    public User getMerchant() {
-        return merchant;
-    }
-
-    public void setMerchant(User merchant) {
-        this.merchant = merchant;
+    public void setOrder_id(int order_id) {
+        this.order_id = order_id;
     }
 
     public int getUser_id() {
@@ -103,19 +73,11 @@ public class Evaluate extends Object {
         this.user_id = user_id;
     }
 
-    public Order getOrder() {
-        return order;
+    public String getCreate_time() {
+        return create_time;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public int getOrder_id() {
-        return order_id;
-    }
-
-    public void setOrder_id(int order_id) {
-        this.order_id = order_id;
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 }
