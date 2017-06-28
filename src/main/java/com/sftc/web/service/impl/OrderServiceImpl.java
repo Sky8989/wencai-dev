@@ -468,7 +468,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 插入地址
-    private AddressHistory setupAddress(Order order, OrderExpress oe) {
+    private void setupAddress(Order order, OrderExpress oe) {
         com.sftc.web.model.Address address = new com.sftc.web.model.Address(oe);
         addressMapper.addAddress(address);
         // 插入历史地址
@@ -477,9 +477,9 @@ public class OrderServiceImpl implements OrderService {
         addressHistory.setAddress_id(address.getId());
         addressHistory.setCreate_time(Long.toString(System.currentTimeMillis()));
         addressHistory.setIs_delete(0);
+        int is_mystery = order.getOrder_type().equals("ORDER_MYSTERY") ? 1 : 0;
+        addressHistory.setIs_mystery(is_mystery);
         addressHistoryMapper.insertAddressHistory(addressHistory);
-
-        return addressHistory;
     }
 
     /**

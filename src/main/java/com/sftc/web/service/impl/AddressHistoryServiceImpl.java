@@ -32,14 +32,19 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
     public APIResponse selectAddressHistory(APIRequest request) {
         // Param
         String userId = (String) request.getParameter("user_id");
-        if (userId == null || userId.equals(""))
-            return APIUtil.paramErrorResponse("user_id不能为空");
+        String page = (String) request.getParameter("pageNum");
+        String size = (String) request.getParameter("pageSize");
+        if (userId == null || userId.equals("")) return APIUtil.paramErrorResponse("user_id不能为空");
+        if (page == null || page.equals("")) return APIUtil.paramErrorResponse("pageNum不能为空");
+        if (size == null || size.equals("")) return APIUtil.paramErrorResponse("pageSize不能为空");
         int user_id = Integer.parseInt(userId);
-        if (user_id < 1)
-            return APIUtil.paramErrorResponse("user_id不正确");
+        int pageNum = Integer.parseInt(page);
+        int pageSzie = Integer.parseInt(size);
+        if (user_id < 1) return APIUtil.paramErrorResponse("user_id不正确");
+        if (pageNum < 1 || pageSzie < 1) return APIUtil.paramErrorResponse("分页参数无效");
 
         // Handle avatar
-        List<AddressHistory> addressHistories = addressHistoryMapper.selectAddressHistoryListByUserId(user_id);
+        List<AddressHistory> addressHistories = addressHistoryMapper.selectAddressHistoryListByUserId(user_id, (pageNum - 1) * pageSzie, pageNum);
         for (AddressHistory ah : addressHistories) {
             Address address = ah.getAddress();
             User user = userMapper.selectUserByUserId(address.getUser_id());
