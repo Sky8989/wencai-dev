@@ -173,10 +173,10 @@ public class OrderController extends AbstractBasicController {
     /**
      * 评价小哥（评价顺丰订单）
      */
-    @RequestMapping(value = "/evaluate", method = RequestMethod.POST)
+    @RequestMapping(value = "/evaluateSingle", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse evaluate(@RequestBody Object object) throws Exception {
-        return orderService.evaluate(object);
+        return orderService.evaluateSingle(object);
     }
 
     /**

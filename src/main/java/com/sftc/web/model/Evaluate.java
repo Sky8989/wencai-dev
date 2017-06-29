@@ -18,6 +18,10 @@ public class Evaluate extends Object {
     private int order_id;
     // 评价人的用户id
     private int user_id;
+    // 快递的id orderExpress_id
+    private String orderExpress_id;
+    // 快递的uuid
+    private String uuid;
     // 创建时间
     private String create_time;
 
@@ -80,4 +84,12 @@ public class Evaluate extends Object {
     public void setCreate_time(String create_time) {
         this.create_time = create_time;
     }
+
+    public String getOrderExpress_id() {return orderExpress_id;}
+
+    public void setOrderExpress_id(String orderExpress_id) {this.orderExpress_id = orderExpress_id;}
+
+    public String getUuid() {return uuid;}
+
+    public void setUuid(String uuid) {this.uuid = uuid;}
 }
