@@ -123,6 +123,12 @@
         WHERE id=#{express_id}
     </update>
 
+    <update id="updateOrderExpressCanceled" parameterType="int">
+        UPDATE sftc_order_express
+        SET state='CANCELED'
+        WHERE  order_id=#{order_id}
+    </update>
+
     <select id="getUuidByOrderId" resultType="string" parameterType="int">
         SELECT uuid FROM sftc_order_express where order_id=#{order_id}
     </select>
