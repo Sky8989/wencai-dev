@@ -46,8 +46,6 @@ public interface OrderService {
      */
     APIResponse selectOrderDetail(APIRequest request);
 
-    APIResponse updateOrder(APIRequest request, Order order, OrderExpress orderExpress);
-
     /**
      * 更改订单状态
      */
@@ -70,7 +68,7 @@ public interface OrderService {
 
     APIResponse friendPlace(Object object);
 
-    public APIResponse sfOrderDetail(int order_id, String access_token, String uuid);
+    APIResponse sfOrderDetail(int order_id, String access_token, String uuid);
 
     /**
      * 快递详情
