@@ -996,7 +996,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 订单评价
+     * 订单评价 已废弃
      */
     public APIResponse evaluate(Object object) {
         APIStatus status = APIStatus.SUCCESS;
@@ -1046,6 +1046,48 @@ public class OrderServiceImpl implements OrderService {
         } else {
             // 当 flag 为false 时，说明没有可评价的订单，也是评价失败
             status = APIStatus.EVALUATE_FALT;
+        }
+        return APIUtil.getResponse(status, jsonObject);
+    }
+
+    /**
+     * 评价某个订单的单一包裹
+     */
+    public APIResponse evaluateSingle(Object object) {
+        APIStatus status = APIStatus.SUCCESS;
+        // 生成 顺丰订单评价接口 需要的信息
+        String str = gson.toJson(object);
+        JSONObject jsonObject = null;
+        JSONObject jsonObjectParam = JSONObject.fromObject(object);
+        JSONObject request = jsonObjectParam.getJSONObject("request");
+        JSONObject attributes = jsonObjectParam.getJSONObject("request").getJSONObject("attributes");
+        String uuid = request.getString("uuid");
+        OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
+        if (orderExpress == null){
+            return APIUtil.selectErrorResponse("该uuid无对应快递信息，请检查uuid",request);
+        }
+
+        /// 向顺丰的接口发送评价信息
+        String evaluate_url = SF_REQUEST_URL + "/" + uuid + "/attributes/merchant_comment";
+        HttpPut put = new HttpPut(evaluate_url);
+        put.addHeader("PushEnvelope-Device-Token", (String) request.get("access_token"));
+        String res = AIPPost.getPost(str, put);
+        jsonObject = JSONObject.fromObject(res);
+        if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {
+            status = APIStatus.EVALUATE_FALT;
+        } else {
+            /// 评价成功后，向评价表存入 评价记录
+            Evaluate evaluate = new Evaluate();
+            evaluate.setMerchant_comments(attributes.getString("merchant_comments"));
+            evaluate.setMerchant_score(attributes.getString("merchant_score"));
+            evaluate.setMerchant_tags(attributes.getString("merchant_tags"));
+            evaluate.setOrderExpress_id(orderExpress.getUuid());
+            evaluate.setUuid(uuid);
+            evaluate.setUser_id(request.getInt("user_id"));
+            evaluate.setCreate_time(Long.toString(System.currentTimeMillis()));
+            // 评价成功后sf返回结果信息较长 截取attributes
+            jsonObject = jsonObject.getJSONObject("request").getJSONObject("attributes");
+            evaluateMapper.addEvaluate(evaluate);
         }
         return APIUtil.getResponse(status, jsonObject);
     }

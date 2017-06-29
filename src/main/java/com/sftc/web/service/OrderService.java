@@ -83,6 +83,11 @@ public interface OrderService {
     APIResponse evaluate(Object object);
 
     /**
+     * 评价某个订单的单一包裹
+     */
+    APIResponse evaluateSingle(Object object);
+
+    /**
      * 取消订单
      */
     APIResponse deleteOrder(Object object);
