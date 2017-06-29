@@ -36,7 +36,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
 
     private static final String SF_SERVICE_ADDRESS_QUERY = SF_SERVICE_ADDRESS_DOMIAN + "live/origin?lang=sc&region=cn&translate=&query={keyword}&limit=50&level={level}";
 
-    private static final String SF_SERVICE_RATE = SF_SERVICE_ADDRESS_BASE + "sf-service-owf-web/service/rate?origin={origin}&dest={dest}&weight=1&time={time}&volume=0&queryType=2&lang=sc&region=cn";
+    private static final String SF_SERVICE_RATE = SF_SERVICE_ADDRESS_BASE + "sf-service-owf-web/service/rate?origin={origin}&dest={dest}&weight={weight}&time={time}&volume=0&queryType=2&lang=sc&region=cn";
 
     @Resource
     private SFServiceAddressMapper sfServiceAddressMapper;
@@ -83,8 +83,10 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
 
         String senderAreaCode = getServiceAddressCode(senderArea, 4, senderCityAddress.getCode());
         String receiverAreaCode = getServiceAddressCode(receiverArea, 4, receiveCityAddress.getCode());
+        String weight = (String) request.getParameter("weight");
+        if (weight == null || weight.equals("")) weight = "1";
 
-        return getServiceRate(senderAreaCode, receiverAreaCode);
+        return getServiceRate(senderAreaCode, receiverAreaCode, weight);
     }
 
     // 获取顺丰服务地址编码
@@ -104,7 +106,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
     }
 
     // 获取时效计价
-    private APIResponse getServiceRate(String origin, String dest) {
+    private APIResponse getServiceRate(String origin, String dest, String weight) {
 
         String pattern = "yyyy-MM-dd'T'HH:mm:ssZZ";
         String time = DateFormatUtils.format(new Date(), pattern);
@@ -114,7 +116,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
             return APIUtil.selectErrorResponse("不支持URLEncode，服务器系统异常", e.getLocalizedMessage());
         }
 
-        String rateUrl = SF_SERVICE_RATE.replace("{origin}", origin).replace("{dest}", dest).replace("{time}", time);
+        String rateUrl = SF_SERVICE_RATE.replace("{origin}", origin).replace("{dest}", dest).replace("{time}", time).replace("{weight}", weight);
         HttpGet get = new HttpGet(rateUrl);
         String result = APIGet.getGet(get);
 
