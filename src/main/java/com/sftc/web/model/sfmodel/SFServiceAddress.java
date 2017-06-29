@@ -2,7 +2,7 @@ package com.sftc.web.model.sfmodel;
 
 public class SFServiceAddress {
 
-    private int distId;
+    private long distId;
     private int level;
     private String code;
     private long parentId;
@@ -13,11 +13,11 @@ public class SFServiceAddress {
     private boolean available;
     private boolean opening;
 
-    public int getDistId() {
+    public long getDistId() {
         return distId;
     }
 
-    public void setDistId(int distId) {
+    public void setDistId(long distId) {
         this.distId = distId;
     }
 
@@ -77,7 +77,7 @@ public class SFServiceAddress {
         this.lang = lang;
     }
 
-    public boolean getAvailable() {
+    public boolean isAvailable() {
         return available;
     }
 
@@ -85,7 +85,7 @@ public class SFServiceAddress {
         this.available = available;
     }
 
-    public boolean getOpening() {
+    public boolean isOpening() {
         return opening;
     }
 
