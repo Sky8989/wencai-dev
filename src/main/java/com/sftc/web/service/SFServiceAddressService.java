@@ -8,5 +8,10 @@ public interface SFServiceAddressService {
     /**
      * 更新顺丰速运服务地址
      */
-    APIResponse updateServiceAddress();
+    APIResponse updateServiceAddress(APIRequest request);
+
+    /**
+     * 查询动态配送时效价格
+     */
+    APIResponse selectDynamicPrice(APIRequest request);
 }
