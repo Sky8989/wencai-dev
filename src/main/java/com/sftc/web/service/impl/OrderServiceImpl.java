@@ -97,8 +97,6 @@ public class OrderServiceImpl implements OrderService {
         int order_id = ((Double) requestObject.getJSONObject("order").get("order_id")).intValue();
         if (order_id < 0)
             return APIUtil.paramErrorResponse("order_id不能为空");
-        if (!requestObject.getJSONObject("order").containsKey("reserve_time"))
-            return APIUtil.paramErrorResponse("预约时间不能为空");
 
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
@@ -187,8 +185,6 @@ public class OrderServiceImpl implements OrderService {
         int order_id = ((Double) requestObject.getJSONObject("order").get("order_id")).intValue();
         if (order_id < 0)
             return APIUtil.paramErrorResponse("order_id不能为空");
-        if (!requestObject.getJSONObject("order").containsKey("reserve_time"))
-            return APIUtil.paramErrorResponse("预约时间不能为空");
 
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         for (OrderExpress oe : order.getOrderExpressList()) {
@@ -304,9 +300,6 @@ public class OrderServiceImpl implements OrderService {
     private APIResponse normalSameOrderCommit(Object object) {
 
         JSONObject reqObject = JSONObject.fromObject(object);
-
-        if (reqObject.getJSONObject("order").get("reserve_time") != null)
-            return APIUtil.paramErrorResponse("预约时间不能为空");
 
         String order_number = APIRandomUtil.getRandomString();
         APIStatus status = SUCCESS;
@@ -898,9 +891,6 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse friendPlace(Object object) {
 
         JSONObject requestObject = JSONObject.fromObject(object);
-
-        if (requestObject.getJSONObject("request").getJSONObject("order").get("reserve_time") == null)
-            return APIUtil.paramErrorResponse("预约时间不能为空");
 
         // POST
         HttpPost post = new HttpPost(SF_REQUEST_URL);
