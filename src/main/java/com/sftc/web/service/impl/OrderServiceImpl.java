@@ -625,7 +625,7 @@ public class OrderServiceImpl implements OrderService {
 
             // 添加RECEIVE_ADDRESS通知消息，此时应该是寄件人收到通知
             List<Message> messageList = messageMapper.selectMessageReceiveAddress(order.getSender_user_id());
-            if (messageList.isEmpty()) {
+            if (messageList.isEmpty() && messageList.size() == 0) {
                 Message message = new Message("RECEIVE_ADDRESS", 0, orderExpress.getId(), order.getSender_user_id());
                 messageMapper.insertMessage(message);
             } else {
@@ -1054,7 +1054,6 @@ public class OrderServiceImpl implements OrderService {
      * 取消订单
      */
     public APIResponse deleteOrder(Object object) {
-        // 重写逻辑  多个快递信息 都要删除
         APIStatus status = SUCCESS;
         JSONObject jsonObject = null;
         JSONObject jsonObject1 = JSONObject.fromObject(object);
@@ -1064,7 +1063,8 @@ public class OrderServiceImpl implements OrderService {
         //对重复取消订单的情况进行处理
         Order order = orderMapper.selectOrderDetailByOrderId(id);
         if ("Cancelled".equals(order.getIs_cancel()) || !"".equals(order.getIs_cancel())) {//is_cancle字段默认是空字符串
-            return APIUtil.getResponse(APIStatus.CANCEL_ORDER_FALT, null);
+            //return APIUtil.getResponse(APIStatus.CANCEL_ORDER_FALT, null);
+            return APIUtil.submitErrorResponse("订单已经取消，请勿重复取消操作！！！",null);
         }
         List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(id);
         StringBuilder stringBuilder = new StringBuilder();
@@ -1090,7 +1090,6 @@ public class OrderServiceImpl implements OrderService {
             System.out.println("-   -这是myurl" + myUrl);
             HttpPost post = new HttpPost(myUrl);
             post.addHeader("PushEnvelope-Device-Token", jsonObject1.getString("access_token"));
-            //向顺丰发送请求 并获取结果
             String res = AIPPost.getPost(str, post);
             jsonObject = JSONObject.fromObject(res);
             if (jsonObject.get("error") != null) {
