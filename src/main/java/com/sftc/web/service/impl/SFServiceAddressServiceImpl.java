@@ -67,8 +67,6 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         if (oe == null)
             return APIUtil.selectErrorResponse("快递不存在", null);
 
-        if (!order.getRegion_type().equals("REGION_SAME")) // 只有同城才需要配送方式
-            return APIUtil.selectErrorResponse("非同城订单无法查询运费时效", null);
         if (order.getOrderExpressList().size() != 1) // 暂时只有单包裹才能算配送方式
             return APIUtil.selectErrorResponse("暂时只支持单包裹的订单查询运费时效", null);
 
