@@ -846,48 +846,9 @@ public class OrderServiceImpl implements OrderService {
      */
     public APIResponse getMyOrderList(APIRequest request) {
         MyOrderParam myOrderParam = (MyOrderParam) request.getRequestParam();
-        // verify params
-        if (myOrderParam.getToken().length() == 0) {
-            return APIUtil.paramErrorResponse("token不能为空");
-        } else if (myOrderParam.getId() == 0) {
-            return APIUtil.paramErrorResponse("用户id不能为空");
-        } else if (myOrderParam.getPageNum() < 1 || myOrderParam.getPageSize() < 1) {
-            return APIUtil.paramErrorResponse("分页参数无效");
-        }
 
-        APIStatus status = SUCCESS;
-
-        // handle SF orders url
-        String ordersURL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
-        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(myOrderParam.getId());
-        StringBuilder uuidSB = new StringBuilder();
-        for (int i = 0; i < orderExpressList.size(); i++) {
-            OrderExpress oe = orderExpressList.get(i);
-            if (oe.getUuid() != null && oe.getUuid().length() != 0) {
-                uuidSB.append(oe.getUuid());
-                uuidSB.append(",");
-            }
-        }
-        String uuids = uuidSB.toString();
-
-        // no data, return
-        if (uuids.length() == 0)
-            return APIUtil.getResponse(status, null);
-
-        ordersURL = ordersURL.replace("uuid", uuids.substring(0, uuids.length() - 1));
-        List<Orders> orderses;
-        try { // post
-            orderses = APIResolve.getOrdersJson(ordersURL, myOrderParam.getToken());
-        } catch (Exception e) {
-            return APIUtil.getResponse(APIStatus.SELECT_FAIL, e.getLocalizedMessage());
-        }
-
-        // Update Dankal express info
-        for (Orders orders : orderses) {
-            String uuid = orders.getUuid();
-            String order_status = orders.getStatus();
-            orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
-        }
+        APIResponse errorResponse = syncSFExpressStatus(myOrderParam);
+        if (errorResponse != null) return errorResponse;
 
         // pageNum -> startIndex
         myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());
@@ -919,52 +880,17 @@ public class OrderServiceImpl implements OrderService {
             orderCallbacks.add(callback);
         }
 
-        return APIUtil.getResponse(status, orderCallbacks);
+        return APIUtil.getResponse(SUCCESS, orderCallbacks);
     }
 
+    /**
+     * 我的好友圈订单列表
+     */
     public APIResponse getMyFriendCircleOrderList(APIRequest request) {
         MyOrderParam myOrderParam = (MyOrderParam) request.getRequestParam();
-        // verify params
-        if (myOrderParam.getToken().length() == 0) {
-            return APIUtil.paramErrorResponse("token不能为空");
-        } else if (myOrderParam.getId() == 0) {
-            return APIUtil.paramErrorResponse("用户id不能为空");
-        } else if (myOrderParam.getPageNum() < 1 || myOrderParam.getPageSize() < 1) {
-            return APIUtil.paramErrorResponse("分页参数无效");
-        }
 
-//      //   handle SF orders url
-//        String ordersURL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
-//        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(myOrderParam.getId());
-//        StringBuilder uuidSB = new StringBuilder();
-//        for (int i = 0; i < orderExpressList.size(); i++) {
-//            OrderExpress oe = orderExpressList.get(i);
-//            if (oe.getUuid() != null && oe.getUuid().length() != 0) {
-//                uuidSB.append(oe.getUuid());
-//                uuidSB.append(",");
-//            }
-//        }
-//        String uuids = uuidSB.toString();
-//
-//        // no data, return
-//        if (uuids.length() == 0)
-//            return APIUtil.getResponse(status, null);
-//
-//        ordersURL = ordersURL.replace("uuid", uuids.substring(0, uuids.length() - 1));
-//        List<Orders> orderses;
-//        try { // post
-//            orderses = APIResolve.getOrdersJson(ordersURL, myOrderParam.getToken());
-//        } catch (Exception e) {
-//            APIStatus.SELECT_FAIL.setMessage("查询失败");
-//            return APIUtil.getResponse(APIStatus.SELECT_FAIL, e.getLocalizedMessage());
-//        }
-
-        // Update Dankal express info
-//        for (Orders orders : orderses) {
-//            String uuid = orders.getUuid();
-//            String order_status = orders.getStatus();
-//            orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
-//        }
+        APIResponse errorResponse = syncSFExpressStatus(myOrderParam);
+        if (errorResponse != null) return errorResponse;
 
         // pageNum -> startIndex
         myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());
@@ -1009,6 +935,52 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return APIUtil.getResponse(SUCCESS, orderCallbacks);
+    }
+
+    // 验参、同步顺丰快递订单状态
+    private APIResponse syncSFExpressStatus(MyOrderParam myOrderParam) {
+
+        // Verify params
+        if (myOrderParam.getToken().length() == 0) {
+            return APIUtil.paramErrorResponse("token不能为空");
+        } else if (myOrderParam.getId() == 0) {
+            return APIUtil.paramErrorResponse("用户id不能为空");
+        } else if (myOrderParam.getPageNum() < 1 || myOrderParam.getPageSize() < 1) {
+            return APIUtil.paramErrorResponse("分页参数无效");
+        }
+
+        // handle SF orders url
+        String ordersURL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
+        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(myOrderParam.getId());
+        StringBuilder uuidSB = new StringBuilder();
+        for (int i = 0; i < orderExpressList.size(); i++) {
+            OrderExpress oe = orderExpressList.get(i);
+            if (oe.getUuid() != null && oe.getUuid().length() != 0) {
+                uuidSB.append(oe.getUuid());
+                uuidSB.append(",");
+            }
+        }
+        String uuids = uuidSB.toString();
+
+        // no data, return
+        if (uuids.length() != 0) {
+            ordersURL = ordersURL.replace("uuid", uuids.substring(0, uuids.length() - 1));
+            List<Orders> orderses;
+            try { // post
+                orderses = APIResolve.getOrdersJson(ordersURL, myOrderParam.getToken());
+            } catch (Exception e) {
+                return APIUtil.getResponse(APIStatus.SELECT_FAIL, e.getLocalizedMessage());
+            }
+
+            // Update Dankal express info
+            for (Orders orders : orderses) {
+                String uuid = orders.getUuid();
+                String order_status = orders.getStatus();
+                orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -1124,7 +1096,6 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 订单评价
-     *
      */
     public APIResponse evaluate(Object object) {
         APIStatus status = APIStatus.SUCCESS;
@@ -1149,16 +1120,16 @@ public class OrderServiceImpl implements OrderService {
         StringBuilder uuidStr = new StringBuilder();
         // 定义一个flag 只有存在含有uuid的订单才调用顺丰接口
         boolean flag = false;
-        for (OrderExpress oe:orderExpressList){
+        for (OrderExpress oe : orderExpressList) {
             // 循环遍历orderExpressList，对填写过的快递信息，取出uuid，发到顺丰去评价
-            if(oe.getUuid() != null && !"".equals(oe.getUuid())){
+            if (oe.getUuid() != null && !"".equals(oe.getUuid())) {
                 flag = true;
                 uuidStr.append(oe.getUuid());
                 uuidStr.append(",");
             }
         }
-        uuidStr.deleteCharAt(uuidStr.length()-1);
-        if (flag){
+        uuidStr.deleteCharAt(uuidStr.length() - 1);
+        if (flag) {
             // 向顺丰的接口发送评价信息
             String evaluate_url = SF_REQUEST_URL + "/" + uuidStr.toString() + "/attributes/merchant_comment";
             HttpPut put = new HttpPut(evaluate_url);
@@ -1167,11 +1138,11 @@ public class OrderServiceImpl implements OrderService {
             jsonObject = JSONObject.fromObject(res);
             if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {
                 status = APIStatus.EVALUATE_FALT;
-            }else  {// 评价成功后，向评价表存入 评价记录
+            } else {// 评价成功后，向评价表存入 评价记录
                 jsonObject = jsonObject.getJSONObject("attributes");
                 evaluateMapper.addEvaluate(evaluate);
             }
-        }else {
+        } else {
             // 当 flag 为false 时，说明没有可评价的订单，也是评价失败
             status = APIStatus.EVALUATE_FALT;
         }
