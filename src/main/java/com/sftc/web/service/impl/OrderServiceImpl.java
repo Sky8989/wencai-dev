@@ -950,34 +950,32 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // handle SF orders url
-        String ordersURL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
         List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(myOrderParam.getId());
         StringBuilder uuidSB = new StringBuilder();
-        for (int i = 0; i < orderExpressList.size(); i++) {
-            OrderExpress oe = orderExpressList.get(i);
+        for (OrderExpress oe : orderExpressList) {
             if (oe.getUuid() != null && oe.getUuid().length() != 0) {
-                uuidSB.append(oe.getUuid());
-                uuidSB.append(",");
+                Order order = orderMapper.selectOrderDetailByOrderId(oe.getOrder_id());
+                if (order.getRegion_type().equals("REGION_SAME")) { // 只有同城的订单能同步快递状态
+                    uuidSB.append(oe.getUuid());
+                    uuidSB.append(",");
+                }
             }
         }
-        String uuids = uuidSB.toString();
+        String uuid = uuidSB.toString();
+        if (uuid.equals("")) return null;
 
-        // no data, return
-        if (uuids.length() != 0) {
-            ordersURL = ordersURL.replace("uuid", uuids.substring(0, uuids.length() - 1));
-            List<Orders> orderses;
-            try { // post
-                orderses = APIResolve.getOrdersJson(ordersURL, myOrderParam.getToken());
-            } catch (Exception e) {
-                return APIUtil.getResponse(APIStatus.SELECT_FAIL, e.getLocalizedMessage());
-            }
+        String ordersURL = SF_ORDER_SYNC_URL.replace("{uuid}", uuid.substring(0, uuid.length() - 1));
+        List<Orders> ordersList;
+        try { // post and fetch express status list
+            ordersList = APIResolve.getOrdersJson(ordersURL, myOrderParam.getToken());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return APIUtil.selectErrorResponse(e.getLocalizedMessage(), e);
+        }
 
-            // Update Dankal express info
-            for (Orders orders : orderses) {
-                String uuid = orders.getUuid();
-                String order_status = orders.getStatus();
-                orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
-            }
+        // Update Dankal express info
+        for (Orders orders : ordersList) {
+            orderExpressMapper.updateOrderExpressForSF(new OrderExpress(orders.getStatus(), orders.getUuid()));
         }
 
         return null;
