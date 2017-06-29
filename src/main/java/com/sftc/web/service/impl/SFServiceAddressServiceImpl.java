@@ -73,7 +73,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
 
         for (SFServiceAddress city : cities) {
             sfServiceMapper.insertSFServiceAddress(city);
-//            updateArea(city);
+            updateArea(city);
         }
     }
 
