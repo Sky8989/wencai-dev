@@ -1096,9 +1096,11 @@ public class OrderServiceImpl implements OrderService {
                 return APIUtil.submitErrorResponse("订单取消失败,sf接口出错", jsonObject);
             } else {
                 orderMapper.updateCancelOrderById(id);
+                orderExpressMapper.updateOrderExpressCanceled(id);
             }
         } else {//订单还未提交给顺丰的情况，只更新order的信息即可
             orderMapper.updateCancelOrderById(id);
+            orderExpressMapper.updateOrderExpressCanceled(id);
         }
         return APIUtil.getResponse(status, jsonObject);
     }

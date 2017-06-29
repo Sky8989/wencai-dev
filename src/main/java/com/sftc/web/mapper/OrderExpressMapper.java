@@ -28,6 +28,9 @@ public interface OrderExpressMapper {
      */
     void updateOrderExpressStatus(@Param("express_id") int express_id, @Param("status") String status);
 
+    // 更改 快递状态 为 取消 CANCELED
+    void  updateOrderExpressCanceled(int order_id);
+
     //更新快递信息，by 快递id，用于好友填写订单时回填信息
     void updateOrderExpressByOrderExpressId(OrderExpress orderExpress);
 
