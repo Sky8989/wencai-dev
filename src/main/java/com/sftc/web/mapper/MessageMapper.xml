@@ -10,7 +10,7 @@
 
     <!-- 二次新建通知信息时，对原有信息进行更新，更新 express_id 和is_read 字段-->
     <update id="updateMessageReceiveExpress" parameterType="com.sftc.web.model.Message" useGeneratedKeys="true">
-      UPDATE sftc_message SET is_read = #{is_read},express_id = #{express_id}，create_time = #{create_time}
+      UPDATE sftc_message SET is_read = #{is_read},express_id = #{express_id},create_time = #{create_time}
       WHERE user_id = #{user_id} AND message_type = 'RECEIVE_EXPRESS'
     </update>
 
