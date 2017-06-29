@@ -47,6 +47,8 @@ public class APIConstant {
     public static final String SF_REQUEST_URL = SF_SAME_DOMAIN + "requests";
     /** 获取常量 */
     public static final String SF_CONSTANTS_URL = SF_SAME_DOMAIN + "constants/";
+    /** 订单状态同步 */
+    public static final String SF_ORDER_SYNC_URL = SF_SAME_DOMAIN + "requests/{uuid}/status?batch=true";
 
     // 大网订单相关
     /** 创建订单 */
