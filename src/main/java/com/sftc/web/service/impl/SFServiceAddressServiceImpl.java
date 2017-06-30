@@ -73,13 +73,20 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
 
         String senderCity = order.getSender_city().replace("市", "");
         String receiverCity = oe.getShip_city().replace("市", "");
-
         String senderArea = order.getSender_area();
         String receiverArea = oe.getShip_area();
+        if (!senderArea.endsWith("区")) senderArea = senderArea + "区";
+        if (!receiverArea.endsWith("区")) receiverArea = receiverArea + "区";
 
         SFServiceAddress senderCityAddress = sfServiceAddressMapper.selectServiceAddressByNameAndLevel(senderCity, 3);
         SFServiceAddress receiveCityAddress = sfServiceAddressMapper.selectServiceAddressByNameAndLevel(receiverCity, 3);
 
+        if (senderCityAddress == null)
+            return APIUtil.selectErrorResponse("顺丰不支持寄件人城市", null);
+        if (receiveCityAddress == null)
+            return APIUtil.selectErrorResponse("顺丰不支持收件人城市", null);
+
+        // request sf param
         String senderAreaCode = getServiceAddressCode(senderArea, 4, senderCityAddress.getCode());
         String receiverAreaCode = getServiceAddressCode(receiverArea, 4, receiveCityAddress.getCode());
         String weight = oe.getPackage_type();
@@ -97,17 +104,32 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
 
         JSONObject targetObject = requestObject.getJSONObject("target");
         JSONObject sourceObject = requestObject.getJSONObject("source");
-        String senderCity = (String) targetObject.get("city");
-        String senderArea = (String) targetObject.get("area");
-        String receiverCity = (String) sourceObject.get("city");
-        String receiverArea = (String) sourceObject.get("area");
+        String senderCity = (String) sourceObject.get("city");
+        String senderArea = (String) sourceObject.get("area");
+        String receiverCity = (String) targetObject.get("city");
+        String receiverArea = (String) targetObject.get("area");
 
         if (senderCity == null || receiverCity == null || senderArea == null || receiverArea == null || senderCity.equals("") || receiverCity.equals("") || senderArea.equals("") || receiverArea.equals(""))
             return APIUtil.paramErrorResponse("请求体不完整");
 
-        SFServiceAddress senderCityAddress = sfServiceAddressMapper.selectServiceAddressByNameAndLevel(senderCity, 3);
-        SFServiceAddress receiveCityAddress = sfServiceAddressMapper.selectServiceAddressByNameAndLevel(receiverCity, 3);
+        // handle address
+        senderCity = senderCity.replace("市", "");
+        receiverCity = receiverCity.replace("市", "");
+        if (!senderArea.endsWith("区")) senderArea = senderArea + "区";
+        if (!receiverArea.endsWith("区")) receiverArea = receiverArea + "区";
 
+//        SFServiceAddress senderCityAddress = sfServiceAddressMapper.selectServiceAddressByNameAndLevel(senderCity, 3);
+//        SFServiceAddress receiveCityAddress = sfServiceAddressMapper.selectServiceAddressByNameAndLevel(receiverCity, 3);
+
+        SFServiceAddress senderCityAddress = sfServiceAddressMapper.selectServiceAddressByName(senderCity);
+        SFServiceAddress receiveCityAddress = sfServiceAddressMapper.selectServiceAddressByName(receiverCity);
+
+        if (senderCityAddress == null)
+            return APIUtil.selectErrorResponse("顺丰不支持寄件人城市", null);
+        if (receiveCityAddress == null)
+            return APIUtil.selectErrorResponse("顺丰不支持收件人城市", null);
+
+        // request sf param
         String senderAreaCode = getServiceAddressCode(senderArea, 4, senderCityAddress.getCode());
         String receiverAreaCode = getServiceAddressCode(receiverArea, 4, receiveCityAddress.getCode());
         Object weightObject = requestObject.get("weight");
