@@ -12,6 +12,7 @@ import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.sfmodel.SFServiceAddress;
 import com.sftc.web.service.SFServiceAddressService;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Service;
@@ -47,15 +48,15 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
     private Gson gson = new Gson();
 
     /**
-     * 查询动态配送时效价格
+     * 查询订单动态配送时效价格
      */
-    public APIResponse selectDynamicPrice(APIRequest request) {
+    public APIResponse selectOrderDynamicPrice(APIRequest request) {
 
-        String orderiId = (String) request.getParameter("order_id");
-        if (orderiId == null || orderiId.equals(""))
+        String orderId = (String) request.getParameter("order_id");
+        if (orderId == null || orderId.equals(""))
             return APIUtil.paramErrorResponse("order_id不能为空");
 
-        int order_id = Integer.parseInt(orderiId);
+        int order_id = Integer.parseInt(orderId);
         if (order_id < 1)
             return APIUtil.paramErrorResponse("order_id无效");
 
@@ -81,10 +82,42 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
 
         String senderAreaCode = getServiceAddressCode(senderArea, 4, senderCityAddress.getCode());
         String receiverAreaCode = getServiceAddressCode(receiverArea, 4, receiveCityAddress.getCode());
-        String weight = (String) request.getParameter("weight");
-        if (weight == null || weight.equals("")) weight = "1";
+        String weight = oe.getPackage_type();
 
         return getServiceRate(senderAreaCode, receiverAreaCode, weight);
+    }
+
+    /**
+     * 查询动态配送时效价格
+     */
+    public APIResponse selectDynamicPrice(APIRequest request) {
+
+        Object object = request.getRequestParam();
+        JSONObject requestObject = JSONObject.fromObject(object);
+
+        JSONObject targetObject = requestObject.getJSONObject("target");
+        JSONObject sourceObject = requestObject.getJSONObject("source");
+        String senderCity = (String) targetObject.get("city");
+        String senderArea = (String) targetObject.get("area");
+        String receiverCity = (String) sourceObject.get("city");
+        String receiverArea = (String) sourceObject.get("area");
+
+        if (senderCity == null || receiverCity == null || senderArea == null || receiverArea == null || senderCity.equals("") || receiverCity.equals("") || senderArea.equals("") || receiverArea.equals(""))
+            return APIUtil.paramErrorResponse("请求体不完整");
+
+        SFServiceAddress senderCityAddress = sfServiceAddressMapper.selectServiceAddressByNameAndLevel(senderCity, 3);
+        SFServiceAddress receiveCityAddress = sfServiceAddressMapper.selectServiceAddressByNameAndLevel(receiverCity, 3);
+
+        String senderAreaCode = getServiceAddressCode(senderArea, 4, senderCityAddress.getCode());
+        String receiverAreaCode = getServiceAddressCode(receiverArea, 4, receiveCityAddress.getCode());
+        Object weightObject = requestObject.get("weight");
+        String weightStr = "1";
+        if (weightObject != null) {
+            double weight = (Double) requestObject.get("weight");
+            weightStr = (weight == 0 ? 1 : weight) + "";
+        }
+
+        return getServiceRate(senderAreaCode, receiverAreaCode, weightStr);
     }
 
     // 获取顺丰服务地址编码

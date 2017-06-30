@@ -4,6 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.service.SFServiceAddressService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,9 +25,17 @@ public class SFServiceAddressController {
         return sfServiceAddressService.updateServiceAddress(new APIRequest(request));
     }
 
-    @RequestMapping(value = "dynamic/rate", method = RequestMethod.GET)
+    @RequestMapping(value = "dynamic/rate", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse selectRate(HttpServletRequest request) throws Exception {
-        return sfServiceAddressService.selectDynamicPrice(new APIRequest(request));
+    APIResponse selectRate(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return sfServiceAddressService.selectDynamicPrice(request);
+    }
+
+    @RequestMapping(value = "dynamic/order/rate", method = RequestMethod.GET)
+    public @ResponseBody
+    APIResponse selectOrderRate(HttpServletRequest request) throws Exception {
+        return sfServiceAddressService.selectOrderDynamicPrice(new APIRequest(request));
     }
 }
