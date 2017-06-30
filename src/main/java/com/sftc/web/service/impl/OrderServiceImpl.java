@@ -612,7 +612,9 @@ public class OrderServiceImpl implements OrderService {
             // 随机获取包裹编号
             int random = new Random().nextInt(realList.size());
             orderExpress.setState("ALREADY_FILL");
-            orderExpress.setId(realList.get(random).getId());
+            //orderExpress.setId(realList.get(random).getId());
+            // 修改需求为 不需要随机取包裹 6.30号
+            orderExpress.setId(realList.get(0).getId());
             orderExpress.setReceive_time(Long.toString(System.currentTimeMillis()));
             orderExpressMapper.updateOrderExpressByOrderExpressId(orderExpress);
 
