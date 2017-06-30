@@ -12,6 +12,11 @@ public interface SFServiceAddressMapper {
             "VALUES (#{distId},#{level},#{code},#{parentId},#{parentCode},#{countryCode},#{name},#{lang},#{available},#{opening})")
     void insertSFServiceAddress(SFServiceAddress serviceAddress);
 
+    @Select("SELECT * FROM sftc_service_address WHERE name=#{name}")
+    SFServiceAddress selectServiceAddressByName(
+            @Param("name") String name
+    );
+
     @Select("SELECT * FROM sftc_service_address WHERE name=#{name} AND level=#{level}")
     SFServiceAddress selectServiceAddressByNameAndLevel(
             @Param("name") String name,

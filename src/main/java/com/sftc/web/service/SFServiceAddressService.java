@@ -11,6 +11,11 @@ public interface SFServiceAddressService {
     APIResponse updateServiceAddress(APIRequest request);
 
     /**
+     * 查询订单动态配送时效价格
+     */
+    APIResponse selectOrderDynamicPrice(APIRequest request);
+
+    /**
      * 查询动态配送时效价格
      */
     APIResponse selectDynamicPrice(APIRequest request);
