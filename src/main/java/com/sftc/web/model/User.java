@@ -1,6 +1,6 @@
 package com.sftc.web.model;
 
-import static com.sftc.tools.api.APIConstant.DK_USER_AVATAR_DEFAULT;
+import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
 
 public class User extends Object {
     private int id;

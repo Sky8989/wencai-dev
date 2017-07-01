@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.sftc.tools.api.APIConstant.*;
+import static com.sftc.tools.constant.ThirdPartyConstant.QN_ACCESSKEY;
+import static com.sftc.tools.constant.ThirdPartyConstant.QN_BUCKET;
+import static com.sftc.tools.constant.ThirdPartyConstant.QN_SECRETKEY;
 
 @Service
 public class QiniuServiceImpl implements QiniuService {

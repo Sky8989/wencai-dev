@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static com.sftc.tools.api.APIConstant.DK_USER_AVATAR_DEFAULT;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
 
 @Service
 public class AddressHistoryServiceImpl implements AddressHistoryService {
