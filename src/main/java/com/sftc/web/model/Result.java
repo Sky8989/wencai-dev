@@ -72,15 +72,11 @@ public class Result {
     public APIStatus validateMessage(){
         APIStatus status=null;
         JSONArray jsonObject = JSONArray.fromObject(this.errors);
-           Map m =  (Map)jsonObject.get(0);
-
-
+        Map m =  (Map)jsonObject.get(0);
         if (m.get("type").equals("VALIDATION_ERROR")){
             status = APIStatus.VALIDATION_ERROR;
-
         }
         return status;
     }
-
 }
 

@@ -10,6 +10,7 @@
             <if test="gmt_modified!=null">gmt_modified=#{gmt_modified},</if>
             <if test="gmt_expiry!=null">gmt_expiry=#{gmt_expiry},</if>
             <if test="local_token!=null">local_token=#{local_token},</if>
+            <if test="access_token!=null">access_token=#{access_token},</if>
         </trim>
         WHERE user_id=#{user_id}
     </update>
