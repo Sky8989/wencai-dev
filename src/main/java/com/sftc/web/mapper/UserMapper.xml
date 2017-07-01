@@ -68,4 +68,14 @@
     <update id="updateUserOfAvatar" parameterType="com.sftc.web.model.User" >
         UPDATE sftc_user SET avatar = #{avatar} ,name = #{name} WHERE open_id LIKE #{open_id}
     </update>
+
+
+    <update id="updateUser" parameterType="com.sftc.web.model.User">
+        update sftc_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="uuid!=null">uuid=#{uuid},</if>
+            <if test="mobile!=null">mobile=#{mobile},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
 </mapper>

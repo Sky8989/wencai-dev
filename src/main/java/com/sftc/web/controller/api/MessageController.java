@@ -45,10 +45,10 @@ public class MessageController extends AbstractBasicController {
     /**
      * 登录接口
      */
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/sfLogin", method = RequestMethod.POST)
     @ResponseBody
     APIResponse login(@RequestBody Object obj) throws Exception {
-        return messageService.login(obj);
+        return messageService.sfLogin(obj);
     }
 
 //    /**

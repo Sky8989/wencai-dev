@@ -15,4 +15,6 @@ public interface TokenMapper {
     Token getTokenByMobile(String mobile);
 
     int selectUserIdByToken(@Param("token") String token);
+
+
 }

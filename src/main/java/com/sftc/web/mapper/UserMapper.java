@@ -24,4 +24,6 @@ public interface UserMapper {
     int insertWithAvatarAndName(User user);
 
     void updateUserOfAvatar(User user);
+    // 动态插入
+    void updateUser(User user);
 }
