@@ -12,7 +12,6 @@ public interface UserMapper {
 
     List<User> selectUserByOpenid(String open_id);
 
-
     User selectUserByUserId(int user_id);
 
     int insertOpenid(User user);
@@ -24,4 +23,6 @@ public interface UserMapper {
     int insertWithAvatarAndName(User user);
 
     void updateUserOfAvatar(User user);
+
+    List<User> selectAllUsers();
 }

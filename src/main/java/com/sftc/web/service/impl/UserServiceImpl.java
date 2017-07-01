@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.sftc.tools.api.APIConstant.WX_AUTHORIZATION;
+import static com.sftc.tools.constant.ThirdPartyConstant.WX_AUTHORIZATION;
 
 @Service
 public class UserServiceImpl implements UserService {

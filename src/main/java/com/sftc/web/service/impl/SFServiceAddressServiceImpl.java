@@ -2,7 +2,7 @@ package com.sftc.web.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.sftc.tools.api.APIGet;
+import com.sftc.tools.api.APIGetUtil;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
@@ -146,7 +146,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
     private String getServiceAddressCode(String keyword, int level, String parentCode) {
 
         String url = SF_SERVICE_ADDRESS_QUERY.replace("{keyword}", keyword).replace("{level}", level + "");
-        String result = APIGet.getGet(new HttpGet(url));
+        String result = APIGetUtil.get(new HttpGet(url));
         List<SFServiceAddress> addresses = gson.fromJson(result, new TypeToken<List<SFServiceAddress>>() {
         }.getType());
 
@@ -171,7 +171,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
 
         String rateUrl = SF_SERVICE_RATE.replace("{origin}", origin).replace("{dest}", dest).replace("{time}", time).replace("{weight}", weight);
         HttpGet get = new HttpGet(rateUrl);
-        String result = APIGet.getGet(get);
+        String result = APIGetUtil.get(get);
 
         Object resultObj = gson.fromJson(result, Object.class);
         return APIUtil.getResponse(SUCCESS, resultObj);
@@ -187,7 +187,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
     private void updateCountry() {
 
         HttpGet get = new HttpGet(SF_SERVICE_ADDRESS_COUNTRY);
-        String result = APIGet.getGet(get);
+        String result = APIGetUtil.get(get);
 
         List<SFServiceAddress> countries = gson.fromJson(result, new TypeToken<List<SFServiceAddress>>() {
         }.getType());
@@ -204,7 +204,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
     private void updateProvince(SFServiceAddress country) {
 
         String url = SF_SERVICE_ADDRESS_PROVINCE.replace("{countryCode}", country.getCode());
-        String result = APIGet.getGet(new HttpGet(url));
+        String result = APIGetUtil.get(new HttpGet(url));
 
         List<SFServiceAddress> provinces = gson.fromJson(result, new TypeToken<List<SFServiceAddress>>() {
         }.getType());
@@ -218,7 +218,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
     private void updateCity(SFServiceAddress province) {
 
         String url = SF_SERVICE_ADDRESS_CITY.replace("{provinceCode}", province.getCode());
-        String result = APIGet.getGet(new HttpGet(url));
+        String result = APIGetUtil.get(new HttpGet(url));
 
         List<SFServiceAddress> cities = gson.fromJson(result, new TypeToken<List<SFServiceAddress>>() {
         }.getType());
@@ -232,7 +232,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
     private void updateArea(SFServiceAddress city) {
 
         String url = SF_SERVICE_ADDRESS_AREA.replace("{cityCode}", city.getCode());
-        String result = APIGet.getGet(new HttpGet(url));
+        String result = APIGetUtil.get(new HttpGet(url));
 
         List<SFServiceAddress> areas = gson.fromJson(result, new TypeToken<List<SFServiceAddress>>() {
         }.getType());

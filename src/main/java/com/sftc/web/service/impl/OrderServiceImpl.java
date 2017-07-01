@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
+import com.sftc.tools.sf.SFTokenHelper;
+import com.sftc.tools.sf.SFOrderHelper;
+import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.web.mapper.*;
 import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.OrderCallback;
@@ -20,11 +23,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.springframework.stereotype.Service;
 
+import static com.sftc.tools.constant.SFConstant.*;
+
 import javax.annotation.Resource;
 import java.lang.Object;
 import java.util.*;
 
-import static com.sftc.tools.api.APIConstant.*;
 import static com.sftc.tools.api.APIStatus.*;
 
 @Service("orderService")
@@ -144,7 +148,7 @@ public class OrderServiceImpl implements OrderService {
             HttpPost post = new HttpPost(SF_REQUEST_URL);
             String token = (String) requestObject.getJSONObject("request").getJSONObject("merchant").get("access_token");
             post.addHeader("PushEnvelope-Device-Token", token);
-            String resultStr = AIPPost.getPost(paramStr, post);
+            String resultStr = APIPostUtil.post(paramStr, post);
             JSONObject responseObject = JSONObject.fromObject(resultStr);
 
             if (!responseObject.containsKey("error")) {
@@ -224,8 +228,8 @@ public class OrderServiceImpl implements OrderService {
                 // 获取订单结果
                 String paramStr = gson.toJson(JSONObject.fromObject(sf));
                 HttpPost post = new HttpPost(SF_CREATEORDER_URL);
-                post.addHeader("Authorization", "bearer " + APIGetToken.getToken());
-                String resultStr = AIPPost.getPost(paramStr, post);
+                post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
+                String resultStr = APIPostUtil.post(paramStr, post);
                 JSONObject jsonObject = JSONObject.fromObject(resultStr);
                 String messageType = (String) jsonObject.get("Message_Type");
 
@@ -301,7 +305,7 @@ public class OrderServiceImpl implements OrderService {
 
         JSONObject reqObject = JSONObject.fromObject(object);
 
-        String order_number = APIRandomUtil.getRandomString();
+        String order_number = SFOrderHelper.getOrderNumber();
         APIStatus status = SUCCESS;
 
         Order order = new Order(
@@ -333,7 +337,7 @@ public class OrderServiceImpl implements OrderService {
         JSONObject tempObject = JSONObject.fromObject(object);
         tempObject.remove("order");
         String requestSFParamStr = gson.toJson(tempObject);
-        JSONObject respObject = JSONObject.fromObject(AIPPost.getPost(requestSFParamStr, post));
+        JSONObject respObject = JSONObject.fromObject(APIPostUtil.post(requestSFParamStr, post));
 
         if (respObject.get("errors") == null || respObject.get("error") == null) {
             // 插入订单表
@@ -379,7 +383,7 @@ public class OrderServiceImpl implements OrderService {
      */
     private APIResponse normalNationOrderCommit(Object object) {
 
-        String orderId = APIRandomUtil.getRandomString();
+        String orderId = SFOrderHelper.getOrderNumber();
         APIStatus status = SUCCESS;
 
         JSONObject requestObject = JSONObject.fromObject(object);
@@ -428,8 +432,8 @@ public class OrderServiceImpl implements OrderService {
 
         // POST
         HttpPost post = new HttpPost(SF_CREATEORDER_URL);
-        post.addHeader("Authorization", "bearer " + APIGetToken.getToken());
-        String res = AIPPost.getPost(str, post);
+        post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
+        String res = APIPostUtil.post(str, post);
         JSONObject responseObject = JSONObject.fromObject(res);
 
         if (responseObject.get("Message_Type") != null) {
@@ -510,7 +514,7 @@ public class OrderServiceImpl implements OrderService {
             post.addHeader("PushEnvelope-Device-Token", "padHjjRvusAC9z7ehxpG");
         }
 
-        String res = AIPPost.getPost(gson.toJson(jsonObject), post);
+        String res = APIPostUtil.post(gson.toJson(jsonObject), post);
         JSONObject respObject = JSONObject.fromObject(res);
 
         APIStatus status = respObject.get("error") == null ? SUCCESS : QUOTE_FAIL;
@@ -540,7 +544,7 @@ public class OrderServiceImpl implements OrderService {
         String pay_url = SF_REQUEST_URL + "/" + uuid + "/js_pay?open_id=" + user.getOpen_id();
         HttpPost post = new HttpPost(pay_url);
         post.addHeader("PushEnvelope-Device-Token", access_token);
-        String res = AIPPost.getPost("", post);
+        String res = APIPostUtil.post("", post);
         JSONObject jsonObject = JSONObject.fromObject(res);
 
         return APIUtil.getResponse(SUCCESS, jsonObject);
@@ -555,7 +559,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 插入订单表
         Order order = new Order(orderParam);
-        String order_number = APIRandomUtil.getRandomString();
+        String order_number = SFOrderHelper.getOrderNumber();
         order.setOrder_number(order_number);
         orderMapper.addOrder(order);
 
@@ -571,7 +575,7 @@ public class OrderServiceImpl implements OrderService {
         orderExpress.setReserve_time("");
         orderExpress.setOrder_id(order.getId());
         for (int i = 0; i < orderParam.getPackage_count(); i++) {
-            orderExpress.setOrder_number(APIRandomUtil.getRandomString());
+            orderExpress.setOrder_number(SFOrderHelper.getOrderNumber());
             orderExpressMapper.addOrderExpress(orderExpress);
         }
 
@@ -688,7 +692,7 @@ public class OrderServiceImpl implements OrderService {
         if (uuid == null)
             uuid = orderExpressMapper.getUuidByOrderId(order_id);
 
-        JSONObject jsonObject = APISfDetail.sfDetail(uuid, access_token);
+        JSONObject jsonObject = SFExpressHelper.getExpressDetail(uuid, access_token);
 
         return APIUtil.getResponse(SUCCESS, jsonObject);
     }
@@ -895,7 +899,7 @@ public class OrderServiceImpl implements OrderService {
         // POST
         HttpPost post = new HttpPost(SF_REQUEST_URL);
         post.addHeader("PushEnvelope-Device-Token", (String) requestObject.getJSONObject("request").getJSONObject("merchant").get("access_token"));
-        String res = AIPPost.getPost(gson.toJson(object), post);
+        String res = APIPostUtil.post(gson.toJson(object), post);
         JSONObject responseObject = JSONObject.fromObject(res);
 
         // 插入快递表
@@ -947,9 +951,9 @@ public class OrderServiceImpl implements OrderService {
             // GET
             String url = SF_ORDERROUTE_URL + orderExpress.getOrder_number() + "&sort=" + sort;
             HttpGet get = new HttpGet(url);
-            String access_token = APIGetToken.getToken();
+            String access_token = SFTokenHelper.getToken();
             get.addHeader("Authorization", "bearer " + access_token);
-            String res = APIGet.getGet(get);
+            String res = APIGetUtil.get(get);
 
             if (!res.equals("[]")) {
                 JSONArray routeList = JSONArray.fromObject(res);
@@ -967,7 +971,7 @@ public class OrderServiceImpl implements OrderService {
             if (access_token == null || access_token.equals(""))
                 return APIUtil.paramErrorResponse("access_token不能为空");
 
-            respObject = APISfDetail.sfDetail(uuid, access_token);
+            respObject = SFExpressHelper.getExpressDetail(uuid, access_token);
         }
 
         respObject.put("order", order);
@@ -1025,7 +1029,7 @@ public class OrderServiceImpl implements OrderService {
             String evaluate_url = SF_REQUEST_URL + "/" + uuidStr.toString() + "/attributes/merchant_comment";
             HttpPut put = new HttpPut(evaluate_url);
             put.addHeader("PushEnvelope-Device-Token", (String) request.get("access_token"));
-            String res = AIPPost.getPost(str, put);
+            String res = APIPostUtil.post(str, put);
             jsonObject = JSONObject.fromObject(res);
             if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {
                 status = APIStatus.EVALUATE_FALT;
@@ -1054,16 +1058,16 @@ public class OrderServiceImpl implements OrderService {
         String uuid = request.getString("uuid");
         OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
         boolean isNationFlag = false;
-        if (orderExpress == null){
-            return APIUtil.selectErrorResponse("该uuid无对应快递信息，请检查uuid",request);
-        }else {
+        if (orderExpress == null) {
+            return APIUtil.selectErrorResponse("该uuid无对应快递信息，请检查uuid", request);
+        } else {
             Order order = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
-            if (order != null && "REGION_NATION".equals(order.getRegion_type())){
+            if (order != null && "REGION_NATION".equals(order.getRegion_type())) {
                 isNationFlag = true;
             }
         }
         ///如果 订单是大网单 则不请求顺丰接口，只保存在自己数据库中
-        if (isNationFlag){
+        if (isNationFlag) {
             /// 评价成功后，向评价表存入 评价记录
             Evaluate evaluate = new Evaluate();
             evaluate.setMerchant_comments(attributes.getString("merchant_comments"));
@@ -1074,14 +1078,14 @@ public class OrderServiceImpl implements OrderService {
             evaluate.setUser_id(request.getInt("user_id"));
             evaluate.setCreate_time(Long.toString(System.currentTimeMillis()));
             evaluateMapper.addEvaluate(evaluate);
-            return APIUtil.getResponse(status,"大网订单评价成功");
+            return APIUtil.getResponse(status, "大网订单评价成功");
         }
 
         /// 向顺丰的接口发送评价信息
         String evaluate_url = SF_REQUEST_URL + "/" + uuid + "/attributes/merchant_comment";
         HttpPut put = new HttpPut(evaluate_url);
         put.addHeader("PushEnvelope-Device-Token", (String) request.get("access_token"));
-        String res = AIPPost.getPost(str, put);
+        String res = APIPostUtil.post(str, put);
         jsonObject = JSONObject.fromObject(res);
         if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {
             status = APIStatus.EVALUATE_FALT;
@@ -1116,7 +1120,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderMapper.selectOrderDetailByOrderId(id);
         if ("Cancelled".equals(order.getIs_cancel()) || !"".equals(order.getIs_cancel())) {//is_cancle字段默认是空字符串
             //return APIUtil.getResponse(APIStatus.CANCEL_ORDER_FALT, null);
-            return APIUtil.submitErrorResponse("订单已经取消，请勿重复取消操作！！！",null);
+            return APIUtil.submitErrorResponse("订单已经取消，请勿重复取消操作！！！", null);
         }
         List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(id);
         StringBuilder stringBuilder = new StringBuilder();
@@ -1142,7 +1146,7 @@ public class OrderServiceImpl implements OrderService {
             System.out.println("-   -这是myurl" + myUrl);
             HttpPost post = new HttpPost(myUrl);
             post.addHeader("PushEnvelope-Device-Token", jsonObject1.getString("access_token"));
-            String res = AIPPost.getPost(str, post);
+            String res = APIPostUtil.post(str, post);
             jsonObject = JSONObject.fromObject(res);
             if (jsonObject.get("error") != null) {
                 return APIUtil.submitErrorResponse("订单取消失败,sf接口出错", jsonObject);
@@ -1165,7 +1169,7 @@ public class OrderServiceImpl implements OrderService {
         String constantsUrl = SF_CONSTANTS_URL + request.getParameter("constants") + "?latitude=" + request.getParameter("latitude") + "&longitude=" + request.getParameter("longitude");
         HttpGet get = new HttpGet(constantsUrl);
         get.addHeader("PushEnvelope-Device-Token", (String) request.getParameter("access_token"));
-        String res = APIGet.getGet(get);
+        String res = APIGetUtil.get(get);
         JSONObject jsonObject = JSONObject.fromObject(res);
         if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {
             status = APIStatus.CONSTANT_FALT;
@@ -1182,9 +1186,9 @@ public class OrderServiceImpl implements OrderService {
         APIStatus status = SUCCESS;
 
         HttpPost post = new HttpPost(SF_COUNT_PRICE);
-        String access_token = APIGetToken.getToken();
+        String access_token = SFTokenHelper.getToken();
         post.addHeader("Authorization", "bearer " + access_token);
-        String res = AIPPost.getPost(gson.toJson(object), post);
+        String res = APIPostUtil.post(gson.toJson(object), post);
         JSONObject responseObject = JSONObject.fromObject(res);
 
         if (responseObject.get("Message_Type") != null)
@@ -1204,9 +1208,9 @@ public class OrderServiceImpl implements OrderService {
 
         String routeUrl = SF_ORDERROUTE_URL + request.getParameter("orderid") + "&sort=" + request.getParameter("sort");
         HttpGet get = new HttpGet(routeUrl);
-        String access_token = APIGetToken.getToken();
+        String access_token = SFTokenHelper.getToken();
         get.addHeader("Authorization", "bearer " + access_token);
-        String res = APIGet.getGet(get);
+        String res = APIGetUtil.get(get);
 
         if (!res.equals("[]")) {
             responseObject = JSONObject.fromObject(res);

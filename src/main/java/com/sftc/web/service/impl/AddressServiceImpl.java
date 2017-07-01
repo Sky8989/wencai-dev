@@ -15,8 +15,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sftc.tools.api.APIConstant.MAP_GEOCODER_KEY;
-import static com.sftc.tools.api.APIConstant.MAP_GEOCODER_URL;
+import static com.sftc.tools.constant.ThirdPartyConstant.MAP_GEOCODER_KEY;
+import static com.sftc.tools.constant.ThirdPartyConstant.MAP_GEOCODER_URL;
 
 @Service("addressService")
 public class AddressServiceImpl implements AddressService {
@@ -101,7 +101,7 @@ public class AddressServiceImpl implements AddressService {
         // GET
         String geocoderUrl = MAP_GEOCODER_URL + address + "&key=" + MAP_GEOCODER_KEY;
         HttpGet get = new HttpGet(geocoderUrl);
-        String result = APIGet.getGet(get);
+        String result = APIGetUtil.get(get);
         JSONObject resObject = JSONObject.fromObject(result);
 
         // Result

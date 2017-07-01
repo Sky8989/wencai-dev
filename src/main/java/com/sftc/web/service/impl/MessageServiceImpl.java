@@ -13,10 +13,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
+import static com.sftc.tools.constant.SFConstant.*;
+
 import javax.annotation.Resource;
 import java.util.Map;
-
-import static com.sftc.tools.api.APIConstant.*;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {
@@ -36,7 +36,7 @@ public class MessageServiceImpl implements MessageService {
         APIStatus status = APIStatus.SUCCESS;
         String str = gson.toJson(object);
         HttpPost post = new HttpPost(SF_TAKE_MESSAGE_URL);
-        String res = AIPPost.getPost(str, post);
+        String res = APIPostUtil.post(str, post);
         Result result = new Result();
         JSONObject jsonObject = JSONObject.fromObject(res);
         result = (Result) JSONObject.toBean(jsonObject, result.getClass());
@@ -55,7 +55,7 @@ public class MessageServiceImpl implements MessageService {
         String str = gson.toJson(object);
 
         HttpPost post = new HttpPost(SF_REGISTER_URL);
-        String res = AIPPost.getPost(str, post);
+        String res = APIPostUtil.post(str, post);
         Result result = new Result();
         JSONObject jsonObject = JSONObject.fromObject(res);
         result = (Result) JSONObject.toBean(jsonObject, result.getClass());
@@ -81,7 +81,7 @@ public class MessageServiceImpl implements MessageService {
         APIStatus status = APIStatus.SUCCESS;
         String str = gson.toJson(object);
         HttpPost post = new HttpPost(SF_GET_TOKEN);
-        String res = AIPPost.getPost(str, post);
+        String res = APIPostUtil.post(str, post);
         Result result = new Result();
         JSONObject jsonObject = JSONObject.fromObject(res);
         result = (Result) JSONObject.toBean(jsonObject, result.getClass());
@@ -104,7 +104,7 @@ public class MessageServiceImpl implements MessageService {
         String str = gson.toJson(object);
         HttpPost post = new HttpPost(SF_LOGIN);
         post.addHeader("PushEnvelope-Device-Token", token.getAccess_token());
-        String res = AIPPost.getPost(str, post);
+        String res = APIPostUtil.post(str, post);
         Result result = new Result();
         JSONObject jsonObject = JSONObject.fromObject(res);
         result = (Result) JSONObject.toBean(jsonObject, result.getClass());
@@ -122,7 +122,7 @@ public class MessageServiceImpl implements MessageService {
 
         HttpGet get = new HttpGet(SF_LOGIN);
         get.addHeader("PushEnvelope-Device-Token", paramMap.get("access_token").toString());
-        String res = APIGet.getGet(get);
+        String res = APIGetUtil.get(get);
         JSONObject jsonObject1 = JSONObject.fromObject(res);
 
         if (jsonObject1.get("errors") != null || jsonObject1.get("error") != null) {

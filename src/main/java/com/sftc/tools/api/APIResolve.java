@@ -14,16 +14,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @author _KeMing
- * @version 1.0
- * @Package com.sftc.tools.api
- * @Description:
- * @date 2017/4/12
- * @Time 下午7:07
- */
 public class APIResolve {
 
     public static WechatUser getWechatJson(String apiUrl) throws Exception {
@@ -37,7 +27,7 @@ public class APIResolve {
     }
 
     public static List<Orders> getOrdersJson(String apiUrl, String token) throws Exception {
-        List<Orders> orderses = null;
+        List<Orders> orderses;
         URL url = new URL(apiUrl);
         HttpURLConnection connection;
         connection = (HttpURLConnection) url.openConnection();
@@ -52,7 +42,7 @@ public class APIResolve {
     }
 
     public static List<Coupon> getCouponsJson(String apiUrl, String token, String method) throws Exception {
-        List<Coupon> couponList = null;
+        List<Coupon> couponList;
         URL url = new URL(apiUrl);
         HttpURLConnection connection;
         connection = (HttpURLConnection) url.openConnection();
