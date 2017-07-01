@@ -51,24 +51,6 @@ public class MessageController extends AbstractBasicController {
         return messageService.sfLogin(obj);
     }
 
-//    /**
-//     * 获取个人信息
-//     */
-//    @RequestMapping(value = "/loginByGet", method = RequestMethod.GET)
-//    @ResponseBody
-//    APIResponse loginByGet(String access_token) throws Exception {
-//        return messageService.loginByGet(access_token);
-//    }
-
-    /**
-     * 获取个人信息
-     */
-    @RequestMapping(value = "/loginByGet", method = RequestMethod.POST)
-    @ResponseBody
-    APIResponse loginByGet(@RequestBody Map paramMap) throws Exception {
-        return messageService.loginByGet(paramMap);
-    }
-
     @RequestMapping(value = "/quotes", method = RequestMethod.POST)
     void quotes(@RequestBody Result r) throws Exception {
         System.out.println(r.getRequest().getPackages().get(0).getType() + r.getRequest().getPackages().get(1).getType());
