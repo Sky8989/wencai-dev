@@ -13,8 +13,10 @@ import com.sftc.web.model.reqeustParam.UserParam;
 import com.sftc.web.model.wechat.WechatUser;
 import com.sftc.web.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,5 +114,12 @@ public class UserServiceImpl implements UserService {
     private String makeToken(String str1, String str2) {
         String s = MD5Util.MD5(str1 + str2);
         return s.substring(0, s.length() - 10);
+    }
+
+    /**
+     * 下面是CMS的内容
+     */
+    public ModelAndView selectUserList(HttpServletRequest request) {
+        return null;
     }
 }

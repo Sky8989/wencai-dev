@@ -59,6 +59,7 @@
         WHERE id=#{id}
     </update>
 
+
     <!-- 星标好友 -->
     <update id="starFriend" parameterType="int">
         update sftc_user_contact
@@ -94,5 +95,11 @@
         INSERT INTO sftc_user_contact (user_id,friend_id,is_tag_star,lntimacy,create_time)
         VALUES (#{user_id},#{friend_id},#{is_tag_star},#{lntimacy},#{create_time});
     </insert>
+
+    <update id="updateUserContactLntimacy" parameterType="com.sftc.web.model.UserContactNew">
+        update sftc_user_contact
+        SET lntimacy=lntimacy+1
+        WHERE id=#{id}
+    </update>
 
 </mapper>
