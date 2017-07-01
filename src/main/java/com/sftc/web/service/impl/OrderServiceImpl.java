@@ -173,6 +173,24 @@ public class OrderServiceImpl implements OrderService {
                 // 插入地址
                 setupAddress(order, oe);
 
+                // 存储好友关系
+                UserContactNew userContactNewParam = new UserContactNew();
+                userContactNewParam.setUser_id(order.getSender_user_id());
+                userContactNewParam.setFriend_id(oe.getShip_user_id());
+                UserContactNew userContactNew = userContactMapper.selectByUserIdAndShipId(userContactNewParam);
+                if (userContactNew == null) {
+                    userContactNew = new UserContactNew();
+                    userContactNew.setUser_id(order.getSender_user_id());
+                    userContactNew.setFriend_id(oe.getShip_user_id());
+                    userContactNew.setIs_tag_star(0);
+                    userContactNew.setLntimacy(0);
+                    userContactNew.setCreate_time(Long.toString(System.currentTimeMillis()));
+                    userContactMapper.insertUserContact(userContactNew);
+                }else {
+                    // 如果不为空 则好友度加1
+                    userContactMapper.updateUserContactLntimacy(userContactNew);
+                }
+
             } else { // error
                 return APIUtil.getResponse(SUBMIT_FAIL, responseObject);
             }
@@ -258,6 +276,9 @@ public class OrderServiceImpl implements OrderService {
                         userContactNew.setLntimacy(0);
                         userContactNew.setCreate_time(Long.toString(System.currentTimeMillis()));
                         userContactMapper.insertUserContact(userContactNew);
+                    }else {
+                        // 如果不为空 则好友度加1
+                        userContactMapper.updateUserContactLntimacy(userContactNew);
                     }
 
                     //添加 通知信息 RECEIVE_EXPRESS 生成收件人的通知信息

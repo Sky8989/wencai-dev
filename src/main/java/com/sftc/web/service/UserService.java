@@ -2,7 +2,12 @@ package com.sftc.web.service;
 
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.Token;
+import com.sftc.web.model.User;
 import com.sftc.web.model.reqeustParam.UserParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,4 +27,6 @@ public interface UserService {
      */
     APIResponse login(UserParam userParam) throws Exception;
     Token getToken(int id);
+
+    ModelAndView selectUserList(HttpServletRequest request);
 }
