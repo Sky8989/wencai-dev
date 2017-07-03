@@ -1,5 +1,6 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
@@ -28,5 +29,5 @@ public interface UserService {
     APIResponse login(UserParam userParam) throws Exception;
     Token getToken(int id);
 
-    ModelAndView selectUserList(HttpServletRequest request);
+    ModelAndView selectUserList(APIRequest request);
 }

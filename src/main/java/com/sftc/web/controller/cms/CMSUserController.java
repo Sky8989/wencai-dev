@@ -1,6 +1,7 @@
 package com.sftc.web.controller.cms;
 
 import com.google.gson.Gson;
+import com.sftc.tools.api.APIRequest;
 import com.sftc.web.controller.AbstractBasicController;
 import com.sftc.web.model.reqeustParam.UserParam;
 import com.sftc.web.service.UserService;
@@ -29,6 +30,9 @@ public class CMSUserController extends AbstractBasicController {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ModelAndView UserList( HttpServletRequest request) throws Exception{
         // 分页查询
-        return userService.selectUserList(request);
+
+        return userService.selectUserList(new APIRequest(request));
     }
+
+
 }

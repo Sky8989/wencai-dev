@@ -1,9 +1,6 @@
 package com.sftc.web.service.impl;
 
-import com.sftc.tools.api.APIResolve;
-import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIStatus;
-import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
 import com.sftc.web.mapper.TokenMapper;
 import com.sftc.web.mapper.UserMapper;
@@ -13,10 +10,14 @@ import com.sftc.web.model.reqeustParam.UserParam;
 import com.sftc.web.model.wechat.WechatUser;
 import com.sftc.web.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.annotation.Resource;
+import javax.jws.WebParam;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +120,19 @@ public class UserServiceImpl implements UserService {
     /**
      * 下面是CMS的内容
      */
-    public ModelAndView selectUserList(HttpServletRequest request) {
-        return null;
+    public ModelAndView selectUserList(APIRequest request) {
+        HttpServletRequest httpServletRequest = request.getRequest();
+        String pageSize = httpServletRequest.getParameter("pageSize");
+        String startIndex = httpServletRequest.getParameter("startIndex");
+
+
+        HttpSession httpSession = httpServletRequest.getSession();
+
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("msg","this is a message");
+
+        modelAndView.setViewName("index");
+        return modelAndView;
     }
 }

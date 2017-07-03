@@ -5,9 +5,14 @@ import com.sftc.web.model.reqeustParam.UserParam;
 import com.sftc.web.model.sfmodel.Coupon;
 import com.sftc.web.model.sfmodel.Promo;
 import com.sftc.web.service.CouponService;
+import net.sf.json.JSONObject;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.sftc.tools.constant.SFConstant.SF_REGISTER_URL;
 
 @Service("couponService")
 public class CouponServiceImpl implements CouponService {
@@ -17,15 +22,20 @@ public class CouponServiceImpl implements CouponService {
      */
     public APIResponse getUserCouponList(UserParam userParam) {
         APIStatus status = APIStatus.SUCCESS;
+
         String COUPON_LIST_API = "http://api-dev.sf-rush.com/coupons/by_user/user_uuid?status=INIT,ACTIVE,DISABLED,USED&limit=20&offset=0";
-        COUPON_LIST_API = COUPON_LIST_API.replace("user_uuid", userParam.getId() + "");
-        List<Coupon> couponList = null;
-        try {
-            couponList = APIResolve.getCouponsJson(COUPON_LIST_API, userParam.getToken(), "GET");
-        } catch (Exception e) {
-            status = APIStatus.SELECT_FAIL;
-        }
-        return APIUtil.getResponse(status, couponList);
+        COUPON_LIST_API = COUPON_LIST_API.replace("user_uuid", userParam.getUuid() + "");
+//        List<Coupon> couponList = null;
+//        try {
+//            couponList = APIResolve.getCouponsJson(COUPON_LIST_API, userParam.getToken(), "GET");
+//        } catch (Exception e) {
+//            status = APIStatus.SELECT_FAIL;
+//        }
+        // 调用顺丰接口
+        HttpGet httpGet = new HttpGet(COUPON_LIST_API);
+        httpGet.addHeader("PushEnvelope-Device-Token",userParam.getToken());
+        String res = APIGetUtil.get(httpGet);
+        return APIUtil.getResponse(status, JSONObject.fromObject(res));
     }
 
     /**
