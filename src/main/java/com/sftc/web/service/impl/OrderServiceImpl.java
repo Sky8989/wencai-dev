@@ -138,7 +138,7 @@ public class OrderServiceImpl implements OrderService {
 
             requestObject.getJSONObject("request").put("source", source);
             requestObject.getJSONObject("request").put("target", target);
-            if (reserve_time != null) {
+            if (reserve_time != null && !reserve_time.equals("")) {
                 String reserveTime = DateUtils.iSO8601DateWithTimeStampStr(reserve_time);
                 requestObject.getJSONObject("request").put("reserve_time", reserveTime);
             }
@@ -313,7 +313,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 预约时间处理
         String reserve_time = (String) reqObject.getJSONObject("order").get("reserve_time");
-        if (reserve_time != null) {
+        if (reserve_time != null && !reserve_time.equals("")) {
             String reserveTime = DateUtils.iSO8601DateWithTimeStampStr(reserve_time);
             reqObject.getJSONObject("request").put("reserve_time", reserveTime);
         }
@@ -510,8 +510,17 @@ public class OrderServiceImpl implements OrderService {
 
         JSONObject jsonObject = JSONObject.fromObject(object);
         HttpPost post = new HttpPost(SF_QUOTES_URL);
-        String uuid = (String) jsonObject.getJSONObject("request").getJSONObject("merchant").get("uuid");
-        String access_token = (String) jsonObject.getJSONObject("request").getJSONObject("token").get("access_token");
+        JSONObject requestObject = jsonObject.getJSONObject("request");
+        String uuid = (String) requestObject.getJSONObject("merchant").get("uuid");
+        String access_token = (String) requestObject.getJSONObject("token").get("access_token");
+
+        // 预约时间处理
+        String reserve_time = (String) requestObject.get("reserve_time");
+        requestObject.remove("reserve_time");
+        if (!reserve_time.equals("")) {
+            reserve_time = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            requestObject.put("reserve_time", reserve_time);
+        }
 
         boolean uuidFlag = (uuid != null) && !(uuid.equals(""));
         boolean tokenFlag = (access_token != null) && !(access_token.equals(""));
