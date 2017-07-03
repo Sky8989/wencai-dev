@@ -16,9 +16,11 @@ public class UserParam {
     private String token;
     private String js_code;
     //头像和昵称
-
     private String avatar;
     private String name;
+    // 用户uuid
+    private String uuid;
+
     public  String getAvatar() {
         return avatar;
     }
@@ -55,4 +57,8 @@ public class UserParam {
     public void setJs_code(String js_code) {
         this.js_code = js_code;
     }
+
+    public String getUuid() {return uuid;}
+
+    public void setUuid(String uuid) {this.uuid = uuid;}
 }

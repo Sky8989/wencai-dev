@@ -16,5 +16,8 @@
     <input type="password" name="password" /><br/>
     <input type="submit" value="login" />
 </form>
+
+<h1>${msg}</h1>
+<h1>${s}</h1>
 </body>
 </html>
