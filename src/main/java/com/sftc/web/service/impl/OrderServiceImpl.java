@@ -139,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
             requestObject.getJSONObject("request").put("source", source);
             requestObject.getJSONObject("request").put("target", target);
             if (reserve_time != null && !reserve_time.equals("")) {
-                String reserveTime = DateUtils.iSO8601DateWithTimeStampStr(reserve_time);
+                String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 requestObject.getJSONObject("request").put("reserve_time", reserveTime);
             }
 
@@ -314,7 +314,7 @@ public class OrderServiceImpl implements OrderService {
         // 预约时间处理
         String reserve_time = (String) reqObject.getJSONObject("order").get("reserve_time");
         if (reserve_time != null && !reserve_time.equals("")) {
-            String reserveTime = DateUtils.iSO8601DateWithTimeStampStr(reserve_time);
+            String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             reqObject.getJSONObject("request").put("reserve_time", reserveTime);
         }
 
