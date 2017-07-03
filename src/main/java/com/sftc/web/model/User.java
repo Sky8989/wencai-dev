@@ -1,5 +1,7 @@
 package com.sftc.web.model;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
 
 public class User extends Object {
@@ -188,5 +190,16 @@ public class User extends Object {
                 ", pageNum=" + pageNum +
                 ", pageSize=" + pageSize +
                 '}';
+    }
+
+    /**
+     * 基于HttpServletRequest作为参数的构造方法 用于cms
+     * 后期便于应用扩展工厂模式 将此参数抽出
+     */
+    public User(HttpServletRequest request) {
+        if (request.getParameter("id") != null){this.id = Integer.parseInt(request.getParameter("id"));}
+        if (request.getParameter("id") != null){this.pageSize = Integer.parseInt(request.getParameter("pageSize"));}
+//        int pageSize = ;
+//        int startIndex = Integer.parseInt(httpServletRequest.getParameter("startIndex"));
     }
 }

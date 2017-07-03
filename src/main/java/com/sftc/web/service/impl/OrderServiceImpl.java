@@ -360,7 +360,7 @@ public class OrderServiceImpl implements OrderService {
         String requestSFParamStr = gson.toJson(tempObject);
         JSONObject respObject = JSONObject.fromObject(APIPostUtil.post(requestSFParamStr, post));
 
-        if (respObject.get("errors") == null || respObject.get("error") == null) {
+        if(!(respObject.containsKey("error") || respObject.containsKey("errors"))){
             // 插入订单表
             orderMapper.addOrder(order);
 
