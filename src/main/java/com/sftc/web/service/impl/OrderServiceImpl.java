@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
+import com.sftc.tools.common.DateUtils;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFExpressHelper;
@@ -18,6 +19,7 @@ import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.service.OrderService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -136,6 +138,10 @@ public class OrderServiceImpl implements OrderService {
 
             requestObject.getJSONObject("request").put("source", source);
             requestObject.getJSONObject("request").put("target", target);
+            if (reserve_time != null && !reserve_time.equals("")) {
+                String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                requestObject.getJSONObject("request").put("reserve_time", reserveTime);
+            }
 
             /// Request
             Object tempObj = JSONObject.toBean(requestObject);
@@ -208,6 +214,7 @@ public class OrderServiceImpl implements OrderService {
         if (order_id < 0)
             return APIUtil.paramErrorResponse("order_id不能为空");
 
+        String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         for (OrderExpress oe : order.getOrderExpressList()) {
             // 拼接大网订单地址参数
@@ -256,7 +263,6 @@ public class OrderServiceImpl implements OrderService {
                 } else {
                     // 存储订单信息
                     String uuid = (String) jsonObject.get("ordernum");
-                    String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
                     orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
 
@@ -326,6 +332,13 @@ public class OrderServiceImpl implements OrderService {
 
         JSONObject reqObject = JSONObject.fromObject(object);
 
+        // 预约时间处理
+        String reserve_time = (String) reqObject.getJSONObject("order").get("reserve_time");
+        if (reserve_time != null && !reserve_time.equals("")) {
+            String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            reqObject.getJSONObject("request").put("reserve_time", reserveTime);
+        }
+
         String order_number = SFOrderHelper.getOrderNumber();
         APIStatus status = SUCCESS;
 
@@ -383,7 +396,7 @@ public class OrderServiceImpl implements OrderService {
                     (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
                     (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude")
             );
-            orderExpress.setReserve_time((String) reqObject.getJSONObject("order").get("reserve_time"));
+            orderExpress.setReserve_time(reserve_time);
             orderExpressMapper.addOrderExpress(orderExpress);
 
             // 插入地址
@@ -483,7 +496,7 @@ public class OrderServiceImpl implements OrderService {
                     0.0,
                     0.0
             );
-            orderExpress.setReserve_time("");
+            orderExpress.setReserve_time((String) requestObject.getJSONObject("order").get("reserve_time"));
             orderExpressMapper.addOrderExpress(orderExpress);
 
             // 插入地址
@@ -518,8 +531,17 @@ public class OrderServiceImpl implements OrderService {
 
         JSONObject jsonObject = JSONObject.fromObject(object);
         HttpPost post = new HttpPost(SF_QUOTES_URL);
-        String uuid = (String) jsonObject.getJSONObject("request").getJSONObject("merchant").get("uuid");
-        String access_token = (String) jsonObject.getJSONObject("request").getJSONObject("token").get("access_token");
+        JSONObject requestObject = jsonObject.getJSONObject("request");
+        String uuid = (String) requestObject.getJSONObject("merchant").get("uuid");
+        String access_token = (String) requestObject.getJSONObject("token").get("access_token");
+
+        // 预约时间处理
+        String reserve_time = (String) requestObject.get("reserve_time");
+        requestObject.remove("reserve_time");
+        if (!reserve_time.equals("")) {
+            reserve_time = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            requestObject.put("reserve_time", reserve_time);
+        }
 
         boolean uuidFlag = (uuid != null) && !(uuid.equals(""));
         boolean tokenFlag = (access_token != null) && !(access_token.equals(""));

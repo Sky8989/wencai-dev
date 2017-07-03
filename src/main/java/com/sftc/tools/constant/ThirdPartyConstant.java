@@ -38,14 +38,16 @@ public class ThirdPartyConstant {
 
 
     /////////////// 腾讯地图相关 ///////////////
-
-    /**
-     * 地址解析接口地址
-     */
-    public static final String MAP_GEOCODER_URL = "http://apis.map.qq.com/ws/geocoder/v1/?address=";
     /**
      * App Key
      */
     public static final String MAP_GEOCODER_KEY = "ZZABZ-SLCWG-HV4Q4-IJYLH-LLBD6-V3FPR";
-
+    /**
+     * 地址解析接口地址
+     */
+    public static final String MAP_GEOCODER_URL = "http://apis.map.qq.com/ws/geocoder/v1/?key=" + MAP_GEOCODER_KEY + "&address={address}";
+    /**
+     * 距离计算
+     */
+    public static final String MAP_ADDRESS_DISTANCE_URL = "http://apis.map.qq.com/ws/distance/v1/?key=" + MAP_GEOCODER_KEY + "&from={from}&to={to}";
 }
