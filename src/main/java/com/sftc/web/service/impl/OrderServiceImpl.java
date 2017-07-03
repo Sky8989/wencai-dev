@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
+import com.sftc.tools.common.DateUtils;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFExpressHelper;
@@ -18,6 +19,7 @@ import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.service.OrderService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -136,6 +138,10 @@ public class OrderServiceImpl implements OrderService {
 
             requestObject.getJSONObject("request").put("source", source);
             requestObject.getJSONObject("request").put("target", target);
+            if (reserve_time != null) {
+                reserve_time = DateUtils.iSO8601DateWithTimeStampStr(reserve_time);
+                requestObject.getJSONObject("request").put("reserve_time", reserve_time);
+            }
 
             /// Request
             Object tempObj = JSONObject.toBean(requestObject);
@@ -305,6 +311,13 @@ public class OrderServiceImpl implements OrderService {
 
         JSONObject reqObject = JSONObject.fromObject(object);
 
+        // 预约时间处理
+        String reserve_time = (String) reqObject.getJSONObject("order").get("reserve_time");
+        if (reserve_time != null) {
+            reserve_time = DateUtils.iSO8601DateWithTimeStampStr(reserve_time);
+            reqObject.getJSONObject("request").put("reserve_time", reserve_time);
+        }
+
         String order_number = SFOrderHelper.getOrderNumber();
         APIStatus status = SUCCESS;
 
@@ -462,7 +475,7 @@ public class OrderServiceImpl implements OrderService {
                     0.0,
                     0.0
             );
-            orderExpress.setReserve_time("");
+            orderExpress.setReserve_time((String) requestObject.getJSONObject("order").get("reserve_time"));
             orderExpressMapper.addOrderExpress(orderExpress);
 
             // 插入地址
