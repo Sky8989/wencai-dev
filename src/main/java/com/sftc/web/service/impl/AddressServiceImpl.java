@@ -146,12 +146,13 @@ public class AddressServiceImpl implements AddressService {
         String url = MAP_ADDRESS_DISTANCE_URL.replace("{from}", from).replace("{to}", to);
         String result = APIGetUtil.get(new HttpGet(url));
         JSONObject resultObject = JSONObject.fromObject(result);
+
+        if ((Integer) resultObject.get("status") != 0)
+            return APIUtil.selectErrorResponse((String) resultObject.get("message"), null);
+
         JSONArray elementObjects = resultObject.getJSONObject("result").getJSONArray("elements");
         JSONObject elementObject = (JSONObject) elementObjects.get(0);
         double distance = (Double) elementObject.get("distance");
-        if (distance == 0) {
-            return APIUtil.selectErrorResponse("查询失败", resultObject);
-        }
 
         Map<String, Double> resultMap = new HashMap<String, Double>();
         resultMap.put("distance", distance);
