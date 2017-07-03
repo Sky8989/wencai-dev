@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="mvc" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   User: _KeMing
   Date: 2017/4/7
@@ -19,5 +21,10 @@
 
 <h1>${msg}</h1>
 <h1>${s}</h1>
+<p>${userList}</p>
+
+<mvc:forEach items="${userList }" var="list">
+<p>${list.name}</p>
+</mvc:forEach>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.sftc.web.mapper;
 
 import com.sftc.web.model.User;
+import org.apache.ibatis.annotations.Param;
 
 
 import java.util.List;
@@ -27,5 +28,7 @@ public interface UserMapper {
     // 动态插入
     void updateUser(User user);
 
-    List<User> selectAllUsers();
+
+    //     <!--下面是cms系统用到的mapper-->
+    List<User> selectByPageNumSize(User user);
 }

@@ -121,17 +121,23 @@ public class UserServiceImpl implements UserService {
      * 下面是CMS的内容
      */
     public ModelAndView selectUserList(APIRequest request) {
+        //http://localhost:8080/sftc/cms/user/list?pageSize=10&startIndex=0
         HttpServletRequest httpServletRequest = request.getRequest();
-        String pageSize = httpServletRequest.getParameter("pageSize");
-        String startIndex = httpServletRequest.getParameter("startIndex");
-
-
-        HttpSession httpSession = httpServletRequest.getSession();
-
+        int pageSize = Integer.parseInt(httpServletRequest.getParameter("pageSize"));
+        int startIndex = Integer.parseInt(httpServletRequest.getParameter("startIndex"));
+        System.out.println("-   -" + pageSize + "  " + startIndex);
+//        List<User> userList = userMapper.selectAllUsers();
+        User user = new User();
+        user.setId(Integer.parseInt(httpServletRequest.getParameter("id")));
+        user.setPageSize(pageSize);
+        user.setPageNum(startIndex);
+        List<User> userList = userMapper.selectByPageNumSize(user);
+        for (User user2:userList){
+            System.out.println(user2.toString());
+        }
 
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("msg","this is a message");
-
+        modelAndView.addObject("userList", userList);
         modelAndView.setViewName("index");
         return modelAndView;
     }

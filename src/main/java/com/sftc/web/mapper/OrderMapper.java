@@ -62,4 +62,7 @@ public interface OrderMapper {
     List<Order> getOrderAndExpress(Order order);
     //取消订单，更新is_cancel字段
     void updateCancelOrderById(int id);
+
+    //     <!--下面是cms系统用到的mapper-->
+    List<Order> selectByPageNumSize(Order order);
 }

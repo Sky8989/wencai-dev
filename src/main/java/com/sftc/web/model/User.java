@@ -23,6 +23,9 @@ public class User extends Object {
 
     private Token token;
 
+    //    分页参数
+    private Integer pageNum;
+    private Integer pageSize;
 
     public Token getToken() {
         return token;
@@ -157,4 +160,33 @@ public class User extends Object {
         this.create_time = create_time;
     }
 
+    public Integer getPageNum() {return pageNum;}
+
+    public void setPageNum(Integer pageNum) {this.pageNum = pageNum;}
+
+    public Integer getPageSize() {return pageSize;}
+
+    public void setPageSize(Integer pageSize) {this.pageSize = pageSize;}
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", uuid='" + uuid + '\'' +
+                ", name='" + name + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", user_password='" + user_password + '\'' +
+                ", open_id='" + open_id + '\'' +
+                ", session_key='" + session_key + '\'' +
+                ", create_time='" + create_time + '\'' +
+                ", js_code='" + js_code + '\'' +
+                ", summary=" + summary +
+                ", attributes=" + attributes +
+                ", tags=" + tags +
+                ", token=" + token +
+                ", pageNum=" + pageNum +
+                ", pageSize=" + pageSize +
+                '}';
+    }
 }
