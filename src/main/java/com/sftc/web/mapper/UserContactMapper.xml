@@ -80,6 +80,7 @@
         WHERE (sftc_order_express.sender_user_id=#{user_id} AND sftc_order_express.ship_user_id=#{friend_id}
           OR sftc_order_express.sender_user_id=#{friend_id} AND sftc_order_express.ship_user_id=#{user_id})
         AND sftc_order_express.order_id = sftc_order.id
+        ORDER BY sftc_order_express.create_time desc
         limit #{pageNum}, #{pageSize}
     </select>
 

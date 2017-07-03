@@ -139,8 +139,8 @@ public class OrderServiceImpl implements OrderService {
             requestObject.getJSONObject("request").put("source", source);
             requestObject.getJSONObject("request").put("target", target);
             if (reserve_time != null) {
-                reserve_time = DateUtils.iSO8601DateWithTimeStampStr(reserve_time);
-                requestObject.getJSONObject("request").put("reserve_time", reserve_time);
+                String reserveTime = DateUtils.iSO8601DateWithTimeStampStr(reserve_time);
+                requestObject.getJSONObject("request").put("reserve_time", reserveTime);
             }
 
             /// Request
@@ -314,8 +314,8 @@ public class OrderServiceImpl implements OrderService {
         // 预约时间处理
         String reserve_time = (String) reqObject.getJSONObject("order").get("reserve_time");
         if (reserve_time != null) {
-            reserve_time = DateUtils.iSO8601DateWithTimeStampStr(reserve_time);
-            reqObject.getJSONObject("request").put("reserve_time", reserve_time);
+            String reserveTime = DateUtils.iSO8601DateWithTimeStampStr(reserve_time);
+            reqObject.getJSONObject("request").put("reserve_time", reserveTime);
         }
 
         String order_number = SFOrderHelper.getOrderNumber();
@@ -375,7 +375,7 @@ public class OrderServiceImpl implements OrderService {
                     (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
                     (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude")
             );
-            orderExpress.setReserve_time((String) reqObject.getJSONObject("order").get("reserve_time"));
+            orderExpress.setReserve_time(reserve_time);
             orderExpressMapper.addOrderExpress(orderExpress);
 
             // 插入地址
