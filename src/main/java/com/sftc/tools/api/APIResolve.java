@@ -54,6 +54,7 @@ public class APIResolve {
         Map map = (Map) jasonObject;
         String new_json = map.get("coupons").toString();
         couponList = (List<Coupon>) JSONArray.toList(JSONArray.fromObject(new_json), Orders.class);
+//        couponList = (List<Coupon>) JSONArray.toList(JSONArray.fromObject(new_json), Coupon.class);
         return couponList;
     }
 }

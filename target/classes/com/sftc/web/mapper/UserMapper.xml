@@ -33,13 +33,14 @@
         select * from sftc_user where id=#{user_id}
     </select>
 
-    <insert id="insertOpenid" parameterType="com.sftc.web.model.User"  useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertOpenid" parameterType="com.sftc.web.model.User" useGeneratedKeys="true" keyProperty="id">
         insert into sftc_user (open_id,create_time,session_key)
         values
         (#{open_id},#{create_time},#{session_key})
 
     </insert>
-    <insert id="insertWithAvatarAndName" parameterType="com.sftc.web.model.User"  useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertWithAvatarAndName" parameterType="com.sftc.web.model.User" useGeneratedKeys="true"
+            keyProperty="id">
         insert into sftc_user (open_id,create_time,session_key,avatar,name)
         values
         (#{open_id},#{create_time},#{session_key},#{avatar},#{name})
@@ -65,7 +66,7 @@
         </association>
     </resultMap>
 
-    <update id="updateUserOfAvatar" parameterType="com.sftc.web.model.User" >
+    <update id="updateUserOfAvatar" parameterType="com.sftc.web.model.User">
         UPDATE sftc_user SET avatar = #{avatar} ,name = #{name} WHERE open_id LIKE #{open_id}
     </update>
 
@@ -78,4 +79,17 @@
         </trim>
         WHERE id=#{id}
     </update>
+    <!--下面是cms系统用到的mapper-->
+    <select id="selectByPageNumSize" resultType="com.sftc.web.model.User" parameterType="com.sftc.web.model.User">
+        SELECT * FROM sftc_user
+        <where>
+            <if test="id != null">and id LIKE '%${id}%'</if>
+            <if test="uuid != null">and uuid LIKE '%${uuid}%'</if>
+            <if test="name != null">and name LIKE '%tcsu Maven Webapp%'</if>
+            <if test="mobile != null">and mobile LIKE '%${mobile}%'</if>
+            <if test="avatar != null">and avatar LIKE '%${avatar}%'</if>
+            <if test="create_time != null">and create_time LIKE '%${create_time}%'</if>
+            <if test="tags != null">and tags LIKE '%${tags}%'</if>
+        </where>
+    </select>
 </mapper>

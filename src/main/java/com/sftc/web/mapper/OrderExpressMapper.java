@@ -45,4 +45,8 @@ public interface OrderExpressMapper {
      * 根据uuid查询快递
      */
     OrderExpress selectExpressByUuid(@Param("uuid") String uuid);
+
+
+    //     <!--下面是cms系统用到的mapper-->
+    List<OrderExpress> selectByPageNumSize(OrderExpress orderExpress);
 }

@@ -8,6 +8,7 @@ import com.sftc.web.service.CouponService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,12 +26,6 @@ public class CouponServiceImpl implements CouponService {
 
         String COUPON_LIST_API = "http://api-dev.sf-rush.com/coupons/by_user/user_uuid?status=INIT,ACTIVE,DISABLED,USED&limit=20&offset=0";
         COUPON_LIST_API = COUPON_LIST_API.replace("user_uuid", userParam.getUuid() + "");
-//        List<Coupon> couponList = null;
-//        try {
-//            couponList = APIResolve.getCouponsJson(COUPON_LIST_API, userParam.getToken(), "GET");
-//        } catch (Exception e) {
-//            status = APIStatus.SELECT_FAIL;
-//        }
         // 调用顺丰接口
         HttpGet httpGet = new HttpGet(COUPON_LIST_API);
         httpGet.addHeader("PushEnvelope-Device-Token",userParam.getToken());
@@ -43,14 +38,20 @@ public class CouponServiceImpl implements CouponService {
      */
     public APIResponse exchangeCoupon(Promo promo) {
         APIStatus status = APIStatus.SUCCESS;
-        String COUPON_EXCHANGE_API = "http://api-dev.sf-rush.com/coupons/coupons?promo_code=";
+        String COUPON_EXCHANGE_API = "http://api-dev.sf-rush.com/coupons?promo_code=";
         COUPON_EXCHANGE_API += promo.getPromo_code();
-        List<Coupon> couponList = null;
-        try {
-            couponList = APIResolve.getCouponsJson(COUPON_EXCHANGE_API, promo.getToken(), "GET");
-        } catch (Exception e) {
-            status = APIStatus.SELECT_FAIL;
-        }
-        return APIUtil.getResponse(status, couponList);
+//        List<Coupon> couponList = null;
+//        try {
+//            couponList = APIResolve.getCouponsJson(COUPON_EXCHANGE_API, promo.getToken(), "POST");
+//        } catch (Exception e) {
+//            status = APIStatus.SELECT_FAIL;
+//        }
+//        return APIUtil.getResponse(status, couponList);
+        // 调用顺丰接口
+        HttpPost httpPost = new HttpPost(COUPON_EXCHANGE_API);
+        httpPost.addHeader("PushEnvelope-Device-Token",promo.getToken());
+        String res = APIPostUtil.post("",httpPost);
+        return APIUtil.getResponse(status, JSONObject.fromObject(res));
+
     }
 }
