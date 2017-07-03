@@ -1,10 +1,13 @@
 package com.sftc.web.service.impl;
 
 
+import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
 import com.sftc.web.mapper.AddressMapper;
 import com.sftc.web.model.Address;
+import com.sftc.web.model.sfmodel.SFServiceAddress;
 import com.sftc.web.service.AddressService;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Service;
@@ -13,9 +16,12 @@ import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static com.sftc.tools.constant.ThirdPartyConstant.MAP_GEOCODER_KEY;
+import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.ThirdPartyConstant.MAP_ADDRESS_DISTANCE_URL;
 import static com.sftc.tools.constant.ThirdPartyConstant.MAP_GEOCODER_URL;
 
 @Service("addressService")
@@ -25,7 +31,7 @@ public class AddressServiceImpl implements AddressService {
     private AddressMapper addressMapper;
 
     public APIResponse addAddress(Address address) {
-        APIStatus status = APIStatus.SUCCESS;
+        APIStatus status = SUCCESS;
         address.setCreate_time(Long.toString(System.currentTimeMillis()));
         try {
             addressMapper.addAddress(address);
@@ -46,13 +52,13 @@ public class AddressServiceImpl implements AddressService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            status = APIStatus.SUCCESS;
+            status = SUCCESS;
         }
         return APIUtil.getResponse(status, addressList);
     }
 
     public APIResponse editAddress(Address address) {
-        APIStatus status = APIStatus.SUCCESS;
+        APIStatus status = SUCCESS;
         try {
             addressMapper.editeAddress(address);
         } catch (Exception e) {
@@ -63,7 +69,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     public APIResponse deleteAddress(APIRequest request) {
-        APIStatus status = APIStatus.SUCCESS;
+        APIStatus status = SUCCESS;
         String id = request.getParameter("id").toString();
         if (id != null) {
             try {
@@ -99,13 +105,13 @@ public class AddressServiceImpl implements AddressService {
         }
 
         // GET
-        String geocoderUrl = MAP_GEOCODER_URL + address + "&key=" + MAP_GEOCODER_KEY;
+        String geocoderUrl = MAP_GEOCODER_URL.replace("{address}", address);
         HttpGet get = new HttpGet(geocoderUrl);
         String result = APIGetUtil.get(get);
         JSONObject resObject = JSONObject.fromObject(result);
 
         // Result
-        APIStatus status = APIStatus.SUCCESS;
+        APIStatus status = SUCCESS;
         JSONObject resultJsonObject = new JSONObject();
         if ((Integer) resObject.get("status") == 0) {
             // query ok
@@ -117,5 +123,38 @@ public class AddressServiceImpl implements AddressService {
         }
 
         return APIUtil.getResponse(status, resultJsonObject);
+    }
+
+    public APIResponse getAddressDistance(APIRequest request) {
+
+        Object object = request.getRequestParam();
+        JSONObject requestObject = JSONObject.fromObject(object);
+
+        JSONObject sourceObject = requestObject.getJSONObject("source");
+        JSONObject targetObject = requestObject.getJSONObject("target");
+        double senderLong = (Double) sourceObject.get("longitude");
+        double senderLat = (Double) sourceObject.get("latitude");
+        double receiverLong = (Double) targetObject.get("longitude");
+        double receiverLat = (Double) targetObject.get("latitude");
+
+        if (senderLong == 0 || receiverLong == 0 || senderLat == 0 || receiverLat == 0)
+            return APIUtil.paramErrorResponse("请求体不完整");
+
+        String from = senderLong + ";" + senderLat;
+        String to = receiverLong + ";" + receiverLat;
+
+        String url = MAP_ADDRESS_DISTANCE_URL.replace("{from}", from).replace("{to}", to);
+        String result = APIGetUtil.get(new HttpGet(url));
+        JSONObject resultObject = JSONObject.fromObject(result);
+        JSONArray elementObjects = resultObject.getJSONObject("result").getJSONArray("elements");
+        JSONObject elementObject = (JSONObject) elementObjects.get(0);
+        double distance = (Double) elementObject.get("distance");
+        if (distance == 0) {
+            return APIUtil.selectErrorResponse("查询失败", resultObject);
+        }
+
+        Map<String, Double> resultMap = new HashMap<String, Double>();
+        resultMap.put("distance", distance);
+        return APIUtil.getResponse(SUCCESS, resultMap);
     }
 }

@@ -48,6 +48,14 @@ public class AddressController {
         return addressService.geocoderAddress(new APIRequest(request));
     }
 
+    @RequestMapping(value = "/distance", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse distanceAddress(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return addressService.getAddressDistance(request);
+    }
+
     @RequestMapping(value = "/history", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse selectAddressHistory(HttpServletRequest request) throws Exception {

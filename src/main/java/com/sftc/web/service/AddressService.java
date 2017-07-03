@@ -16,7 +16,6 @@ public interface AddressService {
      */
     APIResponse addAddress(Object object);
 
-
     /**
      * 新增新地址
      */
@@ -41,5 +40,10 @@ public interface AddressService {
      * 地址解析(地址转坐标)
      */
     APIResponse geocoderAddress(APIRequest request);
+
+    /**
+     * 距离计算
+     */
+    APIResponse getAddressDistance(APIRequest request);
 
 }
