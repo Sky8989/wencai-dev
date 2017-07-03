@@ -196,6 +196,7 @@ public class OrderServiceImpl implements OrderService {
         if (order_id < 0)
             return APIUtil.paramErrorResponse("order_id不能为空");
 
+        String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         for (OrderExpress oe : order.getOrderExpressList()) {
             // 拼接大网订单地址参数
@@ -244,7 +245,6 @@ public class OrderServiceImpl implements OrderService {
                 } else {
                     // 存储订单信息
                     String uuid = (String) jsonObject.get("ordernum");
-                    String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
                     orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
 
