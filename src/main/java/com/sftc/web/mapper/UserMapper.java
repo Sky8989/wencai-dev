@@ -28,7 +28,6 @@ public interface UserMapper {
     // 动态插入
     void updateUser(User user);
 
-
     //     <!--下面是cms系统用到的mapper-->
     List<User> selectByPageNumSize(User user);
 }

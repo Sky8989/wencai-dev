@@ -123,14 +123,7 @@ public class UserServiceImpl implements UserService {
     public ModelAndView selectUserList(APIRequest request) {
         //http://localhost:8080/sftc/cms/user/list?pageSize=10&startIndex=0
         HttpServletRequest httpServletRequest = request.getRequest();
-        int pageSize = Integer.parseInt(httpServletRequest.getParameter("pageSize"));
-        int startIndex = Integer.parseInt(httpServletRequest.getParameter("startIndex"));
-        System.out.println("-   -" + pageSize + "  " + startIndex);
-//        List<User> userList = userMapper.selectAllUsers();
-        User user = new User();
-        user.setId(Integer.parseInt(httpServletRequest.getParameter("id")));
-        user.setPageSize(pageSize);
-        user.setPageNum(startIndex);
+        User user = new User(httpServletRequest);
         List<User> userList = userMapper.selectByPageNumSize(user);
         for (User user2:userList){
             System.out.println(user2.toString());
