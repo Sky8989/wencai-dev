@@ -23,11 +23,11 @@ public interface UserService {
 
     /**
      * 登录
-     * @param user
+     * @param
      * @return
      */
     APIResponse login(UserParam userParam) throws Exception;
     Token getToken(int id);
 
-    ModelAndView selectUserList(APIRequest request);
+    APIResponse selectUserList(APIRequest request);
 }

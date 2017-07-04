@@ -2,6 +2,7 @@ package com.sftc.web.controller.cms;
 
 import com.google.gson.Gson;
 import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
 import com.sftc.web.model.reqeustParam.UserParam;
 import com.sftc.web.service.UserService;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -28,9 +30,9 @@ public class CMSUserController extends AbstractBasicController {
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ModelAndView UserList( HttpServletRequest request) throws Exception{
+    public @ResponseBody
+    APIResponse UserList(HttpServletRequest request) throws Exception{
         // 分页查询
-
         return userService.selectUserList(new APIRequest(request));
     }
 

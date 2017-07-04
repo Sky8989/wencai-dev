@@ -83,13 +83,8 @@
     <select id="selectByPageNumSize" resultType="com.sftc.web.model.User" parameterType="com.sftc.web.model.User">
         SELECT * FROM sftc_user
         <where>
-            <if test="id != null">and id LIKE '%${id}%'</if>
-            <if test="uuid != null">and uuid LIKE '%${uuid}%'</if>
+            <if test="id != 0">and id = #{id}</if>
             <if test="name != null">and name LIKE '%${name}%'</if>
-            <if test="mobile != null">and mobile LIKE '%${mobile}%'</if>
-            <if test="avatar != null">and avatar LIKE '%${avatar}%'</if>
-            <if test="create_time != null">and create_time LIKE '%${create_time}%'</if>
-            <if test="tags != null">and tags LIKE '%${tags}%'</if>
         </where>
     </select>
 </mapper>
