@@ -140,8 +140,8 @@ public class AddressServiceImpl implements AddressService {
         if (senderLong == 0 || receiverLong == 0 || senderLat == 0 || receiverLat == 0)
             return APIUtil.paramErrorResponse("请求体不完整");
 
-        String from = senderLong + ";" + senderLat;
-        String to = receiverLong + ";" + receiverLat;
+        String from = senderLat + ";" + senderLong;
+        String to = receiverLat + ";" + receiverLong;
 
         String url = MAP_ADDRESS_DISTANCE_URL.replace("{from}", from).replace("{to}", to);
         String result = APIGetUtil.get(new HttpGet(url));
