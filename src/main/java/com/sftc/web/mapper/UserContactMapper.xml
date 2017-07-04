@@ -21,6 +21,7 @@
         <result column="ship_name" property="ship_name"/>
         <result column="ship_user_id" property="ship_user_id"/>
         <result column="create_time" property="create_time"/>
+        <result column="order_id" property="order_id"/>
         <result column="state" property="state"/>
     </resultMap>
 

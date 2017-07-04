@@ -20,6 +20,8 @@ public class ContactCallback {
 
     // 物品类型
     private String object_type;
+    // 订单编号
+    private int order_id;
     // 快递状态
     private String state;
 
@@ -90,6 +92,14 @@ public class ContactCallback {
         this.object_type = object_type;
     }
 
+    public int getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(int order_id) {
+        this.order_id = order_id;
+    }
+
     public String getState() {
         return state;
     }
@@ -105,5 +115,4 @@ public class ContactCallback {
     public void setCreate_time(String create_time) {
         this.create_time = create_time;
     }
-
 }
