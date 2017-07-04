@@ -23,13 +23,16 @@ import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.aspectj.weaver.ast.Or;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.Object;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static com.sftc.tools.api.APIStatus.*;
 import static com.sftc.tools.constant.SFConstant.*;
@@ -38,6 +41,8 @@ import static com.sftc.tools.constant.SFConstant.*;
 public class OrderServiceImpl implements OrderService {
 
     private Gson gson = new Gson();
+
+    private Logger logger = Logger.getLogger(this.getClass());
 
     @Resource
     private OrderMapper orderMapper;
@@ -59,6 +64,8 @@ public class OrderServiceImpl implements OrderService {
     private MessageMapper messageMapper;
     @Resource
     private AddressHistoryMapper addressHistoryMapper;
+
+    private ScheduledExecutorService scheduledExecutorService;
 
     /**
      * 普通订单提交
@@ -216,6 +223,8 @@ public class OrderServiceImpl implements OrderService {
             return APIUtil.paramErrorResponse("order_id不能为空");
 
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
+        orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
+
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         for (OrderExpress oe : order.getOrderExpressList()) {
             // 拼接大网订单地址参数
@@ -251,55 +260,57 @@ public class OrderServiceImpl implements OrderService {
             }
 
             if (!oe.getState().equals("WAIT_FILL")) {
-                // 获取订单结果
-                String paramStr = gson.toJson(JSONObject.fromObject(sf));
-                HttpPost post = new HttpPost(SF_CREATEORDER_URL);
-                post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
-                String resultStr = APIPostUtil.post(paramStr, post);
-                JSONObject jsonObject = JSONObject.fromObject(resultStr);
-                String messageType = (String) jsonObject.get("Message_Type");
-
-                if (messageType != null && messageType.contains("ERROR")) {
-                    return APIUtil.submitErrorResponse("下单失败", jsonObject);
+                if (reserve_time != null && !reserve_time.equals("")) { // 预约件处理
+                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), null, reserve_time);
                 } else {
-                    // 存储订单信息
-                    String uuid = (String) jsonObject.get("ordernum");
-                    orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
-                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time); // 快递表更新uuid和预约时间
+                    // 立即提交订单
+                    String paramStr = gson.toJson(JSONObject.fromObject(sf));
+                    HttpPost post = new HttpPost(SF_CREATEORDER_URL);
+                    post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
+                    String resultStr = APIPostUtil.post(paramStr, post);
+                    JSONObject jsonObject = JSONObject.fromObject(resultStr);
+                    String messageType = (String) jsonObject.get("Message_Type");
 
-                    // 插入地址
-                    setupAddress(order, oe);
-
-                    // 存储好友关系
-                    UserContactNew userContactNewParam = new UserContactNew();
-                    userContactNewParam.setUser_id(order.getSender_user_id());
-                    userContactNewParam.setFriend_id(oe.getShip_user_id());
-                    UserContactNew userContactNew = userContactMapper.selectByUserIdAndShipId(userContactNewParam);
-                    if (userContactNew == null) {
-                        userContactNew = new UserContactNew();
-                        userContactNew.setUser_id(order.getSender_user_id());
-                        userContactNew.setFriend_id(oe.getShip_user_id());
-                        userContactNew.setIs_tag_star(0);
-                        userContactNew.setLntimacy(0);
-                        userContactNew.setCreate_time(Long.toString(System.currentTimeMillis()));
-                        userContactMapper.insertUserContact(userContactNew);
+                    if (messageType != null && messageType.contains("ERROR")) {
+                        return APIUtil.submitErrorResponse("下单失败", jsonObject);
                     } else {
-                        // 如果不为空 则好友度加1
-                        userContactMapper.updateUserContactLntimacy(userContactNew);
-                    }
+                        // 存储订单信息
+                        String uuid = (String) jsonObject.get("ordernum");
+                        orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
 
-                    //添加 通知信息 RECEIVE_EXPRESS 生成收件人的通知信息
-                    //先查 再新建或者更新
-                    List<Message> messageList = messageMapper.selectMessageReceiveExpress(oe.getShip_user_id());
-                    if (messageList.isEmpty()) {
-                        Message message = new Message("RECEIVE_EXPRESS", 0, oe.getId(), oe.getShip_user_id());
-                        messageMapper.insertMessage(message);
-                    } else {
-                        Message message = messageList.get(0);
-                        message.setExpress_id(oe.getId());
-                        message.setIs_read(0);
-                        message.setCreate_time(Long.toString(System.currentTimeMillis()));
-                        messageMapper.updateMessageReceiveExpress(message);
+                        // 插入地址
+                        setupAddress(order, oe);
+
+                        // 存储好友关系
+                        UserContactNew userContactNewParam = new UserContactNew();
+                        userContactNewParam.setUser_id(order.getSender_user_id());
+                        userContactNewParam.setFriend_id(oe.getShip_user_id());
+                        UserContactNew userContactNew = userContactMapper.selectByUserIdAndShipId(userContactNewParam);
+                        if (userContactNew == null) {
+                            userContactNew = new UserContactNew();
+                            userContactNew.setUser_id(order.getSender_user_id());
+                            userContactNew.setFriend_id(oe.getShip_user_id());
+                            userContactNew.setIs_tag_star(0);
+                            userContactNew.setLntimacy(0);
+                            userContactNew.setCreate_time(Long.toString(System.currentTimeMillis()));
+                            userContactMapper.insertUserContact(userContactNew);
+                        } else {
+                            // 如果不为空 则好友度加1
+                            userContactMapper.updateUserContactLntimacy(userContactNew);
+                        }
+
+                        // 通知消息
+                        List<Message> messageList = messageMapper.selectMessageReceiveExpress(oe.getShip_user_id());
+                        if (messageList.isEmpty()) {
+                            Message message = new Message("RECEIVE_EXPRESS", 0, oe.getId(), oe.getShip_user_id());
+                            messageMapper.insertMessage(message);
+                        } else {
+                            Message message = messageList.get(0);
+                            message.setExpress_id(oe.getId());
+                            message.setIs_read(0);
+                            message.setCreate_time(Long.toString(System.currentTimeMillis()));
+                            messageMapper.updateMessageReceiveExpress(message);
+                        }
                     }
                 }
             }
@@ -414,7 +425,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 普通大网下单
+     * 普通大网订单提交
      */
     private APIResponse normalNationOrderCommit(Object object) {
 
@@ -441,6 +452,7 @@ public class OrderServiceImpl implements OrderService {
 
         String str = gson.toJson(requestObject.getJSONObject("sf"));
 
+        // 插入订单表
         Order order = new Order(
                 Long.toString(System.currentTimeMillis()),
                 orderId,
@@ -464,47 +476,51 @@ public class OrderServiceImpl implements OrderService {
         order.setGift_card_id(Integer.parseInt((String) orderObject.get("gift_card_id")));
         order.setVoice_time(Integer.parseInt((String) orderObject.get("voice_time")));
         order.setRegion_type("REGION_NATION");
+        orderMapper.addOrder(order);
 
-        // POST
-        HttpPost post = new HttpPost(SF_CREATEORDER_URL);
-        post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
-        String res = APIPostUtil.post(str, post);
-        JSONObject responseObject = JSONObject.fromObject(res);
+        // 插入快递表
+        OrderExpress orderExpress = new OrderExpress(
+                Long.toString(System.currentTimeMillis()),
+                orderId,
+                (String) sf.get("d_contact"),
+                (String) sf.get("d_tel"),
+                (String) sf.get("d_province"),
+                (String) sf.get("d_city"),
+                (String) sf.get("d_county"),
+                (String) sf.get("d_address"),
+                "",
+                "",
+                "INIT",
+                Integer.parseInt((String) orderObject.get("sender_user_id")),
+                order.getId(),
+                orderId,
+                0.0,
+                0.0
+        );
+        orderExpress.setReserve_time((String) requestObject.getJSONObject("order").get("reserve_time"));
+        orderExpressMapper.addOrderExpress(orderExpress);
 
-        if (responseObject.get("Message_Type") != null) {
-            if (responseObject.get("Message_Type").equals("ORDER_CREATE_ERROR"))
+        // 插入地址
+        setupAddress(order, orderExpress);
+
+        String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
+        JSONObject responseObject = new JSONObject();
+        if (reserve_time == null || reserve_time.equals("")) {
+            // POST
+            HttpPost post = new HttpPost(SF_CREATEORDER_URL);
+            post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
+            String res = APIPostUtil.post(str, post);
+            responseObject = JSONObject.fromObject(res);
+
+            if (responseObject.get("Message_Type") != null && ((String) responseObject.get("Message_Type")).contains("ERROR")) {
+                // 下单失败
                 status = SUBMIT_FAIL;
-        } else {
-            // 插入订单表
-            orderMapper.addOrder(order);
-
-            // 插入快递表
-            OrderExpress orderExpress = new OrderExpress(
-                    Long.toString(System.currentTimeMillis()),
-                    orderId,
-                    (String) sf.get("d_contact"),
-                    (String) sf.get("d_tel"),
-                    (String) sf.get("d_province"),
-                    (String) sf.get("d_city"),
-                    (String) sf.get("d_county"),
-                    (String) sf.get("d_address"),
-                    "",
-                    "",
-                    "INIT",
-                    Integer.parseInt((String) orderObject.get("sender_user_id")),
-                    order.getId(),
-                    orderId,
-                    0.0,
-                    0.0
-            );
-            orderExpress.setReserve_time((String) requestObject.getJSONObject("order").get("reserve_time"));
-            orderExpressMapper.addOrderExpress(orderExpress);
-
-            // 插入地址
-            setupAddress(order, orderExpress);
-
-            // 返回结果添加订单编号
-            responseObject.put("order_id", order.getId());
+            } else {
+                // 返回结果添加订单编号
+                responseObject.put("order_id", order.getId());
+            }
+        } else { // 预约件
+            responseObject.put("message", "大网订单预约成功");
         }
 
         return APIUtil.getResponse(status, responseObject);
@@ -513,10 +529,11 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 大网预约订单提交
      */
-    public APIResponse nationOrderReserveCommit(int order_id) {
+    private void nationOrderReserveCommit(int order_id) {
 
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         for (OrderExpress oe : order.getOrderExpressList()) {
+            if (Long.parseLong(oe.getReserve_time()) > System.currentTimeMillis()) return; // 还未到预约时间
             // 大网订单提交参数
             JSONObject sf = new JSONObject();
             sf.put("orderid", oe.getOrder_number());
@@ -559,20 +576,64 @@ public class OrderServiceImpl implements OrderService {
                 String messageType = (String) resultObject.get("Message_Type");
 
                 if (messageType != null && messageType.contains("ERROR")) {
-                    return APIUtil.submitErrorResponse("下单失败", resultObject);
+                    logger.error("大网预约单提交失败: " + resultObject);
                 } else {
                     // 存储快递信息
                     String nation_uuid = (String) resultObject.get("ordernum");
                     orderMapper.updateOrderRegionType(order.getId(), "REGION_NATION");
-                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), nation_uuid, "");
+                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), nation_uuid, null);
                     orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
                 }
-            } else {
-                return APIUtil.submitErrorResponse("快递订单状态异常，好友包裹尚未被领取", null);
             }
         }
-        order = orderMapper.selectOrderDetailByOrderId(order_id);
-        return APIUtil.getResponse(SUCCESS, order);
+    }
+
+    /**
+     * 设置大网预约单定时器开关
+     */
+    public APIResponse setupReserveNationOrderCommitTimer(APIRequest request) {
+
+        JSONObject requestObject = JSONObject.fromObject(request.getRequestParam());
+        if (!requestObject.containsKey("on"))
+            return APIUtil.paramErrorResponse("缺少必要参数");
+
+        int is_on = ((Double) requestObject.get("on")).intValue();
+        long period = requestObject.containsKey("period") ? requestObject.getInt("period") * 1000 : 1800000;
+        long delay = requestObject.containsKey("delay") ? requestObject.getInt("delay") * 1000 : 0;
+
+        JSONObject responseObject = new JSONObject();
+
+        if (is_on == 1) { // 开
+            if (scheduledExecutorService != null) {
+                return APIUtil.submitErrorResponse("定时器已经开启，请勿重复操作", null);
+            } else {
+                final TimerTask task = new TimerTask() {
+                    @Override
+                    public void run() {
+                        logger.info("开始提交大网预约单");
+                        List<Integer> orderIds = orderMapper.selectNationReserveOrders();
+                        for (int order_id : orderIds) {
+                            nationOrderReserveCommit(order_id);
+                        }
+                        logger.info("大网预约单提交完毕");
+                    }
+                };
+                scheduledExecutorService = Executors.newScheduledThreadPool(1);
+                scheduledExecutorService.scheduleAtFixedRate(task, delay, period, TimeUnit.MILLISECONDS);
+                responseObject.put("message", "开启定时器成功");
+            }
+
+        } else { // 关
+            if (scheduledExecutorService != null) {
+                scheduledExecutorService.shutdown();
+                scheduledExecutorService = null;
+                responseObject.put("message", "关闭定时器成功");
+            } else {
+                return APIUtil.submitErrorResponse("定时器已经关闭，请勿重复操作", null);
+            }
+        }
+
+        return APIUtil.getResponse(SUCCESS, responseObject);
     }
 
     /**

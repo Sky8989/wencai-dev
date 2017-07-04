@@ -248,4 +248,15 @@ public class OrderController extends AbstractBasicController {
     APIResponse getEvaluate(String uuid) throws Exception {
         return evaluateService.getEvaluate(uuid);
     }
+    
+    /**
+     * 设置大网预约单定时器
+     */
+    @RequestMapping(value = "/reserve/setup", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse setupReserveTimer(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.setupReserveNationOrderCommitTimer(request);
+    }
 }

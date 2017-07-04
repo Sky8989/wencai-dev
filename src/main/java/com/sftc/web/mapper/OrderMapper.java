@@ -37,13 +37,19 @@ public interface OrderMapper {
      */
     List<Order> selectMyFriendOrderList(MyOrderParam param);
 
-    /** 根据订单编号查询订单详情 */
+    /**
+     * 根据订单编号查询订单详情
+     */
     Order selectOrderDetailByOrderNumber(String order_number);
 
-    /** 根据订单id查询订单详情 */
+    /**
+     * 根据订单id查询订单详情
+     */
     Order selectOrderDetailByOrderId(int order_id);
 
-    /** 根据快递id查询订单详情 */
+    /**
+     * 根据快递id查询订单详情
+     */
     Order selectOrderDetailByExpressId(int express_id);
 
     int findPackageCount(String order_number);
@@ -51,6 +57,11 @@ public interface OrderMapper {
     List<Order> myOrderLists(OrderExpress orderExpress);
 
     List<Order> myOrderListsForState(OrderExpress orderExpress);
+
+    /**
+     * 查询大网预约订单列表
+     */
+    List<Integer> selectNationReserveOrders();
 
     void updatePlace(Order order);
 
@@ -60,6 +71,7 @@ public interface OrderMapper {
 
     //查询订单详情和快递详情
     List<Order> getOrderAndExpress(Order order);
+
     //取消订单，更新is_cancel字段
     void updateCancelOrderById(int id);
 

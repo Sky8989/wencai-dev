@@ -91,7 +91,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         String receiverAreaCode = getServiceAddressCode(receiverArea, 4, receiveCityAddress.getCode());
         String weight = oe.getPackage_type();
 
-        return getServiceRate(senderAreaCode, receiverAreaCode, weight);
+        return getServiceRate(senderAreaCode, receiverAreaCode, weight, null);
     }
 
     /**
@@ -108,6 +108,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         String senderArea = (String) sourceObject.get("area");
         String receiverCity = (String) targetObject.get("city");
         String receiverArea = (String) targetObject.get("area");
+        String dateTime = requestObject.containsKey("query_time") ? (String) requestObject.get("query_time") : null;
 
         if (senderCity == null || receiverCity == null || senderArea == null || receiverArea == null || senderCity.equals("") || receiverCity.equals("") || senderArea.equals("") || receiverArea.equals(""))
             return APIUtil.paramErrorResponse("请求体不完整");
@@ -139,7 +140,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
             weightStr = (weight == 0 ? 1 : weight) + "";
         }
 
-        return getServiceRate(senderAreaCode, receiverAreaCode, weightStr);
+        return getServiceRate(senderAreaCode, receiverAreaCode, weightStr, dateTime);
     }
 
     // 获取顺丰服务地址编码
@@ -159,10 +160,11 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
     }
 
     // 获取时效计价
-    private APIResponse getServiceRate(String origin, String dest, String weight) {
+    private APIResponse getServiceRate(String origin, String dest, String weight, String dateTime) {
 
         String pattern = "yyyy-MM-dd'T'HH:mm:ssZZ";
-        String time = DateFormatUtils.format(new Date(), pattern);
+        Date date = dateTime == null ? new Date() : new Date(Long.parseLong(dateTime));
+        String time = DateFormatUtils.format(date, pattern);
         try {
             time = URLEncoder.encode(time, "UTF-8");
         } catch (UnsupportedEncodingException e) {
