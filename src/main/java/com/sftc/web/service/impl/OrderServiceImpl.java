@@ -1,5 +1,6 @@
 package com.sftc.web.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -23,11 +24,13 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
 
 import static com.sftc.tools.constant.SFConstant.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.lang.Object;
 import java.util.*;
 
@@ -1279,5 +1282,23 @@ public class OrderServiceImpl implements OrderService {
         order.setSender_user_id(Integer.parseInt((String) request.getParameter("sender_user_id")));
         List<Order> orderList = orderMapper.getOrderAndExpress(order);
         return APIUtil.getResponse(SUCCESS, orderList);
+    }
+
+    /**
+     * 下面是CMS的内容
+     */
+    public APIResponse selectOrderListByPage(APIRequest request){
+        APIStatus status = APIStatus.SUCCESS;
+        HttpServletRequest httpServletRequest = request.getRequest();
+        int pageNum = Integer.parseInt(httpServletRequest.getParameter("pageNumKey"));
+        int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
+        PageHelper.startPage(pageNum,pageSizeKey);
+        Order order = new Order(httpServletRequest);
+        List<Order> orderList = orderMapper.selectOrderByPage(order);
+        if (orderList.size() == 0) {
+            return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
+        } else {
+            return APIUtil.getResponse(status, orderList);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.sftc.web.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
 import com.sftc.web.mapper.TokenMapper;
@@ -120,12 +121,15 @@ public class UserServiceImpl implements UserService {
     /**
      * 下面是CMS的内容
      */
-    public APIResponse selectUserList(APIRequest request) {
+    public APIResponse selectUserListByPage(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
         HttpServletRequest httpServletRequest = request.getRequest();
         // 此处封装了 User的构造方法
         User user = new User(httpServletRequest);
-        List<User> userList = userMapper.selectByPageNumSize(user);
+        int pageNum = Integer.parseInt(httpServletRequest.getParameter("pageNumKey"));
+        int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
+        PageHelper.startPage(pageNum, pageSizeKey);
+        List<User> userList = userMapper.selectByPage(user);
         if (userList.size() == 0) {
             return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
         } else {

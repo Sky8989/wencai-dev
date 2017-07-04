@@ -358,16 +358,17 @@
     </select>
 
     <!--下面是cms系统用到的mapper-->
-    <select id="selectByPageNumSize" resultType="com.sftc.web.model.Order" parameterType="com.sftc.web.model.Order">
+    <select id="selectOrderByPage" resultMap="orderMap" parameterType="com.sftc.web.model.Order">
         SELECT * FROM sftc_order
         <where>
-            <if test="order_number != null">and order_number LIKE '%${order_number}%'</if>
-            <if test="order_type != null">and order_type LIKE '%${order_type}%'</if>
-            <if test="region_type != null">and region_type LIKE '%${region_type}%'</if>
-            <if test="sender_user_id != null">and sender_user_id LIKE '%${sender_user_id}%'</if>
-            <if test="is_cancel != null">and is_cancel LIKE '%${is_cancel}%'</if>
-            <if test="distribution_method != null">and distribution_method LIKE '%${distribution_method}%'</if>
-            <if test="pay_method != null">and pay_method LIKE '%${pay_method}%'</if>
+            <if test="id != 0">and id = #{id}</if>
+            <!--<if test="order_number != null">and order_number = #{order_number}</if>-->
+            <if test="order_type != null">and order_type = #{order_type}</if>
+            <if test="region_type != null">and region_type = #{region_type}</if>
+            <if test="sender_mobile != null">and sender_mobile = #{sender_mobile}</if>
+            <!--<if test="sender_user_id != null">and sender_user_id = #{sender_user_id}</if>-->
+            <!--<if test="is_cancel != null">and is_cancel = 'Cancelled'</if>-->
+
         </where>
     </select>
 </mapper>

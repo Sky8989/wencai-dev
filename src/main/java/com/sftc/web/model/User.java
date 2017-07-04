@@ -179,9 +179,5 @@ public class User extends Object {
         {this.id = Integer.parseInt(request.getParameter("id"));}
         if (request.getParameter("name") != null && !"".equals(request.getParameter("name")))
         {this.name = request.getParameter("name");}
-        if (request.getParameter("pageSizeKey") != null)
-        {this.pageSizeKey = Integer.parseInt(request.getParameter("pageSizeKey"));}
-        if (request.getParameter("pageNumKey") != null)
-        {this.pageNumKey = Integer.parseInt(request.getParameter("pageNumKey"));}
     }
 }

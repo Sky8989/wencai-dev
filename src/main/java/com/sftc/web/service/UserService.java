@@ -29,5 +29,8 @@ public interface UserService {
     APIResponse login(UserParam userParam) throws Exception;
     Token getToken(int id);
 
-    APIResponse selectUserList(APIRequest request);
+    /**
+     *下面是CMS后台所使用的接口
+     */
+    APIResponse selectUserListByPage(APIRequest request);
 }
