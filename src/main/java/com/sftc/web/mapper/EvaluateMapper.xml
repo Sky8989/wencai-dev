@@ -21,9 +21,9 @@
     <!--</insert>-->
 
 
-    <!-- 查找 评价信息 by订单id-->
-    <select id="selectByOrderId" resultType="com.sftc.web.model.Evaluate">
-        SELECT * FROM sftc_evaluate WHERE order_id = #{order_id}
+    <!-- 查找 评价信息 by uuid-->
+    <select id="selectByUuid" resultType="com.sftc.web.model.Evaluate">
+        SELECT * FROM sftc_evaluate WHERE uuid = #{uuid}
     </select>
 
 </mapper>

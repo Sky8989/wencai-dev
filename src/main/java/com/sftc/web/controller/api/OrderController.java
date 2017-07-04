@@ -8,6 +8,8 @@ import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.Token;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
+import com.sftc.web.service.EvaluateService;
+import com.sftc.web.service.OrderExpressService;
 import com.sftc.web.service.OrderService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,8 @@ public class OrderController extends AbstractBasicController {
 
     @Resource
     private OrderService orderService;
+    @Resource
+    private EvaluateService evaluateService;
 
     /**
      * 普通订单提交
@@ -234,5 +238,14 @@ public class OrderController extends AbstractBasicController {
         APIRequest request = new APIRequest();
         request.setRequestParam(object);
         return orderService.transformOrderFromSameToNation(request);
+    }
+
+    /**
+     * 获取 大网订单的评价信息
+     */
+    @RequestMapping(value = "/getEvaluate", method = RequestMethod.GET)
+    public @ResponseBody
+    APIResponse getEvaluate(String uuid) throws Exception {
+        return evaluateService.getEvaluate(uuid);
     }
 }
