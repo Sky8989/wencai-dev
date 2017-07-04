@@ -112,7 +112,6 @@ public interface OrderService {
      */
     APIResponse remindPlace(APIRequest request);
 
-
     /**
      *下面是CMS后台所使用的接口
      */
@@ -123,5 +122,10 @@ public interface OrderService {
      * @return
      */
     APIResponse selectOrderListByPage(APIRequest request);
+    /**
+     * 同城单转大网单
+     */
+    APIResponse transformOrderFromSameToNation(APIRequest request);
+
 }
 

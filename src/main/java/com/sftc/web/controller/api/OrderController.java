@@ -3,6 +3,7 @@ package com.sftc.web.controller.api;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
+import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.Token;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
@@ -222,5 +223,16 @@ public class OrderController extends AbstractBasicController {
     public @ResponseBody
     APIResponse remindPlace(HttpServletRequest request) throws Exception {
         return orderService.remindPlace(new APIRequest(request));
+    }
+
+    /**
+     * 给顺丰调用的，同城单转大网单
+     */
+    @RequestMapping(value = "/transform", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse transformOrder(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.transformOrderFromSameToNation(request);
     }
 }
