@@ -5,9 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
 import com.sftc.tools.common.DateUtils;
-import com.sftc.tools.sf.SFTokenHelper;
-import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFExpressHelper;
+import com.sftc.tools.sf.SFOrderHelper;
+import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.mapper.*;
 import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.OrderCallback;
@@ -17,22 +17,19 @@ import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.model.sfmodel.Address;
 import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.service.OrderService;
-import com.sun.org.apache.regexp.internal.RE;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.springframework.stereotype.Service;
-
-import static com.sftc.tools.constant.SFConstant.*;
 
 import javax.annotation.Resource;
 import java.lang.Object;
 import java.util.*;
 
 import static com.sftc.tools.api.APIStatus.*;
+import static com.sftc.tools.constant.SFConstant.*;
 
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
@@ -508,6 +505,71 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return APIUtil.getResponse(status, responseObject);
+    }
+
+    /**
+     * 大网预约订单提交
+     */
+    public APIResponse nationOrderReserveCommit(int order_id) {
+
+        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+        for (OrderExpress oe : order.getOrderExpressList()) {
+            // 大网订单提交参数
+            JSONObject sf = new JSONObject();
+            sf.put("orderid", oe.getOrder_number());
+            sf.put("j_contact", order.getSender_name());
+            sf.put("j_mobile", order.getSender_mobile());
+            sf.put("j_tel", order.getSender_mobile());
+            sf.put("j_country", "中国");
+            sf.put("j_province", order.getSender_province());
+            sf.put("j_city", order.getSender_city());
+            sf.put("j_county", order.getSender_area());
+            sf.put("j_address", order.getSender_addr());
+            sf.put("d_contact", oe.getShip_name());
+            sf.put("d_mobile", oe.getShip_mobile());
+            sf.put("d_tel", oe.getShip_mobile());
+            sf.put("d_country", "中国");
+            sf.put("d_province", oe.getShip_province());
+            sf.put("d_city", oe.getShip_city());
+            sf.put("d_county", oe.getShip_area());
+            sf.put("d_address", oe.getShip_addr());
+            sf.put("pay_method", order.getPay_method());
+            sf.put("express_type", order.getDistribution_method());
+            // handle pay_method
+            String pay_method = (String) sf.get("pay_method");
+            if (pay_method != null && !pay_method.equals("")) {
+                if (pay_method.equals("FREIGHT_PREPAID")) { // FREIGHT_PREPAID 寄付 1
+                    pay_method = "1";
+                } else if (pay_method.equals("FREIGHT_COLLECT")) { // FREIGHT_COLLECT 到付 2
+                    pay_method = "2";
+                }
+                sf.remove("pay_method");
+                sf.put("pay_method", pay_method);
+            }
+            if (!oe.getState().equals("WAIT_FILL")) {
+                // 订单提交
+                String paramStr = gson.toJson(JSONObject.fromObject(sf));
+                HttpPost post = new HttpPost(SF_CREATEORDER_URL);
+                post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
+                String resultStr = APIPostUtil.post(paramStr, post);
+                JSONObject resultObject = JSONObject.fromObject(resultStr);
+                String messageType = (String) resultObject.get("Message_Type");
+
+                if (messageType != null && messageType.contains("ERROR")) {
+                    return APIUtil.submitErrorResponse("下单失败", resultObject);
+                } else {
+                    // 存储快递信息
+                    String nation_uuid = (String) resultObject.get("ordernum");
+                    orderMapper.updateOrderRegionType(order.getId(), "REGION_NATION");
+                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), nation_uuid, "");
+                    orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
+                }
+            } else {
+                return APIUtil.submitErrorResponse("快递订单状态异常，好友包裹尚未被领取", null);
+            }
+        }
+        order = orderMapper.selectOrderDetailByOrderId(order_id);
+        return APIUtil.getResponse(SUCCESS, order);
     }
 
     /**
