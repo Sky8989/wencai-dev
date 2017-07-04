@@ -1432,9 +1432,9 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse selectOrderListByPage(APIRequest request){
         APIStatus status = APIStatus.SUCCESS;
         HttpServletRequest httpServletRequest = request.getRequest();
-        int pageNum = Integer.parseInt(httpServletRequest.getParameter("pageNumKey"));
+        int pageNumKey = Integer.parseInt(httpServletRequest.getParameter("pageNumKey"));
         int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
-        PageHelper.startPage(pageNum,pageSizeKey);
+        PageHelper.startPage(pageNumKey,pageSizeKey);
         Order order = new Order(httpServletRequest);
         List<Order> orderList = orderMapper.selectOrderByPage(order);
         if (orderList.size() == 0) {
