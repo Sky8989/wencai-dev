@@ -235,4 +235,15 @@ public class OrderController extends AbstractBasicController {
         request.setRequestParam(object);
         return orderService.transformOrderFromSameToNation(request);
     }
+
+    /**
+     * 设置大网预约单定时器
+     */
+    @RequestMapping(value = "/reserve/setup", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse setupReserveTimer(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.setupReserveNationOrderCommitTimer(request);
+    }
 }

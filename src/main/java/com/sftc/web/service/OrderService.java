@@ -116,5 +116,10 @@ public interface OrderService {
      * 同城单转大网单
      */
     APIResponse transformOrderFromSameToNation(APIRequest request);
+
+    /**
+     * 设置大网预约单定时器
+     */
+    APIResponse setupReserveNationOrderCommitTimer(APIRequest request);
 }
 
