@@ -111,5 +111,10 @@ public interface OrderService {
      * 提醒寄件人下单
      */
     APIResponse remindPlace(APIRequest request);
+
+    /**
+     * 同城单转大网单
+     */
+    APIResponse transformOrderFromSameToNation(APIRequest request);
 }
 
