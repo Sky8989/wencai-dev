@@ -1,40 +1,35 @@
 package com.sftc.web.controller.cms;
 
-import com.google.gson.Gson;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
-import com.sftc.web.model.reqeustParam.UserParam;
-import com.sftc.web.service.UserService;
+import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.Token;
+import com.sftc.web.model.reqeustParam.MyOrderParam;
+import com.sftc.web.model.reqeustParam.OrderParam;
+import com.sftc.web.service.OrderService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
-@RequestMapping("cms/user")
 @Controller
-public class CMSUserController extends AbstractBasicController {
+@RequestMapping("cms/order")
+public class CMSOrderController extends AbstractBasicController {
 
     @Resource
-    private UserService userService;
-
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public
-    ModelAndView login(@RequestBody UserParam userParam) throws Exception {
-        return  null;
-    }
+    private OrderService orderService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public @ResponseBody
-    APIResponse UserList(HttpServletRequest request) throws Exception{
+    APIResponse OrderList(HttpServletRequest request) throws Exception{
         // 分页查询
-        return userService.selectUserListByPage(new APIRequest(request));
+        //TODO 需要封装订单的快递 寄件人收件人 等复杂信息 未完成
+        return orderService.selectOrderListByPage(new APIRequest(request));
     }
-
-
 }

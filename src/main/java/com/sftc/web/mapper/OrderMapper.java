@@ -64,5 +64,5 @@ public interface OrderMapper {
     void updateCancelOrderById(int id);
 
     //     <!--下面是cms系统用到的mapper-->
-    List<Order> selectByPageNumSize(Order order);
+    List<Order> selectOrderByPage(Order order);
 }

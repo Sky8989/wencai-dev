@@ -2,6 +2,7 @@ package com.sftc.web.model;
 
 import com.sftc.web.model.reqeustParam.OrderParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public class Order extends Object {
@@ -116,6 +117,21 @@ public class Order extends Object {
         this.longitude = orderParam.getLongitude();
         this.latitude = orderParam.getLatitude();
 
+    }
+
+    /**
+     * 基于HttpServletRequest作为参数的构造方法 用于cms
+     * 后期便于应用扩展工厂模式 将此参数抽出
+     */
+    public Order(HttpServletRequest request) {
+        if (request.getParameter("id") != null && !"".equals(request.getParameter("id")))
+        {this.id = Integer.parseInt(request.getParameter("id"));}
+        if (request.getParameter("order_type") != null && !"".equals(request.getParameter("order_type")))
+        {this.order_type = request.getParameter("order_type");}
+        if (request.getParameter("region_type") != null && !"".equals(request.getParameter("region_type")))
+        {this.region_type = request.getParameter("region_type");}
+        if (request.getParameter("sender_mobile") != null && !"".equals(request.getParameter("sender_mobile")))
+        {this.sender_mobile = request.getParameter("sender_mobile");}
     }
 
     public int getId() {

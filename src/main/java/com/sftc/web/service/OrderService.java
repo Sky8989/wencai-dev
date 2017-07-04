@@ -111,5 +111,17 @@ public interface OrderService {
      * 提醒寄件人下单
      */
     APIResponse remindPlace(APIRequest request);
+
+
+    /**
+     *下面是CMS后台所使用的接口
+     */
+
+    /**
+     * 获取 订单列表 支持分页查询 和 条件查询
+     * @param request
+     * @return
+     */
+    APIResponse selectOrderListByPage(APIRequest request);
 }
 

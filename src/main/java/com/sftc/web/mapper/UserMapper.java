@@ -29,5 +29,5 @@ public interface UserMapper {
     void updateUser(User user);
 
     //     <!--下面是cms系统用到的mapper-->
-    List<User> selectByPageNumSize(User user);
+    List<User> selectByPage(User user);
 }
