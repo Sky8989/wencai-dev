@@ -120,18 +120,16 @@ public class UserServiceImpl implements UserService {
     /**
      * 下面是CMS的内容
      */
-    public ModelAndView selectUserList(APIRequest request) {
-        //http://localhost:8080/sftc/cms/user/list?pageSize=10&startIndex=0
+    public APIResponse selectUserList(APIRequest request) {
+        APIStatus status = APIStatus.SUCCESS;
         HttpServletRequest httpServletRequest = request.getRequest();
+        // 此处封装了 User的构造方法
         User user = new User(httpServletRequest);
         List<User> userList = userMapper.selectByPageNumSize(user);
-        for (User user2:userList){
-            System.out.println(user2.toString());
+        if (userList.size() == 0) {
+            return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
+        } else {
+            return APIUtil.getResponse(status, userList);
         }
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("userList", userList);
-        modelAndView.setViewName("index");
-        return modelAndView;
     }
 }

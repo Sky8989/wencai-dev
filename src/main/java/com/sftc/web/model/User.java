@@ -26,8 +26,8 @@ public class User extends Object {
     private Token token;
 
     //    分页参数
-    private Integer pageNum;
-    private Integer pageSize;
+    private Integer pageNumKey;
+    private Integer pageSizeKey;
 
     public Token getToken() {
         return token;
@@ -162,44 +162,26 @@ public class User extends Object {
         this.create_time = create_time;
     }
 
-    public Integer getPageNum() {return pageNum;}
+    public Integer getPageNumKey() {return pageNumKey;}
 
-    public void setPageNum(Integer pageNum) {this.pageNum = pageNum;}
+    public void setPageNumKey(Integer pageNumKey) {this.pageNumKey = pageNumKey;}
 
-    public Integer getPageSize() {return pageSize;}
+    public Integer getPageSizeKey() {return pageSizeKey;}
 
-    public void setPageSize(Integer pageSize) {this.pageSize = pageSize;}
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", uuid='" + uuid + '\'' +
-                ", name='" + name + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", user_password='" + user_password + '\'' +
-                ", open_id='" + open_id + '\'' +
-                ", session_key='" + session_key + '\'' +
-                ", create_time='" + create_time + '\'' +
-                ", js_code='" + js_code + '\'' +
-                ", summary=" + summary +
-                ", attributes=" + attributes +
-                ", tags=" + tags +
-                ", token=" + token +
-                ", pageNum=" + pageNum +
-                ", pageSize=" + pageSize +
-                '}';
-    }
+    public void setPageSizeKey(Integer pageSizeKey) {this.pageSizeKey = pageSizeKey;}
 
     /**
      * 基于HttpServletRequest作为参数的构造方法 用于cms
      * 后期便于应用扩展工厂模式 将此参数抽出
      */
     public User(HttpServletRequest request) {
-        if (request.getParameter("id") != null){this.id = Integer.parseInt(request.getParameter("id"));}
-        if (request.getParameter("id") != null){this.pageSize = Integer.parseInt(request.getParameter("pageSize"));}
-//        int pageSize = ;
-//        int startIndex = Integer.parseInt(httpServletRequest.getParameter("startIndex"));
+        if (request.getParameter("id") != null && !"".equals(request.getParameter("id")))
+        {this.id = Integer.parseInt(request.getParameter("id"));}
+        if (request.getParameter("name") != null && !"".equals(request.getParameter("name")))
+        {this.name = request.getParameter("name");}
+        if (request.getParameter("pageSizeKey") != null)
+        {this.pageSizeKey = Integer.parseInt(request.getParameter("pageSizeKey"));}
+        if (request.getParameter("pageNumKey") != null)
+        {this.pageNumKey = Integer.parseInt(request.getParameter("pageNumKey"));}
     }
 }

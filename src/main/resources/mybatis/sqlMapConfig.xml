@@ -20,6 +20,8 @@
             <!-- 使用下面的方式配置参数， -->
             <property name="supportMethodsArguments" value="true"/>
             <property name="params" value="pageNum=pageNumKey;pageSize=pageSizeKey;"/>
+            <property name="reasonable" value="true"/>
+            <property name="pageSizeZero" value="true"/>
         </plugin>
     </plugins>
 
