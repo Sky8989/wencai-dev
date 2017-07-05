@@ -1,5 +1,7 @@
 package com.sftc.web.model;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by huxingyue on 2017/6/25.
  */
@@ -80,5 +82,19 @@ public class UserContactNew {
                 ", lntimacy=" + lntimacy +
                 ", create_time='" + create_time + '\'' +
                 '}';
+    }
+
+    public UserContactNew() {
+    }
+
+    /**
+     * 基于HttpServletRequest作为参数的构造方法 用于cms
+     * 后期便于应用扩展工厂模式 将此参数抽出
+     */
+    public UserContactNew(HttpServletRequest request){
+        if (request.getParameter("user_id") != null && !"".equals(request.getParameter("user_id")))
+        {this.user_id = Integer.parseInt(request.getParameter("user_id"));}
+        if (request.getParameter("id") != null && !"".equals(request.getParameter("id")))
+        {this.id = Integer.parseInt(request.getParameter("id"));}
     }
 }

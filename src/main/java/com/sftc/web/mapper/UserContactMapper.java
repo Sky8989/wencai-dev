@@ -37,4 +37,9 @@ public interface UserContactMapper {
 
     // 更新好友亲密度
     void updateUserContactLntimacy(UserContactNew UserContactNew);
+
+    /**
+     * CMS 获取好友列表 分页+条件
+     */
+    List<UserContactNew> selectByPage(UserContactNew userContactNew);
 }

@@ -26,4 +26,9 @@ public interface UserContactService {
      * 星标/取消星标好友
      */
     APIResponse starFriend(APIRequest request);
+
+    /**
+     * CMS 获取好友列表 分页+条件
+     */
+    APIResponse selectUserContactListByPage(APIRequest request);
 }
