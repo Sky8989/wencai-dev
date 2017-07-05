@@ -9,6 +9,7 @@ import com.sftc.web.service.EvaluateService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 @Service
 public class EvaluateServiceImpl implements EvaluateService {
@@ -28,5 +29,12 @@ public class EvaluateServiceImpl implements EvaluateService {
         }else {
             return APIUtil.getResponse(status,evaluateList.get(0));
         }
+    }
+
+    /**
+     * 获取所有评价信息列表  分页+条件查询
+     */
+    public APIResponse selectEvaluateListByPage(HttpServletRequest httpServletRequest){
+        return null;
     }
 }
