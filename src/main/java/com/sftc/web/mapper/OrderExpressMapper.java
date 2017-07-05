@@ -48,5 +48,5 @@ public interface OrderExpressMapper {
 
 
     //     <!--下面是cms系统用到的mapper-->
-    List<OrderExpress> selectByPageNumSize(OrderExpress orderExpress);
+    List<OrderExpress> selectOrderExpressByPage(OrderExpress orderExpress);
 }
