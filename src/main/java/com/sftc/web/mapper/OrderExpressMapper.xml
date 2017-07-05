@@ -161,13 +161,13 @@
     </select>
 
     <!--下面是cms系统用到的mapper-->
-    <select id="selectByPageNumSize" resultType="com.sftc.web.model.OrderExpress" parameterType="com.sftc.web.model.OrderExpress">
+    <select id="selectOrderExpressByPage" resultType="com.sftc.web.model.OrderExpress" parameterType="com.sftc.web.model.OrderExpress">
         SELECT * FROM sftc_order_express
         <where>
-            <if test="id != null">and id LIKE '%${id}%'</if>
-            <if test="order_number != null">and order_number LIKE '%${order_number}%'</if>
-            <if test="ship_name != null">and ship_name LIKE '%${ship_name}%'</if>
-            <if test="ship_mobile != null">and ship_mobile LIKE '%${ship_mobile}%'</if>
+            <if test="id != 0">and id = #{id}</if>
+            <if test="order_id != 0">and order_id = #{order_id}</if>
+            <if test="ship_mobile != null">and ship_mobile = #{ship_mobile}</if>
+            <if test="uuid != null">and uuid = #{uuid}</if>
         </where>
     </select>
 </mapper>

@@ -12,12 +12,11 @@
     </insert>
 
 
-
     <!--<insert id="addEvaluate" parameterType="com.sftc.web.model.Evaluate">-->
-        <!--INSERT into sftc_evaluate-->
-        <!--(merchant_comments,merchant_score,merchant_tags,order_id,user_id,create_time)-->
-        <!--VALUES-->
-        <!--(#{merchant_comments},#{merchant_score},#{merchant_tags},#{order_id},#{user_id},#{create_time})-->
+    <!--INSERT into sftc_evaluate-->
+    <!--(merchant_comments,merchant_score,merchant_tags,order_id,user_id,create_time)-->
+    <!--VALUES-->
+    <!--(#{merchant_comments},#{merchant_score},#{merchant_tags},#{order_id},#{user_id},#{create_time})-->
     <!--</insert>-->
 
 
@@ -26,4 +25,13 @@
         SELECT * FROM sftc_evaluate WHERE uuid = #{uuid}
     </select>
 
+    <!--CMS -->
+    <select id="selectByPage" resultType="com.sftc.web.model.Evaluate">
+        SELECT * FROM sftc_evaluate
+        <where>
+            <if test="id != 0">and id = #{id}</if>
+            <if test="user_id != 0">and user_id = #{user_id}</if>
+            <if test="uuid != null">and uuid = #{uuid}</if>
+        </where>
+    </select>
 </mapper>

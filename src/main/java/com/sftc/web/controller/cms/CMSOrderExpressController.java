@@ -2,7 +2,7 @@ package com.sftc.web.controller.cms;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.service.EvaluateService;
+import com.sftc.web.service.OrderExpressService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,20 +12,18 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by huxingyue on 2017/7/4.
+ * Created by huxingyue on 2017/7/5.
  */
 @Controller
-@RequestMapping("cms/evaluate")
-public class CMSEvaluateController {
-
+@RequestMapping("cms/orderExpress")
+public class CMSOrderExpressController {
     @Resource
-    EvaluateService evaluateService;
-    /**
-     * 获取所有评价信息列表  分页+条件查询
-     */
+    private OrderExpressService orderExpressService;
+
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public @ResponseBody
-    APIResponse evaluateList(HttpServletRequest request) throws Exception{
-        return evaluateService.selectEvaluateListByPage(new APIRequest(request));
+    APIResponse UserList(HttpServletRequest request) throws Exception{
+        //cms 获取快递信息列表 分页+条件
+        return orderExpressService.selectOrderExpressListByPage(new APIRequest(request));
     }
 }
