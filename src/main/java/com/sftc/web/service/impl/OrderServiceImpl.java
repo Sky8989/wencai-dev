@@ -841,9 +841,10 @@ public class OrderServiceImpl implements OrderService {
     public synchronized APIResponse friendFillOrder(Map rowData) {
 
         String orderExpressStr = rowData.toString();
-        OrderExpress orderExpress = new Gson().fromJson(orderExpressStr, OrderExpress.class);
-
-        // 判断订单是否下单
+        // 修复 空格对Gson的影响
+        String strJsonResult = orderExpressStr.replace(" ","");
+        OrderExpress orderExpress = new Gson().fromJson(strJsonResult, OrderExpress.class);
+         // 判断订单是否下单
         Order order = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
         if (order.getRegion_type() != null && !"".equals(order.getRegion_type()) && order.getRegion_type().length() != 0) {
             return APIUtil.submitErrorResponse("订单已经下单，现在您无法再填写信息", orderExpress.getOrder_id());
