@@ -1,5 +1,6 @@
 package com.sftc.web.controller.cms;
 
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.service.EvaluateService;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,6 @@ public class CMSEvaluateController {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse evaluateList(HttpServletRequest request) throws Exception{
-        return evaluateService.selectEvaluateListByPage(request);
+        return evaluateService.selectEvaluateListByPage(new APIRequest(request));
     }
 }
