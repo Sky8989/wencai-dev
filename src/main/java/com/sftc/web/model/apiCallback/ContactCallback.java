@@ -24,6 +24,8 @@ public class ContactCallback {
     private int order_id;
     // 快递状态
     private String state;
+    // 礼物卡id
+    private int gift_card_id;
 
     // 创建时间
     private String create_time;
@@ -106,6 +108,14 @@ public class ContactCallback {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public int getGift_card_id() {
+        return gift_card_id;
+    }
+
+    public void setGift_card_id(int gift_card_id) {
+        this.gift_card_id = gift_card_id;
     }
 
     public String getCreate_time() {
