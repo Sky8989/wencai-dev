@@ -527,6 +527,7 @@ public class OrderServiceImpl implements OrderService {
                 responseObject.put("order_id", order.getId());
             }
         } else { // 预约件
+            responseObject.put("order_id", order.getId());
             responseObject.put("message", "大网订单预约成功");
         }
 
