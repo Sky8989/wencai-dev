@@ -766,6 +766,7 @@ public class OrderServiceImpl implements OrderService {
             post.addHeader("PushEnvelope-Device-Token", access_token);
         } else {
             // 下单时，如果还没登录，计价时uuid和token都没有，需要先写死
+            // TODO:公共uuid和token还没提供
             jsonObject.getJSONObject("request").getJSONObject("merchant").put("uuid", "2c9a85895c352c20015c3878647b017a");
             post.addHeader("PushEnvelope-Device-Token", "padHjjRvusAC9z7ehxpG");
         }
@@ -950,6 +951,8 @@ public class OrderServiceImpl implements OrderService {
 
         if (uuid == null)
             uuid = orderExpressMapper.getUuidByOrderId(order_id);
+        // TODO:公共token还没提供
+        access_token = (access_token == null || access_token.equals("") ? "padHjjRvusAC9z7ehxpG" : access_token);
 
         JSONObject jsonObject = SFExpressHelper.getExpressDetail(uuid, access_token);
 
@@ -1227,8 +1230,10 @@ public class OrderServiceImpl implements OrderService {
 
             // 同城订单需要access_token
             String access_token = (String) request.getParameter("access_token");
-            if (access_token == null || access_token.equals(""))
-                return APIUtil.paramErrorResponse("access_token不能为空");
+            // TODO:公共token还没提供
+            access_token = (access_token == null || access_token.equals("") ? "padHjjRvusAC9z7ehxpG" : access_token);
+//            if (access_token == null || access_token.equals(""))
+//                return APIUtil.paramErrorResponse("access_token不能为空");
 
             respObject = SFExpressHelper.getExpressDetail(uuid, access_token);
         }
