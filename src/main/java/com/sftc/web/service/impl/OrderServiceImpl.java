@@ -172,6 +172,9 @@ public class OrderServiceImpl implements OrderService {
                 orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
                 // 快递表更新uuid和预约时间
                 orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
+                // 不和前面的orderExpress构造方法放在一起  降低耦合度
+                String order_tiem = Long.toString(System.currentTimeMillis());
+                orderExpressMapper.updateOrderTime(uuid,order_tiem);
                 // 消息通知表插入或者更新消息
                 List<Message> messageList = messageMapper.selectMessageReceiveExpress(oe.getShip_user_id());
                 if (messageList.isEmpty()) {
@@ -277,7 +280,9 @@ public class OrderServiceImpl implements OrderService {
                         // 存储订单信息
                         String uuid = (String) jsonObject.get("ordernum");
                         orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
-
+                        // todo 不和前面的orderExpress构造方法放在一起  降低耦合度
+                        String order_tiem = Long.toString(System.currentTimeMillis());
+                        orderExpressMapper.updateOrderTime(uuid,order_tiem);
                         // 插入地址
                         setupAddress(order, oe);
 
@@ -392,6 +397,7 @@ public class OrderServiceImpl implements OrderService {
             // 插入快递表
             OrderExpress orderExpress = new OrderExpress(
                     Long.toString(System.currentTimeMillis()),
+                    Long.toString(System.currentTimeMillis()),
                     order_number,
                     (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("receiver"),
                     (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("mobile"),
@@ -480,6 +486,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 插入快递表
         OrderExpress orderExpress = new OrderExpress(
+                Long.toString(System.currentTimeMillis()),
                 Long.toString(System.currentTimeMillis()),
                 orderId,
                 (String) sf.get("d_contact"),
