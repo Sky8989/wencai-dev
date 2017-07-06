@@ -49,7 +49,7 @@
     <insert id="addOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
         INSERT INTO sftc_order_express
         (ship_name,ship_mobile,ship_province,ship_city,ship_area,
-        ship_addr,order_number,package_type,object_type,create_time,sender_user_id,order_id,state,uuid,longitude,latitude,reserve_time)
+        ship_addr,order_number,package_type,object_type,create_time,sender_user_id,order_id,state,uuid,longitude,latitude,reserve_time,order_time)
         VALUES (
         #{ship_name, jdbcType=VARCHAR},
         #{ship_mobile, jdbcType=VARCHAR},
@@ -67,7 +67,8 @@
         #{uuid, jdbcType=VARCHAR},
         #{longitude, jdbcType=DOUBLE},
         #{latitude, jdbcType=DOUBLE},
-        #{reserve_time, jdbcType=VARCHAR}
+        #{reserve_time, jdbcType=VARCHAR},
+        #{order_time, jdbcType=VARCHAR}
         )
     </insert>
 
@@ -160,8 +161,16 @@
         select * from sftc_order_express where uuid = #{uuid}
     </select>
 
+    <update id="updateOrderTime">
+        update sftc_order_express
+        set
+        order_time=#{order_time, jdbcType=VARCHAR}
+        WHERE uuid=#{uuid}
+    </update>
+
     <!--下面是cms系统用到的mapper-->
-    <select id="selectOrderExpressByPage" resultType="com.sftc.web.model.OrderExpress" parameterType="com.sftc.web.model.OrderExpress">
+    <select id="selectOrderExpressByPage" resultType="com.sftc.web.model.OrderExpress"
+            parameterType="com.sftc.web.model.OrderExpress">
         SELECT * FROM sftc_order_express
         <where>
             <if test="id != 0">and id = #{id}</if>

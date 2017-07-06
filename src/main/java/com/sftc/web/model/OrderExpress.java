@@ -37,6 +37,8 @@ public class OrderExpress extends Object {
     private String reserve_time;
     //包裹获取时间，指好友填写地址时的时间
     private String receive_time;
+    // 下单到顺丰的时间 用于记录下单成功时的时间
+    private String order_time;
     // 收件人id(根据用户表id)
     private int ship_user_id;
     // 礼卡表id
@@ -67,9 +69,10 @@ public class OrderExpress extends Object {
         this.state = state;
     }
 
-    public OrderExpress(String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
+    public OrderExpress(String order_time,String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String package_type, String object_type,
                         String state, int sender_user_id, int order_id, String uuid, Double latitude, Double longitude) {
+        this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
         this.ship_name = ship_name;
@@ -327,4 +330,8 @@ public class OrderExpress extends Object {
     public String getReceive_time() {return receive_time;}
 
     public void setReceive_time(String receive_time) {this.receive_time = receive_time;}
+
+    public String getOrder_time() {return order_time;}
+
+    public void setOrder_time(String order_time) {this.order_time = order_time;}
 }

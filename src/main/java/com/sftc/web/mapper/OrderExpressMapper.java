@@ -46,6 +46,9 @@ public interface OrderExpressMapper {
      */
     OrderExpress selectExpressByUuid(@Param("uuid") String uuid);
 
+    //下单时，更新order_time,用于记录下单时间
+    void updateOrderTime(@Param("uuid") String uuid,@Param("order_time") String order_time);
+
 
     //     <!--下面是cms系统用到的mapper-->
     List<OrderExpress> selectOrderExpressByPage(OrderExpress orderExpress);
