@@ -155,6 +155,7 @@ public class MessageServiceImpl implements MessageService {
                 User user = userMapper.selectUserByUserId(user_id);
                 if (user != null && (user.getUuid() == null || "".equals(user.getUuid()))) {
                     user.setUuid(resJSONObject.getJSONObject("merchant").getString("uuid"));
+                    user.setMobile(resJSONObject.getJSONObject("merchant").getString("mobile"));
                     userMapper.updateUser(user);
                 }
             }
