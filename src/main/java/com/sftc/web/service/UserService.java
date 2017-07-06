@@ -27,6 +27,7 @@ public interface UserService {
      * @return
      */
     APIResponse login(UserParam userParam) throws Exception;
+    APIResponse superLogin(UserParam userParam) throws Exception;
     Token getToken(int id);
 
     /**
