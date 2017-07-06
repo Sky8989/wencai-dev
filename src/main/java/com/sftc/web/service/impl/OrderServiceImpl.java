@@ -175,38 +175,9 @@ public class OrderServiceImpl implements OrderService {
                 // 不和前面的orderExpress构造方法放在一起  降低耦合度
                 String order_tiem = Long.toString(System.currentTimeMillis());
                 orderExpressMapper.updateOrderTime(uuid,order_tiem);
-                // 消息通知表插入或者更新消息
-                List<Message> messageList = messageMapper.selectMessageReceiveExpress(oe.getShip_user_id());
-                if (messageList.isEmpty()) {
-                    Message message = new Message("RECEIVE_EXPRESS", 0, oe.getId(), oe.getShip_user_id());
-                    messageMapper.insertMessage(message);
-                } else {
-                    Message message = messageList.get(0);
-                    message.setIs_read(0);
-                    message.setExpress_id(oe.getId());
-                    message.setCreate_time(Long.toString(System.currentTimeMillis()));
-                    messageMapper.updateMessageReceiveExpress(message);
-                }
+
                 // 插入地址
                 setupAddress(order, oe);
-
-                // 存储好友关系
-                UserContactNew userContactNewParam = new UserContactNew();
-                userContactNewParam.setUser_id(order.getSender_user_id());
-                userContactNewParam.setFriend_id(oe.getShip_user_id());
-                UserContactNew userContactNew = userContactMapper.selectByUserIdAndShipId(userContactNewParam);
-                if (userContactNew == null) {
-                    userContactNew = new UserContactNew();
-                    userContactNew.setUser_id(order.getSender_user_id());
-                    userContactNew.setFriend_id(oe.getShip_user_id());
-                    userContactNew.setIs_tag_star(0);
-                    userContactNew.setLntimacy(0);
-                    userContactNew.setCreate_time(Long.toString(System.currentTimeMillis()));
-                    userContactMapper.insertUserContact(userContactNew);
-                } else {
-                    // 如果不为空 则好友度加1
-                    userContactMapper.updateUserContactLntimacy(userContactNew);
-                }
 
             } else { // error
                 return APIUtil.getResponse(SUBMIT_FAIL, responseObject);
@@ -280,13 +251,13 @@ public class OrderServiceImpl implements OrderService {
                         // 存储订单信息
                         String uuid = (String) jsonObject.get("ordernum");
                         orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
-                        // todo 不和前面的orderExpress构造方法放在一起  降低耦合度
+                        // 不和前面的orderExpress构造方法放在一起  降低耦合度
                         String order_tiem = Long.toString(System.currentTimeMillis());
                         orderExpressMapper.updateOrderTime(uuid,order_tiem);
                         // 插入地址
                         setupAddress(order, oe);
 
-                        // 存储好友关系
+                        /*// 存储好友关系
                         UserContactNew userContactNewParam = new UserContactNew();
                         userContactNewParam.setUser_id(order.getSender_user_id());
                         userContactNewParam.setFriend_id(oe.getShip_user_id());
@@ -315,7 +286,7 @@ public class OrderServiceImpl implements OrderService {
                             message.setIs_read(0);
                             message.setCreate_time(Long.toString(System.currentTimeMillis()));
                             messageMapper.updateMessageReceiveExpress(message);
-                        }
+                        }*/
                     }
                 }
             }
@@ -845,7 +816,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 好友填写寄件订单
+     * todo 好友填写寄件订单
      */
     public synchronized APIResponse friendFillOrder(Map rowData) {
 
@@ -893,6 +864,35 @@ public class OrderServiceImpl implements OrderService {
                 message.setUser_id(order.getSender_user_id());
                 message.setCreate_time(Long.toString(System.currentTimeMillis()));
                 messageMapper.updateMessageReceiveAddress(message);
+            }
+            // 消息通知表插入或者更新消息
+            List<Message> messageListRE = messageMapper.selectMessageReceiveExpress(orderExpress.getShip_user_id());
+            if (messageList.isEmpty()) {
+                Message message = new Message("RECEIVE_EXPRESS", 0, orderExpress.getId(), orderExpress.getShip_user_id());
+                messageMapper.insertMessage(message);
+            } else {
+                Message message = messageList.get(0);
+                message.setIs_read(0);
+                message.setExpress_id(orderExpress.getId());
+                message.setCreate_time(Long.toString(System.currentTimeMillis()));
+                messageMapper.updateMessageReceiveExpress(message);
+            }
+            // 存储好友关系
+            UserContactNew userContactNewParam = new UserContactNew();
+            userContactNewParam.setUser_id(order.getSender_user_id());
+            userContactNewParam.setFriend_id(orderExpress.getShip_user_id());
+            UserContactNew userContactNew = userContactMapper.selectByUserIdAndShipId(userContactNewParam);
+            if (userContactNew == null) {
+                userContactNew = new UserContactNew();
+                userContactNew.setUser_id(order.getSender_user_id());
+                userContactNew.setFriend_id(orderExpress.getShip_user_id());
+                userContactNew.setIs_tag_star(0);
+                userContactNew.setLntimacy(0);
+                userContactNew.setCreate_time(Long.toString(System.currentTimeMillis()));
+                userContactMapper.insertUserContact(userContactNew);
+            } else {
+                // 如果不为空 则好友度加1
+                userContactMapper.updateUserContactLntimacy(userContactNew);
             }
         }
 
@@ -1402,7 +1402,7 @@ public class OrderServiceImpl implements OrderService {
             System.out.println("-   -未付款订单，订单编号是：" + eachOrderExpress.getOrder_number());
         }
         if (flagRealOrder) {//这是订单已经提交付款了的操作
-            //   todo:真实订单还未测试到
+
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
             //下面是 顺丰方面取消订单的逻辑
             String str = "{\"event\":{\"type\":\"CANCEL\",\"source\":\"MERCHANT\"}}";
