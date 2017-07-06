@@ -95,18 +95,29 @@ public class MessageServiceImpl implements MessageService {
         if (jsonObject.containsKey("user_id")) {
             int user_id = jsonObject.getInt("user_id");
             jsonObject.remove("user_id");
+            // 生成sf获取token的链接
+            StringBuilder postUrl = new StringBuilder(SF_GET_TOKEN);
+            if (jsonObject.containsKey("refresh_token") && !"".equals(jsonObject.get("refresh_token"))){
+                postUrl.append("?refresh_token=");
+                postUrl.append(jsonObject.get("refresh_token"));
+            }
+            // 去除无用的json节点
+            jsonObject.remove("refresh_token");
+
             // 调用顺丰接口
             String str = gson.toJson(jsonObject);
-            HttpPost post = new HttpPost(SF_GET_TOKEN);
+            HttpPost post = new HttpPost(postUrl.toString());
             String res = APIPostUtil.post(str, post);
             JSONObject resJSONObject = JSONObject.fromObject(res);
 
             if (!resJSONObject.containsKey("error")) {
                 // 更新 token中的access_token 到token表
                 String access_token = resJSONObject.getJSONObject("token").getString("access_token");
+                String refresh_token = resJSONObject.getJSONObject("token").getString("refresh_token");
                 Token token = new Token();
                 token.setUser_id(user_id);
                 token.setAccess_token(access_token);
+                token.setRefresh_token(refresh_token);
                 tokenMapper.updateToken(token);
                 return APIUtil.getResponse(status, resJSONObject);
             } else {
