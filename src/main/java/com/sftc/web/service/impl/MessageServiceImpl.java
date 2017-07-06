@@ -72,6 +72,7 @@ public class MessageServiceImpl implements MessageService {
             Token token = new Token();
             token.setUser_id(user_id);
             token.setAccess_token(tokenJSONObject.getString("access_token"));
+            token.setRefresh_token(tokenJSONObject.getString("refresh_token"));
             tokenMapper.updateToken(token);
 
             // 存储 merchant中的uuid 到user表

@@ -24,4 +24,10 @@ public class UserController extends AbstractBasicController {
     APIResponse login(@RequestBody UserParam userParam) throws Exception {
         return userService.login(userParam);
     }
+
+    @RequestMapping(value = "/superLogin", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse superLogin(@RequestBody UserParam userParam) throws Exception {
+        return userService.superLogin(userParam);
+    }
 }
