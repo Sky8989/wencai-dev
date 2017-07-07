@@ -190,7 +190,8 @@ public class OrderController extends AbstractBasicController {
     @RequestMapping(value = "/cancelOrder", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse cancelOrder(@RequestBody Object object) throws Exception {
-        return orderService.deleteOrder(object);
+//        return orderService.deleteOrder(object);
+        return orderService.cancelOrder(object);
     }
 
     /**

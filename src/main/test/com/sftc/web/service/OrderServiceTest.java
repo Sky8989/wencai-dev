@@ -49,8 +49,8 @@ public class OrderServiceTest {
                 "}," +
                 "\"order_id\": \"1199\"" +
                 "}";
-        APIResponse apiResponse = orderService.deleteOrder(s);
-        System.out.println(apiResponse);
+        //APIResponse apiResponse = orderService.deleteOrder(s);
+        //System.out.println(apiResponse);
     }
 
     public void senderplace() throws Exception {
