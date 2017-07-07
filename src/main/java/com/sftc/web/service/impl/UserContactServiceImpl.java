@@ -83,7 +83,7 @@ public class UserContactServiceImpl implements UserContactService {
             return APIUtil.selectErrorResponse("非好友关系", null);
 
         List<UserContactLabel> userContactLabelList = userContactLabelMapper.getFriendLabelList(user_id);
-        List<DateRemind> dateRemindList = dateRemindMapper.getDateRemindList(user_id);
+        List<DateRemind> dateRemindList = dateRemindMapper.selectDateRemindList(user_id);
         userContact.setUserContactLabelList(userContactLabelList);
         userContact.setDateRemindList(dateRemindList);
         return APIUtil.getResponse(SUCCESS, userContact);

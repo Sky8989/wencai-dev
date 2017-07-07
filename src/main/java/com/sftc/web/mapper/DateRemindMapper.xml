@@ -10,26 +10,25 @@
                 (sftc_date_remind.describe,sftc_date_remind.date,user_id,user_contact_id,create_time)
                 VALUES
                 (#{describe},#{date},#{user_id},#{user_contact_id},#{create_time})
-        </insert>
+    </insert>
 
     <!-- 获取好友日期提醒列表 -->
-    <select id="getDateRemindList" parameterType="int"
-            resultType="com.sftc.web.model.DateRemind">
+    <select id="selectDateRemindList" parameterType="int" resultType="com.sftc.web.model.DateRemind">
         SELECT * FROM sftc_date_remind WHERE user_contact_id=#{id}
     </select>
 
     <!--&lt;!&ndash; 获得日期提醒列表  &ndash;&gt;-->
     <!--<select id="getDateRemindList" parameterType="com.sftc.web.model.DateRemind"-->
-            <!--resultType="com.sftc.web.model.DateRemind">-->
-        <!--SELECT depict,date FROM sftc_date_remind-->
-        <!--<where>-->
-            <!--<if test="user_contact_id!=null">user_contact_id=#{user_contact_id} or</if>-->
-            <!--<if test="user_id!=null">user_id=#{user_id}</if>-->
-        <!--</where>-->
+    <!--resultType="com.sftc.web.model.DateRemind">-->
+    <!--SELECT depict,date FROM sftc_date_remind-->
+    <!--<where>-->
+    <!--<if test="user_contact_id!=null">user_contact_id=#{user_contact_id} or</if>-->
+    <!--<if test="user_id!=null">user_id=#{user_id}</if>-->
+    <!--</where>-->
     <!--</select>-->
 
     <!-- 删除日期提醒  -->
     <delete id="deleteDateRemind" parameterType="int">
-                DELETE FROM sftc_date_remind WHERE id=#{id}
-        </delete>
+        DELETE FROM sftc_date_remind WHERE id=#{id}
+    </delete>
 </mapper>

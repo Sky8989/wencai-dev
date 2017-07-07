@@ -28,4 +28,10 @@ public class DateRemindController {
     APIResponse deleteDateRemind(HttpServletRequest request) throws Exception {
         return dateRemindService.deleteFriendDateRemind(new APIRequest(request));
     }
+
+    @RequestMapping(value = "/select", method = RequestMethod.GET)
+    public @ResponseBody
+    APIResponse selectDateRemind(HttpServletRequest request) throws Exception {
+        return dateRemindService.selectFriendDateRemind(new APIRequest(request));
+    }
 }

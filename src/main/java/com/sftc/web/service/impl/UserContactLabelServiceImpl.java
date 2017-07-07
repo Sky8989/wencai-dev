@@ -14,6 +14,7 @@ public class UserContactLabelServiceImpl implements UserContactLabelService {
 
     @Resource
     private UserContactLabelMapper userContactLabelMapper;
+
     // 添加好友普通标签
     public APIResponse addLabelForFriend(UserContactLabel userContactLabel) {
         APIStatus status = APIStatus.SUCCESS;
@@ -21,6 +22,7 @@ public class UserContactLabelServiceImpl implements UserContactLabelService {
         userContactLabelMapper.addLabel(userContactLabel);
         return APIUtil.getResponse(status, userContactLabel);
     }
+
     // 删除好友标签
     public APIResponse deleteLabelForFriend(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
@@ -28,13 +30,14 @@ public class UserContactLabelServiceImpl implements UserContactLabelService {
         userContactLabelMapper.deleteFriendLabel(laberId);
         return APIUtil.getResponse(status, laberId);
     }
+
     // 获取好友标签列表
     public APIResponse selectFriendLabelList(APIRequest request) {
         APIStatus status = APIStatus.SELECT_FAIL;
         int user_contact_id = Integer.parseInt(request.getParameter("user_contact_id").toString());
         List<UserContactLabel> userContactLabelList = userContactLabelMapper.getFriendLabelList(user_contact_id);
-        if (userContactLabelList != null && userContactLabelList.size() >= 1 ) {
+        if (userContactLabelList != null && userContactLabelList.size() >= 1) {
             return APIUtil.getResponse(APIStatus.SUCCESS, userContactLabelList);
-        }else return APIUtil.selectErrorResponse(" no label with that id!",user_contact_id);
+        } else return APIUtil.selectErrorResponse(" no label with that id!", user_contact_id);
     }
 }

@@ -10,7 +10,7 @@ public class UserContactLabel extends Object {
     private String create_time;
 
     public UserContactLabel(int user_contact_id, String label, String create_time) {
-        this.create_time=create_time;
+        this.create_time = create_time;
         this.user_contact_id = user_contact_id;
         this.label = label;
     }
