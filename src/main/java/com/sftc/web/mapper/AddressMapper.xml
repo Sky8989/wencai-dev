@@ -5,16 +5,16 @@
 <mapper namespace="com.sftc.web.mapper.AddressMapper">
 
     <resultMap id="addressList" type="com.sftc.web.model.Address">
-        <id column="id" property="id" />
-        <result column="province" property="province" />
-        <result column="city" property="city" />
-        <result column="district" property="district" />
-        <result column="detail" property="detail" />
-        <result column="phone" property="phone" />
-        <result column="name" property="name" />
-        <result column="longitude" property="longitude" />
-        <result column="latitude" property="latitude" />
-        <result column="user_id" property="user_id" />
+        <id column="id" property="id"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="district" property="district"/>
+        <result column="detail" property="detail"/>
+        <result column="phone" property="phone"/>
+        <result column="name" property="name"/>
+        <result column="longitude" property="longitude"/>
+        <result column="latitude" property="latitude"/>
+        <result column="user_id" property="user_id"/>
     </resultMap>
 
     <!-- 添加地址  -->
@@ -55,5 +55,9 @@
     <delete id="deleteAddress" parameterType="int">
         delete from sftc_address where id=#{id}
     </delete>
+
+    <select id="selectAddressByPhoneAndLongitudeAndLatitude" resultType="com.sftc.web.model.Address">
+        SELECT * from sftc_address WHERE phone = #{phone} AND longitude = #{longitude} AND latitude = #{latitude}
+    </select>
 
 </mapper>
