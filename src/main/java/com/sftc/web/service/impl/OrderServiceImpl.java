@@ -1323,6 +1323,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * 设置兜底记录已读
+     */
+    public APIResponse readExpressTransform(APIRequest request) {
+
+        JSONObject requestObject = JSONObject.fromObject(request.getRequestParam());
+        if (!requestObject.containsKey("express_transform_id"))
+            return APIUtil.paramErrorResponse("express_transform_id不能为空");
+
+        int express_transform_id = requestObject.getInt("express_transform_id");
+        orderExpressTransformMapper.updateExpressTransformReadStatusById(express_transform_id);
+
+        OrderExpressTransform orderExpressTransform = orderExpressTransformMapper.selectExpressTransformByID(express_transform_id);
+        if (orderExpressTransform == null)
+            return APIUtil.submitErrorResponse("兜底记录不存在", null);
+
+        return APIUtil.getResponse(SUCCESS, orderExpressTransform);
+    }
+
+    /**
      * 未下单详情接口
      */
     public APIResponse noPlaceOrderDetail(int order_id) {

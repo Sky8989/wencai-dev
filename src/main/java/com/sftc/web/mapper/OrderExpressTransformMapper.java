@@ -20,4 +20,7 @@ public interface OrderExpressTransformMapper {
 
     @Select("SELECT * from sftc_order_express_transform WHERE nation_uuid = #{nation_uuid}")
     OrderExpressTransform selectExpressTransformByUUID(@Param("nation_uuid") String uuid);
+
+    @Select("SELECT * from sftc_order_express_transform WHERE id = #{id}")
+    OrderExpressTransform selectExpressTransformByID(@Param("id") int id);
 }

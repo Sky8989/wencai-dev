@@ -129,6 +129,11 @@ public interface OrderService {
      */
     APIResponse setupCancelNationOrderTimer(APIRequest request);
 
+    /**
+     * 设置兜底记录已读
+     */
+    APIResponse readExpressTransform(APIRequest request);
+
 
     //////////////// CMS ////////////////
 
