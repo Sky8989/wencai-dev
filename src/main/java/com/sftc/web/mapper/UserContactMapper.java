@@ -38,6 +38,8 @@ public interface UserContactMapper {
     // 更新好友亲密度
     void updateUserContactLntimacy(UserContactNew UserContactNew);
 
+    void updateNotes(@Param("id") int id ,@Param("notes")String notes);
+
     /**
      * CMS 获取好友列表 分页+条件
      */

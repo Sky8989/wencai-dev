@@ -215,6 +215,15 @@ public class UserContactServiceImpl implements UserContactService {
     }
 
     /**
+     * 更新 好友关系备注
+     */
+    public APIResponse updateNotes(APIRequest request) {
+        int user_contact_id = Integer.parseInt(request.getParameter("user_contact_id").toString());
+        String notes = request.getParameter("notes").toString();
+        userContactMapper.updateNotes(user_contact_id,notes);
+        return APIUtil.getResponse(SUCCESS,user_contact_id+"备注更新成功");
+    }
+    /**
      * CMS 获取好友列表 分页+条件
      */
     public APIResponse selectUserContactListByPage(APIRequest request){

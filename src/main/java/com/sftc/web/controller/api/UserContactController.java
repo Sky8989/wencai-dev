@@ -71,4 +71,10 @@ public class UserContactController extends AbstractBasicController {
     APIResponse getFriendLabelList(HttpServletRequest request) throws Exception {
         return userContactLabelService.selectFriendLabelList(new APIRequest(request));
     }
+
+    @RequestMapping(value = "/notes/update", method = RequestMethod.GET)
+    public @ResponseBody
+    APIResponse updateNotes(HttpServletRequest request) throws Exception {
+        return userContactService.updateNotes(new APIRequest(request));
+    }
 }

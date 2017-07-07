@@ -13,6 +13,8 @@ public class UserContact extends Object {
     private int is_tag_star;
     // 亲密度
     private int lntimacy;
+    // 好友备注
+    private String notes;
 
     private User friend_info;
     private List<UserContactLabel> userContactLabelList;
@@ -92,4 +94,8 @@ public class UserContact extends Object {
     public void setDateRemindList(List<DateRemind> dateRemindList) {
         this.dateRemindList = dateRemindList;
     }
+
+    public String getNotes() {return notes;}
+
+    public void setNotes(String notes) {this.notes = notes;}
 }
