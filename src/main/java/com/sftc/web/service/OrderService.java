@@ -124,6 +124,11 @@ public interface OrderService {
      */
     APIResponse setupReserveNationOrderCommitTimer(APIRequest request);
 
+    /**
+     * 设置大网超时订单取消定时器
+     */
+    APIResponse setupCancelNationOrderTimer(APIRequest request);
+
 
     //////////////// CMS ////////////////
 

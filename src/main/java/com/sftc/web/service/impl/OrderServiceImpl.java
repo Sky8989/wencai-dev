@@ -177,7 +177,7 @@ public class OrderServiceImpl implements OrderService {
                 orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
                 // 不和前面的orderExpress构造方法放在一起  降低耦合度
                 String order_tiem = Long.toString(System.currentTimeMillis());
-                orderExpressMapper.updateOrderTime(uuid,order_tiem);
+                orderExpressMapper.updateOrderTime(uuid, order_tiem);
 
                 // 插入地址
                 setupAddress(order, oe);
@@ -508,14 +508,14 @@ public class OrderServiceImpl implements OrderService {
         return APIUtil.getResponse(status, responseObject);
     }
 
-    private void nationUnCommitCancel(int order_id, long timeOutInterval) {
+    // 取消大网超时订单
+    private void cancelNationUnCommitOrder(int order_id, long timeOutInterval) {
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
-            // TODO:取消大网超时订单
-
+            // 取消大网订单
+            cancelNATIONOrder(order_id);
         }
     }
-
 
     /**
      * 大网预约订单提交
@@ -639,7 +639,7 @@ public class OrderServiceImpl implements OrderService {
         int is_on = ((Double) requestObject.get("on")).intValue();
         long period = requestObject.containsKey("period") ? requestObject.getInt("period") * 1000 : 21600000;
         long delay = requestObject.containsKey("delay") ? requestObject.getInt("delay") * 1000 : 0;
-        timeOutInterval = requestObject.containsKey("timeOutInterval") ? requestObject.getInt("timeOutInterval") : 43200; // 默认超时时间12小时
+        timeOutInterval = requestObject.containsKey("timeOutInterval") ? requestObject.getInt("timeOutInterval") * 1000 : 43200000; // 默认超时时间12小时
 
         JSONObject responseObject = new JSONObject();
 
@@ -653,7 +653,7 @@ public class OrderServiceImpl implements OrderService {
                         logger.info("开始取消大网超时单");
                         List<Integer> orderIds = orderMapper.selectNationUnCommitOrders();
                         for (int order_id : orderIds) {
-                            nationUnCommitCancel(order_id, timeOutInterval * 1000);
+                            cancelNationUnCommitOrder(order_id, timeOutInterval);
                         }
                         logger.info("大网超时订单取消完毕");
                     }
@@ -877,7 +877,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * todo 好友填写寄件订单
+     * 好友填写寄件订单
      */
     public synchronized APIResponse friendFillOrder(Map rowData) {
 
@@ -1435,7 +1435,7 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 取消订单 控制器
      */
-    public APIResponse cancelOrder(Object object){
+    public APIResponse cancelOrder(Object object) {
         JSONObject paramJsonObject = JSONObject.fromObject(object);
         //获取订单id，便于后续取消订单操作的取用
         int id = paramJsonObject.getInt("order_id");
@@ -1448,15 +1448,15 @@ public class OrderServiceImpl implements OrderService {
             return APIUtil.submitErrorResponse("订单已经取消，请勿重复取消操作！！！", null);
         }
         // 不同地域类型的订单 进行不同的取消方式 大网是软取消 同城是硬取消
-        if ("REGION_NATION".equals(order.getRegion_type())){// true 大网单
-            return  this.cancelNATIONOrder(id);
-        }else { // false 同城单
-            return  this.cancelSAMEOrder(id,access_token);
+        if ("REGION_NATION".equals(order.getRegion_type())) {// true 大网单
+            return this.cancelNATIONOrder(id);
+        } else { // false 同城单
+            return this.cancelSAMEOrder(id, access_token);
         }
     }
 
     // 取消同城订单
-    private APIResponse cancelSAMEOrder(int order_id,String access_token){
+    private APIResponse cancelSAMEOrder(int order_id, String access_token) {
         List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
         StringBuilder stringBuilder = new StringBuilder();
         //遍历所有的快递列表
@@ -1495,11 +1495,12 @@ public class OrderServiceImpl implements OrderService {
         }
         return APIUtil.getResponse(APIStatus.SUCCESS, flagRealOrder ? resJSONObject : "同城订单，未被提交到顺丰下单，已做软取消处理");
     }
+
     // 取消大网订单
-    private APIResponse cancelNATIONOrder(int order_id){
+    private APIResponse cancelNATIONOrder(int order_id) {
         orderMapper.updateCancelOrderById(order_id);
         orderExpressMapper.updateOrderExpressCanceled(order_id);
-        return  APIUtil.getResponse(APIStatus.SUCCESS,"该订单已做软取消处理");
+        return APIUtil.getResponse(APIStatus.SUCCESS, "该订单已做软取消处理");
     }
 
     /**
