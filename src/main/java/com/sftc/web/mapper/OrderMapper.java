@@ -63,6 +63,11 @@ public interface OrderMapper {
      */
     List<Integer> selectNationReserveOrders();
 
+    /**
+     * 查询大网未提交的订单列表
+     */
+    List<Integer> selectNationUnCommitOrders();
+
     void updatePlace(Order order);
 
     Order selectOrderDetailByUuid(@Param("uuid") String uuid);

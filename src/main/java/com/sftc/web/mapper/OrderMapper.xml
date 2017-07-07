@@ -84,6 +84,12 @@
         WHERE o.id = oe.order_id AND o.region_type = 'REGION_NATION' AND oe.reserve_time IS NOT NULL AND oe.reserve_time != ''
     </select>
 
+    <select id="selectNationUnCommitOrders" resultType="int">
+        SELECT DISTINCT oe.order_id
+        FROM sftc_order o, sftc_order_express oe
+        WHERE o.id = oe.order_id AND o.region_type = 'REGION_NATION' AND (oe.state = 'WAIT_FILL' OR oe.state = 'ALREADY_FILL')
+    </select>
+
     <!-- 提交订单  -->
     <insert id="addOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
         INSERT INTO sftc_order ( create_time, order_number, ship_name, ship_mobile, ship_province,

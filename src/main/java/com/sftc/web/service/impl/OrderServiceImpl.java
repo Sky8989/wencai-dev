@@ -65,7 +65,10 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private AddressHistoryMapper addressHistoryMapper;
 
-    private ScheduledExecutorService scheduledExecutorService;
+    private ScheduledExecutorService reserveScheduledExecutorService; // 大网预约定时器
+
+    private ScheduledExecutorService cancelScheduledExecutorService; // 大网取消定时器
+    private long timeOutInterval; // 大网取消超时时间间隔
 
     /**
      * 普通订单提交
@@ -174,7 +177,7 @@ public class OrderServiceImpl implements OrderService {
                 orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
                 // 不和前面的orderExpress构造方法放在一起  降低耦合度
                 String order_tiem = Long.toString(System.currentTimeMillis());
-                orderExpressMapper.updateOrderTime(uuid,order_tiem);
+                orderExpressMapper.updateOrderTime(uuid, order_tiem);
                 // 消息通知表插入或者更新消息
                 List<Message> messageList = messageMapper.selectMessageReceiveExpress(oe.getShip_user_id());
                 if (messageList.isEmpty()) {
@@ -282,7 +285,7 @@ public class OrderServiceImpl implements OrderService {
                         orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
                         // todo 不和前面的orderExpress构造方法放在一起  降低耦合度
                         String order_tiem = Long.toString(System.currentTimeMillis());
-                        orderExpressMapper.updateOrderTime(uuid,order_tiem);
+                        orderExpressMapper.updateOrderTime(uuid, order_tiem);
                         // 插入地址
                         setupAddress(order, oe);
 
@@ -534,6 +537,15 @@ public class OrderServiceImpl implements OrderService {
         return APIUtil.getResponse(status, responseObject);
     }
 
+    private void nationUnCommitCancel(int order_id, long timeOutInterval) {
+        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+        if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
+            // TODO:取消大网超时订单
+
+        }
+    }
+
+
     /**
      * 大网预约订单提交
      */
@@ -612,7 +624,7 @@ public class OrderServiceImpl implements OrderService {
         JSONObject responseObject = new JSONObject();
 
         if (is_on == 1) { // 开
-            if (scheduledExecutorService != null) {
+            if (reserveScheduledExecutorService != null) {
                 return APIUtil.submitErrorResponse("定时器已经开启，请勿重复操作", null);
             } else {
                 final TimerTask task = new TimerTask() {
@@ -626,16 +638,65 @@ public class OrderServiceImpl implements OrderService {
                         logger.info("大网预约单提交完毕");
                     }
                 };
-                scheduledExecutorService = Executors.newScheduledThreadPool(1);
-                scheduledExecutorService.scheduleAtFixedRate(task, delay, period, TimeUnit.MILLISECONDS);
+                reserveScheduledExecutorService = Executors.newScheduledThreadPool(1);
+                reserveScheduledExecutorService.scheduleAtFixedRate(task, delay, period, TimeUnit.MILLISECONDS);
                 responseObject.put("message", "开启定时器成功");
             }
 
         } else { // 关
-            if (scheduledExecutorService != null) {
-                scheduledExecutorService.shutdown();
-                scheduledExecutorService = null;
+            if (reserveScheduledExecutorService != null) {
+                reserveScheduledExecutorService.shutdown();
+                reserveScheduledExecutorService = null;
                 responseObject.put("message", "关闭定时器成功");
+            } else {
+                return APIUtil.submitErrorResponse("定时器已经关闭，请勿重复操作", null);
+            }
+        }
+
+        return APIUtil.getResponse(SUCCESS, responseObject);
+    }
+
+    /**
+     * 设置大网取消超时订单定时器开关
+     */
+    public APIResponse setupCancelNationOrderTimer(APIRequest request) {
+
+        JSONObject requestObject = JSONObject.fromObject(request.getRequestParam());
+        if (!requestObject.containsKey("on"))
+            return APIUtil.paramErrorResponse("缺少必要参数");
+
+        int is_on = ((Double) requestObject.get("on")).intValue();
+        long period = requestObject.containsKey("period") ? requestObject.getInt("period") * 1000 : 21600000;
+        long delay = requestObject.containsKey("delay") ? requestObject.getInt("delay") * 1000 : 0;
+        timeOutInterval = requestObject.containsKey("timeOutInterval") ? requestObject.getInt("timeOutInterval") : 43200; // 默认超时时间12小时
+
+        JSONObject responseObject = new JSONObject();
+
+        if (is_on == 1) { // 开
+            if (cancelScheduledExecutorService != null) {
+                return APIUtil.submitErrorResponse("定时器已经开启，请勿重复操作", null);
+            } else {
+                final TimerTask task = new TimerTask() {
+                    @Override
+                    public void run() {
+                        logger.info("开始取消大网超时单");
+                        List<Integer> orderIds = orderMapper.selectNationUnCommitOrders();
+                        for (int order_id : orderIds) {
+                            nationUnCommitCancel(order_id, timeOutInterval * 1000);
+                        }
+                        logger.info("大网超时订单取消完毕");
+                    }
+                };
+                cancelScheduledExecutorService = Executors.newScheduledThreadPool(1);
+                cancelScheduledExecutorService.scheduleAtFixedRate(task, delay, period, TimeUnit.MILLISECONDS);
+                responseObject.put("message", "开启【取消超时大网订单】定时器成功");
+            }
+
+        } else { // 关
+            if (cancelScheduledExecutorService != null) {
+                cancelScheduledExecutorService.shutdown();
+                cancelScheduledExecutorService = null;
+                responseObject.put("message", "关闭【取消超时大网订单】定时器成功");
             } else {
                 return APIUtil.submitErrorResponse("定时器已经关闭，请勿重复操作", null);
             }
@@ -661,7 +722,7 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = orderMapper.selectOrderDetailByOrderId(oe.getOrder_id());
 
-        if (!order.getRegion_type().equals("REGION_NATION"))
+        if (!order.getRegion_type().equals("REGION_SAME"))
             return APIUtil.submitErrorResponse("此订单非同城单，不能进行兜底操作", null);
 
         // 大网订单提交参数
@@ -851,9 +912,9 @@ public class OrderServiceImpl implements OrderService {
 
         String orderExpressStr = rowData.toString();
         // 修复 空格对Gson的影响
-        String strJsonResult = orderExpressStr.replace(" ","");
+        String strJsonResult = orderExpressStr.replace(" ", "");
         OrderExpress orderExpress = new Gson().fromJson(strJsonResult, OrderExpress.class);
-         // 判断订单是否下单
+        // 判断订单是否下单
         Order order = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
         if (order.getRegion_type() != null && !"".equals(order.getRegion_type()) && order.getRegion_type().length() != 0) {
             return APIUtil.submitErrorResponse("订单已经下单，现在您无法再填写信息", orderExpress.getOrder_id());
@@ -1504,12 +1565,12 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 下面是CMS的内容
      */
-    public APIResponse selectOrderListByPage(APIRequest request){
+    public APIResponse selectOrderListByPage(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
         HttpServletRequest httpServletRequest = request.getRequest();
         int pageNumKey = Integer.parseInt(httpServletRequest.getParameter("pageNumKey"));
         int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
-        PageHelper.startPage(pageNumKey,pageSizeKey);
+        PageHelper.startPage(pageNumKey, pageSizeKey);
         Order order = new Order(httpServletRequest);
         List<Order> orderList = orderMapper.selectOrderByPage(order);
         if (orderList.size() == 0) {
