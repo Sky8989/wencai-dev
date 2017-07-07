@@ -770,17 +770,22 @@ public class OrderServiceImpl implements OrderService {
 
     // 插入地址
     private void setupAddress(Order order, OrderExpress oe) {
+        // 插入地址表
         com.sftc.web.model.Address address = new com.sftc.web.model.Address(oe);
         addressMapper.addAddress(address);
-        // 插入历史地址
-        AddressHistory addressHistory = new AddressHistory();
-        addressHistory.setUser_id(order.getSender_user_id());
-        addressHistory.setAddress_id(address.getId());
-        addressHistory.setCreate_time(Long.toString(System.currentTimeMillis()));
-        addressHistory.setIs_delete(0);
-        int is_mystery = order.getOrder_type().equals("ORDER_MYSTERY") ? 1 : 0;
-        addressHistory.setIs_mystery(is_mystery);
-        addressHistoryMapper.insertAddressHistory(addressHistory);
+
+        // 插入历史地址表
+        List<com.sftc.web.model.Address> addressList = addressMapper.selectAddressByPhoneAndLongitudeAndLatitude(oe.getShip_mobile(), oe.getLongitude(), oe.getLatitude());
+        if (addressList.size() == 1) { // 插入的时候就根据手机号和经纬度去重，相同的手机号和经纬度 只会存在一个历史地址记录
+            AddressHistory addressHistory = new AddressHistory();
+            addressHistory.setUser_id(order.getSender_user_id());
+            addressHistory.setAddress_id(address.getId());
+            addressHistory.setCreate_time(Long.toString(System.currentTimeMillis()));
+            addressHistory.setIs_delete(0);
+            int is_mystery = order.getOrder_type().equals("ORDER_MYSTERY") ? 1 : 0;
+            addressHistory.setIs_mystery(is_mystery);
+            addressHistoryMapper.insertAddressHistory(addressHistory);
+        }
     }
 
     /**
