@@ -53,6 +53,8 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private OrderExpressMapper orderExpressMapper;
     @Resource
+    private OrderExpressTransformMapper orderExpressTransformMapper;
+    @Resource
     private EvaluateMapper evaluateMapper;
     @Resource
     private GiftCardMapper giftCardMapper;
@@ -743,10 +745,21 @@ public class OrderServiceImpl implements OrderService {
             if (messageType != null && messageType.contains("ERROR")) {
                 return APIUtil.submitErrorResponse("下单失败", resultObject);
             } else {
-                // 存储快递信息
+                // 插入兜底表
+                String same_uuid = oe.getUuid();
                 String nation_uuid = (String) resultObject.get("ordernum");
+                OrderExpressTransform oet = new OrderExpressTransform();
+                oet.setExpress_id(oe.getId());
+                oet.setSame_uuid(same_uuid);
+                oet.setNation_uuid(nation_uuid);
+                oet.setIs_read(0);
+                oet.setCreate_time(System.currentTimeMillis() + "");
+                orderExpressTransformMapper.insertExpressTransform(oet);
+                // 更改订单区域类型为大网
                 orderMapper.updateOrderRegionType(order.getId(), "REGION_NATION");
+                // 更新uuid
                 orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), nation_uuid, "");
+                // 更新快递状态
                 orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
             }
             return APIUtil.getResponse(SUCCESS, resultObject);
@@ -1287,6 +1300,10 @@ public class OrderServiceImpl implements OrderService {
                 respObject.put("sf", new JSONObject());
                 status = APIStatus.ORDERROUT_FALT;
             }
+
+            // 兜底单
+            OrderExpressTransform orderExpressTransform = orderExpressTransformMapper.selectExpressTransformByUUID(uuid);
+            respObject.put("transform", orderExpressTransform);
 
         } else if (regionType.equals("REGION_SAME")) { // 同城
 
