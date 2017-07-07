@@ -471,7 +471,7 @@ public class OrderServiceImpl implements OrderService {
                 (String) sf.get("d_address"),
                 "",
                 "",
-                "INIT",
+                "WAIT_HAND_OVER",
                 Integer.parseInt((String) orderObject.get("sender_user_id")),
                 order.getId(),
                 orderId,
