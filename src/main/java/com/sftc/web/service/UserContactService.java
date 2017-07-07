@@ -28,6 +28,11 @@ public interface UserContactService {
     APIResponse starFriend(APIRequest request);
 
     /**
+     * 更新 好友关系备注
+     */
+    APIResponse updateNotes(APIRequest request);
+
+    /**
      * CMS 获取好友列表 分页+条件
      */
     APIResponse selectUserContactListByPage(APIRequest request);

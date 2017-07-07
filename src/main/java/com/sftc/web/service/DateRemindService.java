@@ -17,16 +17,23 @@ import com.sftc.web.model.DateRemind;
 public interface DateRemindService {
 
     /**
-     * 添加好友纪念日
+     * 添加 好友日期提醒
      * @param dateRemind
      * @return
      */
     APIResponse addFriendDateRemind(DateRemind dateRemind);
 
     /**
-     * 删除好友的纪念日
+     * 删除 好友日期提醒
      * @param request
      * @return
      */
     APIResponse deleteFriendDateRemind(APIRequest request);
+
+    /**
+     * 获取 好友日期提醒 列表
+     * @param request
+     * @return
+     */
+    APIResponse selectFriendDateRemind(APIRequest request);
 }

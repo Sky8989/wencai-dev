@@ -14,6 +14,7 @@ public class UserContactLabelServiceImpl implements UserContactLabelService {
 
     @Resource
     private UserContactLabelMapper userContactLabelMapper;
+
     // 添加好友普通标签
     public APIResponse addLabelForFriend(UserContactLabel userContactLabel) {
         APIStatus status = APIStatus.SUCCESS;
@@ -22,25 +23,21 @@ public class UserContactLabelServiceImpl implements UserContactLabelService {
         return APIUtil.getResponse(status, userContactLabel);
     }
 
+    // 删除好友标签
     public APIResponse deleteLabelForFriend(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
-        try {
-            userContactLabelMapper.deleteFriendLabel(
-                    Integer.parseInt(request.getParameter("id").toString()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            status = APIStatus.SUBMIT_FAIL;
-        }
-        return APIUtil.getResponse(status, null);
+        int laberId = Integer.parseInt(request.getParameter("id").toString());
+        userContactLabelMapper.deleteFriendLabel(laberId);
+        return APIUtil.getResponse(status, laberId);
     }
 
-    public APIResponse getFriendLabelList(APIRequest request) {
+    // 获取好友标签列表
+    public APIResponse selectFriendLabelList(APIRequest request) {
         APIStatus status = APIStatus.SELECT_FAIL;
-        int id = Integer.parseInt(request.getParameter("user_contact_id").toString());
-        List<UserContactLabel> userContactLabelList = userContactLabelMapper.getFriendLabelList(id);
-        if (userContactLabelList != null) {
-            status = APIStatus.SUCCESS;
-        }
-        return APIUtil.getResponse(status, userContactLabelList);
+        int user_contact_id = Integer.parseInt(request.getParameter("user_contact_id").toString());
+        List<UserContactLabel> userContactLabelList = userContactLabelMapper.getFriendLabelList(user_contact_id);
+        if (userContactLabelList != null && userContactLabelList.size() >= 1) {
+            return APIUtil.getResponse(APIStatus.SUCCESS, userContactLabelList);
+        } else return APIUtil.selectErrorResponse(" no label with that id!", user_contact_id);
     }
 }

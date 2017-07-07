@@ -10,7 +10,7 @@ public interface DateRemindMapper {
     void addDateRemind(DateRemind dateRemind);
 
     //获取好友日期提醒列表
-    List<DateRemind> getDateRemindList(int id);
+    List<DateRemind> selectDateRemindList(int user_contact_id);
 
     //删除日期提醒
     void deleteDateRemind(int id);

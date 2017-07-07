@@ -22,8 +22,6 @@ public class DateRemind extends Object {
     // 所属的联系人id
     private UserContact userContact;
 
-
-
     private int user_contact_id;
     // 所属的用户Id
 
@@ -36,7 +34,8 @@ public class DateRemind extends Object {
         this.user_contact_id = user_contact_id;
     }
 
-    public DateRemind() {}
+    public DateRemind() {
+    }
 
     public int getId() {
         return id;

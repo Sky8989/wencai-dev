@@ -25,5 +25,5 @@ public interface UserContactLabelService {
      * @param request
      * @return
      */
-    APIResponse getFriendLabelList(APIRequest request);
+    APIResponse selectFriendLabelList(APIRequest request);
 }

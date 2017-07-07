@@ -83,7 +83,7 @@ public class UserContactServiceImpl implements UserContactService {
             return APIUtil.selectErrorResponse("非好友关系", null);
 
         List<UserContactLabel> userContactLabelList = userContactLabelMapper.getFriendLabelList(user_id);
-        List<DateRemind> dateRemindList = dateRemindMapper.getDateRemindList(user_id);
+        List<DateRemind> dateRemindList = dateRemindMapper.selectDateRemindList(user_id);
         userContact.setUserContactLabelList(userContactLabelList);
         userContact.setDateRemindList(dateRemindList);
         return APIUtil.getResponse(SUCCESS, userContact);
@@ -214,6 +214,15 @@ public class UserContactServiceImpl implements UserContactService {
         return APIUtil.getResponse(SUCCESS, userContact);
     }
 
+    /**
+     * 更新 好友关系备注
+     */
+    public APIResponse updateNotes(APIRequest request) {
+        int user_contact_id = Integer.parseInt(request.getParameter("user_contact_id").toString());
+        String notes = request.getParameter("notes").toString();
+        userContactMapper.updateNotes(user_contact_id,notes);
+        return APIUtil.getResponse(SUCCESS,user_contact_id+"备注更新成功");
+    }
     /**
      * CMS 获取好友列表 分页+条件
      */
