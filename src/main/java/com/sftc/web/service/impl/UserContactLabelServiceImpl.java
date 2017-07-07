@@ -28,14 +28,13 @@ public class UserContactLabelServiceImpl implements UserContactLabelService {
         userContactLabelMapper.deleteFriendLabel(laberId);
         return APIUtil.getResponse(status, laberId);
     }
-
-    public APIResponse getFriendLabelList(APIRequest request) {
+    // 获取好友标签列表
+    public APIResponse selectFriendLabelList(APIRequest request) {
         APIStatus status = APIStatus.SELECT_FAIL;
         int user_contact_id = Integer.parseInt(request.getParameter("user_contact_id").toString());
         List<UserContactLabel> userContactLabelList = userContactLabelMapper.getFriendLabelList(user_contact_id);
-        if (userContactLabelList != null) {
+        if (userContactLabelList != null && userContactLabelList.size() >= 1 ) {
             return APIUtil.getResponse(APIStatus.SUCCESS, userContactLabelList);
-        }else return APIUtil.selectErrorResponse("There are no labels with that id!",user_contact_id);
-
+        }else return APIUtil.selectErrorResponse(" no label with that id!",user_contact_id);
     }
 }
