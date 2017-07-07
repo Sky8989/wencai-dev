@@ -1372,9 +1372,79 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 取消订单
+     * 取消订单 控制器
      */
-    public APIResponse deleteOrder(Object object) {
+    public APIResponse cancelOrder(Object object){
+        JSONObject paramJsonObject = JSONObject.fromObject(object);
+        //获取订单id，便于后续取消订单操作的取用
+        int id = paramJsonObject.getInt("order_id");
+        paramJsonObject.remove("order_id");
+        String access_token = paramJsonObject.getString("access_token");
+        //对重复取消订单的情况进行处理
+        Order order = orderMapper.selectOrderDetailByOrderId(id);
+        if ("Cancelled".equals(order.getIs_cancel()) || !"".equals(order.getIs_cancel())) {//is_cancle字段默认是空字符串
+            //return APIUtil.getResponse(APIStatus.CANCEL_ORDER_FALT, null);
+            return APIUtil.submitErrorResponse("订单已经取消，请勿重复取消操作！！！", null);
+        }
+        // 不同地域类型的订单 进行不同的取消方式 大网是软取消 同城是硬取消
+        if ("REGION_NATION".equals(order.getRegion_type())){// true 大网单
+            return  this.cancelNATIONOrder(id);
+        }else { // false 同城单
+            return  this.cancelSAMEOrder(id,access_token);
+        }
+    }
+
+    // 取消同城订单
+    private APIResponse cancelSAMEOrder(int order_id,String access_token){
+        List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
+        StringBuilder stringBuilder = new StringBuilder();
+        //遍历所有的快递列表
+        boolean flagRealOrder = false;
+        for (OrderExpress eachOrderExpress : arrayList) {
+            if (eachOrderExpress.getUuid() != null && !"".equals(eachOrderExpress.getUuid())) {
+                flagRealOrder = true;
+                stringBuilder.append(eachOrderExpress.getUuid());
+                stringBuilder.append(",");
+                continue;
+            }
+            //如果是空订单，就结束此次循环，进行下一次
+            System.out.println("-   -未付款订单，订单编号是：" + eachOrderExpress.getOrder_number());
+        }
+        JSONObject resJSONObject = null;
+        if (flagRealOrder) {//这是订单已经提交付款了的操作
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+            //下面是 顺丰方面取消订单的逻辑
+            String str = "{\"event\":{\"type\":\"CANCEL\",\"source\":\"MERCHANT\"}}";
+            //String str = gson.toJson(object);
+            String myUrl = SF_REQUEST_URL + "/" + stringBuilder.toString() + "/events";
+            System.out.println("-   -这是myurl" + myUrl);
+            HttpPost post = new HttpPost(myUrl);
+            post.addHeader("PushEnvelope-Device-Token", access_token);
+            String res = APIPostUtil.post(str, post);
+            resJSONObject = JSONObject.fromObject(res);
+            if (resJSONObject.get("error") != null) {
+                return APIUtil.submitErrorResponse("订单取消失败,sf接口出错", resJSONObject);
+            } else {
+                orderMapper.updateCancelOrderById(order_id);
+                orderExpressMapper.updateOrderExpressCanceled(order_id);
+            }
+        } else {//订单还未提交给顺丰的情况，只更新order的信息即可
+            orderMapper.updateCancelOrderById(order_id);
+            orderExpressMapper.updateOrderExpressCanceled(order_id);
+        }
+        return APIUtil.getResponse(APIStatus.SUCCESS, flagRealOrder ? resJSONObject : "同城订单，未被提交到顺丰下单，已做软取消处理");
+    }
+    // 取消大网订单
+    private APIResponse cancelNATIONOrder(int order_id){
+        orderMapper.updateCancelOrderById(order_id);
+        orderExpressMapper.updateOrderExpressCanceled(order_id);
+        return  APIUtil.getResponse(APIStatus.SUCCESS,"该订单已做软取消处理");
+    }
+
+    /**
+     *  取消订单
+     */
+    /*public APIResponse deleteOrder(Object object) {
         APIStatus status = SUCCESS;
         JSONObject jsonObject = null;
         JSONObject jsonObject1 = JSONObject.fromObject(object);
@@ -1424,7 +1494,7 @@ public class OrderServiceImpl implements OrderService {
             orderExpressMapper.updateOrderExpressCanceled(id);
         }
         return APIUtil.getResponse(status, jsonObject);
-    }
+    }*/
 
     /**
      * 预约时间规则

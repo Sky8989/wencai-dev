@@ -90,7 +90,9 @@ public interface OrderService {
     /**
      * 取消订单
      */
-    APIResponse deleteOrder(Object object);
+    //APIResponse deleteOrder(Object object);
+    APIResponse cancelOrder(Object object);
+
 
     /**
      * 时间规则
