@@ -14,17 +14,12 @@ public class UserContactLabelServiceImpl implements UserContactLabelService {
 
     @Resource
     private UserContactLabelMapper userContactLabelMapper;
-
+    // 添加好友普通标签
     public APIResponse addLabelForFriend(UserContactLabel userContactLabel) {
         APIStatus status = APIStatus.SUCCESS;
         userContactLabel.setCreate_time(Long.toString(System.currentTimeMillis()));
-        try {
-            userContactLabelMapper.addLabel(userContactLabel);
-        } catch (Exception e) {
-            e.printStackTrace();
-            status = APIStatus.SUBMIT_FAIL;
-        }
-        return APIUtil.getResponse(status, null);
+        userContactLabelMapper.addLabel(userContactLabel);
+        return APIUtil.getResponse(status, userContactLabel);
     }
 
     public APIResponse deleteLabelForFriend(APIRequest request) {
