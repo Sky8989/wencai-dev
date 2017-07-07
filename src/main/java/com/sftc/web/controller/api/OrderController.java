@@ -272,4 +272,15 @@ public class OrderController extends AbstractBasicController {
         return orderService.setupCancelNationOrderTimer(request);
     }
 
+    /**
+     * 设置兜底记录已读
+     */
+    @RequestMapping(value = "/transform/read", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse readExpressTransform(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.readExpressTransform(request);
+    }
+
 }
