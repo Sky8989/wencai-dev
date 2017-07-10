@@ -96,9 +96,11 @@ public class MessageServiceImpl implements MessageService {
         if (jsonObject.containsKey("user_id")) {
             int user_id = jsonObject.getInt("user_id");
             jsonObject.remove("user_id");
+            // 验证手机号与user_id的匹配
+
             // 生成sf获取token的链接
             StringBuilder postUrl = new StringBuilder(SF_GET_TOKEN);
-            if (jsonObject.containsKey("refresh_token") && !"".equals(jsonObject.get("refresh_token"))){
+            if (jsonObject.containsKey("refresh_token") && !"".equals(jsonObject.get("refresh_token"))) {
                 postUrl.append("?refresh_token=");
                 postUrl.append(jsonObject.get("refresh_token"));
             }
@@ -164,5 +166,9 @@ public class MessageServiceImpl implements MessageService {
             return APIUtil.paramErrorResponse("缺少参数，请传入sfToken");
         }
     }
-
+    // 验证手机号与user_id的匹配
+    private boolean checkMobileAndUserid(String param_mobile , int param_user_id){
+//        userMapper.selectUserByPhone();
+        return true;
+    }
 }
