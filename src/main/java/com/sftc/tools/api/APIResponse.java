@@ -41,6 +41,9 @@ public class APIResponse {
         return APIResponseHolder.INSTANCE;
     }
 
-    private APIResponse() {
+//    private APIResponse() {}
+
+    public APIResponse() {
+        super();
     }
 }
