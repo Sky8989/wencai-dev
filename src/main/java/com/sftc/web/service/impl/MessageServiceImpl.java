@@ -52,6 +52,12 @@ public class MessageServiceImpl implements MessageService {
 
         JSONObject jsonObject = JSONObject.fromObject(object);
         int user_id = jsonObject.getInt("user_id");
+        String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
+        // 验证手机号与user_id的匹配
+        boolean flag = checkMobileAndUserid(mobile,user_id);
+        if (!flag){
+            return APIUtil.submitErrorResponse("手机号已经被注册过，请参考错误信息", mobile);
+        }
         jsonObject.remove("user_id");
         // 调用顺丰接口
         String str = gson.toJson(jsonObject);
@@ -60,7 +66,7 @@ public class MessageServiceImpl implements MessageService {
         JSONObject resJSONObject = JSONObject.fromObject(res);
 
         // 注册失败 匹配error
-        if (resJSONObject.getString("error") != null) {
+        if (resJSONObject.containsKey("error")) {
             return APIUtil.submitErrorResponse("注册失败，见返回值", resJSONObject);
         } else {
 
@@ -95,9 +101,13 @@ public class MessageServiceImpl implements MessageService {
 
         if (jsonObject.containsKey("user_id")) {
             int user_id = jsonObject.getInt("user_id");
+            String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
             jsonObject.remove("user_id");
             // 验证手机号与user_id的匹配
-
+            boolean flag = checkMobileAndUserid(mobile,user_id);
+            if (!flag){
+                return APIUtil.submitErrorResponse("手机号已经被注册过，请参考错误信息", mobile);
+            }
             // 生成sf获取token的链接
             StringBuilder postUrl = new StringBuilder(SF_GET_TOKEN);
             if (jsonObject.containsKey("refresh_token") && !"".equals(jsonObject.get("refresh_token"))) {
@@ -167,8 +177,17 @@ public class MessageServiceImpl implements MessageService {
         }
     }
     // 验证手机号与user_id的匹配
-    private boolean checkMobileAndUserid(String param_mobile , int param_user_id){
-//        userMapper.selectUserByPhone();
-        return true;
+    private boolean checkMobileAndUserid(String param_mobile, int param_user_id) {
+        boolean flag = false;
+        User userByPhone = userMapper.selectUserByPhone(param_mobile);
+        if (userByPhone == null) {
+            //此时该手机号在数据库无记录 相当于新用户
+            flag = true;
+        } else if (userByPhone.getId() == param_user_id) {
+            //userByPhone.getId()是数据库的历史id param_user_id
+            // 找到使用该手机号的用户  并匹配是否是绑定该该手机号的用户
+            flag = true;
+        }
+        return flag;
     }
 }
