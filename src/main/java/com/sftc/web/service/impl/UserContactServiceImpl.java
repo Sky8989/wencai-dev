@@ -215,18 +215,25 @@ public class UserContactServiceImpl implements UserContactService {
     }
 
     /**
-     * 更新 好友关系备注
+     * 更新 好友关系备注与图片
      */
-    public APIResponse updateNotes(APIRequest request) {
+    public APIResponse updateNotesAndPicture(APIRequest request) {
         int user_contact_id = Integer.parseInt(request.getParameter("user_contact_id").toString());
         String notes = request.getParameter("notes").toString();
-        userContactMapper.updateNotes(user_contact_id,notes);
-        return APIUtil.getResponse(SUCCESS,user_contact_id+"备注更新成功");
+        String picture_address = request.getParameter("picture_address").toString();
+        if (notes != null && notes.length() != 0) {
+            userContactMapper.updateNotes(user_contact_id, notes);
+        }
+        if (picture_address != null && picture_address.length() != 0) {
+            userContactMapper.updatePicture(user_contact_id, picture_address);
+        }
+        return APIUtil.getResponse(SUCCESS, user_contact_id + "备注与图片更新成功");
     }
+
     /**
      * CMS 获取好友列表 分页+条件
      */
-    public APIResponse selectUserContactListByPage(APIRequest request){
+    public APIResponse selectUserContactListByPage(APIRequest request) {
         APIStatus status = APIStatus.SUCCESS;
         HttpServletRequest httpServletRequest = request.getRequest();
         // 此处封装了 UserContact的构造方法

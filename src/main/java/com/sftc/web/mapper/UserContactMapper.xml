@@ -11,6 +11,8 @@
         <result column="is_tag_star" property="is_tag_star"/>
         <result column="lntimacy" property="lntimacy"/>
         <result column="create_time" property="create_time"/>
+        <result column="picture_address" property="picture_address"/>
+        <result column="notes" property="notes"/>
         <association property="friend_info" select="selectUser" column="friend_id"/>
     </resultMap>
 
@@ -109,9 +111,15 @@
         UPDATE sftc_user_contact SET notes=#{notes} WHERE id=#{id}
     </update>
 
+    <update id="updatePicture">
+        UPDATE sftc_user_contact SET picture_address=#{picture_address} WHERE id=#{id}
+    </update>
+
+
     <!--下面是cms系统用到的mapper-->
-    <select id="selectByPage" resultType="com.sftc.web.model.UserContactNew" parameterType="com.sftc.web.model.UserContactNew">
-        SELECT * FROM  sftc_user_contact
+    <select id="selectByPage" resultType="com.sftc.web.model.UserContactNew"
+            parameterType="com.sftc.web.model.UserContactNew">
+        SELECT * FROM sftc_user_contact
         <where>
             <if test="user_id != 0">and user_id = #{user_id}</if>
             <if test="id != 0">and id = #{id}</if>

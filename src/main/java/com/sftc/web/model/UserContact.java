@@ -15,6 +15,8 @@ public class UserContact extends Object {
     private int lntimacy;
     // 好友备注
     private String notes;
+    // 好友图片
+    private String picture_address;
 
     private User friend_info;
     private List<UserContactLabel> userContactLabelList;
@@ -98,4 +100,8 @@ public class UserContact extends Object {
     public String getNotes() {return notes;}
 
     public void setNotes(String notes) {this.notes = notes;}
+
+    public String getPicture_address() {return picture_address;}
+
+    public void setPicture_address(String picture_address) {this.picture_address = picture_address;}
 }
