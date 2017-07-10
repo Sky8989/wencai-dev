@@ -66,7 +66,7 @@ public class MessageServiceImpl implements MessageService {
         JSONObject resJSONObject = JSONObject.fromObject(res);
 
         // 注册失败 匹配error
-        if (resJSONObject.getString("error") != null) {
+        if (resJSONObject.containsKey("error")) {
             return APIUtil.submitErrorResponse("注册失败，见返回值", resJSONObject);
         } else {
 
