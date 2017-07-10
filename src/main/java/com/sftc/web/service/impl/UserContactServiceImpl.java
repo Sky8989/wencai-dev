@@ -217,10 +217,11 @@ public class UserContactServiceImpl implements UserContactService {
     /**
      * 更新 好友关系备注与图片
      */
-    public APIResponse updateNotesAndPicture(APIRequest request) {
-        int user_contact_id = Integer.parseInt(request.getParameter("user_contact_id").toString());
-        String notes = request.getParameter("notes").toString();
-        String picture_address = request.getParameter("picture_address").toString();
+    public APIResponse updateNotesAndPicture(Object object) {
+        JSONObject jsonObject = JSONObject.fromObject(object);
+        int user_contact_id = jsonObject.getInt("user_contact_id");
+        String notes = jsonObject.getString("notes");
+        String picture_address = jsonObject.getString("picture_address");
         if (notes != null && notes.length() != 0) {
             userContactMapper.updateNotes(user_contact_id, notes);
         }
