@@ -112,12 +112,8 @@ public class UserServiceImpl implements UserService {
     //  合并后的登陆接口 前台来一个jscode
     public APIResponse superLogin(UserParam userParam) throws Exception {
         APIStatus status = APIStatus.SUCCESS;
-//        String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
-//        WechatUser wechatUser = APIResolve.getWechatJson(auth_url);
-        WechatUser wechatUser = new WechatUser();
-        wechatUser.setOpenid("oCFL80DeTEf9zWJt-Fbkhlbeq-iQ");
-        wechatUser.setSession_key("WP0iYNpNYwYwBdKT9eVPyw==");
-        wechatUser.setErrmsg("手动微信错误");
+        String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
+        WechatUser wechatUser = APIResolve.getWechatJson(auth_url);
 
         User user = null;
         Map<String, String> tokenInfo = new HashMap<String, String>();
