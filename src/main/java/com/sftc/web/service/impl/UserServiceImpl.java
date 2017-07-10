@@ -40,9 +40,9 @@ public class UserServiceImpl implements UserService {
     @Resource
     private TokenMapper tokenMapper;
 
-    private static final String postStr= "{\"merchant\":{" +
+    private static final String postStr = "{\"merchant\":{" +
             "\"mobile\":\"13797393543\"" + "}," +
-            "\"message\":{" + "\"content\":\"4444\"}}" ;
+            "\"message\":{" + "\"content\":\"4444\"}}";
 
     public APIResponse login(UserParam userParam) throws Exception {
         APIStatus status = APIStatus.SUCCESS;
@@ -109,12 +109,17 @@ public class UserServiceImpl implements UserService {
         }
         return APIUtil.getResponse(status, tokenInfo);
     }
+
     //  合并后的登陆接口 前台来一个jscode
     public APIResponse superLogin(UserParam userParam) throws Exception {
         APIStatus status = APIStatus.SUCCESS;
         String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
         WechatUser wechatUser = APIResolve.getWechatJson(auth_url);
-
+//        WechatUser wechatUser = new WechatUser();
+//        wechatUser.setOpenid("oCFL80DeTEf9zWJt-Fbkhlbeq-iQ");
+//        wechatUser.setSession_key("WP0iYNpNYwYwBdKT9eVPyw==");
+//        wechatUser.setErrmsg("sadsadcuowu");
+//        wechatUser.setErrcode(500);
         User user = null;
         Map<String, String> tokenInfo = new HashMap<String, String>();
         if (wechatUser.getOpenid() != null) {
@@ -171,16 +176,19 @@ public class UserServiceImpl implements UserService {
                 }
                 tokenInfo.put("token", token.getLocal_token());
                 tokenInfo.put("user_id", (token.getUser_id() + ""));
-                // 获取顺丰 access_token和uuid的内容
-                HashMap<String,String> map = checkAccessToken(token.getUser_id());
-                if (map.containsKey("error")){
-                    return APIUtil.submitErrorResponse("refresh_token failed",JSONObject.fromObject(map.get("error")));
-                }
-                if (map.containsKey("uuid"))
-                {tokenInfo.put("uuid",map.get("uuid"));} else tokenInfo.put("uuid",user.getUuid());
+                Token paramtoken = tokenMapper.getTokenById(token.getUser_id());
+                if (paramtoken.getAccess_token() != null && !"".equals(paramtoken.getAccess_token())) { // 获取顺丰 access_token和uuid的内容
+                    HashMap<String, String> map = checkAccessToken(token.getUser_id(), paramtoken);
+                    if (map.containsKey("error")) {
+                        return APIUtil.submitErrorResponse("refresh_token failed", JSONObject.fromObject(map.get("error")));
+                    }
+                    if (map.containsKey("uuid")) {
+                        tokenInfo.put("uuid", map.get("uuid"));
+                    } else tokenInfo.put("uuid", user.getUuid());
 
-                tokenInfo.put("access_token",map.get("access_token"));
+                    tokenInfo.put("access_token", map.get("access_token"));
                 }
+            }
         } else {
             return APIUtil.submitErrorResponse(wechatUser.getErrmsg(), wechatUser);
         }
@@ -197,12 +205,12 @@ public class UserServiceImpl implements UserService {
     }
 
     // 验证access_token是否有效 通过访问merchant/me接口 但只针对有access_token的用户
-    private HashMap<String,String> checkAccessToken(int user_id){
+    private HashMap<String, String> checkAccessToken(int user_id, Token paramtoken) {
         Token token = tokenMapper.getTokenById(user_id);
         //验证 access_token 如果error则用refresh_token
         String old_accesstoken = token.getAccess_token();
         JSONObject resJSONObject = catchSFLogin(old_accesstoken);
-        HashMap<String,String> map = new HashMap<String,String>();
+        HashMap<String, String> map = new HashMap<String, String>();
         if (resJSONObject.containsKey("error")) { // 旧的token失效 要刷新
             // 访问sf刷新token的链接
             StringBuilder postUrl = new StringBuilder(SF_GET_TOKEN);
@@ -212,8 +220,8 @@ public class UserServiceImpl implements UserService {
             String resPost = APIPostUtil.post(postStr, post);
             JSONObject resPostJSONObject = JSONObject.fromObject(resPost);
             // 处理refresh刷新失败的情况
-            if (resPostJSONObject.containsKey("error")){
-                map.put("error",resPost);
+            if (resPostJSONObject.containsKey("error")) {
+                map.put("error", resPost);
                 return map;
             }
             // 更新 两个关键token
@@ -224,17 +232,18 @@ public class UserServiceImpl implements UserService {
             tokenMapper.updateToken(token);
 
 
-            map.put("access_token",newAccess_token);
-        }else{ // 旧的token有效
-            map.put("uuid",resJSONObject.getJSONObject("merchant").getString("uuid"));
-            map.put("access_token",old_accesstoken);
+            map.put("access_token", newAccess_token);
+        } else { // 旧的token有效
+            map.put("uuid", resJSONObject.getJSONObject("merchant").getString("uuid"));
+            map.put("access_token", old_accesstoken);
         }
-            return map;
+        return map;
     }
+
     // 通过access_token访问sf接口 获取uuid的公告方法
     private JSONObject catchSFLogin(String old_accesstoken) {
         HttpGet httpGet = new HttpGet(SF_LOGIN);
-        httpGet.addHeader("PushEnvelope-Device-Token",old_accesstoken);
+        httpGet.addHeader("PushEnvelope-Device-Token", old_accesstoken);
         String res = APIGetUtil.get(httpGet);
         return JSONObject.fromObject(res);
     }

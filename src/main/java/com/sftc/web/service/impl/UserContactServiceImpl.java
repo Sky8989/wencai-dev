@@ -222,12 +222,8 @@ public class UserContactServiceImpl implements UserContactService {
         int user_contact_id = jsonObject.getInt("user_contact_id");
         String notes = jsonObject.getString("notes");
         String picture_address = jsonObject.getString("picture_address");
-        if (notes != null && notes.length() != 0) {
-            userContactMapper.updateNotes(user_contact_id, notes);
-        }
-        if (picture_address != null && picture_address.length() != 0) {
-            userContactMapper.updatePicture(user_contact_id, picture_address);
-        }
+        userContactMapper.updateNotes(user_contact_id, notes);
+        userContactMapper.updatePicture(user_contact_id, picture_address);
         return APIUtil.getResponse(SUCCESS, user_contact_id + "备注与图片更新成功");
     }
 
