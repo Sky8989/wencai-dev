@@ -61,7 +61,8 @@ public class APIUtil {
 
     // 初始化单例参数
     private static APIResponse apiResponse() {
-        APIResponse apiResponse = APIResponse.getInstance();
+//        APIResponse apiResponse = APIResponse.getInstance();
+        APIResponse apiResponse = new APIResponse();
         apiResponse.setState(SUCCESS.getState());
         apiResponse.setMessage(SUCCESS.getMessage());
         apiResponse.setResult(null);
