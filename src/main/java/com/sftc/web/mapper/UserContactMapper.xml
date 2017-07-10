@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sftc.web.mapper.UserContactMapper">
+
+    <resultMap id="friendMap" type="com.sftc.web.model.UserContact">
+        <id column="id" property="id"/>
+        <result column="user_id" property="user_id"/>
+        <result column="friend_id" property="friend_id"/>
+        <result column="is_tag_star" property="is_tag_star"/>
+        <result column="lntimacy" property="lntimacy"/>
+        <result column="create_time" property="create_time"/>
+        <result column="picture_address" property="picture_address"/>
+        <result column="notes" property="notes"/>
+        <association property="friend_info" select="selectUser" column="friend_id"/>
+    </resultMap>
+
+    <resultMap id="contactCallbackMap" type="com.sftc.web.model.apiCallback.ContactCallback">
+        <id column="id" property="id"/>
+        <result column="sender_name" property="sender_name"/>
+        <result column="sender_user_id" property="sender_user_id"/>
+        <result column="ship_name" property="ship_name"/>
+        <result column="ship_user_id" property="ship_user_id"/>
+        <result column="create_time" property="create_time"/>
+        <result column="order_id" property="order_id"/>
+        <result column="state" property="state"/>
+        <result column="gift_card_id" property="gift_card_id"/>
+    </resultMap>
+
+    <select id="selectUser" parameterType="int" resultType="com.sftc.web.model.User">
+        select id,name,avatar,create_time
+        from sftc_user
+        where id=#{friend_id}
+    </select>
+
+    <!-- 好友列表 -->
+    <select id="friendList" parameterType="com.sftc.web.model.Paging" resultMap="friendMap">
+            select *
+            from sftc_user_contact
+            where user_id=#{user_id}
+            limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="selectFriendCount" resultType="int">
+        select count(*) from sftc_user_contact where user_id=#{user_id}
+    </select>
+
+    <insert id="addFriend" parameterType="com.sftc.web.model.reqeustParam.UserContactParam">
+                INSERT INTO sftc_user_contact
+                (name,phone,user_id,friend_id,create_time)
+                VALUES
+                (#{name},#{phone},#{user_id},#{friend_id},#{create_time})
+    </insert>
+
+    <!-- 编辑好友  -->
+    <update id="updateFriend" parameterType="com.sftc.web.model.UserContact">
+        update sftc_user_contact
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null">name=#{name},</if>
+            <if test="phone!=null">phone=#{phone},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+
+    <!-- 星标好友 -->
+    <update id="starFriend" parameterType="int">
+        update sftc_user_contact
+        set is_tag_star=#{is_tag_star}
+        WHERE user_id=#{user_id} AND friend_id=#{friend_id}
+    </update>
+
+    <!-- 好友详情 -->
+    <select id="friendDetail" parameterType="int" resultMap="friendMap">
+            SELECT *
+            FROM sftc_user_contact
+            WHERE user_id=#{user_id} AND friend_id=#{friend_id}
+    </select>
+
+    <select id="selectCirclesContact" parameterType="com.sftc.web.model.reqeustParam.UserContactParam"
+            resultMap="contactCallbackMap">
+        select sftc_order_express.*, sftc_order.*
+        FROM sftc_order_express, sftc_order
+        WHERE (sftc_order_express.sender_user_id=#{user_id} AND sftc_order_express.ship_user_id=#{friend_id}
+          OR sftc_order_express.sender_user_id=#{friend_id} AND sftc_order_express.ship_user_id=#{user_id})
+        AND sftc_order_express.order_id = sftc_order.id
+        ORDER BY sftc_order_express.create_time desc
+        limit #{pageNum}, #{pageSize}
+    </select>
+
+    <!-- 查询用户关系 byuser_id friend_id-->
+    <select id="selectByUserIdAndShipId" parameterType="com.sftc.web.model.UserContactNew"
+            resultType="com.sftc.web.model.UserContactNew">
+        SELECT * FROM sftc_user_contact WHERE user_id = #{user_id} AND friend_id = #{friend_id}
+    </select>
+
+    <!-- 插入用户关系-->
+    <insert id="insertUserContact" parameterType="com.sftc.web.model.UserContactNew" useGeneratedKeys="true">
+        INSERT INTO sftc_user_contact (user_id,friend_id,is_tag_star,lntimacy,create_time)
+        VALUES (#{user_id},#{friend_id},#{is_tag_star},#{lntimacy},#{create_time});
+    </insert>
+
+    <update id="updateUserContactLntimacy" parameterType="com.sftc.web.model.UserContactNew">
+        update sftc_user_contact
+        SET lntimacy=lntimacy+1
+        WHERE id=#{id}
+    </update>
+
+    <update id="updateNotes">
+        UPDATE sftc_user_contact SET notes=#{notes} WHERE id=#{id}
+    </update>
+
+    <update id="updatePicture">
+        UPDATE sftc_user_contact SET picture_address=#{picture_address} WHERE id=#{id}
+    </update>
+
+
+    <!--下面是cms系统用到的mapper-->
+    <select id="selectByPage" resultType="com.sftc.web.model.UserContactNew"
+            parameterType="com.sftc.web.model.UserContactNew">
+        SELECT * FROM sftc_user_contact
+        <where>
+            <if test="user_id != 0">and user_id = #{user_id}</if>
+            <if test="id != 0">and id = #{id}</if>
+        </where>
+    </select>
+
+</mapper>

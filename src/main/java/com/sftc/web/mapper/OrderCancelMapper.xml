@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sftc.web.mapper.OrderCancelMapper">
+        <insert id="addCancelOrder">
+                INSERT INTO sftc_order_cancel (order_id,reason,question_describe,create_time)
+                VALUES (#{order_id},#{reason},#{create_time},#{question_describe})
+        </insert>
+</mapper>
