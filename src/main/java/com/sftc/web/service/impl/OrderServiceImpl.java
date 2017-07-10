@@ -946,11 +946,11 @@ public class OrderServiceImpl implements OrderService {
             }
             // 消息通知表插入或者更新消息
             List<Message> messageListRE = messageMapper.selectMessageReceiveExpress(orderExpress.getShip_user_id());
-            if (messageList.isEmpty()) {
+            if (messageListRE.isEmpty()) {
                 Message message = new Message("RECEIVE_EXPRESS", 0, orderExpress.getId(), orderExpress.getShip_user_id());
                 messageMapper.insertMessage(message);
             } else {
-                Message message = messageList.get(0);
+                Message message = messageListRE.get(0);
                 message.setIs_read(0);
                 message.setExpress_id(orderExpress.getId());
                 message.setCreate_time(Long.toString(System.currentTimeMillis()));
