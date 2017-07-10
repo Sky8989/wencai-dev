@@ -52,12 +52,6 @@ public class MessageServiceImpl implements MessageService {
 
         JSONObject jsonObject = JSONObject.fromObject(object);
         int user_id = jsonObject.getInt("user_id");
-        String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
-        // 验证手机号与user_id的匹配
-        boolean flag = checkMobileAndUserid(mobile,user_id);
-        if (!flag){
-            return APIUtil.submitErrorResponse("手机号已经被注册过，请参考错误信息", mobile);
-        }
         jsonObject.remove("user_id");
         // 调用顺丰接口
         String str = gson.toJson(jsonObject);
@@ -103,11 +97,22 @@ public class MessageServiceImpl implements MessageService {
             int user_id = jsonObject.getInt("user_id");
             String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
             jsonObject.remove("user_id");
+
             // 验证手机号与user_id的匹配
-            boolean flag = checkMobileAndUserid(mobile,user_id);
-            if (!flag){
-                return APIUtil.submitErrorResponse("手机号已经被注册过，请参考错误信息", mobile);
+            User userByPhone = userMapper.selectUserByPhone(mobile);
+            User userByUserId = userMapper.selectUserByUserId(user_id);
+            if (userByUserId.getMobile() == null || "".equals(userByUserId.getMobile())){
+                // 用户的手机号为空 则 判断 参数手机号是否被用过
+                if (userByPhone != null) {
+                    return APIUtil.submitErrorResponse("该手机号已被人使用注册过，手机号使用者是：", userByPhone.getName());
+                }
+            }else {// 用户已经绑定过手机号
+                if ( !mobile.equals(userByUserId.getMobile())) {
+                    // 当 该id的用户手机号和参数手机号匹配
+                    return APIUtil.submitErrorResponse("您已经注册过，请使用注册时的手机号，请参考该手机号：", userByUserId.getMobile());
+                }
             }
+
             // 生成sf获取token的链接
             StringBuilder postUrl = new StringBuilder(SF_GET_TOKEN);
             if (jsonObject.containsKey("refresh_token") && !"".equals(jsonObject.get("refresh_token"))) {
@@ -176,17 +181,22 @@ public class MessageServiceImpl implements MessageService {
             return APIUtil.paramErrorResponse("缺少参数，请传入sfToken");
         }
     }
+
     // 验证手机号与user_id的匹配
     private boolean checkMobileAndUserid(String param_mobile, int param_user_id) {
         boolean flag = false;
         User userByPhone = userMapper.selectUserByPhone(param_mobile);
-        if (userByPhone == null) {
-            //此时该手机号在数据库无记录 相当于新用户
-            flag = true;
-        } else if (userByPhone.getId() == param_user_id) {
-            //userByPhone.getId()是数据库的历史id param_user_id
-            // 找到使用该手机号的用户  并匹配是否是绑定该该手机号的用户
-            flag = true;
+        User userByUserId = userMapper.selectUserByUserId(param_user_id);
+        if (userByUserId.getMobile() == null || "".equals(userByUserId.getMobile())){
+            // 用户的手机号为空 则 判断 参数手机号是否被用过
+            if (userByPhone == null) {
+                flag = true;
+            }
+        }else {// 用户已经绑定过手机号
+            if ( param_mobile.equals(userByUserId.getMobile())) {
+                // 当 该id的用户手机号和参数手机号匹配 则放行
+                flag = true;
+            }
         }
         return flag;
     }
