@@ -27,10 +27,12 @@ public interface UserContactService {
      */
     APIResponse starFriend(APIRequest request);
 
+
     /**
-     * 更新 好友关系备注
+     * 修改 好友图片与备注
      */
-    APIResponse updateNotes(APIRequest request);
+    APIResponse updateNotesAndPicture(APIRequest request);
+
 
     /**
      * CMS 获取好友列表 分页+条件

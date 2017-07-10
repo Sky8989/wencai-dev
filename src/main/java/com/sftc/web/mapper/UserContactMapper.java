@@ -38,7 +38,11 @@ public interface UserContactMapper {
     // 更新好友亲密度
     void updateUserContactLntimacy(UserContactNew UserContactNew);
 
-    void updateNotes(@Param("id") int id ,@Param("notes")String notes);
+    // 添加好友备注
+    void updateNotes(@Param("id") int id, @Param("notes") String notes);
+
+    // 添加好友图片
+    void updatePicture(@Param("id") int id, @Param("picture_address") String picture_address);
 
     /**
      * CMS 获取好友列表 分页+条件
