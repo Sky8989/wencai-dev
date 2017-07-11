@@ -44,14 +44,12 @@
         insert into sftc_user (open_id,create_time,session_key,avatar,name)
         values
         (#{open_id},#{create_time},#{session_key},#{avatar},#{name})
-
     </insert>
 
     <!--添加顺丰传过来的Merchant信息-->
 
     <insert id="addMerchant" parameterType="com.sftc.web.model.User" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_user (mobile,user_password,open_id,create_time,avatar,uuid,name)VALUES
-
          (#{mobile},#{user_password},#{open_id},#{create_time},#{avatar},#{uuid},#{name})
     </insert>
 
