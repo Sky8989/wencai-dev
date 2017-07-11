@@ -22,16 +22,37 @@ import java.util.List;
 public interface UserService {
 
     /**
-     * 登录
-     * @param
+     * 普通登陆
+     * @param userParam
      * @return
+     * @throws Exception
      */
     APIResponse login(UserParam userParam) throws Exception;
+
+    /**
+     * 超级登陆 自动刷新token
+     * @param userParam
+     * @return
+     * @throws Exception
+     */
     APIResponse superLogin(UserParam userParam) throws Exception;
+
+    /**
+     * 获取token的公用方法
+     * @param id
+     * @return
+     */
     Token getToken(int id);
+
+    /**
+     * @Description:解除绑定操作，原微信号，解除原有手机号
+     * @param object
+     * @throws Exception
+     */
+    APIResponse deleteMobile(Object object) throws Exception;
 
     /**
      *下面是CMS后台所使用的接口
      */
-    APIResponse selectUserListByPage(APIRequest request);
+    APIResponse selectUserListByPage(APIRequest request)throws Exception;
 }
