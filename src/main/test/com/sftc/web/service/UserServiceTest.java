@@ -1,6 +1,7 @@
 package com.sftc.web.service;
 
 import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.model.Token;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,5 +56,11 @@ public class UserServiceTest {
     public void register() throws Exception {
        Token order =  userService.getToken(85);
         System.out.println(order.getAccess_token());
+    }
+
+    @Test
+    public void test1(){
+        String token = SFTokenHelper.getToken();
+        System.out.println("-   -"+token);
     }
 }
