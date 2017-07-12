@@ -63,4 +63,13 @@ public class GiftCardServiceImpl implements GiftCardService {
 
         return APIUtil.getResponse(status, giftCardLists);
     }
+    /**
+     * CMS 系统 获取礼品卡列表 条件查询+分页
+     * @param apiRequest
+     * @return APIResponse
+     */
+    public APIResponse selectList(APIRequest apiRequest) {
+
+        return null;
+    }
 }
