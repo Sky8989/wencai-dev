@@ -7,6 +7,10 @@ import org.apache.http.client.methods.HttpPost;
 import static com.sftc.tools.constant.SFConstant.SF_TOKEN_URL;
 
 public class SFTokenHelper {
+    /**
+     * 顺丰共用access_token
+     */
+    public final static String COMMON_ACCESSTOKEN = "padHjjRvusAC9z7ehxpG";
 
     public static String getToken() {
 

@@ -2,6 +2,7 @@ package com.sftc.web.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.sftc.tools.api.*;
+import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.mapper.*;
 import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.ContactCallback;
@@ -124,7 +125,9 @@ public class UserContactServiceImpl implements UserContactService {
 
         // handle param
         if (userContactParam.getAccess_token() == null || userContactParam.getAccess_token().length() == 0) {
-            return APIUtil.paramErrorResponse("access_token不能为空");
+            //传入公共token
+            userContactParam.setAccess_token(SFTokenHelper.COMMON_ACCESSTOKEN);
+            //return APIUtil.paramErrorResponse("access_token不能为空");
         } else if (userContactParam.getUser_id() == 0) {
             return APIUtil.paramErrorResponse("用户id不能为空");
         } else if (userContactParam.getFriend_id() == 0) {
