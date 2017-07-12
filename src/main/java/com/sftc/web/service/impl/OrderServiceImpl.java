@@ -1192,7 +1192,9 @@ public class OrderServiceImpl implements OrderService {
 
         // Verify params
         if (myOrderParam.getToken().length() == 0) {
-            return APIUtil.paramErrorResponse("token不能为空");
+            //内置token
+            myOrderParam.setToken(SFTokenHelper.COMMON_ACCESSTOKEN);
+            //return APIUtil.paramErrorResponse("token不能为空");
         } else if (myOrderParam.getId() == 0) {
             return APIUtil.paramErrorResponse("用户id不能为空");
         } else if (myOrderParam.getPageNum() < 1 || myOrderParam.getPageSize() < 1) {
