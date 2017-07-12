@@ -30,6 +30,11 @@ public class ContactCallback {
     // 创建时间
     private String create_time;
 
+    // 寄件人微信名
+    private String sender_wechatname;
+    // 收件人微信名
+    private String ship_wechatname;
+
     public int getId() {
         return id;
     }
@@ -125,4 +130,12 @@ public class ContactCallback {
     public void setCreate_time(String create_time) {
         this.create_time = create_time;
     }
+
+    public String getSender_wechatname() {return sender_wechatname;}
+
+    public void setSender_wechatname(String sender_wechatname) {this.sender_wechatname = sender_wechatname;}
+
+    public String getShip_wechatname() {return ship_wechatname;}
+
+    public void setShip_wechatname(String ship_wechatname) {this.ship_wechatname = ship_wechatname;}
 }

@@ -50,6 +50,9 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
             User user = userMapper.selectUserByUserId(address.getUser_id());
             String avatar = (user == null || user.getAvatar() == null) ? DK_USER_AVATAR_DEFAULT : user.getAvatar();
             address.setAvatar(avatar);
+            // handle wechatname by hxy
+            String wechatname = (user == null || user.getName() == null) ? "default_name" : user.getName();
+            ah.setShip_wechatname(wechatname);
         }
 
         return APIUtil.getResponse(SUCCESS, addressHistories);

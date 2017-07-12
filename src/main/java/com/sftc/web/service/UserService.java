@@ -23,6 +23,7 @@ public interface UserService {
 
     /**
      * 普通登陆
+     *
      * @param userParam
      * @return
      * @throws Exception
@@ -31,6 +32,7 @@ public interface UserService {
 
     /**
      * 超级登陆 自动刷新token
+     *
      * @param userParam
      * @return
      * @throws Exception
@@ -39,20 +41,32 @@ public interface UserService {
 
     /**
      * 获取token的公用方法
+     *
      * @param id
      * @return
      */
     Token getToken(int id);
 
     /**
-     * @Description:解除绑定操作，原微信号，解除原有手机号
-     * @param object
+     * 解除绑定操作，原微信号，解除原有手机号
+     *
+     * @param user_id
+     * @return
      * @throws Exception
      */
-    APIResponse deleteMobile(Object object) throws Exception;
+    APIResponse deleteMobile(int user_id) throws Exception;
 
     /**
-     *下面是CMS后台所使用的接口
+     * 修改手机号码 即重新绑定新手机号
+     *
+     * @param object
+     * @return
+     * @throws Exception
      */
-    APIResponse selectUserListByPage(APIRequest request)throws Exception;
+    APIResponse updateMobile(Object object) throws Exception;
+
+    /**
+     * 下面是CMS后台所使用的接口
+     */
+    APIResponse selectUserListByPage(APIRequest request) throws Exception;
 }
