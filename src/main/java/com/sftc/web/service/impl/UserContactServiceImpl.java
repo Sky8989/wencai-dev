@@ -173,12 +173,15 @@ public class UserContactServiceImpl implements UserContactService {
         for (ContactCallback contactCallback : contactCallbacks) {
             User sender = userMapper.selectUserByUserId(contactCallback.getSender_user_id());
             User receiver = userMapper.selectUserByUserId(contactCallback.getShip_user_id());
-            if (sender != null)
+            if (sender != null) {
                 contactCallback.setSender_icon(sender.getAvatar());
-            if (receiver != null)
+                contactCallback.setSender_wechatname(sender.getName());
+            }
+            if (receiver != null) {
                 contactCallback.setShip_icon(receiver.getAvatar());
+                contactCallback.setShip_wechatname(receiver.getName());
+            }
         }
-
         return APIUtil.getResponse(status, contactCallbacks);
     }
 
