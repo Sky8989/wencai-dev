@@ -24,17 +24,14 @@ public class CMSUserController extends AbstractBasicController {
     private UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public
-    ModelAndView login(@RequestBody UserParam userParam) throws Exception {
-        return  null;
+    public ModelAndView login(@RequestBody UserParam userParam) throws Exception {
+        return null;
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public @ResponseBody
-    APIResponse UserList(HttpServletRequest request) throws Exception{
+    APIResponse UserList(HttpServletRequest request) throws Exception {
         // 分页查询
         return userService.selectUserListByPage(new APIRequest(request));
     }
-
-
 }

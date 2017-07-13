@@ -10,10 +10,13 @@ import com.sftc.web.model.GiftCard;
 import com.sftc.web.model.GiftCardList;
 import com.sftc.web.model.Order;
 import com.sftc.web.service.GiftCardService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +93,6 @@ public class GiftCardServiceImpl implements GiftCardService {
         }
     }
 
-
     /**
      * CMS 系统 添加礼品卡信息
      *
@@ -104,7 +106,6 @@ public class GiftCardServiceImpl implements GiftCardService {
         return APIUtil.getResponse(APIStatus.SUCCESS, giftCard);
     }
 
-
     /**
      * CMS 系统 修改礼品卡信息
      *
@@ -113,7 +114,19 @@ public class GiftCardServiceImpl implements GiftCardService {
      * @throws Exception
      */
     public APIResponse updateGiftCard(GiftCard giftCard) throws Exception {
-        return null;
+        giftCardMapper.updateGiftCard(giftCard);
+        return APIUtil.getResponse(APIStatus.SUCCESS, giftCard);
     }
 
+    /**
+     * CMS 系统 删除礼品卡信息
+     *
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    public APIResponse deleteGiftCard(int id ) throws Exception {
+        giftCardMapper.deleteGiftCard(id);
+        return APIUtil.getResponse(APIStatus.SUCCESS, id);
+    }
 }
