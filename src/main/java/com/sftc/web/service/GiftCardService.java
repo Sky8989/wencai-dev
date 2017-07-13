@@ -46,5 +46,12 @@ public interface GiftCardService {
      */
     APIResponse updateGiftCard(GiftCard giftCard) throws Exception;
 
-
+    /**
+     * CMS 系统 删除礼品卡信息
+     *
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    APIResponse deleteGiftCard(int id) throws Exception;
 }

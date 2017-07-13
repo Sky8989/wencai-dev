@@ -25,4 +25,8 @@ public interface GiftCardMapper {
      */
     void insertGiftCard(GiftCard giftCard);
 
+    void updateGiftCard(GiftCard giftCard);
+
+    void deleteGiftCard(int id);
+
 }
