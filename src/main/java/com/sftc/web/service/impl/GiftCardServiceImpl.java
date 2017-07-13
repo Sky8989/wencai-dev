@@ -118,6 +118,13 @@ public class GiftCardServiceImpl implements GiftCardService {
         return APIUtil.getResponse(APIStatus.SUCCESS, giftCard);
     }
 
+    /**
+     * CMS 系统 删除礼品卡信息
+     *
+     * @param id
+     * @return
+     * @throws Exception
+     */
     public APIResponse deleteGiftCard(int id ) throws Exception {
         giftCardMapper.deleteGiftCard(id);
         return APIUtil.getResponse(APIStatus.SUCCESS, id);

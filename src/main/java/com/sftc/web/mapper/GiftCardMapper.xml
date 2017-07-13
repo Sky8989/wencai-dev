@@ -44,10 +44,10 @@
        VALUES (#{name},#{icon},#{type},#{create_time})
     </insert>
 
-    <update id="updateGiftCard" parameterType="com.sftc.web.model.GiftCard" >
+    <update id="updateGiftCard" parameterType="com.sftc.web.model.GiftCard">
         UPDATE sftc_gift_card
         <trim prefix="set" suffixOverrides=",">
-            <if test="name != null and name != ''" >name = #{name}</if>
+            <if test="name != null and name != ''">name = #{name}</if>
             <if test="icon != null and icon != ''">icon = #{icon}</if>
             <if test="type != null and type != ''">type = #{type}</if>
         </trim>
