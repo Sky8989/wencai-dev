@@ -1,6 +1,7 @@
 package com.sftc.web.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.google.gson.Gson;
 import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
 import com.sftc.web.mapper.TokenMapper;
@@ -9,6 +10,7 @@ import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
 import com.sftc.web.model.reqeustParam.UserParam;
 import com.sftc.web.model.wechat.WechatUser;
+import com.sftc.web.service.MessageService;
 import com.sftc.web.service.UserService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -39,6 +41,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private TokenMapper tokenMapper;
+
+    @Resource
+    private MessageService messageService;
 
     private static final String postStr = "{\"merchant\":{" +
             "\"mobile\":\"13797393543\"" + "}," +
@@ -205,7 +210,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // 验证access_token是否有效 通过访问merchant/me接口 但只针对有access_token的用户
-    private HashMap<String, String> checkAccessToken(int user_id, Token paramtoken) {
+    private HashMap<String, String> checkAccessToken(int user_id, Token paramtoken) throws Exception {
         Token token = tokenMapper.getTokenById(user_id);
         //验证 access_token 如果error则用refresh_token
         String old_accesstoken = token.getAccess_token();
@@ -241,17 +246,54 @@ public class UserServiceImpl implements UserService {
     }
 
     // 通过access_token访问sf接口 获取uuid的公告方法
-    private JSONObject catchSFLogin(String old_accesstoken) {
+    private JSONObject catchSFLogin(String old_accesstoken) throws Exception {
         HttpGet httpGet = new HttpGet(SF_LOGIN);
         httpGet.addHeader("PushEnvelope-Device-Token", old_accesstoken);
         String res = APIGetUtil.get(httpGet);
         return JSONObject.fromObject(res);
     }
 
+    // 解除绑定操作，原微信号，解除原有手机号
+    public APIResponse deleteMobile(int user_id) throws Exception {
+        User user = userMapper.selectUserByUserId(user_id);
+        Token tokenById = tokenMapper.getTokenById(user_id);
+        if (user != null) {// 验空
+            if (user.getMobile() != null && !"".equals(user.getMobile())) {
+                //清除 手机号 uuid access_token 和 refresh_token
+                user.setMobile("");
+                user.setUuid("");
+                userMapper.updateUser(user);
+                tokenById.setAccess_token("");
+                tokenById.setRefresh_token("");
+                tokenMapper.updateToken(tokenById);
+                return APIUtil.getResponse(APIStatus.SUCCESS, user_id + "用户解除手机绑定成功");
+            } else {// 无手机号
+                return APIUtil.submitErrorResponse("该用户未绑定手机号，请勿进行操作", null);
+            }
+        } else {
+            return APIUtil.submitErrorResponse("无该用户，请检查参数", null);
+        }
+    }
+
+    // 修改手机号码 即重新绑定新手机号
+    public APIResponse updateMobile(Object object) throws Exception {
+        // 1 验证手机号可用性
+        JSONObject jsonObject = JSONObject.fromObject(object);
+        String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
+        int user_id = jsonObject.getInt("user_id");
+        User user = userMapper.selectUserByPhone(mobile);
+        if (user != null) {
+            return APIUtil.submitErrorResponse("手机号已被人使用过，请检查手机号",mobile);
+        }
+
+        // 2 走注册流程
+        return messageService.register(jsonObject.toString());
+    }
+
     /**
      * 下面是CMS的内容
      */
-    public APIResponse selectUserListByPage(APIRequest request) {
+    public APIResponse selectUserListByPage(APIRequest request) throws Exception {
         APIStatus status = APIStatus.SUCCESS;
         HttpServletRequest httpServletRequest = request.getRequest();
         // 此处封装了 User的构造方法

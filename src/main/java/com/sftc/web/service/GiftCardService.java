@@ -16,4 +16,11 @@ import com.sftc.tools.api.APIResponse;
 public interface GiftCardService {
     APIResponse getGiftCard(APIRequest request);
     APIResponse getGiftCardList(APIRequest request);
+
+    /**
+     * CMS 系统 获取礼品卡列表 条件查询+分页
+     * @param apiRequest
+     * @return
+     */
+    APIResponse selectList(APIRequest apiRequest);
 }
