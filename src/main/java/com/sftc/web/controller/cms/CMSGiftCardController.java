@@ -2,8 +2,10 @@ package com.sftc.web.controller.cms;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.GiftCard;
 import com.sftc.web.service.GiftCardService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,12 +22,41 @@ import javax.servlet.http.HttpServletRequest;
 public class CMSGiftCardController {
     @Resource
     GiftCardService giftCardService;
+
     /**
      * 获取所有礼物卡信息列表  分页+条件查询
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public @ResponseBody
-    APIResponse evaluateList(HttpServletRequest httpServletRequest) throws Exception{
+    APIResponse giftCardList(HttpServletRequest httpServletRequest) throws Exception {
         return giftCardService.selectList(new APIRequest(httpServletRequest));
     }
+
+    /**
+     * 添加礼品卡信息
+     *
+     * @param giftCard
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse addGiftCard(@RequestBody GiftCard giftCard) throws Exception {
+        return giftCardService.addGiftCard(giftCard);
+    }
+
+    /**
+     * 修改礼品卡信息
+     *
+     * @param giftCard
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse updateGiftCard(@RequestBody GiftCard giftCard) throws Exception {
+        return giftCardService.updateGiftCard(giftCard);
+    }
+
+
 }
