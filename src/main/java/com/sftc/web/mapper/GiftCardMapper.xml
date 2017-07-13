@@ -29,4 +29,14 @@
         SELECT * FROM sftc_gift_card WHERE id=#{giftCardId}
     </select>
 
+    <select id="selectByPage" parameterType="com.sftc.web.model.GiftCard"
+            resultType="com.sftc.web.model.GiftCard">
+        SELECT * FROM sftc_gift_card
+        <where>
+            <if test="id != 0">and id = #{id}</if>
+            <if test="name != null">and name LIKE concat(concat('%',#{name},'%'))</if>
+            <if test="type != null">and type = #{type}</if>
+        </where>
+    </select>
+
 </mapper>
