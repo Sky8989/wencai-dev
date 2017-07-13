@@ -99,9 +99,9 @@ public class GiftCardServiceImpl implements GiftCardService {
      * @throws Exception
      */
     public APIResponse addGiftCard(GiftCard giftCard) throws Exception {
-
-
-        return null;
+        giftCard.setCreate_time(Long.toString(System.currentTimeMillis()));
+        giftCardMapper.insertGiftCard(giftCard);
+        return APIUtil.getResponse(APIStatus.SUCCESS, giftCard);
     }
 
 

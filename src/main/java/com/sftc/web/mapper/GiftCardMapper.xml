@@ -39,4 +39,9 @@
         </where>
     </select>
 
+    <insert id="insertGiftCard" parameterType="com.sftc.web.model.GiftCard" useGeneratedKeys="true">
+       INSERT INTO sftc_gift_card (NAME,icon,TYPE,create_time)
+       VALUES (#{name},#{icon},#{type},#{create_time})
+    </insert>
+
 </mapper>
