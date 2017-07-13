@@ -2,8 +2,9 @@ package com.sftc.web.controller.cms;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.CommonQuestion;
 import com.sftc.web.model.GiftCard;
-import com.sftc.web.service.GiftCardService;
+import com.sftc.web.service.CommonQuestionService;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,53 +17,61 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by huxingyue on 2017/7/11.
- * 在CMS中对礼品卡进行操作的controller
+ * 在CMS中对常见问题进行操作的controller
  */
+@RequestMapping("cms/commonQuestion")
 @Controller
-@RequestMapping("cms/giftcard")
-public class CMSGiftCardController {
+public class CMSCommonQuestionController {
+
     @Resource
-    GiftCardService giftCardService;
+    private CommonQuestionService commonQuestionService;
 
     /**
-     * 获取所有礼物卡信息列表  分页+条件查询
+     * 获取所有常见问题信息列表  分页+条件查询
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse giftCardList(HttpServletRequest httpServletRequest) throws Exception {
-        return giftCardService.selectList(new APIRequest(httpServletRequest));
+        return commonQuestionService.selectList(new APIRequest(httpServletRequest));
     }
 
     /**
-     * 添加礼品卡信息
+     * 添加常见问题信息
      *
-     * @param giftCard
+     * @param commonQuestion
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse addGiftCard(@RequestBody GiftCard giftCard) throws Exception {
-        return giftCardService.addGiftCard(giftCard);
+    APIResponse addGiftCard(@RequestBody CommonQuestion commonQuestion) throws Exception {
+        return commonQuestionService.addCommonQuestion(commonQuestion);
     }
 
     /**
-     * 修改礼品卡信息
+     * 修改常见问题信息
      *
-     * @param giftCard
+     * @param commonQuestion
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse updateGiftCard(@RequestBody GiftCard giftCard) throws Exception {
-        return giftCardService.updateGiftCard(giftCard);
+    APIResponse updateGiftCard(@RequestBody CommonQuestion commonQuestion) throws Exception {
+        return commonQuestionService.updateCommonQuestion(commonQuestion);
     }
 
+    /**
+     * 删除常见问题信息
+     *
+     * @param object
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse deleteGiftCard(@RequestBody Object object) throws Exception {
         int id = JSONObject.fromObject(object).containsKey("id") ? JSONObject.fromObject(object).getInt("id") : 0;
-        return giftCardService.deleteGiftCard(id);
+        return commonQuestionService.deleteCommonQuestion(id);
     }
 }
