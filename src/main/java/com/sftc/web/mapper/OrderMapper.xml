@@ -238,13 +238,27 @@
     <!-- 我的订单列表  -->
     <select id="selectMyOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
             resultMap="orderMap">
-        SELECT * FROM sftc_order o
+        SELECT * FROM sftc_order
         WHERE id IN (
-            SELECT t.order_id FROM (
-              SELECT distinct oe.order_id FROM sftc_order_express oe WHERE oe.sender_user_id=#{id}
-            ) AS t
+          SELECT o.id FROM sftc_order o, sftc_order_express oe
+          WHERE o.id=oe.order_id AND o.sender_user_id=#{id}
+          <if test="keyword!=null">
+            AND (
+            o.order_number LIKE #{keyword} OR
+            o.sender_name LIKE #{keyword} OR
+            o.sender_province LIKE #{keyword} OR
+            o.sender_city LIKE #{keyword} OR
+            o.sender_area LIKE #{keyword} OR
+            o.sender_addr LIKE #{keyword} OR
+            oe.ship_name LIKE #{keyword} OR
+            oe.ship_province LIKE #{keyword} OR
+            oe.ship_city LIKE #{keyword} OR
+            oe.ship_area LIKE #{keyword} OR
+            oe.ship_addr LIKE #{keyword}
+            )
+          </if>
         )
-        ORDER by o.create_time desc
+        ORDER by create_time desc
         limit #{pageNum}, #{pageSize}
     </select>
 

@@ -6,6 +6,7 @@ public class MyOrderParam {
     private String token;
     private int pageNum;
     private int pageSize;
+    private String keyword;
 
     public int getId() {
         return id;
@@ -37,5 +38,13 @@ public class MyOrderParam {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public String getKeyword() {
+        return keyword;
     }
 }

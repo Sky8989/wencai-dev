@@ -12,6 +12,17 @@ public interface GiftCardMapper {
     /** 根据id查询贺卡 */
     GiftCard selectGiftCardById(int giftCardId);
 
-    //     <!--下面是cms系统用到的mapper-->
+    /**
+     * CMS 查找礼品卡信息  分页加条件加模糊
+     * @param giftCard
+     * @return
+     */
     List<GiftCard> selectByPage(GiftCard giftCard);
+
+    /**
+     * CMS 系统 添加礼品卡信息
+     * @param giftCard
+     */
+    void insertGiftCard(GiftCard giftCard);
+
 }

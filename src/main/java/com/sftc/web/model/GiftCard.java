@@ -1,5 +1,7 @@
 package com.sftc.web.model;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -15,12 +17,15 @@ public class GiftCard extends Object {
     private int id;
     // 创建时间
     private String create_time;
-    // 姓名
+    // 名称
     private String name;
     // 图片地址
     private String icon;
     // 类型
     private String type;
+
+    public GiftCard() {
+    }
 
     public int getId() {
         return id;
@@ -62,15 +67,18 @@ public class GiftCard extends Object {
         this.type = type;
     }
 
-  /*  @Override
-    public String toString() {
-
-        return
-                "id:" + id +
-                ", \n name:'" + name + '\'' +
-                ", \n icon:'" + icon + '\'' +
-                ", \n type:'" + type + '\''
-                ;
-
-    }*/
+    public GiftCard(HttpServletRequest request) {
+        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
+            this.id = Integer.parseInt(request.getParameter("id"));
+        }
+        if (request.getParameter("name") != null && !"".equals(request.getParameter("name"))) {
+            this.name = request.getParameter("name");
+        }
+        if (request.getParameter("icon") != null && !"".equals(request.getParameter("icon"))) {
+            this.icon = request.getParameter("icon");
+        }
+        if (request.getParameter("type") != null && !"".equals(request.getParameter("type"))) {
+            this.type = request.getParameter("type");
+        }
+    }
 }

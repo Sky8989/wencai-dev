@@ -1,5 +1,6 @@
 package com.sftc.web.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIStatus;
@@ -12,8 +13,10 @@ import com.sftc.web.service.GiftCardService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class GiftCardServiceImpl implements GiftCardService {
@@ -63,13 +66,54 @@ public class GiftCardServiceImpl implements GiftCardService {
 
         return APIUtil.getResponse(status, giftCardLists);
     }
+
     /**
      * CMS 系统 获取礼品卡列表 条件查询+分页
+     *
      * @param apiRequest
-     * @return APIResponse
+     * @return
+     * @throws Exception
      */
-    public APIResponse selectList(APIRequest apiRequest) {
+    public APIResponse selectList(APIRequest apiRequest) throws Exception {
+        APIStatus status = APIStatus.SUCCESS;
+        // 此处封装了 User的构造方法
+        HttpServletRequest httpServletRequest = apiRequest.getRequest();
+        GiftCard giftCard = new GiftCard(httpServletRequest);
+        int pageNumKey = Integer.parseInt(httpServletRequest.getParameter("pageNumKey"));
+        int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
+        PageHelper.startPage(pageNumKey, pageSizeKey);
+        List<GiftCard> giftCardList = giftCardMapper.selectByPage(giftCard);
+        if (giftCardList.size() == 0) {
+            return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
+        } else {
+            return APIUtil.getResponse(status, giftCardList);
+        }
+    }
 
+
+    /**
+     * CMS 系统 添加礼品卡信息
+     *
+     * @param giftCard
+     * @return
+     * @throws Exception
+     */
+    public APIResponse addGiftCard(GiftCard giftCard) throws Exception {
+        giftCard.setCreate_time(Long.toString(System.currentTimeMillis()));
+        giftCardMapper.insertGiftCard(giftCard);
+        return APIUtil.getResponse(APIStatus.SUCCESS, giftCard);
+    }
+
+
+    /**
+     * CMS 系统 修改礼品卡信息
+     *
+     * @param giftCard
+     * @return
+     * @throws Exception
+     */
+    public APIResponse updateGiftCard(GiftCard giftCard) throws Exception {
         return null;
     }
+
 }
