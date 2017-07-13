@@ -1100,6 +1100,17 @@ public class OrderServiceImpl implements OrderService {
         APIResponse errorResponse = syncSFExpressStatus(myOrderParam);
         if (errorResponse != null) return errorResponse;
 
+        if (myOrderParam.getKeyword() != null && !myOrderParam.getKeyword().equals("")) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("%");
+            char keywords [] = myOrderParam.getKeyword().toCharArray();
+            for (char key : keywords) {
+                sb.append(key);
+                sb.append("%");
+            }
+            myOrderParam.setKeyword(sb.toString());
+        }
+
         // pageNum -> startIndex
         myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());
         // select
