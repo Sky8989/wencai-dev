@@ -31,7 +31,7 @@ public interface UserContactService {
     /**
      * 修改 好友图片与备注
      */
-    APIResponse updateNotesAndPicture(Object object);
+    APIResponse updateNotesAndPicture(APIRequest request);
 
 
     /**

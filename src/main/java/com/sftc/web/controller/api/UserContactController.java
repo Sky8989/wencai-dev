@@ -75,7 +75,9 @@ public class UserContactController extends AbstractBasicController {
     @RequestMapping(value = "/notes/update", method = RequestMethod.POST)
         public @ResponseBody
     APIResponse updateNotes(@RequestBody Object object) throws Exception {
-        return userContactService.updateNotesAndPicture(object);
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(object);
+        return userContactService.updateNotesAndPicture(apiRequest);
     }
 
 }
