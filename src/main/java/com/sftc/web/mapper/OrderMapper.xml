@@ -375,6 +375,11 @@
         UPDATE sftc_order SET is_cancel = 'Cancelled' WHERE id = #{id}
     </update>
 
+    <!--更新订单的order_number为sf好友同城下单接口返回值-->
+    <update id="updateOrderNumber" >
+        UPDATE sftc_order SET order_number = #{order_number} WHERE id = #{id}
+    </update>
+
     <select id="getOrderAndExpress" resultType="com.sftc.web.model.Order" parameterType="com.sftc.web.model.Order"
             resultMap="orderMap">
         SELECT

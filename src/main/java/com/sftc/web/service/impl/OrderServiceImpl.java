@@ -110,7 +110,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    // 好友同城订单提交
+    // 好友同城订单提交 TODO 改订单编号
     private APIResponse friendSameOrderCommit(JSONObject requestObject) {
         // Param
         int order_id = ((Double) requestObject.getJSONObject("order").get("order_id")).intValue();
@@ -172,6 +172,9 @@ public class OrderServiceImpl implements OrderService {
 
             if (!responseObject.containsKey("error")) {
                 String uuid = (String) responseObject.getJSONObject("request").get("uuid");
+                // 获取sf返回的编号
+                String request_num = responseObject.getJSONObject("request").getString("request_num");
+
                 /// 数据库操作
                 // 订单表更新订单区域类型
                 orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
@@ -180,6 +183,10 @@ public class OrderServiceImpl implements OrderService {
                 // 不和前面的orderExpress构造方法放在一起  降低耦合度
                 String order_tiem = Long.toString(System.currentTimeMillis());
                 orderExpressMapper.updateOrderTime(uuid, order_tiem);
+
+                //更新订单和快递的order_number为sf好友同城下单接口返回值
+                orderMapper.updateOrderNumber(order_id,request_num);
+                orderExpressMapper.updateOrderNumber(oe.getId(),request_num);
 
                 // 插入地址
                 setupAddress(order, oe);
@@ -369,7 +376,6 @@ public class OrderServiceImpl implements OrderService {
 
         if (!(respObject.containsKey("error") || respObject.containsKey("errors"))) {
             // 插入订单表
-            // TODO 更新订单标号 用sf的
             order.setOrder_number(respObject.getJSONObject("request").getString("request_num"));
             orderMapper.addOrder(order);
 

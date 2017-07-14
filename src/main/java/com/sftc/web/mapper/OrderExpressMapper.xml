@@ -168,6 +168,12 @@
         WHERE uuid=#{uuid}
     </update>
 
+    <!--更新订单的order_number为sf好友同城下单接口返回值-->
+    <update id="updateOrderNumber" >
+        UPDATE sftc_order_express SET order_number = #{order_number} WHERE id = #{id}
+    </update>
+
+
     <!--下面是cms系统用到的mapper-->
     <select id="selectOrderExpressByPage" resultType="com.sftc.web.model.OrderExpress"
             parameterType="com.sftc.web.model.OrderExpress">
