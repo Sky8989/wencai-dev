@@ -232,7 +232,8 @@ public class UserContactServiceImpl implements UserContactService {
         String picture_address = jsonObject.getString("picture_address");
         String mobile = jsonObject.getString("mobile");
         userContactMapper.updateNotesPictureMobile(user_contact_id, notes, picture_address, mobile);
-        return APIUtil.getResponse(SUCCESS, user_contact_id + "备注与图片更新成功");
+        String resultStr = user_contact_id+" notes:"+notes+"mobile:"+mobile+"picture："+picture_address;
+        return APIUtil.getResponse(SUCCESS, resultStr);
     }
 
     /**
