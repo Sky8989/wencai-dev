@@ -4,6 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.GiftCard;
 import com.sftc.web.service.GiftCardService;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,5 +59,10 @@ public class CMSGiftCardController {
         return giftCardService.updateGiftCard(giftCard);
     }
 
-
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse deleteGiftCard(@RequestBody Object object) throws Exception {
+        int id = JSONObject.fromObject(object).containsKey("id") ? JSONObject.fromObject(object).getInt("id") : 0;
+        return giftCardService.deleteGiftCard(id);
+    }
 }

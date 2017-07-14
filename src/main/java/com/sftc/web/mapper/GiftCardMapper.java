@@ -7,13 +7,17 @@ import java.util.List;
 
 public interface GiftCardMapper {
     Order giftCardDetail(String order_number);
+
     List<GiftCard> giftCardList();
 
-    /** 根据id查询贺卡 */
+    /**
+     * 根据id查询贺卡
+     */
     GiftCard selectGiftCardById(int giftCardId);
 
     /**
      * CMS 查找礼品卡信息  分页加条件加模糊
+     *
      * @param giftCard
      * @return
      */
@@ -21,8 +25,23 @@ public interface GiftCardMapper {
 
     /**
      * CMS 系统 添加礼品卡信息
+     *
      * @param giftCard
      */
     void insertGiftCard(GiftCard giftCard);
+
+    /**
+     * CMS 系统 修改礼品卡信息
+     *
+     * @param giftCard
+     */
+    void updateGiftCard(GiftCard giftCard);
+
+    /**
+     * CMS 系统 删除礼品卡信息
+     *
+     * @param id
+     */
+    void deleteGiftCard(int id);
 
 }
