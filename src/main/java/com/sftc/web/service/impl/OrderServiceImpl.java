@@ -1453,7 +1453,7 @@ public class OrderServiceImpl implements OrderService {
             evaluate.setMerchant_comments(attributes.getString("merchant_comments"));
             evaluate.setMerchant_score(attributes.getString("merchant_score"));
             evaluate.setMerchant_tags(attributes.getString("merchant_tags"));
-            evaluate.setOrderExpress_id(orderExpress.getUuid());
+            evaluate.setOrderExpress_id(orderExpress.getId());
             evaluate.setUuid(uuid);
             evaluate.setUser_id(request.getInt("user_id"));
             evaluate.setCreate_time(Long.toString(System.currentTimeMillis()));
@@ -1475,7 +1475,7 @@ public class OrderServiceImpl implements OrderService {
             evaluate.setMerchant_comments(attributes.getString("merchant_comments"));
             evaluate.setMerchant_score(attributes.getString("merchant_score"));
             evaluate.setMerchant_tags(attributes.getString("merchant_tags"));
-            evaluate.setOrderExpress_id(orderExpress.getUuid());
+            evaluate.setOrderExpress_id(orderExpress.getId());
             evaluate.setUuid(uuid);
             evaluate.setUser_id(request.getInt("user_id"));
             evaluate.setCreate_time(Long.toString(System.currentTimeMillis()));
