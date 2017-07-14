@@ -276,16 +276,16 @@ public class UserServiceImpl implements UserService {
     }
 
     // 修改手机号码 即重新绑定新手机号
-    public APIResponse updateMobile(Object object) throws Exception {
+    public APIResponse updateMobile(APIRequest apiRequest) throws Exception {
+        Object requestParam = apiRequest.getRequestParam();
         // 1 验证手机号可用性
-        JSONObject jsonObject = JSONObject.fromObject(object);
+        JSONObject jsonObject = JSONObject.fromObject(requestParam);
         String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
         int user_id = jsonObject.getInt("user_id");
         User user = userMapper.selectUserByPhone(mobile);
         if (user != null) {
-            return APIUtil.submitErrorResponse("手机号已被人使用过，请检查手机号",mobile);
+            return APIUtil.submitErrorResponse("手机号已被人使用过，请检查手机号", mobile);
         }
-
         // 2 走注册流程
         return messageService.register(jsonObject.toString());
     }
