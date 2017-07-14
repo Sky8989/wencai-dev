@@ -21,7 +21,7 @@ public class Evaluate extends Object {
     // 评价人的用户id
     private int user_id;
     // 快递的id orderExpress_id
-    private String orderExpress_id;
+    private int orderExpress_id;
     // 快递的uuid
     private String uuid;
     // 创建时间
@@ -87,9 +87,9 @@ public class Evaluate extends Object {
         this.create_time = create_time;
     }
 
-    public String getOrderExpress_id() {return orderExpress_id;}
+    public int getOrderExpress_id() {return orderExpress_id;}
 
-    public void setOrderExpress_id(String orderExpress_id) {this.orderExpress_id = orderExpress_id;}
+    public void setOrderExpress_id(int orderExpress_id) {this.orderExpress_id = orderExpress_id;}
 
     public String getUuid() {return uuid;}
 
