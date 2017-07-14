@@ -1,6 +1,8 @@
 package com.sftc.web.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.mapper.*;
@@ -228,8 +230,8 @@ public class UserContactServiceImpl implements UserContactService {
         int user_contact_id = jsonObject.getInt("user_contact_id");
         String notes = jsonObject.getString("notes");
         String picture_address = jsonObject.getString("picture_address");
-        userContactMapper.updateNotes(user_contact_id, notes);
-        userContactMapper.updatePicture(user_contact_id, picture_address);
+        String mobile = jsonObject.getString("mobile");
+        userContactMapper.updateNotesPictureMobile(user_contact_id, notes, picture_address, mobile);
         return APIUtil.getResponse(SUCCESS, user_contact_id + "备注与图片更新成功");
     }
 

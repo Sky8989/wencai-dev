@@ -23,6 +23,12 @@ public class UserContactNew {
     private int lntimacy;
     // 创建时间
     private String create_time;
+    // 好友备注
+    private String notes;
+    // 好友图片
+    private String picture_address;
+    // 好友手机号
+    private String mobile;
 
     public int getId() {
         return id;
@@ -72,6 +78,20 @@ public class UserContactNew {
         this.create_time = create_time;
     }
 
+    public String getNotes() {return notes;}
+
+    public void setNotes(String notes) {this.notes = notes;}
+
+    public String getPicture_address() {return picture_address;}
+
+    public void setPicture_address(String picture_address) {this.picture_address = picture_address;}
+
+    public String getMobile() {return mobile;}
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
     @Override
     public String toString() {
         return "UserContactNew{" +
@@ -91,10 +111,12 @@ public class UserContactNew {
      * 基于HttpServletRequest作为参数的构造方法 用于cms
      * 后期便于应用扩展工厂模式 将此参数抽出
      */
-    public UserContactNew(HttpServletRequest request){
-        if (request.getParameter("user_id") != null && !"".equals(request.getParameter("user_id")))
-        {this.user_id = Integer.parseInt(request.getParameter("user_id"));}
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id")))
-        {this.id = Integer.parseInt(request.getParameter("id"));}
+    public UserContactNew(HttpServletRequest request) {
+        if (request.getParameter("user_id") != null && !"".equals(request.getParameter("user_id"))) {
+            this.user_id = Integer.parseInt(request.getParameter("user_id"));
+        }
+        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
+            this.id = Integer.parseInt(request.getParameter("id"));
+        }
     }
 }

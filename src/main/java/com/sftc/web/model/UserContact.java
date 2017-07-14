@@ -17,6 +17,8 @@ public class UserContact extends Object {
     private String notes;
     // 好友图片
     private String picture_address;
+    // 好友手机号
+    private String mobile;
 
     private User friend_info;
     private List<UserContactLabel> userContactLabelList;
@@ -104,4 +106,8 @@ public class UserContact extends Object {
     public String getPicture_address() {return picture_address;}
 
     public void setPicture_address(String picture_address) {this.picture_address = picture_address;}
+
+    public String getMobile() {return mobile;}
+
+    public void setMobile(String mobile) {this.mobile = mobile;}
 }

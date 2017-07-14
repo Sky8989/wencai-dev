@@ -13,6 +13,7 @@
         <result column="create_time" property="create_time"/>
         <result column="picture_address" property="picture_address"/>
         <result column="notes" property="notes"/>
+        <result column="mobile" property="mobile"/>
         <association property="friend_info" select="selectUser" column="friend_id"/>
     </resultMap>
 
@@ -113,6 +114,10 @@
 
     <update id="updatePicture">
         UPDATE sftc_user_contact SET picture_address=#{picture_address} WHERE id=#{id}
+    </update>
+
+    <update id="updateNotesPictureMobile">
+        UPDATE sftc_user_contact SET notes=#{notes},picture_address=#{picture_address},mobile=#{mobile} WHERE id=#{id}
     </update>
 
 

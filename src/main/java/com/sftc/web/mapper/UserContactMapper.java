@@ -44,6 +44,10 @@ public interface UserContactMapper {
     // 添加好友图片
     void updatePicture(@Param("id") int id, @Param("picture_address") String picture_address);
 
+    // 添加 备注 图片 手机号
+    void updateNotesPictureMobile(@Param("id") int id, @Param("notes") String notes,
+                                  @Param("picture_address") String picture_address, @Param("mobile") String mobile);
+
     /**
      * CMS 获取好友列表 分页+条件
      */
