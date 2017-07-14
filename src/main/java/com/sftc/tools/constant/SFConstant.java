@@ -1,16 +1,35 @@
 package com.sftc.tools.constant;
 
+import static com.sftc.tools.constant.SFConstant.SFEnvironment.SFEnvironmentDev;
+import static com.sftc.tools.constant.SFConstant.SFEnvironment.SFEnvironmentStage;
+
 /**
  * 顺丰API常量
  */
 public class SFConstant {
 
+    /**
+     * 开发环境
+     */
+    public enum SFEnvironment {
+        SFEnvironmentDev,       // 开发环境
+        SFEnvironmentStage,     // 测试环境
+        SFEnvironmentProduct;   // 生产环境
+    }
+
+    private static SFEnvironment environment = SFEnvironmentDev;
+
     /////////////// 顺丰API根域名 ///////////////
+
+    private static final String SF_SAME_DOMAIN_DEV = "http://api-dev.sf-rush.com/";     // dev
+    private static final String SF_SAME_DOMAIN_STAGE = "http://api-stage.sf-rush.com/"; // test
+    private static final String SF_SAME_DOMAIN_PRODUCT = "http://api.sf-rush.com/";     // product
 
     /**
      * 同城根地址
      */
-    private static final String SF_SAME_DOMAIN = "http://api-dev.sf-rush.com/";
+    private static String SF_SAME_DOMAIN = (environment == SFEnvironmentDev ? SF_SAME_DOMAIN_DEV : (environment == SFEnvironmentStage ? SF_SAME_DOMAIN_STAGE : SF_SAME_DOMAIN_PRODUCT));
+
     /**
      * 大网根地址
      */
@@ -23,19 +42,19 @@ public class SFConstant {
     /**
      * 获取验证码
      */
-    public static final String SF_TAKE_MESSAGE_URL = SF_SAME_DOMAIN + "messages";
+    public static String SF_TAKE_MESSAGE_URL = SF_SAME_DOMAIN + "messages";
     /**
      * 获取token
      */
-    public static final String SF_GET_TOKEN = SF_SAME_DOMAIN + "merchants/me/token";
+    public static String SF_GET_TOKEN = SF_SAME_DOMAIN + "merchants/me/token";
     /**
      * 用户注册
      */
-    public static final String SF_REGISTER_URL = SF_SAME_DOMAIN + "merchants";
+    public static String SF_REGISTER_URL = SF_SAME_DOMAIN + "merchants";
     /**
      * 用户登录
      */
-    public static final String SF_LOGIN = SF_SAME_DOMAIN + "merchants/me";
+    public static String SF_LOGIN = SF_SAME_DOMAIN + "merchants/me";
 
 
     /////////////// 同城订单相关 ///////////////
@@ -43,19 +62,19 @@ public class SFConstant {
     /**
      * 优惠券
      */
-    public static final String SF_QUOTES_URL = SF_SAME_DOMAIN + "quotes";
+    public static String SF_QUOTES_URL = SF_SAME_DOMAIN + "quotes";
     /**
      * 通用订单请求地址
      */
-    public static final String SF_REQUEST_URL = SF_SAME_DOMAIN + "requests";
+    public static String SF_REQUEST_URL = SF_SAME_DOMAIN + "requests";
     /**
      * 获取常量
      */
-    public static final String SF_CONSTANTS_URL = SF_SAME_DOMAIN + "constants/";
+    public static String SF_CONSTANTS_URL = SF_SAME_DOMAIN + "constants/";
     /**
      * 订单状态同步
      */
-    public static final String SF_ORDER_SYNC_URL = SF_SAME_DOMAIN + "requests/{uuid}/status?batch=true";
+    public static String SF_ORDER_SYNC_URL = SF_SAME_DOMAIN + "requests/{uuid}/status?batch=true";
 
 
     /////////////// 大网用户相关 ///////////////
@@ -84,4 +103,22 @@ public class SFConstant {
      * 路由地址
      */
     public static final String SF_ORDERROUTE_URL = SF_NATION_ORDER_URL + "OrderRouteQuery?orderid=";
+
+
+    public static void setEnvironment(SFEnvironment environment) {
+        SFConstant.environment = environment;
+        SF_SAME_DOMAIN = (environment == SFEnvironmentDev ? SF_SAME_DOMAIN_DEV : (environment == SFEnvironmentStage ? SF_SAME_DOMAIN_STAGE : SF_SAME_DOMAIN_PRODUCT));
+        SF_TAKE_MESSAGE_URL = SF_SAME_DOMAIN + "messages";
+        SF_GET_TOKEN = SF_SAME_DOMAIN + "merchants/me/token";
+        SF_REGISTER_URL = SF_SAME_DOMAIN + "merchants";
+        SF_LOGIN = SF_SAME_DOMAIN + "merchants/me";
+        SF_QUOTES_URL = SF_SAME_DOMAIN + "quotes";
+        SF_REQUEST_URL = SF_SAME_DOMAIN + "requests";
+        SF_CONSTANTS_URL = SF_SAME_DOMAIN + "constants/";
+        SF_ORDER_SYNC_URL = SF_SAME_DOMAIN + "requests/{uuid}/status?batch=true";
+    }
+
+    public static String getSfSameDomain() {
+        return SF_SAME_DOMAIN;
+    }
 }
