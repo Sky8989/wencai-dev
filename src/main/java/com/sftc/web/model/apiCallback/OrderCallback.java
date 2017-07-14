@@ -11,6 +11,7 @@ public class OrderCallback {
     private String order_type;
     private String region_type;
     private boolean is_gift;
+    private boolean is_evaluated;
 
     private List<OrderCallbackExpress> expressList;
 
@@ -116,4 +117,8 @@ public class OrderCallback {
     public void setExpressList(List<OrderCallbackExpress> expressList) {
         this.expressList = expressList;
     }
+
+    public boolean getIs_evaluated() {return is_evaluated;}
+
+    public void setIs_evaluated(boolean is_evaluated) {this.is_evaluated = is_evaluated;}
 }

@@ -50,6 +50,9 @@ public class OrderExpress extends Object {
     // extension 收件人头像
     private String ship_avatar;
 
+    // 评价信息
+    private Evaluate evaluate;
+
     public int getSender_user_id() {
         return sender_user_id;
     }
@@ -334,4 +337,8 @@ public class OrderExpress extends Object {
     public String getOrder_time() {return order_time;}
 
     public void setOrder_time(String order_time) {this.order_time = order_time;}
+
+    public Evaluate getEvaluate() {return evaluate;}
+
+    public void setEvaluate(Evaluate evaluate) {this.evaluate = evaluate;}
 }
