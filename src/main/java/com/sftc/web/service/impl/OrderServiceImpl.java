@@ -1103,7 +1103,7 @@ public class OrderServiceImpl implements OrderService {
         if (myOrderParam.getKeyword() != null && !myOrderParam.getKeyword().equals("")) {
             StringBuilder sb = new StringBuilder();
             sb.append("%");
-            char keywords [] = myOrderParam.getKeyword().toCharArray();
+            char keywords[] = myOrderParam.getKeyword().toCharArray();
             for (char key : keywords) {
                 sb.append(key);
                 sb.append("%");
@@ -1128,6 +1128,7 @@ public class OrderServiceImpl implements OrderService {
             callback.setIs_gift(order.getGift_card_id() > 0);
             // expressList
             List<OrderCallback.OrderCallbackExpress> expressList = new ArrayList<OrderCallback.OrderCallbackExpress>();
+            HashSet flagSetIsEvaluated = new HashSet();
             for (OrderExpress oe : order.getOrderExpressList()) {
                 OrderCallback.OrderCallbackExpress express = new OrderCallback().new OrderCallbackExpress();
                 express.setUuid(oe.getUuid());
@@ -1135,9 +1136,13 @@ public class OrderServiceImpl implements OrderService {
                 express.setShip_name(oe.getShip_name());
                 express.setShip_addr(oe.getShip_addr());
                 expressList.add(express);
+                // 检查快递是否评价过
+                List<Evaluate> evaluateList = evaluateMapper.selectByUuid(oe.getUuid());
+                // 如果被评价过，且有评价信息，则返回1 如果无评价信息 则返回0
+                flagSetIsEvaluated.add((evaluateList.size() == 0) ? 0 : 1);
             }
             callback.setExpressList(expressList);
-
+            callback.setIs_evaluated(flagSetIsEvaluated.contains(1));
             orderCallbacks.add(callback);
         }
 
