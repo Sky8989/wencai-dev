@@ -225,8 +225,9 @@ public class UserContactServiceImpl implements UserContactService {
     /**
      * 更新 好友关系备注与图片
      */
-    public APIResponse updateNotesAndPicture(Object object) {
-        JSONObject jsonObject = JSONObject.fromObject(object);
+    public APIResponse updateNotesAndPicture(APIRequest apiRequest) {
+        Object requestParam = apiRequest.getRequestParam();
+        JSONObject jsonObject = JSONObject.fromObject(requestParam);
         int user_contact_id = jsonObject.getInt("user_contact_id");
         String notes = jsonObject.getString("notes");
         String picture_address = jsonObject.getString("picture_address");
