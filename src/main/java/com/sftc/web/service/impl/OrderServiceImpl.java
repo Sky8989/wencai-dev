@@ -332,7 +332,8 @@ public class OrderServiceImpl implements OrderService {
             reqObject.getJSONObject("request").put("reserve_time", reserveTime);
         }
 
-        String order_number = SFOrderHelper.getOrderNumber();
+        //String order_number = SFOrderHelper.getOrderNumber();
+        String order_number = "0";
         APIStatus status = SUCCESS;
 
         Order order = new Order(
@@ -368,13 +369,15 @@ public class OrderServiceImpl implements OrderService {
 
         if (!(respObject.containsKey("error") || respObject.containsKey("errors"))) {
             // 插入订单表
+            // TODO 更新订单标号 用sf的
+            order.setOrder_number(respObject.getJSONObject("request").getString("request_num"));
             orderMapper.addOrder(order);
 
             // 插入快递表
             OrderExpress orderExpress = new OrderExpress(
                     Long.toString(System.currentTimeMillis()),
                     Long.toString(System.currentTimeMillis()),
-                    order_number,
+                    respObject.getJSONObject("request").getString("request_num"),
                     (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("receiver"),
                     (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("mobile"),
                     (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("province"),
