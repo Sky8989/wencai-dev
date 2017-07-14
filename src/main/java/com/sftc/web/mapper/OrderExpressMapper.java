@@ -49,6 +49,9 @@ public interface OrderExpressMapper {
     //下单时，更新order_time,用于记录下单时间
     void updateOrderTime(@Param("uuid") String uuid,@Param("order_time") String order_time);
 
+    // 更新订单的order_number为sf好友同城下单接口返回值 此id是快递信息的id
+    void updateOrderNumber(@Param("id") int id, @Param("order_number") String order_number);
+
 
     //     <!--下面是cms系统用到的mapper-->
     List<OrderExpress> selectOrderExpressByPage(OrderExpress orderExpress);
