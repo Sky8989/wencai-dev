@@ -340,12 +340,11 @@ public class OrderServiceImpl implements OrderService {
         }
 
         //String order_number = SFOrderHelper.getOrderNumber();
-        String order_number = "0";
         APIStatus status = SUCCESS;
 
         Order order = new Order(
                 Long.toString(System.currentTimeMillis()),
-                order_number,
+                "",
                 (String) reqObject.getJSONObject("request").get("pay_type"),
                 (String) reqObject.getJSONObject("request").get("product_type"),
                 0.0,
@@ -876,8 +875,8 @@ public class OrderServiceImpl implements OrderService {
 
         // 插入订单表
         Order order = new Order(orderParam);
-        String order_number = SFOrderHelper.getOrderNumber();
-        order.setOrder_number(order_number);
+        //String order_number = SFOrderHelper.getOrderNumber();
+        order.setOrder_number("");
         orderMapper.addOrder(order);
 
         // 插入快递表
@@ -892,7 +891,8 @@ public class OrderServiceImpl implements OrderService {
         orderExpress.setReserve_time("");
         orderExpress.setOrder_id(order.getId());
         for (int i = 0; i < orderParam.getPackage_count(); i++) {
-            orderExpress.setOrder_number(SFOrderHelper.getOrderNumber());
+            //orderExpress.setOrder_number(SFOrderHelper.getOrderNumber());
+            orderExpress.setOrder_number("");
             orderExpressMapper.addOrderExpress(orderExpress);
         }
 
