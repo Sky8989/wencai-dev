@@ -185,8 +185,8 @@ public class OrderServiceImpl implements OrderService {
                 orderExpressMapper.updateOrderTime(uuid, order_tiem);
 
                 //更新订单和快递的order_number为sf好友同城下单接口返回值
-                orderMapper.updateOrderNumber(order_id,request_num);
-                orderExpressMapper.updateOrderNumber(oe.getId(),request_num);
+                orderMapper.updateOrderNumber(order_id, request_num);
+                orderExpressMapper.updateOrderNumber(oe.getId(), request_num);
 
                 // 插入地址
                 setupAddress(order, oe);
@@ -445,7 +445,7 @@ public class OrderServiceImpl implements OrderService {
         // 插入订单表
         Order order = new Order(
                 Long.toString(System.currentTimeMillis()),
-                orderId,
+                "",
                 (String) sf.get("pay_method"),
                 "",
                 0,
@@ -472,7 +472,7 @@ public class OrderServiceImpl implements OrderService {
         OrderExpress orderExpress = new OrderExpress(
                 Long.toString(System.currentTimeMillis()),
                 Long.toString(System.currentTimeMillis()),
-                orderId,
+                "",
                 (String) sf.get("d_contact"),
                 (String) sf.get("d_tel"),
                 (String) sf.get("d_province"),
@@ -509,6 +509,13 @@ public class OrderServiceImpl implements OrderService {
             } else {
                 // 返回结果添加订单编号
                 responseObject.put("order_id", order.getId());
+
+                //System.out.println("-   -接口结果"+res);
+                // TODO 获取sf返回结果的订单号ordernum
+                String ordernum = "1234567890";
+                //更新订单和快递的order_number为sf普通大网下单接口返回值
+                orderMapper.updateOrderNumber(order.getId(), ordernum);
+                orderExpressMapper.updateOrderNumber(orderExpress.getId(), ordernum);
             }
         } else { // 预约件
             responseObject.put("order_id", order.getId());
@@ -584,6 +591,13 @@ public class OrderServiceImpl implements OrderService {
                     orderMapper.updateOrderRegionType(order.getId(), "REGION_NATION");
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), nation_uuid, null);
                     orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
+
+                    /*System.out.println("-   -接口结果"+resultStr);
+                    // TODO 获取sf返回结果的订单号ordernum
+                    String ordernum = "1234567890";
+                    //更新订单和快递的order_number为sf普通大网下单接口返回值
+                    orderMapper.updateOrderNumber(order.getId(),ordernum);
+                    orderExpressMapper.updateOrderNumber(oe.getId(),ordernum);*/
                 }
             }
         }
@@ -1100,6 +1114,7 @@ public class OrderServiceImpl implements OrderService {
         return APIUtil.getResponse(SUCCESS, orderExpress);
     }
 
+
     /**
      * 我的订单列表
      */
@@ -1110,14 +1125,26 @@ public class OrderServiceImpl implements OrderService {
         if (errorResponse != null) return errorResponse;
 
         if (myOrderParam.getKeyword() != null && !myOrderParam.getKeyword().equals("")) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("%");
-            char keywords[] = myOrderParam.getKeyword().toCharArray();
-            for (char key : keywords) {
-                sb.append(key);
-                sb.append("%");
+            boolean flag = true;
+            // 访问 状态模糊关键字 字典 匹配到对应关键字
+            Map<String, String> map = SFOrderHelper.getKeywordMap();
+            for (Map.Entry entry : map.entrySet()) {
+                if (myOrderParam.getKeyword().equals(entry.getKey())) {
+                    myOrderParam.setKeyword((String) entry.getValue());
+                    flag = false;
+                }
             }
-            myOrderParam.setKeyword(sb.toString());
+
+            if (flag) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("%");
+                char keywords[] = myOrderParam.getKeyword().toCharArray();
+                for (char key : keywords) {
+                    sb.append(key);
+                    sb.append("%");
+                }
+                myOrderParam.setKeyword(sb.toString());
+            }
         }
 
         // pageNum -> startIndex
