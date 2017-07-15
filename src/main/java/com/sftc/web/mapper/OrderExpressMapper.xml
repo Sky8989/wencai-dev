@@ -46,7 +46,7 @@
     <!--</select>-->
 
     <!-- 普通下单 -->
-    <insert id="addOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
+    <insert id="addOrderExpress" parameterType="com.sftc.web.model.OrderExpress" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_order_express
         (ship_name,ship_mobile,ship_province,ship_city,ship_area,
         ship_addr,order_number,package_type,object_type,create_time,sender_user_id,order_id,state,uuid,longitude,latitude,reserve_time,order_time)

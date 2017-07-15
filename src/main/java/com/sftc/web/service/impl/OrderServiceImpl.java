@@ -503,16 +503,18 @@ public class OrderServiceImpl implements OrderService {
             String res = APIPostUtil.post(str, post);
             responseObject = JSONObject.fromObject(res);
 
-            if (responseObject.get("Message_Type") != null && ((String) responseObject.get("Message_Type")).contains("ERROR")) {
+            if (responseObject.get("Message") != null || (responseObject.get("Message_Type") != null && ((String) responseObject.get("Message_Type")).contains("ERROR"))) {
+                // 失败条件增加对Message的判定
                 // 下单失败
                 status = SUBMIT_FAIL;
+                logger.error("普通大网直接下单失败：" + order.getId() + res);
             } else {
                 // 返回结果添加订单编号
                 responseObject.put("order_id", order.getId());
 
                 //System.out.println("-   -接口结果"+res);
                 // TODO 获取sf返回结果的订单号ordernum
-                String ordernum = "1234567890";
+                String ordernum = responseObject.getString("ordernum");
                 //更新订单和快递的order_number为sf普通大网下单接口返回值
                 orderMapper.updateOrderNumber(order.getId(), ordernum);
                 orderExpressMapper.updateOrderNumber(orderExpress.getId(), ordernum);
@@ -583,7 +585,8 @@ public class OrderServiceImpl implements OrderService {
                 JSONObject resultObject = JSONObject.fromObject(resultStr);
                 String messageType = (String) resultObject.get("Message_Type");
 
-                if (messageType != null && messageType.contains("ERROR")) {
+                if (resultObject.get("Message") != null || (messageType != null && messageType.contains("ERROR"))) {
+                    // 失败条件增加对Message的判定
                     logger.error("大网预约单提交失败: " + resultObject);
                 } else {
                     // 存储快递信息
@@ -592,12 +595,12 @@ public class OrderServiceImpl implements OrderService {
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), nation_uuid, null);
                     orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
 
-                    /*System.out.println("-   -接口结果"+resultStr);
+                    //system.out.println("-   -接口结果"+resultStr);
                     // TODO 获取sf返回结果的订单号ordernum
-                    String ordernum = "1234567890";
+                    String ordernum = resultObject.getString("ordernum");
                     //更新订单和快递的order_number为sf普通大网下单接口返回值
-                    orderMapper.updateOrderNumber(order.getId(),ordernum);
-                    orderExpressMapper.updateOrderNumber(oe.getId(),ordernum);*/
+                    orderMapper.updateOrderNumber(order.getId(), ordernum);
+                    orderExpressMapper.updateOrderNumber(oe.getId(), ordernum);
                 }
             }
         }
@@ -1516,12 +1519,12 @@ public class OrderServiceImpl implements OrderService {
             evaluate.setMerchant_comments(attributes.getString("merchant_comments"));
             evaluate.setMerchant_score(attributes.getString("merchant_score"));
             evaluate.setMerchant_tags(attributes.getString("merchant_tags"));
+            // 修复bug 有uuid改为orderExpress_id by hxy 7.15
             evaluate.setOrderExpress_id(orderExpress.getId());
             evaluate.setUuid(uuid);
             evaluate.setUser_id(request.getInt("user_id"));
             evaluate.setCreate_time(Long.toString(System.currentTimeMillis()));
             evaluateMapper.addEvaluate(evaluate);
-            // 评价成功后sf返回结果信息较长 截取attributes
             jsonObject = jsonObject.getJSONObject("request").getJSONObject("attributes");
         }
         return APIUtil.getResponse(status, jsonObject);

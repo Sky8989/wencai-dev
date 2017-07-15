@@ -47,6 +47,7 @@ public class SFOrderHelper {
         map.put("待填写", "WAIT_FILL");
         map.put("已退款", "REFUNDED");
         map.put("退款中", "REFUNDING");
+        map.put("退款", "REFUNDING");
 
         return map;
     }
