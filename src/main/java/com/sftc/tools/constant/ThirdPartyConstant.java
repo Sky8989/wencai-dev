@@ -19,7 +19,10 @@ public class ThirdPartyConstant {
      * bucket
      */
     public static final String QN_BUCKET = "sftc";
-
+    /**
+     * domain
+     */
+    public static final String QN_DOMAIN = "https://sf.dankal.cn/";
 
     /////////////// 微信相关 ///////////////
 

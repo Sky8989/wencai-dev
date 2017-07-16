@@ -134,6 +134,11 @@ public interface OrderService {
      */
     APIResponse readExpressTransform(APIRequest request);
 
+    /**
+     * 订单分享界面截图
+     */
+    APIResponse screenShot(APIRequest request);
+
 
     //////////////// CMS ////////////////
 

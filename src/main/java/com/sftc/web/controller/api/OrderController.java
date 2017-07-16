@@ -283,4 +283,14 @@ public class OrderController extends AbstractBasicController {
         return orderService.readExpressTransform(request);
     }
 
+    /**
+     * 订单分享图片
+     */
+    @RequestMapping(value = "/share/screenShot", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse shareOrderImage(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.screenShot(request);
+    }
 }

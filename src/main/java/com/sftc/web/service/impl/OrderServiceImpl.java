@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
 import com.sftc.tools.common.DateUtils;
+import com.sftc.tools.screenshot.HtmlScreenShotUtil;
 import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFTokenHelper;
@@ -35,6 +36,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.sftc.tools.api.APIStatus.*;
+import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_IMAGES;
+import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_WEB_URL;
 import static com.sftc.tools.constant.SFConstant.*;
 
 @Service("orderService")
@@ -1401,6 +1404,26 @@ public class OrderServiceImpl implements OrderService {
             return APIUtil.submitErrorResponse("兜底记录不存在", null);
 
         return APIUtil.getResponse(SUCCESS, orderExpressTransform);
+    }
+
+    public APIResponse screenShot(APIRequest request) {
+        JSONObject requestObject = JSONObject.fromObject(request.getRequestParam());
+        if (!requestObject.containsKey("order_id"))
+            return APIUtil.paramErrorResponse("order_id不能为空");
+        int order_id = requestObject.getInt("order_id");
+        String name = requestObject.containsKey("name") ? (String) requestObject.get("name") : null;
+        String url = DK_PHANTOMJS_WEB_URL + order_id;
+        if (name != null) url += "&name=" + name;
+
+        String imgName = System.currentTimeMillis() + ".jpg";
+        String result = HtmlScreenShotUtil.screenShot(url, imgName);
+        if (result.equals("render ok")) {
+            // 保存图片成功
+            imgName = DK_PHANTOMJS_IMAGES + imgName; // 本地全路径
+            return APIUtil.getResponse(SUCCESS, imgName);
+        } else {
+            return APIUtil.submitErrorResponse("生成图片失败", null);
+        }
     }
 
     /**
