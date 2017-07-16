@@ -1279,7 +1279,7 @@ public class OrderServiceImpl implements OrderService {
         for (OrderExpress oe : orderExpressList) {
             if (oe.getUuid() != null && oe.getUuid().length() != 0) {
                 Order order = orderMapper.selectOrderDetailByOrderId(oe.getOrder_id());
-                if (order.getRegion_type().equals("REGION_SAME")) { // 只有同城的订单能同步快递状态
+                    if (order != null && order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) { // 只有同城的订单能同步快递状态
                     uuidSB.append(oe.getUuid());
                     uuidSB.append(",");
                 }
