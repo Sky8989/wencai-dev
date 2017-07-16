@@ -10,7 +10,7 @@ public class DKConstant {
     /**
      * 蛋壳域名
      */
-    public static final String DK_DOMIN = "https://sftc.dankal.cn/";
+    private static final String DK_DOMIN = "https://sftc.dankal.cn/";
 
     /**
      * 默认头像占位图

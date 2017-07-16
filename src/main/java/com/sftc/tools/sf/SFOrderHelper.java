@@ -11,7 +11,7 @@ public class SFOrderHelper {
     private static final int ORDER_LENGTH = 12;
     private static final String RANDOM_SOURCE_STRING = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    private static String getRandomString(int length) {
+    public static String getRandomString(int length) {
 
         Random random = new Random();
         StringBuilder sb = new StringBuilder();

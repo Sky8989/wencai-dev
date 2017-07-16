@@ -1,9 +1,6 @@
 package com.sftc.tools.screenshot;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_JSPATH;
 import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_OUTPUTPATH;
@@ -25,12 +22,10 @@ public class HtmlScreenShotUtil {
         String outPutPath = DK_PHANTOMJS_OUTPUTPATH + output;
 
         Runtime rt = Runtime.getRuntime();
-        Process process;
         StringBuilder sb = new StringBuilder();
-
         try {
             String cmd = DK_PHANTOMJS_SHELLPATH + " " + DK_PHANTOMJS_JSPATH + " " + url + " " + outPutPath;
-            process = rt.exec(cmd);
+            Process process = rt.exec(cmd);
             InputStream is = process.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String tmp = "";

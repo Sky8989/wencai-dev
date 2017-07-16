@@ -19,6 +19,7 @@ import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.model.sfmodel.Address;
 import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.service.OrderService;
+import com.sftc.web.service.QiniuService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -69,6 +70,8 @@ public class OrderServiceImpl implements OrderService {
     private MessageMapper messageMapper;
     @Resource
     private AddressHistoryMapper addressHistoryMapper;
+    @Resource
+    private QiniuService qiniuService;
 
     private ScheduledExecutorService reserveScheduledExecutorService; // 大网预约定时器
 
@@ -1416,13 +1419,19 @@ public class OrderServiceImpl implements OrderService {
         if (name != null) url += "&name=" + name;
 
         String imgName = System.currentTimeMillis() + ".jpg";
-        String result = HtmlScreenShotUtil.screenShot(url, imgName);
-        if (result.equals("render ok")) {
-            // 保存图片成功
-            imgName = DK_PHANTOMJS_IMAGES + imgName; // 本地全路径
-            return APIUtil.getResponse(SUCCESS, imgName);
+        // 保存图片
+        String result = HtmlScreenShotUtil.screenShot(url, imgName); // 现在返回了base64
+//        imgName = DK_PHANTOMJS_IMAGES + imgName; // 本地全路径
+
+        JSONObject resultObject = new JSONObject();
+        if (result.endsWith("success")) {
+            // 上传七牛云，七牛路径
+            String imgSrc = qiniuService.uploadImageWithBase64(result.replace("success", ""));
+            resultObject.put("img", imgSrc);
+            return APIUtil.getResponse(SUCCESS, resultObject);
         } else {
-            return APIUtil.submitErrorResponse("生成图片失败", null);
+            resultObject.put("error", result);
+            return APIUtil.submitErrorResponse("生成图片失败", resultObject);
         }
     }
 
