@@ -14,7 +14,7 @@
 		http://www.springframework.org/schema/tx/spring-tx-3.2.xsd ">
 
     <!-- 读取配置文件夹下的数据库连接配置文件 -->
-    <context:property-placeholder location="classpath:db.properties" />
+    <context:property-placeholder location="classpath:db.properties"/>
 
     <!-- 开启自动扫包 -->
     <context:component-scan base-package="com.sftc">
@@ -29,8 +29,11 @@
         <property name="url" value="${jdbc.url}"/>
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
-        <property name="maxActive" value="30" />
-        <property name="maxIdle" value="5" />
+        <property name="maxActive" value="30"/>
+        <property name="maxIdle" value="5"/>
+        <property name="timeBetweenEvictionRunsMillis" value="3600000"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="validationQuery" value="select name from sftc_gift_card limit 1"/>
     </bean>
 
     <!-- 把sqlMapConfig.xml交由spring管理 -->
@@ -43,7 +46,7 @@
     <!-- 自动加载mapper文件夹下的文件，然后进行一系列操作 -->
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.sftc.web.mapper" />
+        <property name="basePackage" value="com.sftc.web.mapper"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
     </bean>
 
@@ -51,11 +54,11 @@
         <!-- 数据源
         dataSource在applicationContext-dao.xml中配置了
          -->
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource"/>
     </bean>
 
     <!-- 通知 -->
-    <tx:advice id="txAdvice" transaction-manager="transactionManager" />
+    <tx:advice id="txAdvice" transaction-manager="transactionManager"/>
 
     <!-- 事务支持注解 -->
     <tx:annotation-driven transaction-manager="transactionManager"/>

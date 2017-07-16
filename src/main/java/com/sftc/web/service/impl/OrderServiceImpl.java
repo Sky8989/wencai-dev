@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
 import com.sftc.tools.common.DateUtils;
+import com.sftc.tools.screenshot.HtmlScreenShotUtil;
 import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFTokenHelper;
@@ -18,6 +19,7 @@ import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.model.sfmodel.Address;
 import com.sftc.web.model.sfmodel.*;
 import com.sftc.web.service.OrderService;
+import com.sftc.web.service.QiniuService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -35,6 +37,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.sftc.tools.api.APIStatus.*;
+import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_IMAGES;
+import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_WEB_URL;
 import static com.sftc.tools.constant.SFConstant.*;
 
 @Service("orderService")
@@ -66,6 +70,8 @@ public class OrderServiceImpl implements OrderService {
     private MessageMapper messageMapper;
     @Resource
     private AddressHistoryMapper addressHistoryMapper;
+    @Resource
+    private QiniuService qiniuService;
 
     private ScheduledExecutorService reserveScheduledExecutorService; // 大网预约定时器
 
@@ -1412,6 +1418,32 @@ public class OrderServiceImpl implements OrderService {
             return APIUtil.submitErrorResponse("兜底记录不存在", null);
 
         return APIUtil.getResponse(SUCCESS, orderExpressTransform);
+    }
+
+    public APIResponse screenShot(APIRequest request) {
+        JSONObject requestObject = JSONObject.fromObject(request.getRequestParam());
+        if (!requestObject.containsKey("order_id"))
+            return APIUtil.paramErrorResponse("order_id不能为空");
+        int order_id = requestObject.getInt("order_id");
+        String name = requestObject.containsKey("name") ? (String) requestObject.get("name") : null;
+        String url = DK_PHANTOMJS_WEB_URL + order_id;
+        if (name != null) url += "&name=" + name;
+
+        String imgName = System.currentTimeMillis() + ".jpg";
+        // 保存图片
+        String result = HtmlScreenShotUtil.screenShot(url, imgName); // 现在返回了base64
+//        imgName = DK_PHANTOMJS_IMAGES + imgName; // 本地全路径
+
+        JSONObject resultObject = new JSONObject();
+        if (result.endsWith("success")) {
+            // 上传七牛云，七牛路径
+            String imgSrc = qiniuService.uploadImageWithBase64(result.replace("success", ""));
+            resultObject.put("img", imgSrc);
+            return APIUtil.getResponse(SUCCESS, resultObject);
+        } else {
+            resultObject.put("error", result);
+            return APIUtil.submitErrorResponse("生成图片失败", resultObject);
+        }
     }
 
     /**
