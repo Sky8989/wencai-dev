@@ -910,8 +910,8 @@ public class OrderServiceImpl implements OrderService {
 
         // 插入订单表
         Order order = new Order(orderParam);
-        //String randomNumber = SFOrderHelper.getOrderNumber();
-        order.setOrder_number("");
+        String randomNumber = SFOrderHelper.getOrderNumber();
+        order.setOrder_number(randomNumber);
         orderMapper.addOrder(order);
 
         // 插入快递表
@@ -921,7 +921,7 @@ public class OrderServiceImpl implements OrderService {
         orderExpress.setOrder_id(order.getId());
         orderExpress.setCreate_time(order.getCreate_time());
         orderExpress.setState("WAIT_FILL");
-        //orderExpress.setUuid("");
+        orderExpress.setUuid(randomNumber);
         orderExpress.setSender_user_id(orderParam.getSender_user_id());
         orderExpress.setReserve_time("");
         orderExpress.setOrder_id(order.getId());
