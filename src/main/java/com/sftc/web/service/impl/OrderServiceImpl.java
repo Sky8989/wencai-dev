@@ -215,7 +215,7 @@ public class OrderServiceImpl implements OrderService {
         for (OrderExpress oe : order.getOrderExpressList()) {
             // 拼接大网订单地址参数
             JSONObject sf = requestObject.getJSONObject("sf");
-            sf.put("orderid", oe.getOrder_number());
+            sf.put("orderid", oe.getUuid());
             sf.put("j_contact", order.getSender_name());
             sf.put("j_mobile", order.getSender_mobile());
             sf.put("j_tel", order.getSender_mobile());
@@ -261,13 +261,19 @@ public class OrderServiceImpl implements OrderService {
                         return APIUtil.submitErrorResponse("下单失败", jsonObject);
                     } else {
                         // 存储订单信息
-                        String uuid = (String) jsonObject.get("ordernum");
+                        String uuid = oe.getUuid();
                         orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
+
                         // 不和前面的orderExpress构造方法放在一起  降低耦合度
                         String order_tiem = Long.toString(System.currentTimeMillis());
                         orderExpressMapper.updateOrderTime(uuid, order_tiem);
                         // 插入地址
                         setupAddress(order, oe);
+                        // TODO 获取sf返回结果的订单号ordernum
+                        String ordernum = jsonObject.getString("ordernum");
+                        //更新订单和快递的order_number为sf普通大网下单接口返回值
+                        orderMapper.updateOrderNumber(order.getId(), ordernum);
+                        orderExpressMapper.updateOrderNumber(oe.getId(), ordernum);
 
                         /*// 存储好友关系
                         UserContactNew userContactNewParam = new UserContactNew();
@@ -512,7 +518,6 @@ public class OrderServiceImpl implements OrderService {
                 // 返回结果添加订单编号
                 responseObject.put("order_id", order.getId());
 
-                //System.out.println("-   -接口结果"+res);
                 // TODO 获取sf返回结果的订单号ordernum
                 String ordernum = responseObject.getString("ordernum");
                 //更新订单和快递的order_number为sf普通大网下单接口返回值
@@ -546,7 +551,8 @@ public class OrderServiceImpl implements OrderService {
             if (Long.parseLong(oe.getReserve_time()) > System.currentTimeMillis()) return; // 还未到预约时间
             // 大网订单提交参数
             JSONObject sf = new JSONObject();
-            sf.put("orderid", oe.getOrder_number());
+            // orderid改为从uuid中取 原sf.put("orderid", oe.getOrder_number());
+            sf.put("orderid", oe.getUuid());
             sf.put("j_contact", order.getSender_name());
             sf.put("j_mobile", order.getSender_mobile());
             sf.put("j_tel", order.getSender_mobile());
@@ -892,7 +898,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 插入订单表
         Order order = new Order(orderParam);
-        //String order_number = SFOrderHelper.getOrderNumber();
+        //String randomNumber = SFOrderHelper.getOrderNumber();
         order.setOrder_number("");
         orderMapper.addOrder(order);
 
@@ -903,13 +909,12 @@ public class OrderServiceImpl implements OrderService {
         orderExpress.setOrder_id(order.getId());
         orderExpress.setCreate_time(order.getCreate_time());
         orderExpress.setState("WAIT_FILL");
-        orderExpress.setUuid("");
+        //orderExpress.setUuid("");
         orderExpress.setSender_user_id(orderParam.getSender_user_id());
         orderExpress.setReserve_time("");
         orderExpress.setOrder_id(order.getId());
         for (int i = 0; i < orderParam.getPackage_count(); i++) {
-            //orderExpress.setOrder_number(SFOrderHelper.getOrderNumber());
-            orderExpress.setOrder_number("");
+            orderExpress.setUuid(SFOrderHelper.getOrderNumber());
             orderExpressMapper.addOrderExpress(orderExpress);
         }
 
