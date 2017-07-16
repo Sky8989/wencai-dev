@@ -731,7 +731,8 @@ public class OrderServiceImpl implements OrderService {
 
         // 大网订单提交参数
         JSONObject sf = new JSONObject();
-        sf.put("orderid", oe.getOrder_number());
+        //orderid改为 由order_number获取uuid
+        sf.put("orderid", oe.getUuid());
         sf.put("j_contact", order.getSender_name());
         sf.put("j_mobile", order.getSender_mobile());
         sf.put("j_tel", order.getSender_mobile());
@@ -788,10 +789,15 @@ public class OrderServiceImpl implements OrderService {
                 orderExpressTransformMapper.insertExpressTransform(oet);
                 // 更改订单区域类型为大网
                 orderMapper.updateOrderRegionType(order.getId(), "REGION_NATION");
-                // 更新uuid
-                orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), nation_uuid, "");
+                // 更新uuid 现在不更新 uuid存的是自己下单过去的编号
+                //orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), nation_uuid, "");
                 // 更新快递状态
                 orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
+                // TODO 获取sf返回结果的订单号ordernum
+                String ordernum = (String) resultObject.get("ordernum");
+                //更新订单和快递的order_number为sf普通大网下单接口返回值
+                orderMapper.updateOrderNumber(order.getId(), ordernum);
+                orderExpressMapper.updateOrderNumber(oe.getId(), ordernum);
             }
             return APIUtil.getResponse(SUCCESS, resultObject);
         } else {
