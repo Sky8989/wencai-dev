@@ -7,11 +7,11 @@ public class OrderCallback {
     private int id;
     private String sender_name;
     private String sender_addr;
-    private String order_number;
     private String order_type;
     private String region_type;
     private boolean is_gift;
     private boolean is_evaluated;
+    private String order_number; // 单包裹的时候，从express里提出来
 
     private List<OrderCallbackExpress> expressList;
 
@@ -20,6 +20,7 @@ public class OrderCallback {
         private String ship_addr;
         private String uuid;
         private String state;
+        private String order_number;
 
         public String getShip_name() {
             return ship_name;
@@ -52,6 +53,14 @@ public class OrderCallback {
         public void setState(String state) {
             this.state = state;
         }
+
+        public String getOrder_number() {
+            return order_number;
+        }
+
+        public void setOrder_number(String order_number) {
+            this.order_number = order_number;
+        }
     }
 
     public int getId() {
@@ -76,14 +85,6 @@ public class OrderCallback {
 
     public void setSender_addr(String sender_addr) {
         this.sender_addr = sender_addr;
-    }
-
-    public String getOrder_number() {
-        return order_number;
-    }
-
-    public void setOrder_number(String order_number) {
-        this.order_number = order_number;
     }
 
     public String getOrder_type() {
@@ -118,7 +119,19 @@ public class OrderCallback {
         this.expressList = expressList;
     }
 
-    public boolean getIs_evaluated() {return is_evaluated;}
+    public boolean getIs_evaluated() {
+        return is_evaluated;
+    }
 
-    public void setIs_evaluated(boolean is_evaluated) {this.is_evaluated = is_evaluated;}
+    public void setIs_evaluated(boolean is_evaluated) {
+        this.is_evaluated = is_evaluated;
+    }
+
+    public String getOrder_number() {
+        return order_number;
+    }
+
+    public void setOrder_number(String order_number) {
+        this.order_number = order_number;
+    }
 }

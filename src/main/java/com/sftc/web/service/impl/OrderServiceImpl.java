@@ -38,7 +38,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.sftc.tools.api.APIStatus.*;
-import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_IMAGES;
 import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_WEB_URL;
 import static com.sftc.tools.constant.SFConstant.*;
 import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
@@ -1054,7 +1053,6 @@ public class OrderServiceImpl implements OrderService {
         return APIUtil.getResponse(SUCCESS, orderExpress);
     }
 
-
     /**
      * 我的订单列表
      */
@@ -1101,6 +1099,9 @@ public class OrderServiceImpl implements OrderService {
             callback.setOrder_type(order.getOrder_type());
             callback.setRegion_type(order.getRegion_type());
             callback.setIs_gift(order.getGift_card_id() > 0);
+            if (order.getOrderExpressList().size() == 1) // 单包裹
+                callback.setOrder_number(order.getOrderExpressList().get(0).getOrder_number());
+
             // expressList
             List<OrderCallback.OrderCallbackExpress> expressList = new ArrayList<OrderCallback.OrderCallbackExpress>();
             HashSet flagSetIsEvaluated = new HashSet();
@@ -1110,6 +1111,7 @@ public class OrderServiceImpl implements OrderService {
                 express.setState(oe.getState());
                 express.setShip_name(oe.getShip_name());
                 express.setShip_addr(oe.getShip_addr());
+                express.setOrder_number(oe.getOrder_number());
                 expressList.add(express);
                 // 检查快递是否评价过
                 List<Evaluate> evaluateList = evaluateMapper.selectByUuid(oe.getUuid());
@@ -1118,6 +1120,7 @@ public class OrderServiceImpl implements OrderService {
             }
             callback.setExpressList(expressList);
             callback.setIs_evaluated(flagSetIsEvaluated.contains(1));
+
             orderCallbacks.add(callback);
         }
 
@@ -1127,6 +1130,7 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 我的好友圈订单列表
      */
+
     public APIResponse getMyFriendCircleOrderList(APIRequest request) {
         MyOrderParam myOrderParam = (MyOrderParam) request.getRequestParam();
 
