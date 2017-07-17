@@ -1,10 +1,12 @@
 package com.sftc.web.service.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sftc.tools.api.APIPostUtil;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.constant.WXConstant;
 import com.sftc.web.mapper.TokenMapper;
 import com.sftc.web.mapper.UserMapper;
 import com.sftc.web.model.Token;
@@ -12,11 +14,15 @@ import com.sftc.web.model.User;
 import com.sftc.web.service.MessageService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
 import static com.sftc.tools.constant.SFConstant.*;
+import static com.sftc.tools.constant.WXConstant.WX_ACCESS_TOKEN;
+import static com.sftc.tools.constant.WXConstant.WX_SEND_MESSAGE_PATH;
+import static com.sftc.tools.constant.WXConstant.WX_template_id_1;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {
@@ -26,8 +32,10 @@ public class MessageServiceImpl implements MessageService {
 
     @Resource
     private UserMapper userMapper;
+    private Logger logger = Logger.getLogger(this.getClass());
 
     private Gson gson = new Gson();
+
 
     /**
      * 获取短信验证码
@@ -101,13 +109,13 @@ public class MessageServiceImpl implements MessageService {
             // 验证手机号与user_id的匹配
             User userByPhone = userMapper.selectUserByPhone(mobile);
             User userByUserId = userMapper.selectUserByUserId(user_id);
-            if (userByUserId.getMobile() == null || "".equals(userByUserId.getMobile())){
+            if (userByUserId.getMobile() == null || "".equals(userByUserId.getMobile())) {
                 // 用户的手机号为空 则 判断 参数手机号是否被用过
                 if (userByPhone != null) {
                     return APIUtil.submitErrorResponse("该手机号已被人使用注册过，手机号使用者是：", userByPhone.getName());
                 }
-            }else {// 用户已经绑定过手机号
-                if ( !mobile.equals(userByUserId.getMobile())) {
+            } else {// 用户已经绑定过手机号
+                if (!mobile.equals(userByUserId.getMobile())) {
                     // 当 该id的用户手机号和参数手机号匹配
                     return APIUtil.submitErrorResponse("您已经注册过，请使用注册时的手机号，请参考该手机号：", userByUserId.getMobile());
                 }
@@ -187,17 +195,56 @@ public class MessageServiceImpl implements MessageService {
         boolean flag = false;
         User userByPhone = userMapper.selectUserByPhone(param_mobile);
         User userByUserId = userMapper.selectUserByUserId(param_user_id);
-        if (userByUserId.getMobile() == null || "".equals(userByUserId.getMobile())){
+        if (userByUserId.getMobile() == null || "".equals(userByUserId.getMobile())) {
             // 用户的手机号为空 则 判断 参数手机号是否被用过
             if (userByPhone == null) {
                 flag = true;
             }
-        }else {// 用户已经绑定过手机号
-            if ( param_mobile.equals(userByUserId.getMobile())) {
+        } else {// 用户已经绑定过手机号
+            if (param_mobile.equals(userByUserId.getMobile())) {
                 // 当 该id的用户手机号和参数手机号匹配 则放行
                 flag = true;
             }
         }
         return flag;
+    }
+
+    /**
+     * 发送微信模板消息的方法 下单成功后
+     *
+     * @param touser_id  接受折的id
+     * @param messageArr 消息内容数据的数组
+     * @param pagePath   跳转页面的路径
+     */
+    public void sendWXTemplateMessage(int touser_id, String[] messageArr, String pagePath, String form_id) throws Exception {
+        User user = userMapper.selectUserByUserId(touser_id);
+
+        // 构造 data 的数据体
+        JSONObject dataBody = new JSONObject();
+        for (int i = 0; messageArr.length > 0; i++) {
+            System.out.println(messageArr[i]);
+            JSONObject keyword = new JSONObject();
+            keyword.put("value", messageArr[i]);
+            keyword.put("color", "#173177");
+            dataBody.put("keyword" + (i + 1), keyword);
+        }
+
+        // 构造模板消息数据
+        JSONObject messageBody = new JSONObject();
+        messageBody.put("touser", user.getOpen_id());
+        messageBody.put("template_id", WX_template_id_1);
+        messageBody.put("page", pagePath);
+        messageBody.put("form_id", form_id);
+        messageBody.put("emphasis_keyword", "keyword1.DATA");
+        messageBody.put("data", dataBody.toString());
+        String postStr = messageBody.toString();
+        String postURL = WX_SEND_MESSAGE_PATH + WX_ACCESS_TOKEN;
+        HttpPost httpPost = new HttpPost(postURL);
+        String resultStr = APIPostUtil.post(postStr, httpPost);
+        JSONObject resultJSONObject = JSONObject.fromObject(resultStr);
+        if (resultJSONObject.containsKey("errcode")) {
+            logger.error(resultStr);
+        }
+        logger.info(resultStr);
     }
 }

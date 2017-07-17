@@ -20,4 +20,14 @@ public interface MessageService {
     APIResponse getToken(Object object);
 
     APIResponse sfLogin(Object object);
+
+    /**
+     * 发送微信模板消息的方法 下单成功后
+     *
+     * @param touser_id  接受折的id
+     * @param messageArr 消息内容数据的数组
+     * @param pagePath   跳转页面的路径
+     */
+    void sendWXTemplateMessage(int touser_id, String[] messageArr, String pagePath, String form_id) throws Exception;
+
 }
