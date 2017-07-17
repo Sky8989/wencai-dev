@@ -190,7 +190,6 @@ public class OrderServiceImpl implements OrderService {
                 orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
                 String order_tiem = Long.toString(System.currentTimeMillis());
                 orderExpressMapper.updateOrderTime(uuid, order_tiem);
-                orderMapper.updateOrderNumber(order_id, request_num);
                 orderExpressMapper.updateOrderNumber(oe.getId(), request_num);
 
                 // 插入地址
@@ -270,7 +269,6 @@ public class OrderServiceImpl implements OrderService {
                         orderExpressMapper.updateOrderTime(oe.getUuid(), order_time);
 
                         String ordernum = jsonObject.getString("ordernum");
-                        orderMapper.updateOrderNumber(order.getId(), ordernum);
                         orderExpressMapper.updateOrderNumber(oe.getId(), ordernum);
 
                         // 插入地址
@@ -482,7 +480,6 @@ public class OrderServiceImpl implements OrderService {
                 // 返回结果添加订单编号
                 responseObject.put("order_id", order.getId());
                 String ordernum = responseObject.getString("ordernum");
-                orderMapper.updateOrderNumber(order.getId(), ordernum);
                 orderExpressMapper.updateOrderNumber(orderExpress.getId(), ordernum);
             }
         } else { // 预约件
@@ -561,7 +558,6 @@ public class OrderServiceImpl implements OrderService {
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), oe.getUuid(), null);
                     orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
                     String ordernum = resultObject.getString("ordernum");
-                    orderMapper.updateOrderNumber(order.getId(), ordernum);
                     orderExpressMapper.updateOrderNumber(oe.getId(), ordernum);
                 }
             }
@@ -745,7 +741,6 @@ public class OrderServiceImpl implements OrderService {
                 orderExpressTransformMapper.insertExpressTransform(oet);
 
                 // 更新order表
-                orderMapper.updateOrderNumber(order.getId(), nation_uuid);                              // order order_number
                 orderMapper.updateOrderRegionType(order.getId(), "REGION_NATION");          // 更改订单区域类型为大网
 
                 // 更新express表
@@ -1527,7 +1522,7 @@ public class OrderServiceImpl implements OrderService {
                 stringBuilder.append(",");
             }
         }
-        JSONObject resJSONObject = null;
+        JSONObject resJSONObject;
         if (stringBuilder.toString().length() > 0) {//这是订单已经提交付款了的操作
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
             orderMapper.updateCancelOrderById(order_id);

@@ -66,10 +66,6 @@ public interface OrderMapper {
     // 取消订单，更新is_cancel字段
     void updateCancelOrderById(int id);
 
-    // 更新订单的order_number为sf好友同城下单接口返回值
-    void updateOrderNumber(@Param("id") int id, @Param("order_number") String order_number);
-
-
     //     <!--下面是cms系统用到的mapper-->
     List<Order> selectOrderByPage(Order order);
 }
