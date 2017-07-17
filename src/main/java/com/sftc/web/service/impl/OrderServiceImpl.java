@@ -117,7 +117,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    // 好友同城订单提交 TODO 改订单编号
+    // 好友同城订单提交
     private APIResponse friendSameOrderCommit(JSONObject requestObject) {
         // Param
         int order_id = ((Double) requestObject.getJSONObject("order").get("order_id")).intValue();
@@ -187,11 +187,8 @@ public class OrderServiceImpl implements OrderService {
                 orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
                 // 快递表更新uuid和预约时间
                 orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
-                // 不和前面的orderExpress构造方法放在一起  降低耦合度
                 String order_tiem = Long.toString(System.currentTimeMillis());
                 orderExpressMapper.updateOrderTime(uuid, order_tiem);
-
-                //更新订单和快递的order_number为sf好友同城下单接口返回值
                 orderMapper.updateOrderNumber(order_id, request_num);
                 orderExpressMapper.updateOrderNumber(oe.getId(), request_num);
 
@@ -268,50 +265,15 @@ public class OrderServiceImpl implements OrderService {
                         return APIUtil.submitErrorResponse("下单失败", jsonObject);
                     } else {
                         // 存储订单信息
-                        String uuid = oe.getUuid();
-                        orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
+                        String order_time = Long.toString(System.currentTimeMillis());
+                        orderExpressMapper.updateOrderTime(oe.getUuid(), order_time);
 
-                        // 不和前面的orderExpress构造方法放在一起  降低耦合度
-                        String order_tiem = Long.toString(System.currentTimeMillis());
-                        orderExpressMapper.updateOrderTime(uuid, order_tiem);
-                        // 插入地址
-                        setupAddress(order, oe);
-                        // TODO 获取sf返回结果的订单号ordernum
                         String ordernum = jsonObject.getString("ordernum");
-                        //更新订单和快递的order_number为sf普通大网下单接口返回值
                         orderMapper.updateOrderNumber(order.getId(), ordernum);
                         orderExpressMapper.updateOrderNumber(oe.getId(), ordernum);
 
-                        /*// 存储好友关系
-                        UserContactNew userContactNewParam = new UserContactNew();
-                        userContactNewParam.setUser_id(order.getSender_user_id());
-                        userContactNewParam.setFriend_id(oe.getShip_user_id());
-                        UserContactNew userContactNew = userContactMapper.selectByUserIdAndShipId(userContactNewParam);
-                        if (userContactNew == null) {
-                            userContactNew = new UserContactNew();
-                            userContactNew.setUser_id(order.getSender_user_id());
-                            userContactNew.setFriend_id(oe.getShip_user_id());
-                            userContactNew.setIs_tag_star(0);
-                            userContactNew.setLntimacy(0);
-                            userContactNew.setCreate_time(Long.toString(System.currentTimeMillis()));
-                            userContactMapper.insertUserContact(userContactNew);
-                        } else {
-                            // 如果不为空 则好友度加1
-                            userContactMapper.updateUserContactLntimacy(userContactNew);
-                        }
-
-                        // 通知消息
-                        List<Message> messageList = messageMapper.selectMessageReceiveExpress(oe.getShip_user_id());
-                        if (messageList.isEmpty()) {
-                            Message message = new Message("RECEIVE_EXPRESS", 0, oe.getId(), oe.getShip_user_id());
-                            messageMapper.insertMessage(message);
-                        } else {
-                            Message message = messageList.get(0);
-                            message.setExpress_id(oe.getId());
-                            message.setIs_read(0);
-                            message.setCreate_time(Long.toString(System.currentTimeMillis()));
-                            messageMapper.updateMessageReceiveExpress(message);
-                        }*/
+                        // 插入地址
+                        setupAddress(order, oe);
                     }
                 }
             }
@@ -352,7 +314,6 @@ public class OrderServiceImpl implements OrderService {
             reqObject.getJSONObject("request").put("reserve_time", reserveTime);
         }
 
-        //String order_number = SFOrderHelper.getOrderNumber();
         APIStatus status = SUCCESS;
 
         Order order = new Order(
@@ -517,17 +478,12 @@ public class OrderServiceImpl implements OrderService {
             responseObject = JSONObject.fromObject(res);
 
             if (responseObject.get("Message") != null || (responseObject.get("Message_Type") != null && ((String) responseObject.get("Message_Type")).contains("ERROR"))) {
-                // 失败条件增加对Message的判定
-                // 下单失败
                 status = SUBMIT_FAIL;
-                logger.error("普通大网直接下单失败：" + order.getId() + res);
+                logger.error("普通大网下单失败：" + order.getId() + res);
             } else {
                 // 返回结果添加订单编号
                 responseObject.put("order_id", order.getId());
-
-                // TODO 获取sf返回结果的订单号ordernum
                 String ordernum = responseObject.getString("ordernum");
-                //更新订单和快递的order_number为sf普通大网下单接口返回值
                 orderMapper.updateOrderNumber(order.getId(), ordernum);
                 orderExpressMapper.updateOrderNumber(orderExpress.getId(), ordernum);
             }
@@ -556,9 +512,9 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         for (OrderExpress oe : order.getOrderExpressList()) {
             if (Long.parseLong(oe.getReserve_time()) > System.currentTimeMillis()) return; // 还未到预约时间
+
             // 大网订单提交参数
             JSONObject sf = new JSONObject();
-            // orderid改为从uuid中取 原sf.put("orderid", oe.getOrder_number());
             sf.put("orderid", oe.getUuid());
             sf.put("j_contact", order.getSender_name());
             sf.put("j_mobile", order.getSender_mobile());
@@ -589,6 +545,7 @@ public class OrderServiceImpl implements OrderService {
                 sf.remove("pay_method");
                 sf.put("pay_method", pay_method);
             }
+
             if (!oe.getState().equals("WAIT_FILL")) {
                 // 订单提交
                 String paramStr = gson.toJson(JSONObject.fromObject(sf));
@@ -599,19 +556,13 @@ public class OrderServiceImpl implements OrderService {
                 String messageType = (String) resultObject.get("Message_Type");
 
                 if (resultObject.get("Message") != null || (messageType != null && messageType.contains("ERROR"))) {
-                    // 失败条件增加对Message的判定
                     logger.error("大网预约单提交失败: " + resultObject);
                 } else {
                     // 存储快递信息
-                    String nation_uuid = (String) resultObject.get("ordernum");
                     orderMapper.updateOrderRegionType(order.getId(), "REGION_NATION");
-                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), nation_uuid, null);
+                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), oe.getUuid(), null);
                     orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
-
-                    //system.out.println("-   -接口结果"+resultStr);
-                    // TODO 获取sf返回结果的订单号ordernum
                     String ordernum = resultObject.getString("ordernum");
-                    //更新订单和快递的order_number为sf普通大网下单接口返回值
                     orderMapper.updateOrderNumber(order.getId(), ordernum);
                     orderExpressMapper.updateOrderNumber(oe.getId(), ordernum);
                 }
@@ -738,8 +689,8 @@ public class OrderServiceImpl implements OrderService {
 
         // 大网订单提交参数
         JSONObject sf = new JSONObject();
-        //orderid改为 由order_number获取uuid
-        sf.put("orderid", oe.getUuid());
+        String orderid = SFOrderHelper.getOrderNumber();
+        sf.put("orderid", orderid);
         sf.put("j_contact", order.getSender_name());
         sf.put("j_mobile", order.getSender_mobile());
         sf.put("j_tel", order.getSender_mobile());
@@ -790,21 +741,19 @@ public class OrderServiceImpl implements OrderService {
                 OrderExpressTransform oet = new OrderExpressTransform();
                 oet.setExpress_id(oe.getId());
                 oet.setSame_uuid(same_uuid);
-                oet.setNation_uuid(nation_uuid);
+                oet.setNation_uuid(orderid);
                 oet.setIs_read(0);
                 oet.setCreate_time(System.currentTimeMillis() + "");
                 orderExpressTransformMapper.insertExpressTransform(oet);
-                // 更改订单区域类型为大网
-                orderMapper.updateOrderRegionType(order.getId(), "REGION_NATION");
-                // 更新uuid 现在不更新 uuid存的是自己下单过去的编号
-                //orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), nation_uuid, "");
-                // 更新快递状态
-                orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
-                // TODO 获取sf返回结果的订单号ordernum
-                String ordernum = (String) resultObject.get("ordernum");
-                //更新订单和快递的order_number为sf普通大网下单接口返回值
-                orderMapper.updateOrderNumber(order.getId(), ordernum);
-                orderExpressMapper.updateOrderNumber(oe.getId(), ordernum);
+
+                // 更新order表
+                orderMapper.updateOrderNumber(order.getId(), nation_uuid);                              // order order_number
+                orderMapper.updateOrderRegionType(order.getId(), "REGION_NATION");          // 更改订单区域类型为大网
+
+                // 更新express表
+                orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), orderid, ""); // 更新uuid
+                orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");      // 更新快递状态
+                orderExpressMapper.updateOrderNumber(oe.getId(), nation_uuid);                          // express order_number
             }
             return APIUtil.getResponse(SUCCESS, resultObject);
         } else {
@@ -1613,40 +1562,34 @@ public class OrderServiceImpl implements OrderService {
         List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
         StringBuilder stringBuilder = new StringBuilder();
         //遍历所有的快递列表
-        boolean flagRealOrder = false;
         for (OrderExpress eachOrderExpress : arrayList) {
             if (eachOrderExpress.getUuid() != null && !"".equals(eachOrderExpress.getUuid())) {
-                flagRealOrder = true;
                 stringBuilder.append(eachOrderExpress.getUuid());
                 stringBuilder.append(",");
-                continue;
             }
-            //如果是空订单，就结束此次循环，进行下一次
-            System.out.println("-   -未付款订单，订单编号是：" + eachOrderExpress.getOrder_number());
         }
         JSONObject resJSONObject = null;
-        if (flagRealOrder) {//这是订单已经提交付款了的操作
+        if (stringBuilder.toString().length() > 0) {//这是订单已经提交付款了的操作
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+            orderMapper.updateCancelOrderById(order_id);
+            orderExpressMapper.updateOrderExpressCanceled(order_id);
+
             //下面是 顺丰方面取消订单的逻辑
             String str = "{\"event\":{\"type\":\"CANCEL\",\"source\":\"MERCHANT\"}}";
-            //String str = gson.toJson(object);
             String myUrl = SF_REQUEST_URL + "/" + stringBuilder.toString() + "/events";
-            System.out.println("-   -这是myurl" + myUrl);
             HttpPost post = new HttpPost(myUrl);
             post.addHeader("PushEnvelope-Device-Token", access_token);
             String res = APIPostUtil.post(str, post);
             resJSONObject = JSONObject.fromObject(res);
             if (resJSONObject.get("error") != null) {
-                return APIUtil.submitErrorResponse("订单取消失败,sf接口出错", resJSONObject);
-            } else {
-                orderMapper.updateCancelOrderById(order_id);
-                orderExpressMapper.updateOrderExpressCanceled(order_id);
+                return APIUtil.submitErrorResponse("订单取消失败", resJSONObject);
             }
-        } else {//订单还未提交给顺丰的情况，只更新order的信息即可
+        } else { // 订单还未提交给顺丰的情况，只更新order的信息即可
             orderMapper.updateCancelOrderById(order_id);
             orderExpressMapper.updateOrderExpressCanceled(order_id);
+            return APIUtil.getResponse(APIStatus.SUCCESS, "同城订单，未被提交到顺丰下单，已做软取消处理");
         }
-        return APIUtil.getResponse(APIStatus.SUCCESS, flagRealOrder ? resJSONObject : "同城订单，未被提交到顺丰下单，已做软取消处理");
+        return APIUtil.getResponse(APIStatus.SUCCESS, resJSONObject);
     }
 
     // 取消大网订单
@@ -1655,61 +1598,6 @@ public class OrderServiceImpl implements OrderService {
         orderExpressMapper.updateOrderExpressCanceled(order_id);
         return APIUtil.getResponse(APIStatus.SUCCESS, "该订单已做软取消处理");
     }
-
-    /**
-     *  取消订单
-     */
-    /*public APIResponse deleteOrder(Object object) {
-        APIStatus status = SUCCESS;
-        JSONObject jsonObject = null;
-        JSONObject jsonObject1 = JSONObject.fromObject(object);
-        //获取订单id，便于后续取消订单操作的取用
-        int id = jsonObject1.getInt("order_id");
-        jsonObject1.remove("order_id");
-        //对重复取消订单的情况进行处理
-        Order order = orderMapper.selectOrderDetailByOrderId(id);
-        if ("Cancelled".equals(order.getIs_cancel()) || !"".equals(order.getIs_cancel())) {//is_cancle字段默认是空字符串
-            //return APIUtil.getResponse(APIStatus.CANCEL_ORDER_FALT, null);
-            return APIUtil.submitErrorResponse("订单已经取消，请勿重复取消操作！！！", null);
-        }
-        List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(id);
-        StringBuilder stringBuilder = new StringBuilder();
-        //遍历所有的快递列表
-        boolean flagRealOrder = false;
-        for (OrderExpress eachOrderExpress : arrayList) {
-            if (eachOrderExpress.getUuid() != null && !"".equals(eachOrderExpress.getUuid())) {
-                flagRealOrder = true;
-                stringBuilder.append(eachOrderExpress.getUuid());
-                stringBuilder.append(",");
-                continue;
-            }
-            //如果是空订单，就结束此次循环，进行下一次
-            System.out.println("-   -未付款订单，订单编号是：" + eachOrderExpress.getOrder_number());
-        }
-        if (flagRealOrder) {//这是订单已经提交付款了的操作
-
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-            //下面是 顺丰方面取消订单的逻辑
-            String str = "{\"event\":{\"type\":\"CANCEL\",\"source\":\"MERCHANT\"}}";
-            //String str = gson.toJson(object);
-            String myUrl = SF_REQUEST_URL + "/" + stringBuilder.toString() + "/events";
-            System.out.println("-   -这是myurl" + myUrl);
-            HttpPost post = new HttpPost(myUrl);
-            post.addHeader("PushEnvelope-Device-Token", jsonObject1.getString("access_token"));
-            String res = APIPostUtil.post(str, post);
-            jsonObject = JSONObject.fromObject(res);
-            if (jsonObject.get("error") != null) {
-                return APIUtil.submitErrorResponse("订单取消失败,sf接口出错", jsonObject);
-            } else {
-                orderMapper.updateCancelOrderById(id);
-                orderExpressMapper.updateOrderExpressCanceled(id);
-            }
-        } else {//订单还未提交给顺丰的情况，只更新order的信息即可
-            orderMapper.updateCancelOrderById(id);
-            orderExpressMapper.updateOrderExpressCanceled(id);
-        }
-        return APIUtil.getResponse(status, jsonObject);
-    }*/
 
     /**
      * 预约时间规则
