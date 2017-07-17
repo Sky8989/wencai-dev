@@ -66,16 +66,15 @@ public interface OrderService {
      */
     APIResponse getMyFriendCircleOrderList(APIRequest request);
 
+    /**
+     * 好友订单提交
+     */
     APIResponse friendPlace(Object object);
-
-    APIResponse sfOrderDetail(int order_id, String access_token, String uuid);
 
     /**
      * 快递详情
      */
     APIResponse selectExpressDetail(APIRequest request);
-
-    APIResponse noPlaceOrderDetail(int order_id);
 
     /**
      * 评价小哥
@@ -90,9 +89,7 @@ public interface OrderService {
     /**
      * 取消订单
      */
-    //APIResponse deleteOrder(Object object);
     APIResponse cancelOrder(Object object);
-
 
     /**
      * 时间规则

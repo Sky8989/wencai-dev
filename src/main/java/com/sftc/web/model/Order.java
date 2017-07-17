@@ -10,8 +10,6 @@ public class Order extends Object {
     private int id;
     // 创建时间
     private String create_time;
-    // 订单编号
-    private String order_number;
     // 支付时间
     private String pay_time;
     // 付款方式
@@ -71,12 +69,11 @@ public class Order extends Object {
         this.latitude = latitude;
     }
 
-    public Order(String create_time, String order_number, String pay_method,
+    public Order(String create_time, String pay_method,
                  String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,
                  double longitude, double latitude, String order_type, int sender_user_id) {
         this.create_time = create_time;
-        this.order_number = order_number;
         this.pay_method = pay_method;
         this.distribution_method = distribution_method;
         this.freight = freight;
@@ -94,7 +91,6 @@ public class Order extends Object {
 
     public Order(OrderParam orderParam) {
         this.create_time = Long.toString(System.currentTimeMillis());
-        this.order_number = (Math.random() * 100000 * 1000000) + "";
         this.pay_method = orderParam.getPay_method();
         this.distribution_method = orderParam.getDistribution_method();
         this.sender_name = orderParam.getSender_name();
@@ -124,14 +120,18 @@ public class Order extends Object {
      * 后期便于应用扩展工厂模式 将此参数抽出
      */
     public Order(HttpServletRequest request) {
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id")))
-        {this.id = Integer.parseInt(request.getParameter("id"));}
-        if (request.getParameter("order_type") != null && !"".equals(request.getParameter("order_type")))
-        {this.order_type = request.getParameter("order_type");}
-        if (request.getParameter("region_type") != null && !"".equals(request.getParameter("region_type")))
-        {this.region_type = request.getParameter("region_type");}
-        if (request.getParameter("sender_mobile") != null && !"".equals(request.getParameter("sender_mobile")))
-        {this.sender_mobile = request.getParameter("sender_mobile");}
+        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
+            this.id = Integer.parseInt(request.getParameter("id"));
+        }
+        if (request.getParameter("order_type") != null && !"".equals(request.getParameter("order_type"))) {
+            this.order_type = request.getParameter("order_type");
+        }
+        if (request.getParameter("region_type") != null && !"".equals(request.getParameter("region_type"))) {
+            this.region_type = request.getParameter("region_type");
+        }
+        if (request.getParameter("sender_mobile") != null && !"".equals(request.getParameter("sender_mobile"))) {
+            this.sender_mobile = request.getParameter("sender_mobile");
+        }
     }
 
     public int getId() {
@@ -148,14 +148,6 @@ public class Order extends Object {
 
     public void setCreate_time(String create_time) {
         this.create_time = create_time;
-    }
-
-    public String getOrder_number() {
-        return order_number;
-    }
-
-    public void setOrder_number(String order_number) {
-        this.order_number = order_number;
     }
 
     public String getPay_time() {
@@ -334,11 +326,19 @@ public class Order extends Object {
         this.region_type = region_type;
     }
 
-    public String getIs_cancel() {return is_cancel;}
+    public String getIs_cancel() {
+        return is_cancel;
+    }
 
-    public void setIs_cancel(String is_cancel) {this.is_cancel = is_cancel;}
+    public void setIs_cancel(String is_cancel) {
+        this.is_cancel = is_cancel;
+    }
 
-    public Evaluate getEvaluate() {return evaluate;}
+    public Evaluate getEvaluate() {
+        return evaluate;
+    }
 
-    public void setEvaluate(Evaluate evaluate) {this.evaluate = evaluate;}
+    public void setEvaluate(Evaluate evaluate) {
+        this.evaluate = evaluate;
+    }
 }

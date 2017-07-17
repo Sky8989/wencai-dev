@@ -41,6 +41,7 @@ import static com.sftc.tools.api.APIStatus.*;
 import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_IMAGES;
 import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_WEB_URL;
 import static com.sftc.tools.constant.SFConstant.*;
+import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
 
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
@@ -318,7 +319,6 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = new Order(
                 Long.toString(System.currentTimeMillis()),
-                "",
                 (String) reqObject.getJSONObject("request").get("pay_type"),
                 (String) reqObject.getJSONObject("request").get("product_type"),
                 0.0,
@@ -349,7 +349,6 @@ public class OrderServiceImpl implements OrderService {
 
         if (!(respObject.containsKey("error") || respObject.containsKey("errors"))) {
             // 插入订单表
-            order.setOrder_number(respObject.getJSONObject("request").getString("request_num"));
             orderMapper.addOrder(order);
 
             // 插入快递表
@@ -419,7 +418,6 @@ public class OrderServiceImpl implements OrderService {
         // 插入订单表
         Order order = new Order(
                 Long.toString(System.currentTimeMillis()),
-                "",
                 (String) sf.get("pay_method"),
                 "",
                 0,
@@ -810,9 +808,8 @@ public class OrderServiceImpl implements OrderService {
             post.addHeader("PushEnvelope-Device-Token", access_token);
         } else {
             // 下单时，如果还没登录，计价时uuid和token都没有，需要先写死
-            // TODO:公共uuid和token还没提供
             jsonObject.getJSONObject("request").getJSONObject("merchant").put("uuid", "2c9a85895c352c20015c3878647b017a");
-            post.addHeader("PushEnvelope-Device-Token", "padHjjRvusAC9z7ehxpG");
+            post.addHeader("PushEnvelope-Device-Token", COMMON_ACCESSTOKEN);
         }
 
         String res = APIPostUtil.post(gson.toJson(jsonObject), post);
@@ -861,7 +858,6 @@ public class OrderServiceImpl implements OrderService {
         // 插入订单表
         Order order = new Order(orderParam);
         String randomNumber = SFOrderHelper.getOrderNumber();
-        order.setOrder_number(randomNumber);
         orderMapper.addOrder(order);
 
         // 插入快递表
@@ -976,17 +972,11 @@ public class OrderServiceImpl implements OrderService {
      */
     public APIResponse selectOrderDetail(APIRequest request) {
 
-        String order_number = (String) request.getParameter("order_number");
         String order_id = (String) request.getParameter("order_id");
+        if (order_id == null || order_id.length() == 0)
+            return APIUtil.paramErrorResponse("order_id不能为空");
 
-        Order order;
-        if (order_number != null && order_number.length() != 0) {
-            order = orderMapper.selectOrderDetailByOrderNumber(order_number);
-        } else if (order_id != null && order_id.length() != 0) {
-            order = orderMapper.selectOrderDetailByOrderId(Integer.parseInt(order_id));
-        } else {
-            return APIUtil.paramErrorResponse("order_number order_id 必须传一个");
-        }
+        Order order = orderMapper.selectOrderDetailByOrderId(Integer.parseInt(order_id));
 
         Map<String, Object> resultMap = new HashMap<String, Object>();
         if (order == null) return APIUtil.getResponse(SUCCESS, null);
@@ -1015,21 +1005,6 @@ public class OrderServiceImpl implements OrderService {
         resultMap.put("giftCard", giftCard);
 
         return APIUtil.getResponse(SUCCESS, resultMap);
-    }
-
-    /**
-     * 快递详情接口
-     */
-    public APIResponse sfOrderDetail(int order_id, String access_token, String uuid) {
-
-        if (uuid == null)
-            uuid = orderExpressMapper.getUuidByOrderId(order_id);
-        // TODO:公共token还没提供
-        access_token = (access_token == null || access_token.equals("") ? "padHjjRvusAC9z7ehxpG" : access_token);
-
-        JSONObject jsonObject = SFExpressHelper.getExpressDetail(uuid, access_token);
-
-        return APIUtil.getResponse(SUCCESS, jsonObject);
     }
 
     /**
@@ -1128,7 +1103,6 @@ public class OrderServiceImpl implements OrderService {
             callback.setId(order.getId());
             callback.setSender_name(order.getSender_name());
             callback.setSender_addr(order.getSender_addr());
-            callback.setOrder_number(order.getOrder_number());
             callback.setOrder_type(order.getOrder_type());
             callback.setRegion_type(order.getRegion_type());
             callback.setIs_gift(order.getGift_card_id() > 0);
@@ -1215,7 +1189,7 @@ public class OrderServiceImpl implements OrderService {
         // Verify params
         if (myOrderParam.getToken().length() == 0) {
             //内置token
-            myOrderParam.setToken(SFTokenHelper.COMMON_ACCESSTOKEN);
+            myOrderParam.setToken(COMMON_ACCESSTOKEN);
             //return APIUtil.paramErrorResponse("token不能为空");
         } else if (myOrderParam.getId() == 0) {
             return APIUtil.paramErrorResponse("用户id不能为空");
@@ -1309,13 +1283,11 @@ public class OrderServiceImpl implements OrderService {
         JSONObject respObject = new JSONObject();
         String regionType = order.getRegion_type();
         if (regionType.equals("REGION_NATION")) { // 大网
-
-            OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
             // sort
             String sort = (String) request.getParameter("sort");
             sort = sort == null ? "desc" : sort;
             // GET
-            String url = SF_ORDERROUTE_URL + orderExpress.getOrder_number() + "&sort=" + sort;
+            String url = SF_ORDERROUTE_URL + uuid + "&sort=" + sort;
             HttpGet get = new HttpGet(url);
             String access_token = SFTokenHelper.getToken();
             get.addHeader("Authorization", "bearer " + access_token);
@@ -1338,10 +1310,7 @@ public class OrderServiceImpl implements OrderService {
 
             // 同城订单需要access_token
             String access_token = (String) request.getParameter("access_token");
-            // TODO:公共token还没提供
-            access_token = (access_token == null || access_token.equals("") ? "padHjjRvusAC9z7ehxpG" : access_token);
-//            if (access_token == null || access_token.equals(""))
-//                return APIUtil.paramErrorResponse("access_token不能为空");
+            access_token = (access_token == null || access_token.equals("") ? COMMON_ACCESSTOKEN : access_token);
 
             respObject = SFExpressHelper.getExpressDetail(uuid, access_token);
         }
@@ -1405,16 +1374,6 @@ public class OrderServiceImpl implements OrderService {
             resultObject.put("error", result);
             return APIUtil.submitErrorResponse("生成图片失败", resultObject);
         }
-    }
-
-    /**
-     * 未下单详情接口
-     */
-    public APIResponse noPlaceOrderDetail(int order_id) {
-        Order order = orderMapper.orderAndOrderExpressAndGiftDetile(order_id);
-        APIStatus status = order == null ? COURIER_NOT_FOUND : SUCCESS;
-
-        return APIUtil.getResponse(status, order);
     }
 
     /**

@@ -138,15 +138,6 @@ public class OrderController extends AbstractBasicController {
     }
 
     /**
-     * 顺丰详情接口，查询快递实时状态
-     */
-    @RequestMapping(value = "/sfDetail", method = RequestMethod.GET)
-    public @ResponseBody
-    APIResponse sfDetail(OrderExpress orderExpress, Token token) throws Exception {
-        return orderService.sfOrderDetail(orderExpress.getOrder_id(), token.getAccess_token(), orderExpress.getUuid());
-    }
-
-    /**
      * 快递详情
      */
     @RequestMapping(value = "/expressDetail", method = RequestMethod.GET)
@@ -167,15 +158,6 @@ public class OrderController extends AbstractBasicController {
     }
 
     /**
-     * 未下单详情
-     */
-    @RequestMapping(value = "/noPlaceDetail", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse noPlaceDetail(OrderExpress orderExpress) throws Exception {
-        return orderService.noPlaceOrderDetail(orderExpress.getOrder_id());
-    }
-
-    /**
      * 评价小哥（评价顺丰订单）
      */
     @RequestMapping(value = "/evaluateSingle", method = RequestMethod.POST)
@@ -190,7 +172,6 @@ public class OrderController extends AbstractBasicController {
     @RequestMapping(value = "/cancelOrder", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse cancelOrder(@RequestBody Object object) throws Exception {
-//        return orderService.deleteOrder(object);
         return orderService.cancelOrder(object);
     }
 
