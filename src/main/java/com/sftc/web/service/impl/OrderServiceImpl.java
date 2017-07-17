@@ -921,11 +921,11 @@ public class OrderServiceImpl implements OrderService {
         orderExpress.setOrder_id(order.getId());
         orderExpress.setCreate_time(order.getCreate_time());
         orderExpress.setState("WAIT_FILL");
-        orderExpress.setUuid(randomNumber);
         orderExpress.setSender_user_id(orderParam.getSender_user_id());
         orderExpress.setReserve_time("");
         orderExpress.setOrder_id(order.getId());
         for (int i = 0; i < orderParam.getPackage_count(); i++) {
+            //写入uuid 保证每个快递的uuid不同
             orderExpress.setUuid(SFOrderHelper.getOrderNumber());
             orderExpressMapper.addOrderExpress(orderExpress);
         }
