@@ -33,20 +33,9 @@
         SELECT * FROM  sftc_order_express WHERE  order_id = #{order_id}
     </select>
 
-    <!--<select id="findMyOrderExpress" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"-->
-    <!--resultType="com.sftc.web.model.apiCallback.OrderCallback">-->
-    <!--SELECT DISTINCT sftc_order_express.id,sftc_order_express.order_number,sftc_order_express.ship_name,-->
-    <!--sftc_order_express.ship_addr,sftc_order_express.state,sftc_order_express.uuid,sftc_order_express.create_time,-->
-    <!--sftc_order.sender_name,sftc_order.sender_addr,sftc_order.order_type,sftc_order.gift_card_id-->
-    <!--FROM sftc_order_express,sftc_order-->
-    <!--WHERE (sftc_order_express.sender_user_id=#{id} or sftc_order_express.ship_user_id=#{id})-->
-    <!--AND sftc_order_express.order_id = sftc_order.id-->
-    <!--order by sftc_order_express.create_time desc-->
-    <!--limit #{pageNum},#{pageSize}-->
-    <!--</select>-->
-
     <!-- 普通下单 -->
-    <insert id="addOrderExpress" parameterType="com.sftc.web.model.OrderExpress" useGeneratedKeys="true" keyProperty="id">
+    <insert id="addOrderExpress" parameterType="com.sftc.web.model.OrderExpress" useGeneratedKeys="true"
+            keyProperty="id">
         INSERT INTO sftc_order_express
         (ship_name,ship_mobile,ship_province,ship_city,ship_area,
         ship_addr,order_number,package_type,object_type,create_time,sender_user_id,order_id,state,uuid,longitude,latitude,reserve_time,order_time)
@@ -168,7 +157,7 @@
     </update>
 
     <!--更新订单的order_number为sf好友同城下单接口返回值-->
-    <update id="updateOrderNumber" >
+    <update id="updateOrderNumber">
         UPDATE sftc_order_express SET order_number = #{order_number} WHERE id = #{id}
     </update>
 
