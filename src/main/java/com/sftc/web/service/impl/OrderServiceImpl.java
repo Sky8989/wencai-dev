@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.Object;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -1279,7 +1280,7 @@ public class OrderServiceImpl implements OrderService {
         for (OrderExpress oe : orderExpressList) {
             if (oe.getUuid() != null && oe.getUuid().length() != 0) {
                 Order order = orderMapper.selectOrderDetailByOrderId(oe.getOrder_id());
-                    if (order != null && order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) { // 只有同城的订单能同步快递状态
+                if (order != null && order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) { // 只有同城的订单能同步快递状态
                     uuidSB.append(oe.getUuid());
                     uuidSB.append(",");
                 }
@@ -1420,14 +1421,25 @@ public class OrderServiceImpl implements OrderService {
         return APIUtil.getResponse(SUCCESS, orderExpressTransform);
     }
 
+    /**
+     * 订单分享屏幕截图
+     */
     public APIResponse screenShot(APIRequest request) {
+
         JSONObject requestObject = JSONObject.fromObject(request.getRequestParam());
         if (!requestObject.containsKey("order_id"))
             return APIUtil.paramErrorResponse("order_id不能为空");
         int order_id = requestObject.getInt("order_id");
         String name = requestObject.containsKey("name") ? (String) requestObject.get("name") : null;
         String url = DK_PHANTOMJS_WEB_URL + order_id;
-        if (name != null) url += "&name=" + name;
+        if (name != null) {
+            try {
+                name = URLEncoder.encode(name, "UTF-8");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            url += "&name=" + name;
+        }
 
         String imgName = System.currentTimeMillis() + ".jpg";
         // 保存图片
