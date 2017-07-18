@@ -46,7 +46,7 @@ public class OrderCancelLogic {
         // 不同地域类型的订单 进行不同的取消方式 大网是软取消 同城是硬取消
         if ("REGION_NATION".equals(order.getRegion_type())) {// true 大网单
             return cancelNATIONOrder(id);
-        } else { // false 同城单
+        } else { // false 同城单 或者 未提交单
             return cancelSAMEOrder(id, access_token);
         }
     }
@@ -71,9 +71,10 @@ public class OrderCancelLogic {
         return APIUtil.getResponse(APIStatus.SUCCESS, "该订单已做软取消处理");
     }
 
-    // 取消同城订单
+    // 取消同城订单 与 未提交单
     private APIResponse cancelSAMEOrder(int order_id, String access_token) {
         List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
+        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         StringBuilder stringBuilder = new StringBuilder();
         //遍历所有的快递列表
         for (OrderExpress eachOrderExpress : arrayList) {
@@ -83,7 +84,9 @@ public class OrderCancelLogic {
             }
         }
         JSONObject resJSONObject;
-        if (stringBuilder.toString().length() > 0) { //这是订单已经提交付款了的操作
+
+        boolean falg = order.getRegion_type() == null || "".equals(order.getRegion_type());
+        if (!falg) { //这是订单已经提交付款了的操作
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
             orderMapper.updateCancelOrderById(order_id);
             orderExpressMapper.updateOrderExpressCanceled(order_id);
@@ -101,7 +104,7 @@ public class OrderCancelLogic {
         } else { // 订单还未提交给顺丰的情况，只更新order的信息即可
             orderMapper.updateCancelOrderById(order_id);
             orderExpressMapper.updateOrderExpressCanceled(order_id);
-            return APIUtil.getResponse(APIStatus.SUCCESS, "同城订单，未被提交到顺丰下单，已做软取消处理");
+            return APIUtil.getResponse(APIStatus.SUCCESS, "订单未被提交到顺丰下单，已做软取消处理");
         }
         return APIUtil.getResponse(APIStatus.SUCCESS, resJSONObject);
     }
