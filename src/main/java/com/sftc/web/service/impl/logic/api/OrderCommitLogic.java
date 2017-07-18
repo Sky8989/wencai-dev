@@ -322,6 +322,7 @@ public class OrderCommitLogic {
 
                         String ordernum = jsonObject.getString("ordernum");
                         orderExpressMapper.updateOrderNumber(oe.getId(), ordernum);
+                        orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
 
                         // 插入地址
                         setupAddress(order, oe);
