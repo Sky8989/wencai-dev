@@ -32,8 +32,8 @@ public class MessageServiceImpl implements MessageService {
 
     @Resource
     private UserMapper userMapper;
-    private Logger logger = Logger.getLogger(this.getClass());
 
+    private Logger logger = Logger.getLogger(this.getClass());
     private Gson gson = new Gson();
 
 
@@ -45,11 +45,14 @@ public class MessageServiceImpl implements MessageService {
         String str = gson.toJson(object);
         HttpPost post = new HttpPost(SF_TAKE_MESSAGE_URL);
         String res = APIPostUtil.post(str, post);
-        JSONObject jsonObject = JSONObject.fromObject(res);
-        if (jsonObject.containsKey("error")) {
+        JSONObject resultObject = JSONObject.fromObject(res);
+        if (resultObject.containsKey("errors")) {
             status = APIStatus.VALIDATION_ERROR;
         }
-        return APIUtil.getResponse(status, jsonObject);
+        if (resultObject.containsKey("error")) {
+            return APIUtil.submitErrorResponse("其他错误", resultObject);
+        }
+        return APIUtil.getResponse(status, resultObject);
     }
 
     /**
