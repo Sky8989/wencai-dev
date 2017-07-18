@@ -11,6 +11,7 @@ public class OrderCallback {
     private String region_type;
     private boolean is_gift;
     private boolean is_evaluated;
+    private String pay_method;
     private String order_number; // 单包裹的时候，从express里提出来
 
     private List<OrderCallbackExpress> expressList;
@@ -119,12 +120,20 @@ public class OrderCallback {
         this.expressList = expressList;
     }
 
-    public boolean getIs_evaluated() {
+    public boolean isIs_evaluated() {
         return is_evaluated;
     }
 
     public void setIs_evaluated(boolean is_evaluated) {
         this.is_evaluated = is_evaluated;
+    }
+
+    public String getPay_method() {
+        return pay_method;
+    }
+
+    public void setPay_method(String pay_method) {
+        this.pay_method = pay_method;
     }
 
     public String getOrder_number() {

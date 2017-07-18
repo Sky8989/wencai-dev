@@ -89,6 +89,7 @@ public class OrderListLogic {
             callback.setOrder_type(order.getOrder_type());
             callback.setRegion_type(order.getRegion_type());
             callback.setIs_gift(order.getGift_card_id() > 0);
+            callback.setPay_method(order.getPay_method());
             if (order.getOrderExpressList().size() == 1) // 单包裹
                 callback.setOrder_number(order.getOrderExpressList().get(0).getOrder_number());
 
