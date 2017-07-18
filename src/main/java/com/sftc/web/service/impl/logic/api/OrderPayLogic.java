@@ -5,6 +5,7 @@ import com.sftc.tools.api.*;
 import com.sftc.tools.common.DateUtils;
 import com.sftc.web.mapper.TokenMapper;
 import com.sftc.web.mapper.UserMapper;
+import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
@@ -78,22 +79,24 @@ public class OrderPayLogic {
         String uuid = (String) request.getParameter("uuid");
         String access_token = (String) request.getParameter("access_token");
 
-        int user_id = tokenMapper.selectUserIdByToken(token);
-        User user = userMapper.selectUserByUserId(user_id);
-
-        if (token == null || token.equals(""))
+        Token tokenPram = tokenMapper.selectUserIdByToken(token);
+        if (token == null || token.equals("") || tokenPram == null)
             return APIUtil.paramErrorResponse("token无效");
         if (uuid == null || uuid.equals(""))
             return APIUtil.paramErrorResponse("uuid无效");
         if (access_token == null || access_token.equals(""))
             return APIUtil.paramErrorResponse("access_token无效");
 
+        User user = userMapper.selectUserByUserId(tokenPram.getUser_id());
         String pay_url = SF_REQUEST_URL + "/" + uuid + "/js_pay?open_id=" + user.getOpen_id();
         HttpPost post = new HttpPost(pay_url);
         post.addHeader("PushEnvelope-Device-Token", access_token);
         String res = APIPostUtil.post("", post);
-        JSONObject jsonObject = JSONObject.fromObject(res);
+        JSONObject resultObject = JSONObject.fromObject(res);
+        if (resultObject.containsKey("error")) {
+            return APIUtil.submitErrorResponse("支付失败，请查看返回值", resultObject);
+        }
 
-        return APIUtil.getResponse(SUCCESS, jsonObject);
+        return APIUtil.getResponse(SUCCESS, resultObject);
     }
 }

@@ -40,8 +40,8 @@
       SELECT t.access_token from sftc_user u,sftc_token t WHERE u.id=t.user_id AND u.mobile=#{mobile}
     </select>
 
-    <select id="selectUserIdByToken" parameterType="String" resultType="int">
-        select user_id from sftc_token where local_token=#{token}
+    <select id="selectUserIdByToken" parameterType="String" resultType="com.sftc.web.model.Token">
+        select * from sftc_token where local_token=#{token}
     </select>
 
 
