@@ -1,0 +1,99 @@
+package com.sftc.web.service.impl.logic.api;
+
+import com.google.gson.Gson;
+import com.sftc.tools.api.*;
+import com.sftc.tools.common.DateUtils;
+import com.sftc.web.mapper.TokenMapper;
+import com.sftc.web.mapper.UserMapper;
+import com.sftc.web.model.User;
+import net.sf.json.JSONObject;
+import org.apache.http.client.methods.HttpPost;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+
+import static com.sftc.tools.api.APIStatus.QUOTE_FAIL;
+import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.SFConstant.SF_QUOTES_URL;
+import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
+import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
+
+@Component
+public class OrderPayLogic {
+
+    private Gson gson = new Gson();
+
+    @Resource
+    private UserMapper userMapper;
+    @Resource
+    private TokenMapper tokenMapper;
+
+    /**
+     * 计价
+     */
+    public APIResponse countPrice(Object object) {
+
+        JSONObject jsonObject = JSONObject.fromObject(object);
+        HttpPost post = new HttpPost(SF_QUOTES_URL);
+        JSONObject requestObject = jsonObject.getJSONObject("request");
+        String uuid = (String) requestObject.getJSONObject("merchant").get("uuid");
+        String access_token = (String) requestObject.getJSONObject("token").get("access_token");
+
+        // 预约时间处理
+        String reserve_time = (String) requestObject.get("reserve_time");
+        requestObject.remove("reserve_time");
+        if (!reserve_time.equals("")) {
+            reserve_time = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            requestObject.put("reserve_time", reserve_time);
+        }
+
+        boolean uuidFlag = (uuid != null) && !(uuid.equals(""));
+        boolean tokenFlag = (access_token != null) && !(access_token.equals(""));
+
+        if ((uuidFlag && !tokenFlag) || (!uuidFlag && tokenFlag))
+            return APIUtil.paramErrorResponse("uuid 和 access_token 不能只传一个");
+
+        if (tokenFlag) {
+            post.addHeader("PushEnvelope-Device-Token", access_token);
+        } else {
+            // 下单时，如果还没登录，计价时uuid和token都没有，需要先写死
+            jsonObject.getJSONObject("request").getJSONObject("merchant").put("uuid", "2c9a85895c352c20015c3878647b017a");
+            post.addHeader("PushEnvelope-Device-Token", COMMON_ACCESSTOKEN);
+        }
+
+        String res = APIPostUtil.post(gson.toJson(jsonObject), post);
+        JSONObject respObject = JSONObject.fromObject(res);
+
+        APIStatus status = respObject.get("error") == null ? SUCCESS : QUOTE_FAIL;
+
+        return APIUtil.getResponse(status, respObject);
+    }
+
+    /**
+     * 支付订单
+     */
+    public APIResponse payOrder(APIRequest request) {
+
+        String token = (String) request.getParameter("token");
+        String uuid = (String) request.getParameter("uuid");
+        String access_token = (String) request.getParameter("access_token");
+
+        int user_id = tokenMapper.selectUserIdByToken(token);
+        User user = userMapper.selectUserByUserId(user_id);
+
+        if (token == null || token.equals(""))
+            return APIUtil.paramErrorResponse("token无效");
+        if (uuid == null || uuid.equals(""))
+            return APIUtil.paramErrorResponse("uuid无效");
+        if (access_token == null || access_token.equals(""))
+            return APIUtil.paramErrorResponse("access_token无效");
+
+        String pay_url = SF_REQUEST_URL + "/" + uuid + "/js_pay?open_id=" + user.getOpen_id();
+        HttpPost post = new HttpPost(pay_url);
+        post.addHeader("PushEnvelope-Device-Token", access_token);
+        String res = APIPostUtil.post("", post);
+        JSONObject jsonObject = JSONObject.fromObject(res);
+
+        return APIUtil.getResponse(SUCCESS, jsonObject);
+    }
+}

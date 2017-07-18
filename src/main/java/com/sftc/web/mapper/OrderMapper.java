@@ -51,17 +51,9 @@ public interface OrderMapper {
     List<Integer> selectNationUnCommitOrders();
 
     /**
-     * 好友订单提交
-     */
-    void updatePlace(Order order);
-
-    /**
      * 根据uuid查询订单详情
      */
     Order selectOrderDetailByUuid(@Param("uuid") String uuid);
-
-    // 查询订单详情和快递详情
-    List<Order> getOrderAndExpress(Order order);
 
     // 取消订单，更新is_cancel字段
     void updateCancelOrderById(int id);
