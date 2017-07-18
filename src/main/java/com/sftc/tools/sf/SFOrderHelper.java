@@ -40,6 +40,7 @@ public class SFOrderHelper {
         map.put("完成", "FINISHED");
         map.put("取消", "CANCELED");
         map.put("已取消", "CANCELED");
+        map.put("取消", "CANCELED");
         map.put("待填写", "WAIT_FILL");
         map.put("下单", "INIT");
         map.put("支付", "PAYING");

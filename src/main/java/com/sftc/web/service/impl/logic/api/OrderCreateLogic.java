@@ -134,23 +134,39 @@ public class OrderCreateLogic {
                 message.setCreate_time(Long.toString(System.currentTimeMillis()));
                 messageMapper.updateMessageReceiveExpress(message);
             }
-            // 存储好友关系
+            // 存储好友关系 寄件人对填写人的好友关系
             UserContactNew userContactNewParam = new UserContactNew();
-            userContactNewParam.setUser_id(order.getSender_user_id());
-            userContactNewParam.setFriend_id(orderExpress.getShip_user_id());
+            userContactNewParam.setUser_id(order.getSender_user_id());             // 寄件人
+            userContactNewParam.setFriend_id(orderExpress.getShip_user_id());      // 填写人
             UserContactNew userContactNew = userContactMapper.selectByUserIdAndShipId(userContactNewParam);
-            if (userContactNew == null) {
+            if (userContactNew == null) { // null即 还不是好友关系
                 userContactNew = new UserContactNew();
                 userContactNew.setUser_id(order.getSender_user_id());
                 userContactNew.setFriend_id(orderExpress.getShip_user_id());
                 userContactNew.setIs_tag_star(0);
-                userContactNew.setLntimacy(0);
+                userContactNew.setLntimacy(1);
                 userContactNew.setCreate_time(Long.toString(System.currentTimeMillis()));
                 userContactMapper.insertUserContact(userContactNew);
-            } else {
-                // 如果不为空 则好友度加1
+            } else {// 如果不为空 则好友度加1
                 userContactMapper.updateUserContactLntimacy(userContactNew);
             }
+
+            // 存储好友关系   填写人对寄件人的好友关系
+            userContactNewParam.setUser_id(orderExpress.getShip_user_id()); // 填写人
+            userContactNewParam.setFriend_id(order.getSender_user_id());    // 寄件人
+            UserContactNew userContactNew2 = userContactMapper.selectByUserIdAndShipId(userContactNewParam);
+            if (userContactNew2 == null) {
+                userContactNew2 = new UserContactNew();
+                userContactNew2.setUser_id(orderExpress.getShip_user_id());
+                userContactNew2.setFriend_id(order.getSender_user_id());
+                userContactNew2.setIs_tag_star(0);
+                userContactNew2.setLntimacy(1);
+                userContactNew2.setCreate_time(Long.toString(System.currentTimeMillis()));
+                userContactMapper.insertUserContact(userContactNew2);
+            } else {// 如果不为空 则好友度加1
+                userContactMapper.updateUserContactLntimacy(userContactNew2);
+            }
+
         }
 
         return APIUtil.getResponse(SUCCESS, orderExpress.getOrder_id());
