@@ -23,11 +23,6 @@
         SELECT * FROM sftc_order_express WHERE (sender_user_id=#{id} or ship_user_id=#{id})
     </select>
 
-    <!-- 根据订单编号查询该订单的包裹 -->
-    <select id="findEmptyPackage" resultMap="orderExpressMap" parameterType="java.lang.String">
-        SELECT * FROM sftc_order_express WHERE order_number=#{order_number} AND is_use=0
-    </select>
-
     <!-- 根据order_id-->
     <select id="findAllOrderExpressByOrderId" resultType="com.sftc.web.model.OrderExpress" parameterType="int">
         SELECT * FROM  sftc_order_express WHERE  order_id = #{order_id}
@@ -61,21 +56,6 @@
         )
     </insert>
 
-    <update id="updateOrderExpress" parameterType="com.sftc.web.model.OrderExpress">
-        UPDATE sftc_order_express
-        set
-        ship_name=#{ship_name, jdbcType=VARCHAR},
-        ship_mobile=#{ship_mobile, jdbcType=VARCHAR},
-        ship_province=#{ship_province, jdbcType=VARCHAR},
-        ship_city=#{ship_city, jdbcType=VARCHAR},
-        ship_area=#{ship_area, jdbcType=VARCHAR},
-        ship_addr=#{ship_addr, jdbcType=VARCHAR},
-        state=#{state, jdbcType=VARCHAR},
-        is_use=1,
-        uuid=#{uuid, jdbcType=VARCHAR},
-        ship_user_id=#{ship_user_id, jdbcType=INTEGER}
-        WHERE order_id=#{order_id}
-    </update>
     <!--更新快递信息，by 快递id，用于好友填写订单时回填信息-->
     <update id="updateOrderExpressByOrderExpressId" parameterType="com.sftc.web.model.OrderExpress">
         UPDATE sftc_order_express
@@ -95,17 +75,6 @@
         WHERE id=#{id}
     </update>
 
-    <update id="updatePlace" parameterType="com.sftc.web.model.OrderExpress">
-        UPDATE sftc_order_express
-        set
-        longitude=#{longitude, jdbcType=DOUBLE},
-        latitude=#{latitude, jdbcType=DOUBLE},
-        reserve_time=#{reserve_time, jdbcType=VARCHAR},
-        is_use=1,
-        uuid=#{uuid, jdbcType=VARCHAR}
-        WHERE order_id=#{order_id}
-    </update>
-
     <update id="updateOrderExpressStatus">
         UPDATE sftc_order_express
         SET state=#{status, jdbcType=VARCHAR}
@@ -117,10 +86,6 @@
         SET state='CANCELED'
         WHERE  order_id=#{order_id}
     </update>
-
-    <select id="getUuidByOrderId" resultType="string" parameterType="int">
-        SELECT uuid FROM sftc_order_express where order_id=#{order_id}
-    </select>
 
     <update id="updateOrderExpressForSF" parameterType="com.sftc.web.model.OrderExpress">
         update sftc_order_express
@@ -137,12 +102,6 @@
         state='WAIT_HAND_OVER'
         WHERE id=#{id}
     </update>
-
-    <!-- 获取订单对应的未填写快递信息列表list,根据订单id order_id -->
-    <select id="UnWritenOrderExpressListByOrderIdAndShipnameNull" resultType="com.sftc.web.model.OrderExpress"
-            parameterType="int">
-        select * from sftc_order_express where order_id = #{id} and ship_name is null
-    </select>
 
     <!-- 根据uuid查询快递 -->
     <select id="selectExpressByUuid" resultType="com.sftc.web.model.OrderExpress" parameterType="String">

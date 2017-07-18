@@ -11,17 +11,11 @@ public interface OrderExpressMapper {
 
     List<OrderExpress> selectExpressForId(int id);
 
-    List<OrderExpress> findEmptyPackage(String order_number);
-
     void addOrderExpress(OrderExpress orderExpress);
-
-    void updateOrderExpress(OrderExpress orderExpress);
 
     void updateOrderExpressForSF(OrderExpress orderExpress);
 
     void updateOrderExpressUuidAndReserveTimeById(@Param("id") int id, @Param("uuid") String uuid, @Param("reserve_time") String reserve_time);
-
-    void updatePlace(OrderExpress orderExpress);
 
     /**
      * 更改快递状态
@@ -29,15 +23,10 @@ public interface OrderExpressMapper {
     void updateOrderExpressStatus(@Param("express_id") int express_id, @Param("status") String status);
 
     // 更改 快递状态 为 取消 CANCELED
-    void  updateOrderExpressCanceled(int order_id);
+    void updateOrderExpressCanceled(int order_id);
 
-    //更新快递信息，by 快递id，用于好友填写订单时回填信息
+    // 更新快递信息，by 快递id，用于好友填写订单时回填信息
     void updateOrderExpressByOrderExpressId(OrderExpress orderExpress);
-
-    String getUuidByOrderId(int order_id);
-
-    //获取订单对应的未填写快递信息列表list,根据订单id order_id
-    List<OrderExpress> UnWritenOrderExpressListByOrderIdAndShipnameNull(int order_id);
 
     List<OrderExpress> findAllOrderExpressByOrderId(int order_id);
 
@@ -46,12 +35,11 @@ public interface OrderExpressMapper {
      */
     OrderExpress selectExpressByUuid(@Param("uuid") String uuid);
 
-    //下单时，更新order_time,用于记录下单时间
-    void updateOrderTime(@Param("uuid") String uuid,@Param("order_time") String order_time);
+    // 下单时，更新order_time,用于记录下单时间
+    void updateOrderTime(@Param("uuid") String uuid, @Param("order_time") String order_time);
 
     // 更新订单的order_number为sf好友同城下单接口返回值 此id是快递信息的id
     void updateOrderNumber(@Param("id") int id, @Param("order_number") String order_number);
-
 
     //     <!--下面是cms系统用到的mapper-->
     List<OrderExpress> selectOrderExpressByPage(OrderExpress orderExpress);

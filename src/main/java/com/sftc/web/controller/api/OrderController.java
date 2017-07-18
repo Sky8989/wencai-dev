@@ -3,15 +3,10 @@ package com.sftc.web.controller.api;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
-import com.sftc.web.model.Order;
-import com.sftc.web.model.OrderExpress;
-import com.sftc.web.model.Token;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.service.EvaluateService;
-import com.sftc.web.service.OrderExpressService;
 import com.sftc.web.service.OrderService;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -91,15 +86,6 @@ public class OrderController extends AbstractBasicController {
         return orderService.payOrder(new APIRequest(request));
     }
 
-    /**
-     * 根据订单编号查找未被填写包裹的接口
-     */
-    @RequestMapping(value = "/pack", method = RequestMethod.GET)
-    public @ResponseBody
-    APIResponse pack(HttpServletRequest request) throws Exception {
-        return orderService.getEmptyPackage(new APIRequest(request));
-    }
-
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse detail(HttpServletRequest request) throws Exception {
@@ -126,15 +112,6 @@ public class OrderController extends AbstractBasicController {
         APIRequest request = new APIRequest();
         request.setRequestParam(myOrderParam);
         return orderService.getMyFriendCircleOrderList(request);
-    }
-
-    /**
-     * 好友订单提交
-     */
-    @RequestMapping(value = "/friendPlace", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse friendPlace(@RequestBody Object object) throws Exception {
-        return orderService.friendPlace(object);
     }
 
     /**
@@ -182,33 +159,6 @@ public class OrderController extends AbstractBasicController {
     public @ResponseBody
     APIResponse constants(HttpServletRequest request) throws Exception {
         return orderService.timeConstants(new APIRequest(request));
-    }
-
-    /**
-     * 大网计价
-     */
-    @RequestMapping(value = "/OrderFreightQuery", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse OrderFreightQuery(@RequestBody Object object) throws Exception {
-        return orderService.OrderFreightQuery(object);
-    }
-
-    /**
-     * 大网路由
-     */
-    @RequestMapping(value = "/OrderRouteQuery", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse OrderRouteQuery(HttpServletRequest request) throws Exception {
-        return orderService.OrderRouteQuery(new APIRequest(request));
-    }
-
-    /**
-     * 寄件人可下单的神秘订单列表
-     */
-    @RequestMapping(value = "/remindPlace", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse remindPlace(HttpServletRequest request) throws Exception {
-        return orderService.remindPlace(new APIRequest(request));
     }
 
     /**
