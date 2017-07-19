@@ -388,20 +388,20 @@ public class OrderCommitLogic {
                     Long.toString(System.currentTimeMillis()),
                     Long.toString(System.currentTimeMillis()),
                     respObject.getJSONObject("request").getString("request_num"),
-                    (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("receiver"),
-                    (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("mobile"),
-                    (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("province"),
-                    (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("city"),
-                    (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("region"),
-                    (String) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").get("street"),
-                    (String) reqObject.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("weight"),
-                    (String) reqObject.getJSONObject("request").getJSONArray("packages").getJSONObject(0).get("type"),
-                    "",
+                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").getString("receiver"),
+                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").getString("mobile"),
+                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").getString("province"),
+                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").getString("city"),
+                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").getString("region"),
+                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").getString("street"),
+                    reqObject.getJSONObject("request").getJSONArray("packages").getJSONObject(0).getString("weight"),
+                    reqObject.getJSONObject("request").getJSONArray("packages").getJSONObject(0).getString("type"),
+                    respObject.getJSONObject("request").getString("status"),
                     Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
                     order.getId(),
-                    (String) respObject.getJSONObject("request").get("uuid"),
-                    (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("latitude"),
-                    (Double) reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").get("longitude")
+                    respObject.getJSONObject("request").getString("uuid"),
+                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").getDouble("latitude"),
+                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").getDouble("longitude")
             );
             orderExpress.setReserve_time(reserve_time);
             orderExpressMapper.addOrderExpress(orderExpress);
@@ -509,14 +509,15 @@ public class OrderCommitLogic {
                 status = SUBMIT_FAIL;
             } else {
                 // 返回结果添加订单编号
-                responseObject.put("order_id", order.getId());
                 String ordernum = responseObject.getString("ordernum");
                 orderExpressMapper.updateOrderNumber(orderExpress.getId(), ordernum);
             }
         } else { // 预约件
-            responseObject.put("order_id", order.getId());
             responseObject.put("message", "大网订单预约成功");
         }
+
+        Order orderData = orderMapper.selectOrderDetailByOrderId(order.getId());
+        responseObject.put("order", orderData);
 
         return APIUtil.getResponse(status, responseObject);
     }
