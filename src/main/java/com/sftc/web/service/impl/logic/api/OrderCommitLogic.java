@@ -509,14 +509,15 @@ public class OrderCommitLogic {
                 status = SUBMIT_FAIL;
             } else {
                 // 返回结果添加订单编号
-                responseObject.put("order_id", order.getId());
                 String ordernum = responseObject.getString("ordernum");
                 orderExpressMapper.updateOrderNumber(orderExpress.getId(), ordernum);
             }
         } else { // 预约件
-            responseObject.put("order_id", order.getId());
             responseObject.put("message", "大网订单预约成功");
         }
+
+        Order orderData = orderMapper.selectOrderDetailByOrderId(order.getId());
+        responseObject.put("order", orderData);
 
         return APIUtil.getResponse(status, responseObject);
     }
