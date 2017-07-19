@@ -4,7 +4,9 @@ package com.sftc.web.service.impl;
 import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
 import com.sftc.web.mapper.AddressMapper;
+import com.sftc.web.mapper.AddressResolutionMapper;
 import com.sftc.web.model.Address;
+import com.sftc.web.model.AddressResolution;
 import com.sftc.web.model.sfmodel.SFServiceAddress;
 import com.sftc.web.service.AddressService;
 import net.sf.json.JSONArray;
@@ -30,6 +32,8 @@ public class AddressServiceImpl implements AddressService {
 
     @Resource
     private AddressMapper addressMapper;
+    @Resource
+    private AddressResolutionMapper addressResolutionMapper;
 
     /**
      * 信号量
@@ -97,6 +101,8 @@ public class AddressServiceImpl implements AddressService {
 
 
     public APIResponse geocoderAddress(APIRequest request) {
+        JSONObject resultJsonObject = new JSONObject();
+        APIStatus status = SUCCESS;
 
         // Handle Param
         String address = (String) request.getParameter("address");
@@ -109,6 +115,14 @@ public class AddressServiceImpl implements AddressService {
             address = URLEncoder.encode(address, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+        }
+
+        // 查库
+        AddressResolution addressResolution = addressResolutionMapper.selectAddressResolution(address);
+        if (addressResolution != null) {
+            resultJsonObject.put("longitude", addressResolution.getLongitude());
+            resultJsonObject.put("latitude", addressResolution.getLatitude());
+            return APIUtil.getResponse(status, resultJsonObject);
         }
 
         try { // 请求许可
@@ -125,13 +139,17 @@ public class AddressServiceImpl implements AddressService {
         JSONObject resObject = JSONObject.fromObject(result);
 
         // Result
-        APIStatus status = SUCCESS;
-        JSONObject resultJsonObject = new JSONObject();
         if ((Integer) resObject.get("status") == 0) {
             // query ok
             JSONObject locationObject = resObject.getJSONObject("result").getJSONObject("location");
             resultJsonObject.put("longitude", locationObject.get("lng"));
             resultJsonObject.put("latitude", locationObject.get("lat"));
+            // 将结果存入数据库，
+            addressResolutionMapper.insertAddressResolution(
+                    new AddressResolution(address,
+                            Double.valueOf(locationObject.get("lng").toString()),
+                            Double.valueOf(locationObject.get("lat").toString()))
+            );
         } else {
             status = APIStatus.SELECT_FAIL;
         }
