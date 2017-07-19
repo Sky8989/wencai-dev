@@ -25,7 +25,7 @@ public interface OrderExpressMapper {
     /**
      * 根据uuid更改订单状态
      */
-    void updateOrderExpressStatusByUUID(@Param("uuid") int uuid, @Param("status") String status);
+    void updateOrderExpressStatusByUUID(@Param("uuid") String uuid, @Param("status") String status);
 
     // 更改 快递状态 为 取消 CANCELED
     void updateOrderExpressCanceled(int order_id);
