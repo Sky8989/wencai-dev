@@ -109,16 +109,17 @@ public class AddressServiceImpl implements AddressService {
         if (address == null || address.equals("")) {
             return APIUtil.paramErrorResponse("地址不能为空");
         }
+        String utf8Address = null;
 
         try { // url encode
-            address = new String(address.getBytes("ISO-8859-1"), "UTF-8");
-            address = URLEncoder.encode(address, "UTF-8");
+            utf8Address = new String(address.getBytes("ISO-8859-1"), "UTF-8");
+            address = URLEncoder.encode(utf8Address, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
         // 查库
-        AddressResolution addressResolution = addressResolutionMapper.selectAddressResolution(address);
+        AddressResolution addressResolution = addressResolutionMapper.selectAddressResolution(utf8Address);
         if (addressResolution != null) {
             resultJsonObject.put("longitude", addressResolution.getLongitude());
             resultJsonObject.put("latitude", addressResolution.getLatitude());
@@ -146,7 +147,7 @@ public class AddressServiceImpl implements AddressService {
             resultJsonObject.put("latitude", locationObject.get("lat"));
             // 将结果存入数据库，
             addressResolutionMapper.insertAddressResolution(
-                    new AddressResolution(address,
+                    new AddressResolution(utf8Address,
                             Double.valueOf(locationObject.get("lng").toString()),
                             Double.valueOf(locationObject.get("lat").toString()))
             );
