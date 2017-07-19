@@ -6,10 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.tools.sf.SFTokenHelper;
-import com.sftc.web.mapper.GiftCardMapper;
-import com.sftc.web.mapper.OrderExpressTransformMapper;
-import com.sftc.web.mapper.OrderMapper;
-import com.sftc.web.mapper.UserMapper;
+import com.sftc.web.mapper.*;
 import com.sftc.web.model.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -30,6 +27,8 @@ public class OrderDetailLogic {
 
     @Resource
     private OrderMapper orderMapper;
+    @Resource
+    private OrderExpressMapper orderExpressMapper;
     @Resource
     private UserMapper userMapper;
     @Resource
@@ -126,6 +125,15 @@ public class OrderDetailLogic {
             access_token = (access_token == null || access_token.equals("") ? COMMON_ACCESSTOKEN : access_token);
 
             respObject = SFExpressHelper.getExpressDetail(uuid, access_token);
+
+            // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
+            String order_status = respObject.getJSONObject("request").getString("status");
+            boolean payed = respObject.getJSONObject("request").getBoolean("payed");
+            if (payed && order_status.equals("PAYING")) {
+                respObject.getJSONObject("request").put("status", "WAIT_HAND_OVER");
+                orderExpressMapper.updateOrderExpressStatusByUUID(Integer.parseInt(uuid), "WAIT_HAND_OVER");
+                order = orderMapper.selectOrderDetailByUuid(uuid);
+            }
         }
 
         respObject.put("order", order);
