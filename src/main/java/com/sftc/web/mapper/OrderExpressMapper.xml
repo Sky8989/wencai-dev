@@ -81,6 +81,12 @@
         WHERE id=#{express_id}
     </update>
 
+    <update id="updateOrderExpressStatusByUUID">
+        UPDATE sftc_order_express
+        SET state=#{status, jdbcType=VARCHAR}
+        WHERE uuid=#{uuid}
+    </update>
+
     <update id="updateOrderExpressCanceled" parameterType="int">
         UPDATE sftc_order_express
         SET state='CANCELED'

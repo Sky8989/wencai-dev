@@ -18,9 +18,14 @@ public interface OrderExpressMapper {
     void updateOrderExpressUuidAndReserveTimeById(@Param("id") int id, @Param("uuid") String uuid, @Param("reserve_time") String reserve_time);
 
     /**
-     * 更改快递状态
+     * 根据id更改快递状态
      */
     void updateOrderExpressStatus(@Param("express_id") int express_id, @Param("status") String status);
+
+    /**
+     * 根据uuid更改订单状态
+     */
+    void updateOrderExpressStatusByUUID(@Param("uuid") int uuid, @Param("status") String status);
 
     // 更改 快递状态 为 取消 CANCELED
     void updateOrderExpressCanceled(int order_id);
