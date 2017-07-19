@@ -110,19 +110,19 @@ public class AddressServiceImpl implements AddressService {
             return APIUtil.paramErrorResponse("地址不能为空");
         }
 
+        try { // url encode
+            address = new String(address.getBytes("ISO-8859-1"), "UTF-8");
+            address = URLEncoder.encode(address, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
         // 查库
         AddressResolution addressResolution = addressResolutionMapper.selectAddressResolution(address);
         if (addressResolution != null) {
             resultJsonObject.put("longitude", addressResolution.getLongitude());
             resultJsonObject.put("latitude", addressResolution.getLatitude());
             return APIUtil.getResponse(status, resultJsonObject);
-        }
-
-        try { // url encode
-            //address = new String(address.getBytes("ISO-8859-1"), "UTF-8");
-            address = URLEncoder.encode(address, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         }
 
         try { // 请求许可
