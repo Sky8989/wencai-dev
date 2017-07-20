@@ -229,7 +229,6 @@ public class OrderCommitLogic {
             String token = (String) requestObject.getJSONObject("request").getJSONObject("merchant").get("access_token");
             post.addHeader("PushEnvelope-Device-Token", token);
             String resultStr = APIPostUtil.post(paramStr, post);
-//            String resultStr = "{\"request\":{\"uuid\":\"1234567890\",\"request_num\":\"D31232131\"}}"; // 测试数据
             JSONObject responseObject = JSONObject.fromObject(resultStr);
 
             if (!responseObject.containsKey("error")) {
@@ -246,16 +245,8 @@ public class OrderCommitLogic {
                 orderExpressMapper.updateOrderTime(uuid, order_tiem);
                 orderExpressMapper.updateOrderNumber(oe.getId(), request_num);
 
-                //更新订单状态 寄付是 INIT 到付是 WAIT_HAND_OVER
-                if (order.getPay_method().equals("FREIGHT_PREPAID")) {
-                    // 支付方式是寄付
-                    String status = "INIT";
-                    orderExpressMapper.updateOrderExpressStatus(oe.getId(), status);
-                } else {
-                    // 支付方式是到付
-                    String status = "WAIT_HAND_OVER";
-                    orderExpressMapper.updateOrderExpressStatus(oe.getId(), status);
-                }
+                //更新订单状态
+                orderExpressMapper.updateOrderExpressStatus(oe.getId(), responseObject.getJSONObject("request").getString("status"));
 
                 // 插入地址
                 setupAddress(order, oe);
