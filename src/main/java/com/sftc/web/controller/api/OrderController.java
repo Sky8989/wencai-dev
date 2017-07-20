@@ -193,7 +193,7 @@ public class OrderController extends AbstractBasicController {
     }
 
     /**
-     * 设置大网预约单定时器
+     * 设置大网超时去取消定时器
      */
     @RequestMapping(value = "/cancel/setup", method = RequestMethod.POST)
     public @ResponseBody
@@ -201,6 +201,17 @@ public class OrderController extends AbstractBasicController {
         APIRequest request = new APIRequest();
         request.setRequestParam(object);
         return orderService.setupCancelNationOrderTimer(request);
+    }
+
+    /**
+     * 设置同城超时取消定时器
+     */
+    @RequestMapping(value = "/cancel/SameSetup", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse setupCancelSameOrderTimer(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.setupCancelSameOrderTimer(request);
     }
 
     /**

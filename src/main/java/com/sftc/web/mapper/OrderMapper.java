@@ -51,6 +51,11 @@ public interface OrderMapper {
     List<Integer> selectNationUnCommitOrders();
 
     /**
+     * 查询同城未提交的订单列表
+     */
+    List<Integer> selectSameUnCommitOrders();
+
+    /**
      * 根据uuid查询订单详情
      */
     Order selectOrderDetailByUuid(@Param("uuid") String uuid);

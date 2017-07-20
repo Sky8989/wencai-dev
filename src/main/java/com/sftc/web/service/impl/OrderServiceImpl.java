@@ -55,6 +55,10 @@ public class OrderServiceImpl implements OrderService {
         return orderTimerLogic.setupCancelNationOrderTimer(request);
     }
 
+    public APIResponse setupCancelSameOrderTimer(APIRequest request) {
+        return orderTimerLogic.setupCancelSameOrderTimer(request);
+    }
+
     public APIResponse transformOrderFromSameToNation(APIRequest request) {
         return orderTransformLogic.transformOrderFromSameToNation(request);
     }
