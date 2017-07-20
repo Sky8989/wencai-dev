@@ -62,6 +62,18 @@ public class OrderCancelLogic {
         }
     }
 
+    /**
+     * 取消同城超时订单
+     */
+    public void cancelSameUnCommitOrder(int order_id, long timeOutInterval) {
+        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+        if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
+            // 取消同城订单
+            orderMapper.updateCancelOrderById(order_id);
+            orderExpressMapper.updateOrderExpressCanceled(order_id);
+        }
+    }
+
     //////////////////// Private Method ////////////////////
 
     // 取消大网订单
@@ -70,6 +82,7 @@ public class OrderCancelLogic {
         orderExpressMapper.updateOrderExpressCanceled(order_id);
         return APIUtil.getResponse(APIStatus.SUCCESS, "该订单已做软取消处理");
     }
+
 
     // 取消同城订单 与 未提交单
     private APIResponse cancelSAMEOrder(int order_id, String access_token) {

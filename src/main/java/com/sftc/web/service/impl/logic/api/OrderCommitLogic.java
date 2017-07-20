@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.TreeMap;
 
 import static com.sftc.tools.api.APIStatus.SUBMIT_FAIL;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
@@ -243,6 +244,9 @@ public class OrderCommitLogic {
                 String order_tiem = Long.toString(System.currentTimeMillis());
                 orderExpressMapper.updateOrderTime(uuid, order_tiem);
                 orderExpressMapper.updateOrderNumber(oe.getId(), request_num);
+
+                //更新订单状态
+                orderExpressMapper.updateOrderExpressStatus(oe.getId(), responseObject.getJSONObject("request").getString("status"));
 
                 // 插入地址
                 setupAddress(order, oe);

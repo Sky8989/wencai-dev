@@ -98,6 +98,11 @@ public interface OrderService {
     APIResponse setupCancelNationOrderTimer(APIRequest request);
 
     /**
+     * 设置大网取消超时订单定时器开关
+     */
+    APIResponse setupCancelSameOrderTimer(APIRequest request);
+
+    /**
      * 设置兜底记录已读
      */
     APIResponse readExpressTransform(APIRequest request);
