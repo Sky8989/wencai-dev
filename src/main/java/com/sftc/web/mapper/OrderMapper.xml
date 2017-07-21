@@ -58,9 +58,15 @@
     </select>
 
     <select id="selectSameUnCommitOrders" resultType="int">
-        SELECT DISTINCT oe.order_id
-        FROM sftc_order o, sftc_order_express oe
-        WHERE o.id = oe.order_id AND o.region_type = 'REGION_SAME' AND  oe.state = 'PAYING'
+        SELECT DISTINCT oe.order_id FROM sftc_order o, sftc_order_express oe
+        WHERE o.id = oe.order_id
+        AND
+        (1=(SELECT COUNT(order_id) FROM sftc_order_express WHERE order_id = o.id))
+        AND (
+            (oe.state = 'WAIT_FILL' OR oe.state ='ALREADY_FILL' )
+            OR
+            (o.region_type = 'REGION_SAME' AND oe.state = 'PAYING')
+            )
     </select>
 
     <select id="selectOrderDetailByOrderId" resultMap="orderMap" parameterType="int">
