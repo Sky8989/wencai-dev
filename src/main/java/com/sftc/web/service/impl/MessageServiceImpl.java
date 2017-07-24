@@ -2,10 +2,7 @@ package com.sftc.web.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sftc.tools.api.APIPostUtil;
-import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIStatus;
-import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.api.*;
 import com.sftc.tools.constant.WXConstant;
 import com.sftc.web.mapper.TokenMapper;
 import com.sftc.web.mapper.UserMapper;
@@ -13,16 +10,20 @@ import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
 import com.sftc.web.service.MessageService;
 import net.sf.json.JSONObject;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import static com.sftc.tools.constant.SFConstant.*;
-import static com.sftc.tools.constant.WXConstant.WX_ACCESS_TOKEN;
-import static com.sftc.tools.constant.WXConstant.WX_SEND_MESSAGE_PATH;
-import static com.sftc.tools.constant.WXConstant.WX_template_id_1;
+import static com.sftc.tools.constant.WXConstant.*;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {
@@ -219,23 +220,24 @@ public class MessageServiceImpl implements MessageService {
      * @param messageArr 消息内容数据的数组
      * @param pagePath   跳转页面的路径
      */
-    public void sendWXTemplateMessage(int touser_id, String[] messageArr, String pagePath, String form_id) throws Exception {
+    public void sendWXTemplateMessage(int touser_id, String[] messageArr, String pagePath, String form_id, String template_id) {
         User user = userMapper.selectUserByUserId(touser_id);
 
         // 构造 data 的数据体
         JSONObject dataBody = new JSONObject();
-        for (int i = 0; messageArr.length > 0; i++) {
+        for (int i = 0; messageArr.length > i; i++) {
             System.out.println(messageArr[i]);
             JSONObject keyword = new JSONObject();
             keyword.put("value", messageArr[i]);
-            keyword.put("color", "#173177");
+            keyword.put("color", "#666666");
             dataBody.put("keyword" + (i + 1), keyword);
         }
 
         // 构造模板消息数据
         JSONObject messageBody = new JSONObject();
         messageBody.put("touser", user.getOpen_id());
-        messageBody.put("template_id", WX_template_id_1);
+//        messageBody.put("touser", "oZqgN0QlyCIKrQOoNbwe5slVwq8I");// 测试使用我自己的openid 对应自己的小程序
+        messageBody.put("template_id", template_id);
         messageBody.put("page", pagePath);
         messageBody.put("form_id", form_id);
         messageBody.put("emphasis_keyword", "keyword1.DATA");
@@ -245,9 +247,11 @@ public class MessageServiceImpl implements MessageService {
         HttpPost httpPost = new HttpPost(postURL);
         String resultStr = APIPostUtil.post(postStr, httpPost);
         JSONObject resultJSONObject = JSONObject.fromObject(resultStr);
-        if (resultJSONObject.containsKey("errcode")) {
+        if (resultJSONObject.containsKey("errcode") && resultJSONObject.getInt("errcode") != 0) {
             logger.error(resultStr);
+        } else {
+            logger.info(resultStr);
         }
-        logger.info(resultStr);
     }
+
 }
