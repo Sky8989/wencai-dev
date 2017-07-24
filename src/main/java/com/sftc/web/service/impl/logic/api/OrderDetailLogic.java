@@ -3,7 +3,10 @@ package com.sftc.web.service.impl.logic.api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.sftc.tools.api.*;
+import com.sftc.tools.api.APIGetUtil;
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.mapper.*;
@@ -81,8 +84,6 @@ public class OrderDetailLogic {
      */
     public APIResponse selectExpressDetail(APIRequest request) {
 
-        APIStatus status = SUCCESS;
-
         // Param
         String uuid = (String) request.getParameter("uuid");
         if (uuid == null || uuid.equals(""))
@@ -93,8 +94,14 @@ public class OrderDetailLogic {
             return APIUtil.selectErrorResponse("订单不存在", null);
 
         JSONObject respObject = new JSONObject();
+
         String regionType = order.getRegion_type();
         if (regionType.equals("REGION_NATION")) { // 大网
+
+            // 兜底单
+            OrderExpressTransform orderExpressTransform = orderExpressTransformMapper.selectExpressTransformByUUID(uuid);
+            respObject.put("transform", orderExpressTransform);
+
             // sort
             String sort = (String) request.getParameter("sort");
             sort = sort == null ? "desc" : sort;
@@ -111,12 +118,7 @@ public class OrderDetailLogic {
                     respObject.put("sf", routeList);
             } else {
                 respObject.put("sf", new JSONObject());
-                status = APIStatus.ORDERROUT_FALT;
             }
-
-            // 兜底单
-            OrderExpressTransform orderExpressTransform = orderExpressTransformMapper.selectExpressTransformByUUID(uuid);
-            respObject.put("transform", orderExpressTransform);
 
         } else if (regionType.equals("REGION_SAME")) { // 同城
 
@@ -138,6 +140,6 @@ public class OrderDetailLogic {
 
         respObject.put("order", order);
 
-        return APIUtil.getResponse(status, respObject);
+        return APIUtil.getResponse(SUCCESS, respObject);
     }
 }

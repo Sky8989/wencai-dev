@@ -1,11 +1,8 @@
 package com.sftc.web.model;
 
-import com.sftc.tools.api.APIStatus;
 import com.sftc.web.model.quotes.Request;
-import net.sf.json.JSONArray;
 
 import java.util.List;
-import java.util.Map;
 
 public class Result {
 
@@ -42,15 +39,12 @@ public class Result {
         this.error = error;
     }
 
-
     public User getMerchant() {
         return merchant;
     }
 
     public void setMerchant(User merchant) {
         this.merchant = merchant;
-
-
     }
 
     public Token getToken() {
@@ -69,14 +63,5 @@ public class Result {
         this.request = request;
     }
 
-    public APIStatus validateMessage(){
-        APIStatus status=null;
-        JSONArray jsonObject = JSONArray.fromObject(this.errors);
-        Map m =  (Map)jsonObject.get(0);
-        if (m.get("type").equals("VALIDATION_ERROR")){
-            status = APIStatus.VALIDATION_ERROR;
-        }
-        return status;
-    }
 }
 

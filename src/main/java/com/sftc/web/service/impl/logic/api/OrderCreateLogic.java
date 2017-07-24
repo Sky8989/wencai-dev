@@ -3,7 +3,6 @@ package com.sftc.web.service.impl.logic.api;
 import com.google.gson.Gson;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.mapper.*;
@@ -12,14 +11,12 @@ import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.UserContactNew;
 import com.sftc.web.model.reqeustParam.OrderParam;
-import com.sftc.web.service.QiniuService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 
@@ -46,7 +43,6 @@ public class OrderCreateLogic {
 
         // 插入订单表
         Order order = new Order(orderParam);
-        String randomNumber = SFOrderHelper.getOrderNumber();
         orderMapper.addOrder(order);
 
         // 插入快递表
@@ -98,13 +94,9 @@ public class OrderCreateLogic {
         }
 
         if (realList.isEmpty()) { // 已抢完
-            return APIUtil.getResponse(APIStatus.ORDER_PACKAGE_COUNT_PULL, null);
+            return APIUtil.submitErrorResponse("包裹已经分发完", null);
         } else {
-            // 随机获取包裹编号
-            int random = new Random().nextInt(realList.size());
             orderExpress.setState("ALREADY_FILL");
-            //orderExpress.setId(realList.get(random).getId());
-            // 修改需求为 不需要随机取包裹 6.30号
             orderExpress.setId(realList.get(0).getId());
             orderExpress.setReceive_time(Long.toString(System.currentTimeMillis()));
             orderExpressMapper.updateOrderExpressByOrderExpressId(orderExpress);
