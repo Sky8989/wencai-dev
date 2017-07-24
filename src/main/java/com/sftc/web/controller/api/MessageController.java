@@ -1,5 +1,6 @@
 package com.sftc.web.controller.api;
 
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
 import com.sftc.web.model.Result;
@@ -21,7 +22,9 @@ public class MessageController extends AbstractBasicController {
     @RequestMapping(value = "/message", method = RequestMethod.POST)
     @ResponseBody
     APIResponse message(@RequestBody Object obj) throws Exception {
-        return messageService.getMessage(obj);
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(obj);
+        return messageService.getMessage(apiRequest);
     }
 
     /**
@@ -30,7 +33,9 @@ public class MessageController extends AbstractBasicController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
     APIResponse register(@RequestBody Object obj) throws Exception {
-        return messageService.register(obj);
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(obj);
+        return messageService.register(apiRequest);
     }
 
     /**
@@ -39,7 +44,9 @@ public class MessageController extends AbstractBasicController {
     @RequestMapping(value = "/getToken", method = RequestMethod.POST)
     @ResponseBody
     APIResponse getToken(@RequestBody Object obj) throws Exception {
-        return messageService.getToken(obj);
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(obj);
+        return messageService.getToken(apiRequest);
     }
 
     /**
@@ -48,7 +55,9 @@ public class MessageController extends AbstractBasicController {
     @RequestMapping(value = "/sfLogin", method = RequestMethod.POST)
     @ResponseBody
     APIResponse login(@RequestBody Object obj) throws Exception {
-        return messageService.sfLogin(obj);
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(obj);
+        return messageService.sfLogin(apiRequest);
     }
 
     @RequestMapping(value = "/quotes", method = RequestMethod.POST)

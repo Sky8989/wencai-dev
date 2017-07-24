@@ -1,5 +1,6 @@
 package com.sftc.web.controller.api;
 
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.reqeustParam.UserParam;
 import com.sftc.web.model.sfmodel.Promo;
@@ -22,12 +23,16 @@ public class CouponController {
     @RequestMapping(value = "/user/list", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse getUserCouponList(@RequestBody UserParam userParam) throws Exception {
-        return couponService.getUserCouponList(userParam);
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(userParam);
+        return couponService.getUserCouponList(apiRequest);
     }
 
     @RequestMapping(value = "/user/exchange", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse exchangeCoupon(@RequestBody Promo promo) throws Exception {
-        return couponService.exchangeCoupon(promo);
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(promo);
+        return couponService.exchangeCoupon(apiRequest);
     }
 }

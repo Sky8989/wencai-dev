@@ -287,7 +287,9 @@ public class UserServiceImpl implements UserService {
             return APIUtil.submitErrorResponse("手机号已被人使用过，请检查手机号", mobile);
         }
         // 2 走注册流程
-        return messageService.register(jsonObject.toString());
+        APIRequest apiRequest2 = new APIRequest();
+        apiRequest2.setRequestParam(jsonObject.toString());
+        return messageService.register(apiRequest2);
     }
 
     /**
