@@ -29,7 +29,7 @@ public class CouponServiceImpl implements CouponService {
         COUPON_LIST_API = COUPON_LIST_API.replace("user_uuid", userParam.getUuid() + "");
         // 调用顺丰接口
         HttpGet httpGet = new HttpGet(COUPON_LIST_API);
-        httpGet.addHeader("PushEnvelope-Device-Token",userParam.getToken());
+        httpGet.addHeader("PushEnvelope-Device-Token", userParam.getToken());
         String res = APIGetUtil.get(httpGet);
         return APIUtil.getResponse(status, JSONObject.fromObject(res));
     }
@@ -51,8 +51,8 @@ public class CouponServiceImpl implements CouponService {
 //        return APIUtil.getResponse(status, couponList);
         // 调用顺丰接口
         HttpPost httpPost = new HttpPost(COUPON_EXCHANGE_API);
-        httpPost.addHeader("PushEnvelope-Device-Token",promo.getToken());
-        String res = APIPostUtil.post("",httpPost);
+        httpPost.addHeader("PushEnvelope-Device-Token", promo.getToken());
+        String res = APIPostUtil.post("", httpPost);
         return APIUtil.getResponse(status, JSONObject.fromObject(res));
 
     }

@@ -20,7 +20,9 @@ public class DateRemindController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse addDateRemind(@RequestBody DateRemind dateRemind) throws Exception {
-        return dateRemindService.addFriendDateRemind(dateRemind);
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(dateRemind);
+        return dateRemindService.addFriendDateRemind(apiRequest);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
