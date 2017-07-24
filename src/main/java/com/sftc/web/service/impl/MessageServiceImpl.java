@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,9 +43,9 @@ public class MessageServiceImpl implements MessageService {
     /**
      * 获取短信验证码
      */
-    public APIResponse getMessage(Object object) {
+    public APIResponse getMessage(APIRequest apiRequest) {
         APIStatus status = APIStatus.SUCCESS;
-        String str = gson.toJson(object);
+        String str = gson.toJson(apiRequest.getRequestParam());
         HttpPost post = new HttpPost(SF_TAKE_MESSAGE_URL);
         String res = APIPostUtil.post(str, post);
         JSONObject resultObject = JSONObject.fromObject(res);
@@ -59,10 +61,10 @@ public class MessageServiceImpl implements MessageService {
     /**
      * 用户注册
      */
-    public APIResponse register(Object object) {
+    public APIResponse register(APIRequest apiRequest) {
         APIStatus status = APIStatus.SUCCESS;
 
-        JSONObject jsonObject = JSONObject.fromObject(object);
+        JSONObject jsonObject = JSONObject.fromObject(apiRequest.getRequestParam());
         int user_id = jsonObject.getInt("user_id");
         jsonObject.remove("user_id");
         // 调用顺丰接口
@@ -101,9 +103,9 @@ public class MessageServiceImpl implements MessageService {
     /**
      * 获取顺丰token 需要传入手机号和验证码
      */
-    public APIResponse getToken(Object object) {
+    public APIResponse getToken(APIRequest apiRequest) {
         APIStatus status = APIStatus.SUCCESS;
-        JSONObject jsonObject = JSONObject.fromObject(object);
+        JSONObject jsonObject = JSONObject.fromObject(apiRequest.getRequestParam());
 
         if (jsonObject.containsKey("user_id")) {
             int user_id = jsonObject.getInt("user_id");
@@ -113,15 +115,18 @@ public class MessageServiceImpl implements MessageService {
             // 验证手机号与user_id的匹配
             User userByPhone = userMapper.selectUserByPhone(mobile);
             User userByUserId = userMapper.selectUserByUserId(user_id);
+            Map<String, String> map = new HashMap<String, String>(1, 1);
             if (userByUserId.getMobile() == null || "".equals(userByUserId.getMobile())) {
                 // 用户的手机号为空 则 判断 参数手机号是否被用过
                 if (userByPhone != null) {
-                    return APIUtil.submitErrorResponse("该手机号已被人使用注册过，手机号使用者是：", userByPhone.getName());
+                    map.put("name", userByPhone.getName());
+                    return APIUtil.submitErrorResponse("该手机号已被人使用注册过，手机号使用者是：", map);
                 }
             } else {// 用户已经绑定过手机号
                 if (!mobile.equals(userByUserId.getMobile())) {
                     // 当 该id的用户手机号和参数手机号匹配
-                    return APIUtil.submitErrorResponse("您已经注册过，请使用注册时的手机号，请参考该手机号：", userByUserId.getMobile());
+                    map.put("mobile", userByUserId.getMobile());
+                    return APIUtil.submitErrorResponse("您已经注册过，请使用注册时的手机号，请参考该手机号：", map);
                 }
             }
 
@@ -161,9 +166,9 @@ public class MessageServiceImpl implements MessageService {
     /**
      * 登陆 专指登陆顺丰的接口
      */
-    public APIResponse sfLogin(Object object) {
+    public APIResponse sfLogin(APIRequest apiRequest) {
         APIStatus status = APIStatus.SUCCESS;
-        JSONObject jsonObject = JSONObject.fromObject(object);
+        JSONObject jsonObject = JSONObject.fromObject(apiRequest.getRequestParam());
         int user_id = jsonObject.getInt("user_id");
         String sfToken = jsonObject.getString("token");
         jsonObject.remove("user_id");
