@@ -21,8 +21,9 @@ public class CouponServiceImpl implements CouponService {
     /**
      * 根据用户查询优惠券
      */
-    public APIResponse getUserCouponList(UserParam userParam) {
+    public APIResponse getUserCouponList(APIRequest apiRequest) {
         APIStatus status = APIStatus.SUCCESS;
+        UserParam userParam = (UserParam) apiRequest.getRequestParam();
 
         String COUPON_LIST_API = "http://api-dev.sf-rush.com/coupons/by_user/user_uuid?status=INIT,ACTIVE,DISABLED,USED&limit=20&offset=0";
         COUPON_LIST_API = COUPON_LIST_API.replace("user_uuid", userParam.getUuid() + "");
@@ -36,7 +37,8 @@ public class CouponServiceImpl implements CouponService {
     /**
      * 根据密语和token兑换优惠券
      */
-    public APIResponse exchangeCoupon(Promo promo) {
+    public APIResponse exchangeCoupon(APIRequest apiRequest) {
+        Promo promo = (Promo) apiRequest.getRequestParam();
         APIStatus status = APIStatus.SUCCESS;
         String COUPON_EXCHANGE_API = "http://api-dev.sf-rush.com/coupons?promo_code=";
         COUPON_EXCHANGE_API += promo.getPromo_code();
