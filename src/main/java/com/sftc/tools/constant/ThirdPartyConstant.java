@@ -29,11 +29,11 @@ public class ThirdPartyConstant {
     /**
      * appid
      */
-    private static final String WX_APPID = "wxb6cbb81471348fec";
+    public static final String WX_APPID = "wxb6cbb81471348fec";
     /**
      * secret
      */
-    private static final String WX_SECRET = "b201962b8a3da757c72a0747eb6f1110";
+    public static final String WX_SECRET = "b201962b8a3da757c72a0747eb6f1110";
     /**
      * authorization
      */

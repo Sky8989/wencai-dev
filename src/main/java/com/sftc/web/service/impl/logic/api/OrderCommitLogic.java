@@ -16,6 +16,7 @@ import com.sftc.web.model.sfmodel.Address;
 import com.sftc.web.model.sfmodel.Coordinate;
 import com.sftc.web.model.sfmodel.Source;
 import com.sftc.web.model.sfmodel.Target;
+import com.sftc.web.service.MessageService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.log4j.Logger;
@@ -29,6 +30,7 @@ import static com.sftc.tools.api.APIStatus.SUBMIT_FAIL;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
 import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
+import static com.sftc.tools.constant.WXConstant.WX_template_id_1;
 
 @Component
 public class OrderCommitLogic {
@@ -44,6 +46,8 @@ public class OrderCommitLogic {
     private AddressMapper addressMapper;
     @Resource
     private AddressHistoryMapper addressHistoryMapper;
+    @Resource
+    private MessageService messageService;
 
     //////////////////// Public Method ////////////////////
 
@@ -416,6 +420,18 @@ public class OrderCommitLogic {
             // 返回结果添加订单编号
             respObject.put("order_id", order.getId());
 
+            /// 发送微信模板消息
+            if (reqObject.getJSONObject("order").containsKey("form_id")
+                    && !"".equals(reqObject.getJSONObject("order").getString("form_id"))) {
+                String[] messageArr = new String[2];
+                messageArr[0] = respObject.getJSONObject("request").getString("request_num");
+                messageArr[1] = "您的顺丰订单下单成功(同城)！寄件人是："
+                        + (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver");
+                String form_id = reqObject.getJSONObject("order").getString("form_id");
+                messageService.sendWXTemplateMessage(Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
+                        messageArr, "", form_id, WX_template_id_1);
+            }
+
         } else {
             status = SUBMIT_FAIL;
         }
@@ -515,9 +531,21 @@ public class OrderCommitLogic {
                 // 返回结果添加订单编号
                 String ordernum = responseObject.getString("ordernum");
                 orderExpressMapper.updateOrderNumber(orderExpress.getId(), ordernum);
+                orderExpress.setOrder_number(ordernum);
+
             }
         } else { // 预约件
             responseObject.put("message", "大网订单预约成功");
+        }
+
+        /// 发送微信模板消息
+        if (orderObject.containsKey("form_id") && !"".equals(orderObject.getString("form_id"))) {
+            String[] messageArr = new String[2];
+            messageArr[0] = orderExpress.getOrder_number();
+            messageArr[1] = "您的顺丰订单下单成功(大网)！寄件人是：" + sf.get("j_contact");
+            String form_id = orderObject.getString("form_id");
+            messageService.sendWXTemplateMessage(Integer.parseInt((String) orderObject.get("sender_user_id")),
+                    messageArr, "", form_id, WX_template_id_1);
         }
 
         Order orderData = orderMapper.selectOrderDetailByOrderId(order.getId());

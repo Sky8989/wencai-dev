@@ -1,10 +1,24 @@
 package com.sftc.tools.constant;
 
+import com.sftc.tools.api.APIGetUtil;
+import net.sf.json.JSONObject;
+import org.apache.http.client.methods.HttpGet;
+import org.springframework.stereotype.Component;
+
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import static com.sftc.tools.constant.ThirdPartyConstant.WX_APPID;
+import static com.sftc.tools.constant.ThirdPartyConstant.WX_SECRET;
+
 /**
  * Author:hxy starmoon1994
  * Description: 微信 小程序服务通知 相关链接与常量
  * Date:15:25 2017/7/17
  */
+@Component
 public class WXConstant {
     ///////////////////秘钥相关/////////////////
     /**
@@ -16,31 +30,62 @@ public class WXConstant {
     /**
      * 第三方用户唯一凭证
      */
-    public static String WX_APPID = "";
+    private static final String WX_APPID_TEST = "wx4a6fc8541558c180";
     /**
      * 第三方用户唯一凭证密钥，即appsecret
      */
-    public static String WX_SECRET = "";
+    public static final String WX_SECRET_TEST = "ed327e274f47fab663f9edd4ba10054b";
 
     ///////////////////模板相关/////////////////
     /**
      * 消息模板编号 1
      */
-    public static String WX_template_id_1 = "";
+    public static final String WX_template_id_1 = "80Xh6eqJUsG4G2J_O995H4qTnENtFXWL5uxB9eOGwaI"; // near的模板
+    public static final String WX_template_id_1_Test = "XdOTHkqulof0zT7zAkyPRIcfv2g2Kz_SEMmz5_aOvhc"; // hxy的模板
     /**
      * 消息模板的跳转页面 1
      */
-    public static String WX_template_page_1 = "";
+    public static final String WX_template_page_1 = "";
 
     ///////////////////接口地址url/////////////////
     /**
      * 微信模板消息 接口地址
      */
-    public static String WX_SEND_MESSAGE_PATH = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=";
+    public static final String WX_SEND_MESSAGE_PATH = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=";
     /**
      * 获取 access_token 接口地址
      */
-    public static String WX_GET_ACCESSTOKEN = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
+    public static final String WX_GET_ACCESSTOKEN_TEST = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + WX_APPID_TEST + "&secret=" + WX_SECRET_TEST;
+    public static final String WX_GET_ACCESSTOKEN = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + WX_APPID + "&secret=" + WX_SECRET;
+
+    ///////////////////记录相关/////////////////
+    /**
+     * 记录属性token的次数
+     */
+    public static int count = 0;
 
 
+    ///////////////////自动刷新/////////////////
+    static {
+        long delay = 0;
+        long period = 7200;
+        final TimerTask refreshAccessTokenTask = new TimerTask() {
+            @Override
+            public void run() {
+                // 操作acceee_token的获取链接
+                HttpGet httpGet = new HttpGet(WX_GET_ACCESSTOKEN);
+                String resultStr = APIGetUtil.get(httpGet);
+                JSONObject resultObject = JSONObject.fromObject(resultStr);
+                if (resultObject.containsKey("access_token")) {
+                    WX_ACCESS_TOKEN = resultObject.getString("access_token");
+                    //System.out.println("刷新token的操作，最新的access_token:" + WX_ACCESS_TOKEN);
+                } else {
+                    System.out.println("刷新WXtoken的操作,获取WXaccess_token失败" + resultStr);
+                }
+                System.out.println("刷新WXtoken的操作，这里是定时任务,执行次数：" + count++);
+            }
+        };
+        ScheduledExecutorService refreshSES = Executors.newScheduledThreadPool(1);
+        refreshSES.scheduleAtFixedRate(refreshAccessTokenTask, delay, period, TimeUnit.SECONDS);
+    }
 }

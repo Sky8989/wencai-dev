@@ -28,6 +28,6 @@ public interface MessageService {
      * @param messageArr 消息内容数据的数组
      * @param pagePath   跳转页面的路径
      */
-    void sendWXTemplateMessage(int touser_id, String[] messageArr, String pagePath, String form_id) throws Exception;
+    void sendWXTemplateMessage(int touser_id, String[] messageArr, String pagePath, String form_id,String template_id);
 
 }

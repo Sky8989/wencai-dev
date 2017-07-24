@@ -5,6 +5,7 @@ import com.sftc.tools.api.APIPostUtil;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.api.OrderController;
+import com.sftc.web.service.impl.MessageServiceImpl;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPut;
 import org.junit.Before;
@@ -16,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.annotation.Resource;
 
 import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
+import static com.sftc.tools.constant.WXConstant.WX_template_id_1;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(locations = {"classpath*:spring/spring-dao.xml"})
@@ -109,6 +111,18 @@ public class OrderServiceTest {
         HttpPut put = new HttpPut(pay_url);
         put.addHeader("PushEnvelope-Device-Token", (String) request.get("access_token"));
         String res = APIPostUtil.post(str, put);
+    }
+
+    @Test  // 微信模板消息测试
+    public void WXMessagesTest() {
+        MessageServiceImpl messageService = new MessageServiceImpl();
+        String[] messageArr = new String[2];
+        messageArr[0] = "D12312312312";
+        messageArr[1] = "23";
+        // 表单id 前端传递过来
+        String form_id = "1500629436888";
+        messageService.sendWXTemplateMessage(123, messageArr, "", form_id, WX_template_id_1
+        );
     }
 
 }
