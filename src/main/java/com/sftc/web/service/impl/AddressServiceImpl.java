@@ -35,12 +35,6 @@ public class AddressServiceImpl implements AddressService {
     @Resource
     private AddressResolutionMapper addressResolutionMapper;
 
-    /**
-     * 信号量
-     * 腾讯位置服务暂时只能5个并发数/1秒，所以保险起见设4个信号量，在内部休眠1.5秒
-     */
-    private final Semaphore semaphore = new Semaphore(4);
-
     public APIResponse addAddress(Address address) {
         APIStatus status = SUCCESS;
         address.setCreate_time(Long.toString(System.currentTimeMillis()));
@@ -91,7 +85,6 @@ public class AddressServiceImpl implements AddressService {
             }
         }
         return APIUtil.getResponse(status, null);
-
     }
 
 
@@ -126,13 +119,6 @@ public class AddressServiceImpl implements AddressService {
             return APIUtil.getResponse(status, resultJsonObject);
         }
 
-        try { // 请求许可
-            semaphore.acquire();
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         // GET
         String geocoderUrl = MAP_GEOCODER_URL.replace("{address}", address);
         HttpGet get = new HttpGet(geocoderUrl);
@@ -154,9 +140,6 @@ public class AddressServiceImpl implements AddressService {
         } else {
             status = APIStatus.SELECT_FAIL;
         }
-
-        // 释放许可
-        semaphore.release();
 
         return APIUtil.getResponse(status, resultJsonObject);
     }
