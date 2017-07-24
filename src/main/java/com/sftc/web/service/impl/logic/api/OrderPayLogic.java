@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-import static com.sftc.tools.api.APIStatus.QUOTE_FAIL;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_QUOTES_URL;
 import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
@@ -65,9 +64,11 @@ public class OrderPayLogic {
         String res = APIPostUtil.post(gson.toJson(jsonObject), post);
         JSONObject respObject = JSONObject.fromObject(res);
 
-        APIStatus status = respObject.get("error") == null ? SUCCESS : QUOTE_FAIL;
+        if (respObject.get("error") != null) {
+            return APIUtil.submitErrorResponse("计价失败", respObject);
+        }
 
-        return APIUtil.getResponse(status, respObject);
+        return APIUtil.getResponse(SUCCESS, respObject);
     }
 
     /**

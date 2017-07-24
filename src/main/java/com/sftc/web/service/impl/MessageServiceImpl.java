@@ -1,29 +1,25 @@
 package com.sftc.web.service.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.sftc.tools.api.*;
-import com.sftc.tools.constant.WXConstant;
+import com.sftc.tools.api.APIPostUtil;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIUtil;
 import com.sftc.web.mapper.TokenMapper;
 import com.sftc.web.mapper.UserMapper;
 import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
 import com.sftc.web.service.MessageService;
 import net.sf.json.JSONObject;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
+import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.*;
-import static com.sftc.tools.constant.WXConstant.*;
+import static com.sftc.tools.constant.WXConstant.WX_ACCESS_TOKEN;
+import static com.sftc.tools.constant.WXConstant.WX_SEND_MESSAGE_PATH;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {
@@ -42,25 +38,22 @@ public class MessageServiceImpl implements MessageService {
      * 获取短信验证码
      */
     public APIResponse getMessage(Object object) {
-        APIStatus status = APIStatus.SUCCESS;
         String str = gson.toJson(object);
         HttpPost post = new HttpPost(SF_TAKE_MESSAGE_URL);
         String res = APIPostUtil.post(str, post);
         JSONObject resultObject = JSONObject.fromObject(res);
-        if (resultObject.containsKey("errors")) {
-            status = APIStatus.VALIDATION_ERROR;
-        }
-        if (resultObject.containsKey("error")) {
+        if (resultObject.containsKey("errors"))
+            return APIUtil.submitErrorResponse("请输入正确的手机号码", resultObject);
+        if (resultObject.containsKey("error"))
             return APIUtil.submitErrorResponse("其他错误", resultObject);
-        }
-        return APIUtil.getResponse(status, resultObject);
+
+        return APIUtil.getResponse(SUCCESS, resultObject);
     }
 
     /**
      * 用户注册
      */
     public APIResponse register(Object object) {
-        APIStatus status = APIStatus.SUCCESS;
 
         JSONObject jsonObject = JSONObject.fromObject(object);
         int user_id = jsonObject.getInt("user_id");
@@ -94,7 +87,7 @@ public class MessageServiceImpl implements MessageService {
             user.setUuid(merchantJSONObject.getString("uuid"));
             userMapper.updateUser(user);
 
-            return APIUtil.getResponse(status, resJSONObject);
+            return APIUtil.getResponse(SUCCESS, resJSONObject);
         }
     }
 
@@ -102,7 +95,7 @@ public class MessageServiceImpl implements MessageService {
      * 获取顺丰token 需要传入手机号和验证码
      */
     public APIResponse getToken(Object object) {
-        APIStatus status = APIStatus.SUCCESS;
+
         JSONObject jsonObject = JSONObject.fromObject(object);
 
         if (jsonObject.containsKey("user_id")) {
@@ -149,7 +142,7 @@ public class MessageServiceImpl implements MessageService {
                 token.setAccess_token(access_token);
                 token.setRefresh_token(refresh_token);
                 tokenMapper.updateToken(token);
-                return APIUtil.getResponse(status, resJSONObject);
+                return APIUtil.getResponse(SUCCESS, resJSONObject);
             } else {
                 return APIUtil.submitErrorResponse("token获取失败，请参考错误信息", resJSONObject);
             }
@@ -162,7 +155,7 @@ public class MessageServiceImpl implements MessageService {
      * 登陆 专指登陆顺丰的接口
      */
     public APIResponse sfLogin(Object object) {
-        APIStatus status = APIStatus.SUCCESS;
+
         JSONObject jsonObject = JSONObject.fromObject(object);
         int user_id = jsonObject.getInt("user_id");
         String sfToken = jsonObject.getString("token");
@@ -188,29 +181,10 @@ public class MessageServiceImpl implements MessageService {
                     userMapper.updateUser(user);
                 }
             }
-            return APIUtil.getResponse(status, resJSONObject);
+            return APIUtil.getResponse(SUCCESS, resJSONObject);
         } else {
             return APIUtil.paramErrorResponse("缺少参数，请传入sfToken");
         }
-    }
-
-    // 验证手机号与user_id的匹配
-    private boolean checkMobileAndUserid(String param_mobile, int param_user_id) {
-        boolean flag = false;
-        User userByPhone = userMapper.selectUserByPhone(param_mobile);
-        User userByUserId = userMapper.selectUserByUserId(param_user_id);
-        if (userByUserId.getMobile() == null || "".equals(userByUserId.getMobile())) {
-            // 用户的手机号为空 则 判断 参数手机号是否被用过
-            if (userByPhone == null) {
-                flag = true;
-            }
-        } else {// 用户已经绑定过手机号
-            if (param_mobile.equals(userByUserId.getMobile())) {
-                // 当 该id的用户手机号和参数手机号匹配 则放行
-                flag = true;
-            }
-        }
-        return flag;
     }
 
     /**
@@ -236,7 +210,6 @@ public class MessageServiceImpl implements MessageService {
         // 构造模板消息数据
         JSONObject messageBody = new JSONObject();
         messageBody.put("touser", user.getOpen_id());
-//        messageBody.put("touser", "oZqgN0QlyCIKrQOoNbwe5slVwq8I");// 测试使用我自己的openid 对应自己的小程序
         messageBody.put("template_id", template_id);
         messageBody.put("page", pagePath);
         messageBody.put("form_id", form_id);

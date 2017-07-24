@@ -39,9 +39,9 @@ public class OrderCancelLogic {
         String access_token = paramJsonObject.getString("access_token");
         //对重复取消订单的情况进行处理
         Order order = orderMapper.selectOrderDetailByOrderId(id);
-        if ("Cancelled".equals(order.getIs_cancel()) || !"".equals(order.getIs_cancel())) {//is_cancle字段默认是空字符串
+        if ("Cancelled".equals(order.getIs_cancel()) || !"".equals(order.getIs_cancel())) {//is_cancel字段默认是空字符串
             //return APIUtil.getResponse(APIStatus.CANCEL_ORDER_FALT, null);
-            return APIUtil.submitErrorResponse("订单已经取消，请勿重复取消操作！！！", null);
+            return APIUtil.submitErrorResponse("订单已经取消，请勿重复取消操作", null);
         }
         // 不同地域类型的订单 进行不同的取消方式 大网是软取消 同城是硬取消
         if ("REGION_NATION".equals(order.getRegion_type())) {// true 大网单
@@ -96,13 +96,13 @@ public class OrderCancelLogic {
                 stringBuilder.append(",");
             }
         }
-        JSONObject resJSONObject;
+
+        orderMapper.updateCancelOrderById(order_id);
+        orderExpressMapper.updateOrderExpressCanceled(order_id);
 
         boolean falg = order.getRegion_type() == null || "".equals(order.getRegion_type());
         if (!falg) { //这是订单已经提交付款了的操作
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-            orderMapper.updateCancelOrderById(order_id);
-            orderExpressMapper.updateOrderExpressCanceled(order_id);
 
             // 下面是 顺丰方面取消订单的逻辑
             String str = "{\"event\":{\"type\":\"CANCEL\",\"source\":\"MERCHANT\"}}";
@@ -110,15 +110,13 @@ public class OrderCancelLogic {
             HttpPost post = new HttpPost(myUrl);
             post.addHeader("PushEnvelope-Device-Token", access_token);
             String res = APIPostUtil.post(str, post);
-            resJSONObject = JSONObject.fromObject(res);
+            JSONObject resJSONObject = JSONObject.fromObject(res);
             if (resJSONObject.get("error") != null) {
                 return APIUtil.submitErrorResponse("订单取消失败", resJSONObject);
             }
         } else { // 订单还未提交给顺丰的情况，只更新order的信息即可
-            orderMapper.updateCancelOrderById(order_id);
-            orderExpressMapper.updateOrderExpressCanceled(order_id);
-            return APIUtil.getResponse(APIStatus.SUCCESS, "订单未被提交到顺丰下单，已做软取消处理");
+            return APIUtil.getResponse(APIStatus.SUCCESS, null);
         }
-        return APIUtil.getResponse(APIStatus.SUCCESS, resJSONObject);
+        return APIUtil.getResponse(APIStatus.SUCCESS, null);
     }
 }

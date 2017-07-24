@@ -5,15 +5,16 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class APIResponse {
 
-    private String state;
+    private Integer state;
     private String message;
     private Object result;
+    private Object error;
 
     public String getMessage() {
         return message;
     }
 
-    public String getState() {
+    public Integer getState() {
         return state;
     }
 
@@ -21,7 +22,7 @@ public class APIResponse {
         return result;
     }
 
-    public void setState(String state) {
+    public void setState(Integer state) {
         this.state = state;
     }
 
@@ -33,17 +34,16 @@ public class APIResponse {
         this.result = result;
     }
 
-    private static class APIResponseHolder {
-        private final static APIResponse INSTANCE = new APIResponse();
+    public Object getError() {
+        return error;
     }
 
-    public static APIResponse getInstance() {
-        return APIResponseHolder.INSTANCE;
+    public void setError(Object error) {
+        this.error = error;
     }
-
-//    private APIResponse() {}
 
     public APIResponse() {
         super();
     }
+
 }

@@ -3,7 +3,6 @@ package com.sftc.web.service.impl.logic.api;
 import com.google.gson.Gson;
 import com.sftc.tools.api.APIPostUtil;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.mapper.EvaluateMapper;
 import com.sftc.web.mapper.OrderExpressMapper;
@@ -11,13 +10,13 @@ import com.sftc.web.mapper.OrderMapper;
 import com.sftc.web.model.Evaluate;
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
-import com.sftc.web.service.QiniuService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPut;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
+import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
 
 @Component
@@ -31,17 +30,15 @@ public class OrderEvaluateLogic {
     private OrderExpressMapper orderExpressMapper;
     @Resource
     private EvaluateMapper evaluateMapper;
-    @Resource
-    private QiniuService qiniuService;
 
     /**
      * 评价某个订单的单一包裹
      */
     public APIResponse evaluateSingle(Object object) {
-        APIStatus status = APIStatus.SUCCESS;
+
         // 生成 顺丰订单评价接口 需要的信息
         String str = gson.toJson(object);
-        JSONObject jsonObject = null;
+        JSONObject jsonObject;
         JSONObject jsonObjectParam = JSONObject.fromObject(object);
         JSONObject request = jsonObjectParam.getJSONObject("request");
         JSONObject attributes = jsonObjectParam.getJSONObject("request").getJSONObject("attributes");
@@ -56,6 +53,7 @@ public class OrderEvaluateLogic {
                 isNationFlag = true;
             }
         }
+
         ///如果 订单是大网单 则不请求顺丰接口，只保存在自己数据库中
         if (isNationFlag) {
             /// 评价成功后，向评价表存入 评价记录
@@ -68,7 +66,7 @@ public class OrderEvaluateLogic {
             evaluate.setUser_id(request.getInt("user_id"));
             evaluate.setCreate_time(Long.toString(System.currentTimeMillis()));
             evaluateMapper.addEvaluate(evaluate);
-            return APIUtil.getResponse(status, "大网订单评价成功");
+            return APIUtil.getResponse(SUCCESS, evaluate);
         }
 
         /// 向顺丰的接口发送评价信息
@@ -78,14 +76,13 @@ public class OrderEvaluateLogic {
         String res = APIPostUtil.post(str, put);
         jsonObject = JSONObject.fromObject(res);
         if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {
-            status = APIStatus.EVALUATE_FALT;
+            return APIUtil.submitErrorResponse("评价失败", jsonObject);
         } else {
             /// 评价成功后，向评价表存入 评价记录
             Evaluate evaluate = new Evaluate();
             evaluate.setMerchant_comments(attributes.getString("merchant_comments"));
             evaluate.setMerchant_score(attributes.getString("merchant_score"));
             evaluate.setMerchant_tags(attributes.getString("merchant_tags"));
-            // 修复bug 有uuid改为orderExpress_id by hxy 7.15
             evaluate.setOrderExpress_id(orderExpress.getId());
             evaluate.setUuid(uuid);
             evaluate.setUser_id(request.getInt("user_id"));
@@ -93,6 +90,6 @@ public class OrderEvaluateLogic {
             evaluateMapper.addEvaluate(evaluate);
             jsonObject = jsonObject.getJSONObject("request").getJSONObject("attributes");
         }
-        return APIUtil.getResponse(status, jsonObject);
+        return APIUtil.getResponse(SUCCESS, jsonObject);
     }
 }

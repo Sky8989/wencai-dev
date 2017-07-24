@@ -1,9 +1,10 @@
 package com.sftc.web.service.impl.logic.api;
 
-import com.sftc.tools.api.*;
+import com.sftc.tools.api.APIGetUtil;
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.screenshot.HtmlScreenShotUtil;
-import com.sftc.web.mapper.OrderExpressMapper;
-import com.sftc.web.mapper.OrderMapper;
 import com.sftc.web.service.QiniuService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -26,17 +27,15 @@ public class OrderOtherLogic {
      * 预约时间规则 (获取订单常量)
      */
     public APIResponse timeConstants(APIRequest request) {
-        APIStatus status = SUCCESS;
         String constantsUrl = SF_CONSTANTS_URL + request.getParameter("constants") + "?latitude=" + request.getParameter("latitude") + "&longitude=" + request.getParameter("longitude");
         HttpGet get = new HttpGet(constantsUrl);
         get.addHeader("PushEnvelope-Device-Token", (String) request.getParameter("access_token"));
         String res = APIGetUtil.get(get);
         JSONObject jsonObject = JSONObject.fromObject(res);
-        if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {
-            status = APIStatus.CONSTANT_FALT;
-        }
+        if (jsonObject.get("errors") != null || jsonObject.get("error") != null)
+            return APIUtil.submitErrorResponse("获取常量失败", jsonObject);
 
-        return APIUtil.getResponse(status, jsonObject);
+        return APIUtil.getResponse(SUCCESS, jsonObject);
     }
 
     /**

@@ -24,13 +24,7 @@ public abstract class AbstractBasicController {
     protected GiftCardService giftCardService;
 
     @Resource
-    protected OrderCancelService orderCancelService;
-
-    @Resource
     protected MessageService messageService;
-
-    @Resource
-    protected AddressService addressService;
 
     @Resource
     protected UserContactService userContactService;
