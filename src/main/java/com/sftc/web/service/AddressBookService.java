@@ -30,7 +30,7 @@ public interface AddressBookService {
     APIResponse updateAddressBook(APIRequest apiRequest);
 
     /**
-     * 获取 地址簿列表
+     * 获取 地址簿列表 根据时间戳降序排列 大的时间戳在上面
      *
      * @param apiRequest
      * @return

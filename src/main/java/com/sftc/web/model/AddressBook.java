@@ -70,5 +70,23 @@ public class AddressBook {
     public String getCreate_time() {return create_time;}
 
     public void setCreate_time(String create_time) {this.create_time = create_time;}
+
+    public AddressBook() { super();}
+
+    public AddressBook(int id, int user_id, String name, String phone, String province,
+                       String city, String area, String address, double longitude,
+                       double latitude, String create_time) {
+        this.id = id;
+        this.user_id = user_id;
+        this.name = name;
+        this.phone = phone;
+        this.province = province;
+        this.city = city;
+        this.area = area;
+        this.address = address;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.create_time = create_time;
+    }
 }
 

@@ -12,11 +12,13 @@ import com.sftc.web.model.AddressResolution;
 import com.sftc.web.service.AddressBookService;
 import com.sftc.web.service.AddressService;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -57,10 +59,27 @@ public class AddressBookServiceImpl implements AddressBookService {
         return APIUtil.getResponse(SUCCESS, addressBook);
     }
 
-    @Override
-    public APIResponse deleteAddressBook(APIRequest apiRequest) {
 
-        return null;
+    public APIResponse deleteAddressBook(APIRequest apiRequest) {
+        ///验参
+        JSONObject paramObject = JSONObject.fromObject(apiRequest.getRequestParam());
+        if (!paramObject.containsKey("user_id")) {
+            return APIUtil.paramErrorResponse("参数有误,user_id");
+        } else if (!paramObject.containsKey("addressBook_id")) {
+            return APIUtil.paramErrorResponse("参数有误,addressBook_id");
+        }
+        int user_id;
+        int addressBook_id;
+        try {
+            user_id = paramObject.getInt("user_id");
+            addressBook_id = paramObject.getInt("addressBook_id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return APIUtil.paramErrorResponse("参数有误，非自然数");
+        }
+        /// 执行删除操作
+        addressBookMapper.deleteAddressBook(user_id, addressBook_id);
+        return APIUtil.getResponse(SUCCESS, null);
     }
 
     @Override
@@ -71,7 +90,16 @@ public class AddressBookServiceImpl implements AddressBookService {
 
     @Override
     public APIResponse selectAddressBookList(APIRequest apiRequest) {
-        apiRequest.getParameter("user_id");
-        return null;
+        /// 处理参数
+        HttpServletRequest httpServletRequest = apiRequest.getRequest();
+        int user_id = Integer.parseInt(httpServletRequest.getParameter("user_id"));
+
+        //执行查询
+        List<AddressBook> addressBookList = addressBookMapper.selectList(user_id);
+        if (addressBookList.size() > 0) {
+            return APIUtil.getResponse(SUCCESS, addressBookList);
+        } else {
+            return APIUtil.selectErrorResponse("用户无地址簿信息", null);
+        }
     }
 }
