@@ -5,21 +5,35 @@
 <mapper namespace="com.sftc.web.mapper.AddressBookMapper">
 
 
-    <!-- 插入地址信息  -->
+    <!-- 插入地址簿条目信息  -->
     <insert id="addAddressBook" useGeneratedKeys="true" keyProperty="id" parameterType="com.sftc.web.model.AddressBook">
         insert into sftc_address_book
         (user_id,name,phone,province,city,area,address,create_time<include refid="column1"/>)
         values
         (#{user_id},#{name},#{phone},#{province},#{city},#{area},#{address},#{create_time}<include refid="value1"/>)
     </insert>
-
+    <!--删除地址簿条目信息-->
     <delete id="deleteAddressBook" parameterType="int">
         DELETE FROM sftc_address_book WHERE user_id = #{user_id} and id = #{id}
     </delete>
-
+    <!--查询地址簿列表-->
     <select id="selectList" parameterType="int" resultType="com.sftc.web.model.AddressBook">
         SELECT * FROM sftc_address_book WHERE user_id = #{user_id} ORDER BY create_time DESC,id DESC ;
     </select>
+    <!--更细地址簿条目信息-->
+    <update id="updateAddressBook" parameterType="String">
+        UPDATE sftc_address_book
+        <set>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="province != null and province != ''">province = #{province},</if>
+            <if test="city != null and city != ''">city = #{city},</if>
+            <if test="area != null and area != ''">area = #{area},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="create_time != null and create_time != ''">create_time = #{create_time},</if>
+        </set>
+        WHERE id = #{id};
+    </update>
 
 
     <!--动态插入-->

@@ -35,7 +35,7 @@ public class AddressBookServiceImpl implements AddressBookService {
     @Resource
     private AddressBookMapper addressBookMapper;
 
-    @Override
+
     public APIResponse addAddressBook(APIRequest apiRequest) {
         ///验参
         JSONObject paramObject = JSONObject.fromObject(apiRequest.getRequestParam());
@@ -82,13 +82,19 @@ public class AddressBookServiceImpl implements AddressBookService {
         return APIUtil.getResponse(SUCCESS, null);
     }
 
-    @Override
+
     public APIResponse updateAddressBook(APIRequest apiRequest) {
-        // 修改地址时 改变创建时间
-        return null;
+        // 修改地址时 改变创建时间 以供查询地址簿列表时根据时间排序
+        JSONObject paramObject = JSONObject.fromObject(apiRequest.getRequestParam());
+        AddressBook addressBook = (AddressBook) JSONObject.toBean(paramObject, AddressBook.class);
+
+        addressBook.setCreate_time(Long.toString(System.currentTimeMillis()));
+        addressBookMapper.updateAddressBook(addressBook);
+
+        return APIUtil.getResponse(SUCCESS,addressBook);
     }
 
-    @Override
+
     public APIResponse selectAddressBookList(APIRequest apiRequest) {
         /// 处理参数
         HttpServletRequest httpServletRequest = apiRequest.getRequest();
