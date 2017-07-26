@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sftc.web.mapper.AddressBookMapper">
+
+
+
+    <!-- 插入地址信息  -->
+    <insert id="addAddressBook" useGeneratedKeys="true" keyProperty="id" parameterType="com.sftc.web.model.AddressBook">
+      insert into sftc_address_book
+      (user_id,name,phone,province,city,area,address,create_time<include refid="column1"/>)
+      values
+      (#{user_id},#{name},#{phone},#{province},#{city},#{area},#{address},#{create_time}<include refid="value1"/>)
+    </insert>
+
+
+
+
+
+
+
+
+
+
+
+    <!--动态插入-->
+    <sql id="column1">
+        <!-- 去掉最后一个, -->
+        <trim suffixOverrides=",">
+            <if test="longitude != null and longitude != 0">
+                ,longitude,
+            </if>
+            <if test="latitude != null and latitude != 0">
+                latitude,
+            </if>
+        </trim>
+    </sql>
+    <sql id="value1">
+        <!-- 去掉最后一个, -->
+        <trim suffixOverrides=",">
+            <if test="longitude != null and longitude != 0">
+                ,#{longitude},
+            </if>
+            <if test="latitude != null and latitude != 0">
+                #{latitude},
+            </if>
+        </trim>
+    </sql>
+</mapper>
