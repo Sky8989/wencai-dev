@@ -48,7 +48,7 @@ public class MessageServiceImpl implements MessageService {
         String res = APIPostUtil.post(str, post);
         JSONObject resultObject = JSONObject.fromObject(res);
         if (resultObject.containsKey("errors"))
-            return APIUtil.submitErrorResponse("请输入正确的手机号码", resultObject);
+            return APIUtil.submitErrorResponse("mobile错误", resultObject);
         if (resultObject.containsKey("error"))
             return APIUtil.submitErrorResponse("其他错误", resultObject);
 
@@ -71,7 +71,7 @@ public class MessageServiceImpl implements MessageService {
 
         // 注册失败 匹配error
         if (resJSONObject.containsKey("error")) {
-            return APIUtil.submitErrorResponse("注册失败，见返回值", resJSONObject);
+            return APIUtil.submitErrorResponse("注册失败", resJSONObject);
         } else {
 
             // 注册成功
@@ -116,13 +116,13 @@ public class MessageServiceImpl implements MessageService {
                 // 用户的手机号为空 则 判断 参数手机号是否被用过
                 if (userByPhone != null) {
                     map.put("name", userByPhone.getName());
-                    return APIUtil.submitErrorResponse("该手机号已被人使用注册过，手机号使用者是：", map);
+                    return APIUtil.submitErrorResponse("手机号已被使用", map);
                 }
             } else {// 用户已经绑定过手机号
                 if (!mobile.equals(userByUserId.getMobile())) {
                     // 当 该id的用户手机号和参数手机号匹配
                     map.put("mobile", userByUserId.getMobile());
-                    return APIUtil.submitErrorResponse("您已经注册过，请使用注册时的手机号，请参考该手机号：", map);
+                    return APIUtil.submitErrorResponse("已注册", map);
                 }
             }
 
@@ -152,7 +152,7 @@ public class MessageServiceImpl implements MessageService {
                 tokenMapper.updateToken(token);
                 return APIUtil.getResponse(SUCCESS, resJSONObject);
             } else {
-                return APIUtil.submitErrorResponse("token获取失败，请参考错误信息", resJSONObject);
+                return APIUtil.submitErrorResponse("token获取失败", resJSONObject);
             }
         } else {
             return APIUtil.paramErrorResponse("缺少参数，user_id");
@@ -191,7 +191,7 @@ public class MessageServiceImpl implements MessageService {
             }
             return APIUtil.getResponse(SUCCESS, resJSONObject);
         } else {
-            return APIUtil.paramErrorResponse("缺少参数，请传入sfToken");
+            return APIUtil.paramErrorResponse("缺少参数sfToken");
         }
     }
 
