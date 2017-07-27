@@ -10,6 +10,7 @@ import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -33,7 +34,7 @@ public class LatitudeLongitudeServiceImpl implements LatitudeLongitudeService {
         // 计算生成经纬度点的数量
         int GeneratedNumber = (LLConstant.MIN_LL_NUMBER + new Random().nextInt(LLConstant.MAX_LL_NUMBER));
         // 调用算法
-        List<Double[]> LLResults = LLConstant.calculate(latitude, longitude, LLConstant.RANGE_NUMBER, GeneratedNumber);
+        List<Map<String, Double>> LLResults = LLConstant.calculate(latitude, longitude, LLConstant.RANGE_NUMBER, GeneratedNumber);
 
         return APIUtil.getResponse(APIStatus.SUCCESS, LLResults);
     }
@@ -51,7 +52,7 @@ public class LatitudeLongitudeServiceImpl implements LatitudeLongitudeService {
         }
         LLConstant.MAX_LL_NUMBER = paramJSONObject.getInt("MAX_LL_NUMBER");
         LLConstant.MIN_LL_NUMBER = paramJSONObject.getInt("MIN_LL_NUMBER");
-        LLConstant.RANGE_NUMBER = paramJSONObject.getInt("RANGE_NUMBER");
+        LLConstant.RANGE_NUMBER = paramJSONObject.getDouble("RANGE_NUMBER");
 
         return APIUtil.getResponse(APIStatus.SUCCESS, paramJSONObject);
     }
