@@ -52,7 +52,7 @@ public class LatitudeLongitudeServiceImpl implements LatitudeLongitudeService {
         }
         LLConstant.MAX_LL_NUMBER = paramJSONObject.getInt("MAX_LL_NUMBER");
         LLConstant.MIN_LL_NUMBER = paramJSONObject.getInt("MIN_LL_NUMBER");
-        LLConstant.RANGE_NUMBER = paramJSONObject.getInt("RANGE_NUMBER");
+        LLConstant.RANGE_NUMBER = paramJSONObject.getDouble("RANGE_NUMBER");
 
         return APIUtil.getResponse(APIStatus.SUCCESS, paramJSONObject);
     }
