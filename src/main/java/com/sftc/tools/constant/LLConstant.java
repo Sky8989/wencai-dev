@@ -1,8 +1,6 @@
 package com.sftc.tools.constant;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static java.lang.Math.PI;
 
@@ -18,7 +16,7 @@ public class LLConstant {
     // 生成范围 单位KM
     public static int RANGE_NUMBER = 3;
 
-    public static List<Double[]> calculate(double startlat, double startlon, double maxdist, int GeneratedNumber) {
+    public static List<Map<String, Double>> calculate(double startlat, double startlon, double maxdist, int GeneratedNumber) {
 
         //将所有纬度和经度转换为弧度。
         startlat = startlat * PI / 180;
@@ -29,7 +27,7 @@ public class LLConstant {
         //将最大距离转换为弧度。
         maxdist = maxdist / radiusEarth;
 
-        List<Double[]> gpsDataList = new LinkedList<Double[]>();
+        List<Map<String, Double>> gpsDataList = new LinkedList<Map<String, Double>>();
         for (int i = 0; i < GeneratedNumber; i++) {
             // 生成两个随机数 0 到1 的double
             double rand1 = new Random().nextDouble();
@@ -44,11 +42,13 @@ public class LLConstant {
             if (lon < -PI) lon = lon + 2 * PI;
             if (lon > PI) lon = lon - 2 * PI;
 
-            Double[] doubles = new Double[2];
+
             // 弧度转换成经纬度
-            doubles[0] = lat * 180 / PI;
-            doubles[1] = lon * 180 / PI;
-            gpsDataList.add(doubles);
+
+            Map<String, Double> map = new HashMap<String, Double>();
+            map.put("latitude", lat * 180 / PI);
+            map.put("longitude", lon * 180 / PI);
+            gpsDataList.add(map);
         }
         return gpsDataList;
     }
