@@ -91,7 +91,7 @@ public class AddressBookServiceImpl implements AddressBookService {
         addressBook.setCreate_time(Long.toString(System.currentTimeMillis()));
         addressBookMapper.updateAddressBook(addressBook);
 
-        return APIUtil.getResponse(SUCCESS,addressBook);
+        return APIUtil.getResponse(SUCCESS, addressBook);
     }
 
 
