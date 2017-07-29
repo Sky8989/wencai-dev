@@ -39,11 +39,11 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private CMSOrderListLogic cmsOrderListLogic;
 
-    public APIResponse normalOrderCommit(APIRequest request) {
+    public APIResponse addNormalOrderCommit(APIRequest request) {
         return orderCommitLogic.normalOrderCommit(request);
     }
 
-    public APIResponse friendOrderCommit(APIRequest request) {
+    public APIResponse addFriendOrderCommit(APIRequest request) {
         return orderCommitLogic.friendOrderCommit(request);
     }
 

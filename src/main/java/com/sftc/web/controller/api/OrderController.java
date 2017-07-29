@@ -35,7 +35,7 @@ public class OrderController extends AbstractBasicController {
     APIResponse placeOrder(@RequestBody Object object) throws Exception {
         APIRequest request = new APIRequest();
         request.setRequestParam(object);
-        return orderService.normalOrderCommit(request);
+        return orderService.addNormalOrderCommit(request);
     }
 
     /**
@@ -46,7 +46,7 @@ public class OrderController extends AbstractBasicController {
     APIResponse friendOrderCommit(@RequestBody Object object) throws Exception {
         APIRequest request = new APIRequest();
         request.setRequestParam(object);
-        return orderService.friendOrderCommit(request);
+        return orderService.addFriendOrderCommit(request);
     }
 
     /**

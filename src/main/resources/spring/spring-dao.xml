@@ -70,6 +70,16 @@
         <!-- 配置切入点 -->
         <aop:pointcut id="serviceMethods" expression="execution(* com.sftc.web.service.impl.*ServiceImpl.*(..))"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
+        <aop:advisor advice-ref="transactionadvice" pointcut-ref="serviceMethods"/>
     </aop:config>
+
+    <!-- 事物切面配置 -->
+    <tx:advice id="transactionadvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="update*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"/>
+            <tx:method name="add*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"/>
+            <tx:method name="insert*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"/>
+        </tx:attributes>
+    </tx:advice>
 
 </beans>
