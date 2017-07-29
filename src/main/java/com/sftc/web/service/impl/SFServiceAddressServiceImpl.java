@@ -133,6 +133,12 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         // request sf param
         String senderAreaCode = getServiceAddressCode(senderArea, 4, senderCityAddress.getCode());
         String receiverAreaCode = getServiceAddressCode(receiverArea, 4, receiveCityAddress.getCode());
+
+        if (senderAreaCode == null)
+            return APIUtil.selectErrorResponse("顺丰不支持寄件人城市", null);
+        if (receiverAreaCode == null)
+            return APIUtil.selectErrorResponse("顺丰不支持收件人城市", null);
+
         Object weightObject = requestObject.get("weight");
         String weightStr = "1";
         if (weightObject != null) {
