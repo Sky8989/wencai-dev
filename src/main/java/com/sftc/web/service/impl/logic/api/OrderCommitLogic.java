@@ -434,7 +434,7 @@ public class OrderCommitLogic {
 
         } else {
             status = SUBMIT_FAIL;
-            return APIUtil.submitErrorResponse("提交失败",respObject);
+            return APIUtil.submitErrorResponse("提交失败", respObject);
         }
 
         return APIUtil.getResponse(status, respObject);
@@ -528,6 +528,7 @@ public class OrderCommitLogic {
 
             if (responseObject.get("Message") != null || (responseObject.get("Message_Type") != null && ((String) responseObject.get("Message_Type")).contains("ERROR"))) {
                 status = SUBMIT_FAIL;
+                return APIUtil.submitErrorResponse("SF提示错误", responseObject);
             } else {
                 // 返回结果添加订单编号
                 String ordernum = responseObject.getString("ordernum");
