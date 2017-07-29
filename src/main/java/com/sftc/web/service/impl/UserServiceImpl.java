@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_GET_TOKEN;
 import static com.sftc.tools.constant.SFConstant.SF_LOGIN;
 import static com.sftc.tools.constant.ThirdPartyConstant.WX_AUTHORIZATION;
@@ -50,7 +51,7 @@ public class UserServiceImpl implements UserService {
             "\"message\":{" + "\"content\":\"4444\"}}";
 
     public APIResponse login(UserParam userParam) throws Exception {
-        APIStatus status = APIStatus.SUCCESS;
+        APIStatus status = SUCCESS;
         String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
         WechatUser wechatUser = APIResolve.getWechatJson(auth_url);
         User user = null;
@@ -117,11 +118,11 @@ public class UserServiceImpl implements UserService {
 
     //  合并后的登陆接口 前台来一个jscode
     public APIResponse superLogin(UserParam userParam) throws Exception {
-        APIStatus status = APIStatus.SUCCESS;
+        APIStatus status = SUCCESS;
         String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
         WechatUser wechatUser = APIResolve.getWechatJson(auth_url);
 //        WechatUser wechatUser = new WechatUser();
-//        wechatUser.setOpenid("oCFL80DeTEf9zWJt-Fbkhlbeq-iQ");
+//        wechatUser.setOpenid("oCFL80DaudC3jNVdnp5bQtXHkbUY");
 //        wechatUser.setSession_key("WP0iYNpNYwYwBdKT9eVPyw==");
 //        wechatUser.setErrmsg("sadsadcuowu");
 //        wechatUser.setErrcode(500);
@@ -193,11 +194,15 @@ public class UserServiceImpl implements UserService {
 
                     tokenInfo.put("access_token", map.get("access_token"));
                 }
+                //若有手机号 则加入手机号
+                if (user.getMobile() != null && !"".equals(user.getMobile())) {
+                    tokenInfo.put("mobile", user.getMobile());
+                }
             }
         } else {
             return APIUtil.submitErrorResponse(wechatUser.getErrmsg(), wechatUser);
         }
-        return APIUtil.getResponse(status, tokenInfo);
+        return APIUtil.getResponse(SUCCESS, tokenInfo);
     }
 
     public Token getToken(int id) {
@@ -266,7 +271,7 @@ public class UserServiceImpl implements UserService {
                 tokenById.setAccess_token("");
                 tokenById.setRefresh_token("");
                 tokenMapper.updateToken(tokenById);
-                return APIUtil.getResponse(APIStatus.SUCCESS, user_id + "用户解除手机绑定成功");
+                return APIUtil.getResponse(SUCCESS, user_id + "用户解除手机绑定成功");
             } else {// 无手机号
                 return APIUtil.submitErrorResponse("该用户未绑定手机号，请勿进行操作", null);
             }
@@ -276,25 +281,25 @@ public class UserServiceImpl implements UserService {
     }
 
     // 修改手机号码 即重新绑定新手机号
-    public APIResponse updateMobile(Object object) throws Exception {
+    public APIResponse updateMobile(APIRequest apiRequest) throws Exception {
+        Object requestParam = apiRequest.getRequestParam();
         // 1 验证手机号可用性
-        JSONObject jsonObject = JSONObject.fromObject(object);
+        JSONObject jsonObject = JSONObject.fromObject(requestParam);
         String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
         int user_id = jsonObject.getInt("user_id");
         User user = userMapper.selectUserByPhone(mobile);
         if (user != null) {
-            return APIUtil.submitErrorResponse("手机号已被人使用过，请检查手机号",mobile);
+            return APIUtil.submitErrorResponse("手机号已被人使用过，请检查手机号", mobile);
         }
-
         // 2 走注册流程
-        return messageService.register(jsonObject.toString());
+        return messageService.register(apiRequest);
     }
 
     /**
      * 下面是CMS的内容
      */
     public APIResponse selectUserListByPage(APIRequest request) throws Exception {
-        APIStatus status = APIStatus.SUCCESS;
+        APIStatus status = SUCCESS;
         HttpServletRequest httpServletRequest = request.getRequest();
         // 此处封装了 User的构造方法
         User user = new User(httpServletRequest);

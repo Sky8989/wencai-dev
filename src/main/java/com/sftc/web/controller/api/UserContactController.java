@@ -48,12 +48,6 @@ public class UserContactController extends AbstractBasicController {
         return userContactService.getFriendDetail(new APIRequest(request));
     }
 
-//    @RequestMapping(value = "/add", method = RequestMethod.POST)
-//    public @ResponseBody
-//    APIResponse addFriend(@RequestBody UserContactParam userContactParam) throws Exception {
-//        return userContactService.addFriend(userContactParam);
-//    }
-
     @RequestMapping(value = "/label/add", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse addLabelFriend(@RequestBody UserContactLabel userContactLabel) throws Exception {
@@ -75,7 +69,9 @@ public class UserContactController extends AbstractBasicController {
     @RequestMapping(value = "/notes/update", method = RequestMethod.POST)
         public @ResponseBody
     APIResponse updateNotes(@RequestBody Object object) throws Exception {
-        return userContactService.updateNotesAndPicture(object);
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(object);
+        return userContactService.updateNotesAndPicture(apiRequest);
     }
 
 }

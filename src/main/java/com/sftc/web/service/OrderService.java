@@ -52,11 +52,6 @@ public interface OrderService {
     APIResponse updateOrderStatus(APIRequest request);
 
     /**
-     * 返回未被填写的包裹
-     */
-    APIResponse getEmptyPackage(APIRequest request);
-
-    /**
      * 我的订单列表
      */
     APIResponse getMyOrderList(APIRequest request);
@@ -66,21 +61,10 @@ public interface OrderService {
      */
     APIResponse getMyFriendCircleOrderList(APIRequest request);
 
-    APIResponse friendPlace(Object object);
-
-    APIResponse sfOrderDetail(int order_id, String access_token, String uuid);
-
     /**
      * 快递详情
      */
     APIResponse selectExpressDetail(APIRequest request);
-
-    APIResponse noPlaceOrderDetail(int order_id);
-
-    /**
-     * 评价小哥
-     */
-    APIResponse evaluate(Object object);
 
     /**
      * 评价某个订单的单一包裹
@@ -90,9 +74,7 @@ public interface OrderService {
     /**
      * 取消订单
      */
-    //APIResponse deleteOrder(Object object);
     APIResponse cancelOrder(Object object);
-
 
     /**
      * 时间规则
@@ -100,39 +82,35 @@ public interface OrderService {
     APIResponse timeConstants(APIRequest request);
 
     /**
-     * 大网计价接口
-     */
-    APIResponse OrderFreightQuery(Object object);
-
-    /**
-     * 大网路由接口
-     */
-    APIResponse OrderRouteQuery(APIRequest request);
-
-    /**
-     * 提醒寄件人下单
-     */
-    APIResponse remindPlace(APIRequest request);
-
-    /**
-     * 同城单转大网单
+     * 兜底
+     * 根据同城订单的uuid，把原本同城的单下到大网
      */
     APIResponse transformOrderFromSameToNation(APIRequest request);
 
     /**
-     * 设置大网预约单定时器
+     * 设置大网预约单定时器开关
      */
     APIResponse setupReserveNationOrderCommitTimer(APIRequest request);
 
     /**
-     * 设置大网超时订单取消定时器
+     * 设置大网取消超时订单定时器开关
      */
     APIResponse setupCancelNationOrderTimer(APIRequest request);
+
+    /**
+     * 设置大网取消超时订单定时器开关
+     */
+    APIResponse setupCancelSameOrderTimer(APIRequest request);
 
     /**
      * 设置兜底记录已读
      */
     APIResponse readExpressTransform(APIRequest request);
+
+    /**
+     * 订单分享界面截图
+     */
+    APIResponse screenShot(APIRequest request);
 
 
     //////////////// CMS ////////////////

@@ -3,15 +3,10 @@ package com.sftc.web.controller.api;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
-import com.sftc.web.model.Order;
-import com.sftc.web.model.OrderExpress;
-import com.sftc.web.model.Token;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.service.EvaluateService;
-import com.sftc.web.service.OrderExpressService;
 import com.sftc.web.service.OrderService;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -91,15 +86,6 @@ public class OrderController extends AbstractBasicController {
         return orderService.payOrder(new APIRequest(request));
     }
 
-    /**
-     * 根据订单编号查找未被填写包裹的接口
-     */
-    @RequestMapping(value = "/pack", method = RequestMethod.GET)
-    public @ResponseBody
-    APIResponse pack(HttpServletRequest request) throws Exception {
-        return orderService.getEmptyPackage(new APIRequest(request));
-    }
-
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse detail(HttpServletRequest request) throws Exception {
@@ -129,24 +115,6 @@ public class OrderController extends AbstractBasicController {
     }
 
     /**
-     * 好友订单提交
-     */
-    @RequestMapping(value = "/friendPlace", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse friendPlace(@RequestBody Object object) throws Exception {
-        return orderService.friendPlace(object);
-    }
-
-    /**
-     * 顺丰详情接口，查询快递实时状态
-     */
-    @RequestMapping(value = "/sfDetail", method = RequestMethod.GET)
-    public @ResponseBody
-    APIResponse sfDetail(OrderExpress orderExpress, Token token) throws Exception {
-        return orderService.sfOrderDetail(orderExpress.getOrder_id(), token.getAccess_token(), orderExpress.getUuid());
-    }
-
-    /**
      * 快递详情
      */
     @RequestMapping(value = "/expressDetail", method = RequestMethod.GET)
@@ -167,15 +135,6 @@ public class OrderController extends AbstractBasicController {
     }
 
     /**
-     * 未下单详情
-     */
-    @RequestMapping(value = "/noPlaceDetail", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse noPlaceDetail(OrderExpress orderExpress) throws Exception {
-        return orderService.noPlaceOrderDetail(orderExpress.getOrder_id());
-    }
-
-    /**
      * 评价小哥（评价顺丰订单）
      */
     @RequestMapping(value = "/evaluateSingle", method = RequestMethod.POST)
@@ -190,7 +149,6 @@ public class OrderController extends AbstractBasicController {
     @RequestMapping(value = "/cancelOrder", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse cancelOrder(@RequestBody Object object) throws Exception {
-//        return orderService.deleteOrder(object);
         return orderService.cancelOrder(object);
     }
 
@@ -201,33 +159,6 @@ public class OrderController extends AbstractBasicController {
     public @ResponseBody
     APIResponse constants(HttpServletRequest request) throws Exception {
         return orderService.timeConstants(new APIRequest(request));
-    }
-
-    /**
-     * 大网计价
-     */
-    @RequestMapping(value = "/OrderFreightQuery", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse OrderFreightQuery(@RequestBody Object object) throws Exception {
-        return orderService.OrderFreightQuery(object);
-    }
-
-    /**
-     * 大网路由
-     */
-    @RequestMapping(value = "/OrderRouteQuery", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse OrderRouteQuery(HttpServletRequest request) throws Exception {
-        return orderService.OrderRouteQuery(new APIRequest(request));
-    }
-
-    /**
-     * 寄件人可下单的神秘订单列表
-     */
-    @RequestMapping(value = "/remindPlace", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse remindPlace(HttpServletRequest request) throws Exception {
-        return orderService.remindPlace(new APIRequest(request));
     }
 
     /**
@@ -262,7 +193,7 @@ public class OrderController extends AbstractBasicController {
     }
 
     /**
-     * 设置大网预约单定时器
+     * 设置大网超时去取消定时器
      */
     @RequestMapping(value = "/cancel/setup", method = RequestMethod.POST)
     public @ResponseBody
@@ -270,6 +201,17 @@ public class OrderController extends AbstractBasicController {
         APIRequest request = new APIRequest();
         request.setRequestParam(object);
         return orderService.setupCancelNationOrderTimer(request);
+    }
+
+    /**
+     * 设置同城超时取消定时器
+     */
+    @RequestMapping(value = "/cancel/SameSetup", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse setupCancelSameOrderTimer(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.setupCancelSameOrderTimer(request);
     }
 
     /**
@@ -283,4 +225,14 @@ public class OrderController extends AbstractBasicController {
         return orderService.readExpressTransform(request);
     }
 
+    /**
+     * 订单分享图片
+     */
+    @RequestMapping(value = "/share/screenShot", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse shareOrderImage(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.screenShot(request);
+    }
 }

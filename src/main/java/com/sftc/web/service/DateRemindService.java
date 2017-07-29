@@ -18,13 +18,15 @@ public interface DateRemindService {
 
     /**
      * 添加 好友日期提醒
-     * @param dateRemind
+     *
+     * @param apiRequest
      * @return
      */
-    APIResponse addFriendDateRemind(DateRemind dateRemind);
+    APIResponse addFriendDateRemind(APIRequest apiRequest);
 
     /**
      * 删除 好友日期提醒
+     *
      * @param request
      * @return
      */
@@ -32,6 +34,7 @@ public interface DateRemindService {
 
     /**
      * 获取 好友日期提醒 列表
+     *
      * @param request
      * @return
      */

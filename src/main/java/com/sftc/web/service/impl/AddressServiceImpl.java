@@ -4,7 +4,9 @@ package com.sftc.web.service.impl;
 import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
 import com.sftc.web.mapper.AddressMapper;
+import com.sftc.web.mapper.AddressResolutionMapper;
 import com.sftc.web.model.Address;
+import com.sftc.web.model.AddressResolution;
 import com.sftc.web.model.sfmodel.SFServiceAddress;
 import com.sftc.web.service.AddressService;
 import net.sf.json.JSONArray;
@@ -30,12 +32,8 @@ public class AddressServiceImpl implements AddressService {
 
     @Resource
     private AddressMapper addressMapper;
-
-    /**
-     * 信号量
-     * 腾讯位置服务暂时只能5个并发数/1秒，所以保险起见设4个信号量，在内部休眠1.5秒
-     */
-    private final Semaphore semaphore = new Semaphore(4);
+    @Resource
+    private AddressResolutionMapper addressResolutionMapper;
 
     public APIResponse addAddress(Address address) {
         APIStatus status = SUCCESS;
@@ -87,7 +85,6 @@ public class AddressServiceImpl implements AddressService {
             }
         }
         return APIUtil.getResponse(status, null);
-
     }
 
 
@@ -97,25 +94,29 @@ public class AddressServiceImpl implements AddressService {
 
 
     public APIResponse geocoderAddress(APIRequest request) {
+        JSONObject resultJsonObject = new JSONObject();
+        APIStatus status = SUCCESS;
 
         // Handle Param
         String address = (String) request.getParameter("address");
         if (address == null || address.equals("")) {
             return APIUtil.paramErrorResponse("地址不能为空");
         }
+        String utf8Address = null;
 
         try { // url encode
-            address = new String(address.getBytes("ISO-8859-1"), "UTF-8");
-            address = URLEncoder.encode(address, "UTF-8");
+            utf8Address = new String(address.getBytes("ISO-8859-1"), "UTF-8");
+            address = URLEncoder.encode(utf8Address, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-        try { // 请求许可
-            semaphore.acquire();
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        // 查库
+        AddressResolution addressResolution = addressResolutionMapper.selectAddressResolution(utf8Address);
+        if (addressResolution != null) {
+            resultJsonObject.put("longitude", addressResolution.getLongitude());
+            resultJsonObject.put("latitude", addressResolution.getLatitude());
+            return APIUtil.getResponse(status, resultJsonObject);
         }
 
         // GET
@@ -125,19 +126,21 @@ public class AddressServiceImpl implements AddressService {
         JSONObject resObject = JSONObject.fromObject(result);
 
         // Result
-        APIStatus status = SUCCESS;
-        JSONObject resultJsonObject = new JSONObject();
         if ((Integer) resObject.get("status") == 0) {
             // query ok
             JSONObject locationObject = resObject.getJSONObject("result").getJSONObject("location");
             resultJsonObject.put("longitude", locationObject.get("lng"));
             resultJsonObject.put("latitude", locationObject.get("lat"));
+            // 将结果存入数据库，
+            addressResolutionMapper.insertAddressResolution(
+                    new AddressResolution(utf8Address,
+                            Double.valueOf(locationObject.get("lng").toString()),
+                            Double.valueOf(locationObject.get("lat").toString()))
+            );
         } else {
             status = APIStatus.SELECT_FAIL;
+            return APIUtil.selectErrorResponse("解析失败", resultJsonObject);
         }
-
-        // 释放许可
-        semaphore.release();
 
         return APIUtil.getResponse(status, resultJsonObject);
     }

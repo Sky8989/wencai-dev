@@ -16,7 +16,8 @@ public class DateRemindServiceImpl implements DateRemindService {
     private DateRemindMapper dateRemindMapper;
 
     // 添加 好友日期提醒
-    public APIResponse addFriendDateRemind(DateRemind dateRemind) {
+    public APIResponse addFriendDateRemind(APIRequest apiRequest) {
+        DateRemind dateRemind = (DateRemind) apiRequest.getRequestParam();
         APIStatus state = APIStatus.SUCCESS;
         dateRemind.setCreate_time(Long.toString(System.currentTimeMillis()));
         dateRemindMapper.addDateRemind(dateRemind);

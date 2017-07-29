@@ -3,23 +3,20 @@ package com.sftc.web.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.mapper.GiftCardMapper;
 import com.sftc.web.model.GiftCard;
 import com.sftc.web.model.GiftCardList;
 import com.sftc.web.model.Order;
 import com.sftc.web.service.GiftCardService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import static com.sftc.tools.api.APIStatus.SUCCESS;
 
 @Service
 public class GiftCardServiceImpl implements GiftCardService {
@@ -30,17 +27,16 @@ public class GiftCardServiceImpl implements GiftCardService {
     * 订单详情接口
     * */
     public APIResponse getGiftCard(APIRequest request) {
-        APIStatus status = APIStatus.SUCCESS;
         String orderSn = (String) request.getParameter("orderSn");
         Order order = giftCardMapper.giftCardDetail(orderSn);
-        if (order == null) {
-            status = APIStatus.GIFT_CARD_NOT_FOUND;
-        }
-        return APIUtil.getResponse(status, order);
+        if (order == null)
+            return APIUtil.selectErrorResponse("没有该礼卡", null);
+
+        return APIUtil.getResponse(SUCCESS, order);
     }
 
     public APIResponse getGiftCardList(APIRequest request) {
-        APIStatus status = APIStatus.SUCCESS;
+
         List<GiftCard> giftCards = giftCardMapper.giftCardList();
         List<GiftCardList> giftCardLists = new ArrayList<GiftCardList>();
 
@@ -67,18 +63,14 @@ public class GiftCardServiceImpl implements GiftCardService {
             }
         }
 
-        return APIUtil.getResponse(status, giftCardLists);
+        return APIUtil.getResponse(SUCCESS, giftCardLists);
     }
 
     /**
      * CMS 系统 获取礼品卡列表 条件查询+分页
-     *
-     * @param apiRequest
-     * @return
-     * @throws Exception
      */
     public APIResponse selectList(APIRequest apiRequest) throws Exception {
-        APIStatus status = APIStatus.SUCCESS;
+
         // 此处封装了 User的构造方法
         HttpServletRequest httpServletRequest = apiRequest.getRequest();
         GiftCard giftCard = new GiftCard(httpServletRequest);
@@ -89,44 +81,32 @@ public class GiftCardServiceImpl implements GiftCardService {
         if (giftCardList.size() == 0) {
             return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
         } else {
-            return APIUtil.getResponse(status, giftCardList);
+            return APIUtil.getResponse(SUCCESS, giftCardList);
         }
     }
 
     /**
      * CMS 系统 添加礼品卡信息
-     *
-     * @param giftCard
-     * @return
-     * @throws Exception
      */
     public APIResponse addGiftCard(GiftCard giftCard) throws Exception {
         giftCard.setCreate_time(Long.toString(System.currentTimeMillis()));
         giftCardMapper.insertGiftCard(giftCard);
-        return APIUtil.getResponse(APIStatus.SUCCESS, giftCard);
+        return APIUtil.getResponse(SUCCESS, giftCard);
     }
 
     /**
      * CMS 系统 修改礼品卡信息
-     *
-     * @param giftCard
-     * @return
-     * @throws Exception
      */
     public APIResponse updateGiftCard(GiftCard giftCard) throws Exception {
         giftCardMapper.updateGiftCard(giftCard);
-        return APIUtil.getResponse(APIStatus.SUCCESS, giftCard);
+        return APIUtil.getResponse(SUCCESS, giftCard);
     }
 
     /**
      * CMS 系统 删除礼品卡信息
-     *
-     * @param id
-     * @return
-     * @throws Exception
      */
-    public APIResponse deleteGiftCard(int id ) throws Exception {
+    public APIResponse deleteGiftCard(int id) throws Exception {
         giftCardMapper.deleteGiftCard(id);
-        return APIUtil.getResponse(APIStatus.SUCCESS, id);
+        return APIUtil.getResponse(SUCCESS, id);
     }
 }

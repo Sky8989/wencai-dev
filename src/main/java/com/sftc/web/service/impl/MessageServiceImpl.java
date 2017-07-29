@@ -2,8 +2,8 @@ package com.sftc.web.service.impl;
 
 import com.google.gson.Gson;
 import com.sftc.tools.api.APIPostUtil;
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.mapper.TokenMapper;
 import com.sftc.web.mapper.UserMapper;
@@ -12,11 +12,17 @@ import com.sftc.web.model.User;
 import com.sftc.web.service.MessageService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
+import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.*;
+import static com.sftc.tools.constant.WXConstant.WX_ACCESS_TOKEN;
+import static com.sftc.tools.constant.WXConstant.WX_SEND_MESSAGE_PATH;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {
@@ -27,30 +33,34 @@ public class MessageServiceImpl implements MessageService {
     @Resource
     private UserMapper userMapper;
 
+    private Logger logger = Logger.getLogger(this.getClass());
     private Gson gson = new Gson();
+
 
     /**
      * 获取短信验证码
      */
-    public APIResponse getMessage(Object object) {
-        APIStatus status = APIStatus.SUCCESS;
-        String str = gson.toJson(object);
+
+    public APIResponse getMessage(APIRequest apiRequest) {
+
+        String str = gson.toJson(apiRequest.getRequestParam());
         HttpPost post = new HttpPost(SF_TAKE_MESSAGE_URL);
         String res = APIPostUtil.post(str, post);
-        JSONObject jsonObject = JSONObject.fromObject(res);
-        if (jsonObject.containsKey("error")) {
-            status = APIStatus.VALIDATION_ERROR;
-        }
-        return APIUtil.getResponse(status, jsonObject);
+        JSONObject resultObject = JSONObject.fromObject(res);
+        if (resultObject.containsKey("errors"))
+            return APIUtil.submitErrorResponse("mobile错误", resultObject);
+        if (resultObject.containsKey("error"))
+            return APIUtil.submitErrorResponse("其他错误", resultObject);
+
+        return APIUtil.getResponse(SUCCESS, resultObject);
     }
 
     /**
      * 用户注册
      */
-    public APIResponse register(Object object) {
-        APIStatus status = APIStatus.SUCCESS;
-
-        JSONObject jsonObject = JSONObject.fromObject(object);
+    public APIResponse register(APIRequest apiRequest) {
+        Object requestParam = apiRequest.getRequestParam();
+        JSONObject jsonObject = JSONObject.fromObject(requestParam);
         int user_id = jsonObject.getInt("user_id");
         jsonObject.remove("user_id");
         // 调用顺丰接口
@@ -61,7 +71,7 @@ public class MessageServiceImpl implements MessageService {
 
         // 注册失败 匹配error
         if (resJSONObject.containsKey("error")) {
-            return APIUtil.submitErrorResponse("注册失败，见返回值", resJSONObject);
+            return APIUtil.submitErrorResponse("注册失败", resJSONObject);
         } else {
 
             // 注册成功
@@ -82,16 +92,16 @@ public class MessageServiceImpl implements MessageService {
             user.setUuid(merchantJSONObject.getString("uuid"));
             userMapper.updateUser(user);
 
-            return APIUtil.getResponse(status, resJSONObject);
+            return APIUtil.getResponse(SUCCESS, resJSONObject);
         }
     }
 
     /**
      * 获取顺丰token 需要传入手机号和验证码
      */
-    public APIResponse getToken(Object object) {
-        APIStatus status = APIStatus.SUCCESS;
-        JSONObject jsonObject = JSONObject.fromObject(object);
+    public APIResponse getToken(APIRequest apiRequest) {
+
+        JSONObject jsonObject = JSONObject.fromObject(apiRequest.getRequestParam());
 
         if (jsonObject.containsKey("user_id")) {
             int user_id = jsonObject.getInt("user_id");
@@ -101,15 +111,18 @@ public class MessageServiceImpl implements MessageService {
             // 验证手机号与user_id的匹配
             User userByPhone = userMapper.selectUserByPhone(mobile);
             User userByUserId = userMapper.selectUserByUserId(user_id);
-            if (userByUserId.getMobile() == null || "".equals(userByUserId.getMobile())){
+            Map<String, String> map = new HashMap<String, String>(1, 1);
+            if (userByUserId.getMobile() == null || "".equals(userByUserId.getMobile())) {
                 // 用户的手机号为空 则 判断 参数手机号是否被用过
                 if (userByPhone != null) {
-                    return APIUtil.submitErrorResponse("该手机号已被人使用注册过，手机号使用者是：", userByPhone.getName());
+                    map.put("name", userByPhone.getName());
+                    return APIUtil.submitErrorResponse("手机号已被使用", map);
                 }
-            }else {// 用户已经绑定过手机号
-                if ( !mobile.equals(userByUserId.getMobile())) {
+            } else {// 用户已经绑定过手机号
+                if (!mobile.equals(userByUserId.getMobile())) {
                     // 当 该id的用户手机号和参数手机号匹配
-                    return APIUtil.submitErrorResponse("您已经注册过，请使用注册时的手机号，请参考该手机号：", userByUserId.getMobile());
+                    map.put("mobile", userByUserId.getMobile());
+                    return APIUtil.submitErrorResponse("已注册", map);
                 }
             }
 
@@ -137,9 +150,9 @@ public class MessageServiceImpl implements MessageService {
                 token.setAccess_token(access_token);
                 token.setRefresh_token(refresh_token);
                 tokenMapper.updateToken(token);
-                return APIUtil.getResponse(status, resJSONObject);
+                return APIUtil.getResponse(SUCCESS, resJSONObject);
             } else {
-                return APIUtil.submitErrorResponse("token获取失败，请参考错误信息", resJSONObject);
+                return APIUtil.submitErrorResponse("token获取失败", resJSONObject);
             }
         } else {
             return APIUtil.paramErrorResponse("缺少参数，user_id");
@@ -149,9 +162,9 @@ public class MessageServiceImpl implements MessageService {
     /**
      * 登陆 专指登陆顺丰的接口
      */
-    public APIResponse sfLogin(Object object) {
-        APIStatus status = APIStatus.SUCCESS;
-        JSONObject jsonObject = JSONObject.fromObject(object);
+    public APIResponse sfLogin(APIRequest apiRequest) {
+
+        JSONObject jsonObject = JSONObject.fromObject(apiRequest.getRequestParam());
         int user_id = jsonObject.getInt("user_id");
         String sfToken = jsonObject.getString("token");
         jsonObject.remove("user_id");
@@ -176,28 +189,50 @@ public class MessageServiceImpl implements MessageService {
                     userMapper.updateUser(user);
                 }
             }
-            return APIUtil.getResponse(status, resJSONObject);
+            return APIUtil.getResponse(SUCCESS, resJSONObject);
         } else {
-            return APIUtil.paramErrorResponse("缺少参数，请传入sfToken");
+            return APIUtil.paramErrorResponse("缺少参数sfToken");
         }
     }
 
-    // 验证手机号与user_id的匹配
-    private boolean checkMobileAndUserid(String param_mobile, int param_user_id) {
-        boolean flag = false;
-        User userByPhone = userMapper.selectUserByPhone(param_mobile);
-        User userByUserId = userMapper.selectUserByUserId(param_user_id);
-        if (userByUserId.getMobile() == null || "".equals(userByUserId.getMobile())){
-            // 用户的手机号为空 则 判断 参数手机号是否被用过
-            if (userByPhone == null) {
-                flag = true;
-            }
-        }else {// 用户已经绑定过手机号
-            if ( param_mobile.equals(userByUserId.getMobile())) {
-                // 当 该id的用户手机号和参数手机号匹配 则放行
-                flag = true;
-            }
+    /**
+     * 发送微信模板消息的方法 下单成功后
+     *
+     * @param touser_id  接受折的id
+     * @param messageArr 消息内容数据的数组
+     * @param pagePath   跳转页面的路径
+     */
+    public void sendWXTemplateMessage(int touser_id, String[] messageArr, String pagePath, String form_id, String template_id) {
+        User user = userMapper.selectUserByUserId(touser_id);
+
+        // 构造 data 的数据体
+        JSONObject dataBody = new JSONObject();
+        for (int i = 0; messageArr.length > i; i++) {
+            System.out.println(messageArr[i]);
+            JSONObject keyword = new JSONObject();
+            keyword.put("value", messageArr[i]);
+            keyword.put("color", "#666666");
+            dataBody.put("keyword" + (i + 1), keyword);
         }
-        return flag;
+
+        // 构造模板消息数据
+        JSONObject messageBody = new JSONObject();
+        messageBody.put("touser", user.getOpen_id());
+        messageBody.put("template_id", template_id);
+        messageBody.put("page", pagePath);
+        messageBody.put("form_id", form_id);
+        messageBody.put("emphasis_keyword", "keyword1.DATA");
+        messageBody.put("data", dataBody.toString());
+        String postStr = messageBody.toString();
+        String postURL = WX_SEND_MESSAGE_PATH + WX_ACCESS_TOKEN;
+        HttpPost httpPost = new HttpPost(postURL);
+        String resultStr = APIPostUtil.post(postStr, httpPost);
+        JSONObject resultJSONObject = JSONObject.fromObject(resultStr);
+        if (resultJSONObject.containsKey("errcode") && resultJSONObject.getInt("errcode") != 0) {
+            logger.error(resultStr);
+        } else {
+            logger.info(resultStr);
+        }
     }
+
 }

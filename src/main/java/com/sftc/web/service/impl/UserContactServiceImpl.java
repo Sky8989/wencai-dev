@@ -1,8 +1,6 @@
 package com.sftc.web.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.mapper.*;
@@ -12,7 +10,6 @@ import com.sftc.web.model.reqeustParam.UserContactParam;
 import com.sftc.web.model.sfmodel.Orders;
 import com.sftc.web.service.UserContactService;
 import net.sf.json.JSONObject;
-import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -38,25 +35,7 @@ public class UserContactServiceImpl implements UserContactService {
     private OrderExpressMapper orderExpressMapper;
 
     @Resource
-    private OrderMapper orderMapper;
-
-    @Resource
     private UserMapper userMapper;
-
-//    /*
-//     * 添加好友
-//     */
-//    public APIResponse addFriend(UserContactParam userContactParam) {
-//        APIStatus status = APIStatus.SUCCESS;
-//        userContactParam.setCreate_time(Long.toString(System.currentTimeMillis()));
-//        try {
-//            userContactMapper.addFriend(userContactParam);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            status = APIStatus.SUBMIT_FAIL;
-//        }
-//        return APIUtil.getResponse(status, null);
-//    }
 
     /*
      * 根据id查询好友详情
@@ -105,25 +84,22 @@ public class UserContactServiceImpl implements UserContactService {
             return APIUtil.paramErrorResponse("分页参数无效");
         }
 
-        APIStatus status = SUCCESS;
         paging.setPageNum((paging.getPageNum() - 1) * paging.getPageSize());
         List<UserContact> userContactList = null;
         try {
             userContactList = userContactMapper.friendList(paging);
         } catch (Exception e) {
             e.printStackTrace();
-            status = APIStatus.SELECT_FAIL;
+            return APIUtil.logicErrorResponse(e.getLocalizedMessage(), e);
         }
 
-        return APIUtil.getResponse(status, userContactList);
+        return APIUtil.getResponse(SUCCESS, userContactList);
     }
 
     /**
      * 来往记录
      */
     public APIResponse getContactInfo(UserContactParam userContactParam) {
-
-        APIStatus status = SUCCESS;
 
         // handle param
         if (userContactParam.getAccess_token() == null || userContactParam.getAccess_token().length() == 0) {
@@ -160,8 +136,7 @@ public class UserContactServiceImpl implements UserContactService {
         try {
             orderses = APIResolve.getOrdersJson(ORDERS_URL, userContactParam.getAccess_token());
         } catch (Exception e) {
-            status = APIStatus.SELECT_FAIL;
-            e.printStackTrace();
+            return APIUtil.submitErrorResponse("SF token error", e);
         }
 
         // update express status
@@ -187,7 +162,7 @@ public class UserContactServiceImpl implements UserContactService {
                 contactCallback.setShip_wechatname(receiver.getName());
             }
         }
-        return APIUtil.getResponse(status, contactCallbacks);
+        return APIUtil.getResponse(SUCCESS, contactCallbacks);
     }
 
     /**
@@ -216,7 +191,7 @@ public class UserContactServiceImpl implements UserContactService {
             userContactMapper.starFriend(user_id, friend_id, is_star);
             userContact = userContactMapper.friendDetail(user_id, friend_id);
         } catch (Exception e) {
-            return APIUtil.submitErrorResponse(e.getLocalizedMessage(), null);
+            return APIUtil.logicErrorResponse(e.getLocalizedMessage(), e);
         }
 
         return APIUtil.getResponse(SUCCESS, userContact);
@@ -225,21 +200,23 @@ public class UserContactServiceImpl implements UserContactService {
     /**
      * 更新 好友关系备注与图片
      */
-    public APIResponse updateNotesAndPicture(Object object) {
-        JSONObject jsonObject = JSONObject.fromObject(object);
+    public APIResponse updateNotesAndPicture(APIRequest apiRequest) {
+        Object requestParam = apiRequest.getRequestParam();
+        JSONObject jsonObject = JSONObject.fromObject(requestParam);
         int user_contact_id = jsonObject.getInt("user_contact_id");
         String notes = jsonObject.getString("notes");
         String picture_address = jsonObject.getString("picture_address");
         String mobile = jsonObject.getString("mobile");
         userContactMapper.updateNotesPictureMobile(user_contact_id, notes, picture_address, mobile);
-        return APIUtil.getResponse(SUCCESS, user_contact_id + "备注与图片更新成功");
+        String resultStr = user_contact_id+" notes:"+notes+"mobile:"+mobile+"picture："+picture_address;
+        return APIUtil.getResponse(SUCCESS, resultStr);
     }
 
     /**
      * CMS 获取好友列表 分页+条件
      */
     public APIResponse selectUserContactListByPage(APIRequest request) {
-        APIStatus status = APIStatus.SUCCESS;
+
         HttpServletRequest httpServletRequest = request.getRequest();
         // 此处封装了 UserContact的构造方法
         UserContactNew userContactNew = new UserContactNew(httpServletRequest);
@@ -250,7 +227,7 @@ public class UserContactServiceImpl implements UserContactService {
         if (userContactNewList.size() == 0) {
             return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
         } else {
-            return APIUtil.getResponse(status, userContactNewList);
+            return APIUtil.getResponse(SUCCESS, userContactNewList);
         }
     }
 }

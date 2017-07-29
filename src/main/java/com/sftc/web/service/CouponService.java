@@ -1,5 +1,6 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.reqeustParam.UserParam;
 import com.sftc.web.model.sfmodel.Promo;
@@ -18,15 +19,15 @@ public interface CouponService {
 
     /**
      * 根据用户查询优惠券
-     * @param userParam
+     * @param apiRequest
      * @return
      */
-    APIResponse getUserCouponList(UserParam userParam);
+    APIResponse getUserCouponList(APIRequest apiRequest);
 
     /**
      * 根据密语和token兑换优惠券
-     * @param promo
+     * @param apiRequest
      * @return
      */
-    APIResponse exchangeCoupon(Promo promo);
+    APIResponse exchangeCoupon(APIRequest apiRequest);
 }

@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 public class OrderExpressServiceImpl implements OrderExpressService {
     @Resource
-    private  OrderExpressMapper orderExpressMapper;
+    private OrderExpressMapper orderExpressMapper;
 
     //cms 获取快递信息列表 分页+条件
     public APIResponse selectOrderExpressListByPage(APIRequest apiRequest) {

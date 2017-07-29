@@ -41,7 +41,7 @@ public class APIUtil {
     public static APIResponse submitErrorResponse(String message, Object errorObj) {
         APIResponse apiResponse = errorResponse(message);
         apiResponse.setState(SUBMIT_FAIL.getState());
-        apiResponse.setResult(errorObj);
+        apiResponse.setError(errorObj);
         return apiResponse;
     }
 
@@ -55,13 +55,26 @@ public class APIUtil {
     public static APIResponse selectErrorResponse(String message, Object errorObj) {
         APIResponse apiResponse = errorResponse(message);
         apiResponse.setState(SELECT_FAIL.getState());
-        apiResponse.setResult(errorObj);
+        apiResponse.setError(errorObj);
+        return apiResponse;
+    }
+
+    /**
+     * 系统逻辑处理异常
+     *
+     * @param message  异常信息
+     * @param errorObj 异常结果对象
+     * @return APIResponse
+     */
+    public static APIResponse logicErrorResponse(String message, Object errorObj) {
+        APIResponse apiResponse = errorResponse(message);
+        apiResponse.setState(SELECT_FAIL.getState());
+        apiResponse.setError(errorObj);
         return apiResponse;
     }
 
     // 初始化单例参数
     private static APIResponse apiResponse() {
-//        APIResponse apiResponse = APIResponse.getInstance();
         APIResponse apiResponse = new APIResponse();
         apiResponse.setState(SUCCESS.getState());
         apiResponse.setMessage(SUCCESS.getMessage());

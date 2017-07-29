@@ -59,11 +59,11 @@ public interface UserService {
     /**
      * 修改手机号码 即重新绑定新手机号
      *
-     * @param object
+     * @param apiRequest
      * @return
      * @throws Exception
      */
-    APIResponse updateMobile(Object object) throws Exception;
+    APIResponse updateMobile(APIRequest apiRequest) throws Exception;
 
     /**
      * 下面是CMS后台所使用的接口

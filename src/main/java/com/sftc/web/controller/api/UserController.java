@@ -44,6 +44,8 @@ public class UserController extends AbstractBasicController {
     @RequestMapping(value = "/unbind/newMobile", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse bindNewMobile(@RequestBody Object object) throws Exception {
-        return userService.updateMobile(object);
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(object);
+        return userService.updateMobile(apiRequest);
     }
 }

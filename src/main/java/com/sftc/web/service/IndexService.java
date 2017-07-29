@@ -14,4 +14,6 @@ public interface IndexService {
      * 设置公共token
      */
     APIResponse setupCommonToken(APIRequest request);
+
+
 }
