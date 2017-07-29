@@ -20,6 +20,8 @@ public class AddressBook {
     private String area;
     // 详细地址
     private String address;
+    // 补充信息 如门牌号等
+    private String supplementary_info;
     // 经度
     private double longitude;
     // 纬度
@@ -71,11 +73,13 @@ public class AddressBook {
 
     public void setCreate_time(String create_time) {this.create_time = create_time;}
 
+    public String getSupplementary_info() {return supplementary_info;}
+
+    public void setSupplementary_info(String supplementary_info) {this.supplementary_info = supplementary_info;}
+
     public AddressBook() { super();}
 
-    public AddressBook(int id, int user_id, String name, String phone, String province,
-                       String city, String area, String address, double longitude,
-                       double latitude, String create_time) {
+    public AddressBook(int id, int user_id, String name, String phone, String province, String city, String area, String address, String supplementary_info, double longitude, double latitude, String create_time) {
         this.id = id;
         this.user_id = user_id;
         this.name = name;
@@ -84,6 +88,7 @@ public class AddressBook {
         this.city = city;
         this.area = area;
         this.address = address;
+        this.supplementary_info = supplementary_info;
         this.longitude = longitude;
         this.latitude = latitude;
         this.create_time = create_time;
