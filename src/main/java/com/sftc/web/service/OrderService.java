@@ -14,12 +14,12 @@ public interface OrderService {
     /**
      * 普通订单提交
      */
-    APIResponse normalOrderCommit(APIRequest request);
+    APIResponse addNormalOrderCommit(APIRequest request);
 
     /**
      * 好友订单提交
      */
-    APIResponse friendOrderCommit(APIRequest request);
+    APIResponse addFriendOrderCommit(APIRequest request);
 
     /**
      * 支付订单

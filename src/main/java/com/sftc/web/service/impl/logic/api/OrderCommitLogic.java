@@ -21,6 +21,7 @@ import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -176,7 +177,7 @@ public class OrderCommitLogic {
     }
 
     /// 好友同城订单提交
-    private APIResponse friendSameOrderCommit(JSONObject requestObject) {
+    public APIResponse friendSameOrderCommit(JSONObject requestObject) {
         // Param
         int order_id = ((Double) requestObject.getJSONObject("order").get("order_id")).intValue();
         if (order_id < 0)
@@ -256,6 +257,8 @@ public class OrderCommitLogic {
                 setupAddress(order, oe);
 
             } else { // error
+                //手动操作事务回滚
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 return APIUtil.getResponse(SUBMIT_FAIL, responseObject);
             }
         }
@@ -322,6 +325,8 @@ public class OrderCommitLogic {
                     String messageType = (String) jsonObject.get("Message_Type");
 
                     if (messageType != null && messageType.contains("ERROR")) {
+                        //手动操作事务回滚
+                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                         return APIUtil.submitErrorResponse("下单失败", jsonObject);
                     } else {
                         // 存储订单信息
@@ -344,7 +349,7 @@ public class OrderCommitLogic {
     }
 
     /// 普通同城订单提交
-    private APIResponse normalSameOrderCommit(Object object) {
+    public APIResponse normalSameOrderCommit(Object object) {
 
         JSONObject reqObject = JSONObject.fromObject(object);
 
@@ -434,6 +439,8 @@ public class OrderCommitLogic {
 
         } else {
             status = SUBMIT_FAIL;
+            //手动操作事务回滚
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return APIUtil.submitErrorResponse("提交失败", respObject);
         }
 
@@ -441,7 +448,7 @@ public class OrderCommitLogic {
     }
 
     /// 普通大网订单提交
-    private APIResponse normalNationOrderCommit(Object object) {
+    public APIResponse normalNationOrderCommit(Object object) {
 
         String orderId = SFOrderHelper.getOrderNumber();
         APIStatus status = SUCCESS;
@@ -528,6 +535,8 @@ public class OrderCommitLogic {
 
             if (responseObject.get("Message") != null || (responseObject.get("Message_Type") != null && ((String) responseObject.get("Message_Type")).contains("ERROR"))) {
                 status = SUBMIT_FAIL;
+                //手动操作事务回滚
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 return APIUtil.submitErrorResponse("SF提示错误", responseObject);
             } else {
                 // 返回结果添加订单编号
