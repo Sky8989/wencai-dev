@@ -139,6 +139,7 @@ public class AddressServiceImpl implements AddressService {
             );
         } else {
             status = APIStatus.SELECT_FAIL;
+            return APIUtil.selectErrorResponse("解析失败", resultJsonObject);
         }
 
         return APIUtil.getResponse(status, resultJsonObject);

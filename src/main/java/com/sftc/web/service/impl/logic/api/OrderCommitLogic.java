@@ -434,6 +434,7 @@ public class OrderCommitLogic {
 
         } else {
             status = SUBMIT_FAIL;
+            return APIUtil.submitErrorResponse("提交失败",respObject);
         }
 
         return APIUtil.getResponse(status, respObject);
