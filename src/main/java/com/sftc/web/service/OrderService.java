@@ -52,6 +52,11 @@ public interface OrderService {
     APIResponse updateOrderStatus(APIRequest request);
 
     /**
+     * 更改订单快递状态
+     */
+    APIResponse updateOrderExpressStatus(APIRequest request);
+
+    /**
      * 我的订单列表
      */
     APIResponse getMyOrderList(APIRequest request);
