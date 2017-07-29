@@ -95,6 +95,10 @@ public class OrderServiceImpl implements OrderService {
         return orderStatusLogic.updateOrderStatus(request);
     }
 
+    public APIResponse updateOrderExpressStatus(APIRequest request) {
+        return orderStatusLogic.updateOrderExpressStatus(request);
+    }
+
     public APIResponse getMyOrderList(APIRequest request) {
         return orderListLogic.getMyOrderList(request);
     }

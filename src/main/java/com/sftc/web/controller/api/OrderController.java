@@ -93,7 +93,7 @@ public class OrderController extends AbstractBasicController {
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse detail(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        response.addHeader("Access-Control-Allow-Origin","*");
+        response.addHeader("Access-Control-Allow-Origin", "*");
         return orderService.selectOrderDetail(new APIRequest(request));
     }
 
@@ -137,6 +137,17 @@ public class OrderController extends AbstractBasicController {
         APIRequest request = new APIRequest();
         request.setRequestParam(object);
         return orderService.updateOrderStatus(request);
+    }
+
+    /**
+     * 更改订单快递状态
+     */
+    @RequestMapping(value = "/updateExpressStatus", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse updateOrderExpressStatus(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.updateOrderExpressStatus(request);
     }
 
     /**
