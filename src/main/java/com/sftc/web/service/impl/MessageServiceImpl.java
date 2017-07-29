@@ -59,8 +59,8 @@ public class MessageServiceImpl implements MessageService {
      * 用户注册
      */
     public APIResponse register(APIRequest apiRequest) {
-
-        JSONObject jsonObject = JSONObject.fromObject(apiRequest.getRequestParam());
+        Object requestParam = apiRequest.getRequestParam();
+        JSONObject jsonObject = JSONObject.fromObject(requestParam);
         int user_id = jsonObject.getInt("user_id");
         jsonObject.remove("user_id");
         // 调用顺丰接口
