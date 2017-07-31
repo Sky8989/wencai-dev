@@ -127,6 +127,10 @@ public class OrderDetailLogic {
             access_token = (access_token == null || access_token.equals("") ? COMMON_ACCESSTOKEN : access_token);
 
             respObject = SFExpressHelper.getExpressDetail(uuid, access_token);
+            //处理错误信息
+            if (respObject.containsKey("error") || respObject.containsKey("errors") || respObject.containsKey("ERROR")) {
+                return APIUtil.selectErrorResponse("查询失败", respObject);
+            }
 
             // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
             String order_status = respObject.getJSONObject("request").getString("status");
