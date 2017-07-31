@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.sftc.tools.constant.SFConstant.SF_REGISTER_URL;
+import static com.sftc.tools.sf.SFResultHelper.*;
 
 @Service("couponService")
 public class CouponServiceImpl implements CouponService {
@@ -31,7 +32,15 @@ public class CouponServiceImpl implements CouponService {
         HttpGet httpGet = new HttpGet(COUPON_LIST_API);
         httpGet.addHeader("PushEnvelope-Device-Token", userParam.getToken());
         String res = APIGetUtil.get(httpGet);
-        return APIUtil.getResponse(status, JSONObject.fromObject(res));
+
+        //处理错误信息
+        JSONObject resJSONObject = JSONObject.fromObject(res);
+        if (resJSONObject.containsKey(ERROR_STRING_1) || resJSONObject.containsKey(ERROR_STRING_2)
+                || resJSONObject.containsKey(ERROR_STRING_3) || resJSONObject.containsKey(ERROR_STRING_4)) {
+            return APIUtil.submitErrorResponse("查询失败", resJSONObject);
+        }
+
+        return APIUtil.getResponse(status, resJSONObject);
     }
 
     /**
@@ -42,18 +51,20 @@ public class CouponServiceImpl implements CouponService {
         APIStatus status = APIStatus.SUCCESS;
         String COUPON_EXCHANGE_API = "http://api-dev.sf-rush.com/coupons?promo_code=";
         COUPON_EXCHANGE_API += promo.getPromo_code();
-//        List<Coupon> couponList = null;
-//        try {
-//            couponList = APIResolve.getCouponsJson(COUPON_EXCHANGE_API, promo.getToken(), "POST");
-//        } catch (Exception e) {
-//            status = APIStatus.SELECT_FAIL;
-//        }
-//        return APIUtil.getResponse(status, couponList);
+
         // 调用顺丰接口
         HttpPost httpPost = new HttpPost(COUPON_EXCHANGE_API);
         httpPost.addHeader("PushEnvelope-Device-Token", promo.getToken());
         String res = APIPostUtil.post("", httpPost);
-        return APIUtil.getResponse(status, JSONObject.fromObject(res));
+
+        //处理错误信息
+        JSONObject resJSONObject = JSONObject.fromObject(res);
+        if (resJSONObject.containsKey(ERROR_STRING_1) || resJSONObject.containsKey(ERROR_STRING_2)
+                || resJSONObject.containsKey(ERROR_STRING_3) || resJSONObject.containsKey(ERROR_STRING_4)) {
+            return APIUtil.submitErrorResponse("兑换失败", resJSONObject);
+        }
+
+        return APIUtil.getResponse(status, resJSONObject);
 
     }
 }
