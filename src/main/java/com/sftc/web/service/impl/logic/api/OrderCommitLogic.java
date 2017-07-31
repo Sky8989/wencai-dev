@@ -387,8 +387,12 @@ public class OrderCommitLogic {
 
         HttpPost post = new HttpPost(SF_REQUEST_URL);
         post.addHeader("PushEnvelope-Device-Token", (String) reqObject.getJSONObject("request").getJSONObject("merchant").get("access_token"));
-        JSONObject tempObject = JSONObject.fromObject(object);
+//        JSONObject tempObject = JSONObject.fromObject(object);
+//        tempObject.remove("order");
+        //使用修改后的请求体
+        JSONObject tempObject = JSONObject.fromObject(reqObject);
         tempObject.remove("order");
+
         String requestSFParamStr = gson.toJson(tempObject);
         JSONObject respObject = JSONObject.fromObject(APIPostUtil.post(requestSFParamStr, post));
 
