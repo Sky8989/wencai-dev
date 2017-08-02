@@ -90,21 +90,17 @@ public class AddressBookServiceImpl implements AddressBookService {
 
     public APIResponse deleteAddressBook(APIRequest apiRequest) {
         ///验参
-        JSONObject paramObject = JSONObject.fromObject(apiRequest.getRequestParam());
-        if (!paramObject.containsKey("addressBook_id")) {
-            return APIUtil.paramErrorResponse("参数有误,addressBook_id");
-        }
+        HttpServletRequest httpServletRequest = apiRequest.getRequest();
+        if (httpServletRequest.getParameter("addressBook_id") == null)
+            return APIUtil.paramErrorResponse("addressBook_id参数为空");
+        int addressBook_id = Integer.parseInt(httpServletRequest.getParameter("addressBook_id"));
 
-        int addressBook_id;
-        try {
-            addressBook_id = paramObject.getInt("addressBook_id");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return APIUtil.paramErrorResponse("参数有误，非自然数");
-        }
+        AddressBook addressBook = new AddressBook();
+        addressBook.setId(addressBook_id);
+        addressBook.setIs_delete(1);
         /// 执行删除操作
-        addressBookMapper.deleteByPrimaryKey(addressBook_id);
-        return APIUtil.getResponse(SUCCESS, null);
+        addressBookMapper.updateIsDeleteStatusByPrimaryKey(addressBook_id, 1);
+        return APIUtil.getResponse(SUCCESS, addressBook);
     }
 
 

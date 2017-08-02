@@ -20,4 +20,6 @@ public interface AddressBookMapper {
 
     int updateByPrimaryKey(AddressBook record);
 
+    int updateIsDeleteStatusByPrimaryKey(@Param("id") int id,@Param("is_delete") int is_delete);
+
 }
