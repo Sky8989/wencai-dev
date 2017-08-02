@@ -109,8 +109,17 @@ public class AddressBookServiceImpl implements AddressBookService {
         JSONObject paramObject = JSONObject.fromObject(apiRequest.getRequestParam());
         AddressBook addressBook = (AddressBook) JSONObject.toBean(paramObject, AddressBook.class);
 
-        addressBook.setCreate_time(Long.toString(System.currentTimeMillis()));
+        ///更新 地址簿记录时间 包括映射关系和地址实体的时间
+        String create_time = Long.toString(System.currentTimeMillis());
+
+        //TODO 修改地址映射的时间
+        addressBook.setCreate_time(create_time);
         addressBookMapper.updateByPrimaryKeySelective(addressBook);
+
+        //TODO 修改地址实体的时间
+        Address address = addressBook.getAddress();
+        address.setCreate_time(create_time);
+        addressMapper.updateByPrimaryKey(address);
 
         return APIUtil.getResponse(SUCCESS, null);
     }

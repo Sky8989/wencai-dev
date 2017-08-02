@@ -18,16 +18,19 @@
         id, user_id, address_id, is_delete, is_mystery, address_type, address_book_type,
         create_time
     </sql>
+
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
         from sftc_address_book
         where id = #{id,jdbcType=INTEGER}
     </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete from sftc_address_book
         where id = #{id,jdbcType=INTEGER}
     </delete>
+
     <insert id="insert" parameterType="com.sftc.web.model.AddressBook">
         <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
             SELECT LAST_INSERT_ID()
@@ -39,6 +42,7 @@
         #{isMystery,jdbcType=INTEGER}, #{addressType,jdbcType=VARCHAR}, #{addressBookType,jdbcType=VARCHAR},
         #{createTime,jdbcType=VARCHAR})
     </insert>
+
     <insert id="insertSelective" parameterType="com.sftc.web.model.AddressBook" useGeneratedKeys="true">
         <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
             SELECT LAST_INSERT_ID()
@@ -91,21 +95,17 @@
             </if>
         </trim>
     </insert>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.sftc.web.model.AddressBook">
         update sftc_address_book
         <set>
-            <if test="user_id != null">
+            <if test="user_id != null and user_id != 0">
                 user_id = #{user_id,jdbcType=INTEGER},
             </if>
-            <if test="address_id != null">
+            <if test="address_id != null and address_id != 0">
                 address_id = #{address_id,jdbcType=INTEGER},
             </if>
-            <if test="is_delete != null">
-                is_delete = #{is_delete,jdbcType=INTEGER},
-            </if>
-            <if test="is_mystery != null">
-                is_mystery = #{is_mystery,jdbcType=INTEGER},
-            </if>
+
             <if test="address_type != null">
                 address_type = #{address_type,jdbcType=VARCHAR},
             </if>
@@ -118,6 +118,7 @@
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
+    
     <update id="updateByPrimaryKey" parameterType="com.sftc.web.model.AddressBook">
         update sftc_address_book
         set user_id = #{user_id,jdbcType=INTEGER},
