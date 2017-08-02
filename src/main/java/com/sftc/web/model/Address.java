@@ -21,6 +21,8 @@ public class Address extends Object {
     private String area;
     // 具体地址
     private String address;
+    // 门牌号等
+    private String supplementary_info;
     // 经度
     private double longitude;
     // 纬度
@@ -130,6 +132,10 @@ public class Address extends Object {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+
+    public String getSupplementary_info() {return supplementary_info;}
+
+    public void setSupplementary_info(String supplementary_info) {this.supplementary_info = supplementary_info;}
 
     public Address(int id, int user_id, String name, String phone, String province, String city, String area, String address, String create_time) {
         this.id = id;

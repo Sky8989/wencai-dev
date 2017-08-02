@@ -571,7 +571,7 @@ public class OrderCommitLogic {
         return APIUtil.getResponse(status, responseObject);
     }
 
-    /// 插入地址
+    /// TODO: 插入地址
     private void setupAddress(Order order, OrderExpress oe) {
         // 插入地址表
         com.sftc.web.model.Address address = new com.sftc.web.model.Address(oe);
