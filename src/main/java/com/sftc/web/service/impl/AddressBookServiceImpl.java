@@ -129,11 +129,12 @@ public class AddressBookServiceImpl implements AddressBookService {
         /// 处理参数
         HttpServletRequest httpServletRequest = apiRequest.getRequest();
         int user_id = Integer.parseInt(httpServletRequest.getParameter("user_id"));
+        String address_book_type = httpServletRequest.getParameter("address_book_type");
 
         //执行查询
-        AddressBook addressBook = addressBookMapper.selectByPrimaryKey(user_id);
-        if (addressBook != null) {
-            return APIUtil.getResponse(SUCCESS, addressBook);
+        List<AddressBook> addressBooks = addressBookMapper.selectAddressBookList(user_id, address_book_type);
+        if (addressBooks.size() > 0) {
+            return APIUtil.getResponse(SUCCESS, addressBooks);
         } else {
             return APIUtil.selectErrorResponse("用户无地址簿信息", null);
         }

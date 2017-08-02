@@ -19,6 +19,19 @@
         create_time
     </sql>
 
+    <resultMap id="AddressMap" type="com.sftc.web.model.AddressBook">
+        <result column="id" property="id"/>
+        <result column="user_id" property="user_id"/>
+        <result column="address_id" property="address_id"/>
+        <result column="is_delete" property="is_delete"/>
+        <result column="is_mystery" property="is_mystery"/>
+        <result column="create_time" property="create_time"/>
+        <association property="address" column="address_id" select="selectAddress"/>
+    </resultMap>
+    <select id="selectAddress" parameterType="int" resultType="com.sftc.web.model.Address">
+        SELECT * FROM sftc_address WHERE id=#{address_id}
+    </select>
+
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
@@ -118,7 +131,7 @@
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
-    
+
     <update id="updateByPrimaryKey" parameterType="com.sftc.web.model.AddressBook">
         update sftc_address_book
         set user_id = #{user_id,jdbcType=INTEGER},
@@ -131,10 +144,28 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
 
-    <update id="updateIsDeleteStatusByPrimaryKey" >
+    <update id="updateIsDeleteStatusByPrimaryKey">
         update sftc_address_book SET is_delete = #{is_delete} WHERE id = #{id}
     </update>
 
+    <!--获取 地址簿列表-->
+    <select id="selectAddressBookList" resultMap="AddressMap">
+        SELECT *
+        FROM sftc_address_book ab, sftc_address a
+        WHERE ab.address_id=a.id AND ab.user_id=#{user_id} AND ab.is_delete=0
+        AND ab.address_type='address_book' AND ab.address_book_type = #{address_book_type}
+        ORDER BY ab.create_time desc
+    </select>
+
+    <!--获取 历史地址列表-->
+    <select id="selectAddressHistoryListByUserId" parameterType="int" resultMap="AddressMap">
+        SELECT *
+        FROM sftc_address_history ah, sftc_address a
+        WHERE ah.address_id=a.id AND ah.user_id=#{user_id} AND ah.is_delete=0
+        GROUP BY phone, longitude, latitude
+        ORDER BY ah.create_time desc
+        limit #{startIndex}, #{pageSize}
+    </select>
 
 
     <!--&lt;!&ndash; 插入地址簿条目信息  &ndash;&gt;

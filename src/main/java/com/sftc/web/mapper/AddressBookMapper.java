@@ -20,6 +20,10 @@ public interface AddressBookMapper {
 
     int updateByPrimaryKey(AddressBook record);
 
-    int updateIsDeleteStatusByPrimaryKey(@Param("id") int id,@Param("is_delete") int is_delete);
+    int updateIsDeleteStatusByPrimaryKey(@Param("id") int id, @Param("is_delete") int is_delete);
+
+    List<AddressBook> selectAddressBookList(@Param("user_id") int user_id, @Param("address_book_type") String address_book_type);
+
+    List<AddressBook> selectAddressHistoryListByUserId(int user_id, int startIndex, int pageSize);
 
 }
