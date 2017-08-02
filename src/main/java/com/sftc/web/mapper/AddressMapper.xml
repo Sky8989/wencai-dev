@@ -20,9 +20,9 @@
     <!-- 添加地址  -->
     <insert id="addAddress" useGeneratedKeys="true" keyProperty="id" parameterType="com.sftc.web.model.Address">
       insert into sftc_address
-      (user_id,name,phone,province,city,area,address,longitude,latitude,create_time)
+      (user_id,name,phone,province,city,area,address,longitude,latitude,create_time,supplementary_info)
       values
-      (#{user_id},#{name},#{phone},#{province},#{city},#{area},#{address},#{longitude},#{latitude},#{create_time})
+      (#{user_id},#{name},#{phone},#{province},#{city},#{area},#{address},#{longitude},#{latitude},#{create_time},#{supplementary_info})
     </insert>
 
     <!--  编辑地址  -->
@@ -35,8 +35,8 @@
             <if test="detail!=null">detail=#{detail},</if>
             <if test="phone!=null">phone=#{phone},</if>
             <if test="name!=null">name=#{name},</if>
-            <if test="name!=null">longitude=#{longitude},</if>
-            <if test="name!=null">latitude=#{latitude},</if>
+            <if test="longitude!=null">longitude=#{longitude},</if>
+            <if test="latitude!=null">latitude=#{latitude},</if>
         </trim>
         WHERE id=#{id}
     </update>

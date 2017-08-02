@@ -21,6 +21,8 @@ public class AddressBook {
     // 创建时间
     private String create_time;
 
+    private Address address;
+
     public AddressBook() {
         super();
     }
@@ -67,5 +69,9 @@ public class AddressBook {
     public String getCreate_time() {return create_time;}
 
     public void setCreate_time(String create_time) {this.create_time = create_time;}
+
+    public Address getAddress() {return address;}
+
+    public void setAddress(Address address) {this.address = address;}
 }
 
