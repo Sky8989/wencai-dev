@@ -5,10 +5,8 @@ import com.sftc.tools.api.*;
 import com.sftc.tools.common.DateUtils;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFTokenHelper;
-import com.sftc.web.mapper.AddressHistoryMapper;
-import com.sftc.web.mapper.AddressMapper;
-import com.sftc.web.mapper.OrderExpressMapper;
-import com.sftc.web.mapper.OrderMapper;
+import com.sftc.web.mapper.*;
+import com.sftc.web.model.AddressBook;
 import com.sftc.web.model.AddressHistory;
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
@@ -49,6 +47,8 @@ public class OrderCommitLogic {
     private AddressHistoryMapper addressHistoryMapper;
     @Resource
     private MessageService messageService;
+    @Resource
+    private AddressBookMapper addressBookMapper;
 
     //////////////////// Public Method ////////////////////
 
@@ -590,4 +590,39 @@ public class OrderCommitLogic {
             addressHistoryMapper.insertAddressHistory(addressHistory);
         }
     }
+
+
+
+    /// TODO: 插入地址簿  要去重
+    // 通用地址簿插入utils
+    private void insertAddressBookUtils(
+            String address_type, String address_book_type, int user_id, String name, String phone,
+            String province, String city, String area, String address, String supplementary_info,
+            String create_time, double longitude, double latitude) {
+
+        com.sftc.web.model.Address addressParam = new com.sftc.web.model.Address(
+                user_id, name, phone,
+                province, city, area, address, supplementary_info,
+                longitude, latitude, create_time
+        );
+        addressMapper.addAddress(addressParam);
+        // 查找重复信息
+        List<AddressBook> addressBookList = addressBookMapper.selectAddressForRemoveDuplicate(user_id,
+                address_type, address_book_type, name, phone,
+                province, city, area, address, supplementary_info);
+        if (addressBookList.size() == 0) {// 0代表无重复信息
+            //执行插入操作
+            AddressBook addressBook = new AddressBook(user_id, addressParam.getId(), 0, 0, "address_book", address_book_type, create_time);
+            addressBookMapper.insert(addressBook);
+        }
+        // addressBookList的size如果大于0 代表已经有相同地址
+        // 不做插入处理
+    }
+
+}
+
+
+
+
+
 }

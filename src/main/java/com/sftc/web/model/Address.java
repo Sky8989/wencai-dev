@@ -133,9 +133,13 @@ public class Address extends Object {
         this.avatar = avatar;
     }
 
-    public String getSupplementary_info() {return supplementary_info;}
+    public String getSupplementary_info() {
+        return supplementary_info;
+    }
 
-    public void setSupplementary_info(String supplementary_info) {this.supplementary_info = supplementary_info;}
+    public void setSupplementary_info(String supplementary_info) {
+        this.supplementary_info = supplementary_info;
+    }
 
     public Address(int id, int user_id, String name, String phone, String province, String city, String area, String address, String create_time) {
         this.id = id;
@@ -177,4 +181,17 @@ public class Address extends Object {
         this.setCreate_time(Long.toString(System.currentTimeMillis()));
     }
 
+    public Address(int user_id, String name, String phone, String province, String city, String area, String address, String supplementary_info, double longitude, double latitude, String create_time) {
+        this.user_id = user_id;
+        this.name = name;
+        this.phone = phone;
+        this.province = province;
+        this.city = city;
+        this.area = area;
+        this.address = address;
+        this.supplementary_info = supplementary_info;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.create_time = create_time;
+    }
 }

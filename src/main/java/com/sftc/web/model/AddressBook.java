@@ -27,8 +27,7 @@ public class AddressBook {
         super();
     }
 
-    public AddressBook(int id, int user_id, int address_id, int is_delete, int is_mystery, String address_type, String address_book_type, String create_time) {
-        this.id = id;
+    public AddressBook(int user_id, int address_id, int is_delete, int is_mystery, String address_type, String address_book_type, String create_time) {
         this.user_id = user_id;
         this.address_id = address_id;
         this.is_delete = is_delete;

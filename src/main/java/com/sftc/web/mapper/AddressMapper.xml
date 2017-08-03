@@ -60,6 +60,8 @@
         SELECT * from sftc_address WHERE phone = #{phone} AND longitude = #{longitude} AND latitude = #{latitude}
     </select>
 
+
+
     <update id="updateByPrimaryKey" parameterType="com.sftc.web.model.Address">
         UPDATE sftc_address
         <set>
