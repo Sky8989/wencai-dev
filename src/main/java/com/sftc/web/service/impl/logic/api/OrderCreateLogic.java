@@ -169,6 +169,7 @@ public class OrderCreateLogic {
                     orderExpress.getShip_city(), orderExpress.getShip_area(), orderExpress.getShip_addr(), orderExpress.getSupplementary_info(),
                     orderExpress.getCreate_time(), orderExpress.getLongitude(), orderExpress.getLatitude()
             );
+
             //提交地址同时（去重处理）保存到[寄件人]最近联系人
             orderCommitLogic.insertAddressBookUtils("address_history", "address_history",
                     order.getSender_user_id(),// 给寄件人存
@@ -178,7 +179,6 @@ public class OrderCreateLogic {
             );
 
         }
-
         return APIUtil.getResponse(SUCCESS, orderExpress.getOrder_id());
     }
 }
