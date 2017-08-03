@@ -1,6 +1,7 @@
 package com.sftc.web.service.impl.logic.api;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.sftc.tools.api.*;
 import com.sftc.tools.common.DateUtils;
 import com.sftc.tools.sf.SFOrderHelper;
@@ -408,7 +409,28 @@ public class OrderCommitLogic {
         JSONObject tempObject = JSONObject.fromObject(reqObject);
         tempObject.remove("order");
         // TODO 把门牌号加到下单的参数json中
+        String oldSourceAddressStreet = sourceAddressOBJ.getString("street");
+        String oldTargetAddressStreet = targetAddressOBJ.getString("street");
+        String sourceAddressNewStreet = sourceAddressOBJ.getString("street") + sourceAddressOBJ.getString("supplementary_info");
+        String targetAddressNewStreet = targetAddressOBJ.getString("street") + targetAddressOBJ.getString("supplementary_info");
+        sourceAddressOBJ.remove("street");
+        sourceAddressOBJ.put("street", sourceAddressNewStreet);
+        sourceOBJ.remove("address");
+        sourceOBJ.put("address", sourceAddressOBJ);
+        requestOBJ.remove("source");
+        requestOBJ.put("source", sourceOBJ);
 
+        targetAddressOBJ.remove("street");
+        targetAddressOBJ.put("street", targetAddressNewStreet);
+        targetOBJ.remove("address");
+        targetOBJ.put("address", targetAddressOBJ);
+        requestOBJ.remove("source");
+        requestOBJ.put("source", targetOBJ);
+
+        tempObject.remove("request");
+        tempObject.put("request", requestOBJ);
+
+        //向sf下单
         String requestSFParamStr = gson.toJson(tempObject);
         JSONObject respObject = JSONObject.fromObject(APIPostUtil.post(requestSFParamStr, post));
 
@@ -426,7 +448,7 @@ public class OrderCommitLogic {
                     targetAddressOBJ.getString("province"),
                     targetAddressOBJ.getString("city"),
                     targetAddressOBJ.getString("region"),
-                    targetAddressOBJ.getString("street"),
+                    oldTargetAddressStreet,
                     targetAddressOBJ.getString("supplementary_info"),
                     requestOBJ.getJSONArray("packages").getJSONObject(0).getString("weight"),
                     requestOBJ.getJSONArray("packages").getJSONObject(0).getString("type"),
@@ -446,8 +468,7 @@ public class OrderCommitLogic {
              * 使用地址映射插入工具
              */
             String create_time = Long.toString(System.currentTimeMillis());
-            tempInsertAddressBookAndAddressHistory(create_time, orderOBJ, sourceAddressOBJ, sourceOBJ, targetAddressOBJ, targetOBJ);
-
+            setupAddress2(order, orderExpress);
 
             // 返回结果添加订单编号
             respObject.put("order_id", order.getId());
