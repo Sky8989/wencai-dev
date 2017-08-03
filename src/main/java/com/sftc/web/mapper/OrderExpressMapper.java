@@ -13,6 +13,8 @@ public interface OrderExpressMapper {
 
     void addOrderExpress(OrderExpress orderExpress);
 
+    void addOrderExpress2(OrderExpress orderExpress);//多增加门牌号信息
+
     void updateOrderExpressForSF(OrderExpress orderExpress);
 
     void updateOrderExpressUuidAndReserveTimeById(@Param("id") int id, @Param("uuid") String uuid, @Param("reserve_time") String reserve_time);

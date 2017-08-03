@@ -410,7 +410,7 @@ public class OrderCommitLogic {
 
         if (!(respObject.containsKey("error") || respObject.containsKey("errors"))) {
             // 插入订单表
-            orderMapper.addOrder(order);
+            orderMapper.addOrder2(order);
 
             // 插入快递表
             OrderExpress orderExpress = new OrderExpress(
@@ -426,7 +426,7 @@ public class OrderCommitLogic {
                     targetAddressOBJ.getString("supplementary_info"),
                     requestOBJ.getJSONArray("packages").getJSONObject(0).getString("weight"),
                     requestOBJ.getJSONArray("packages").getJSONObject(0).getString("type"),
-                    requestOBJ.getString("status"),
+                    respObject.getJSONObject("request").getString("status"),
                     Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
                     order.getId(),
                     respObject.getJSONObject("request").getString("uuid"),
@@ -434,7 +434,7 @@ public class OrderCommitLogic {
                     targetOBJ.getJSONObject("coordinate").getDouble("longitude")
             );
             orderExpress.setReserve_time(reserve_time);
-            orderExpressMapper.addOrderExpress(orderExpress);
+            orderExpressMapper.addOrderExpress2(orderExpress);
 
             // 插入地址
             //setupAddress(order, orderExpress);
@@ -628,7 +628,7 @@ public class OrderCommitLogic {
                 province, city, area, address, supplementary_info);
         if (addressBookList.size() == 0) {// 0代表无重复信息
             //执行插入操作
-            AddressBook addressBook = new AddressBook(user_id, addressParam.getId(), 0, 0, "address_book", address_book_type, create_time);
+            AddressBook addressBook = new AddressBook(user_id, addressParam.getId(), 0, 0, address_type, address_book_type, create_time);
             addressBookMapper.insert(addressBook);
         }
         // addressBookList的size如果大于0 代表已经有相同地址

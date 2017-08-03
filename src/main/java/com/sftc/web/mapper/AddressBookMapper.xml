@@ -51,9 +51,9 @@
         insert into sftc_address_book (user_id, address_id, is_delete,
         is_mystery, address_type, address_book_type,
         create_time)
-        values (#{userId,jdbcType=INTEGER}, #{addressId,jdbcType=INTEGER}, #{isDelete,jdbcType=INTEGER},
-        #{isMystery,jdbcType=INTEGER}, #{addressType,jdbcType=VARCHAR}, #{addressBookType,jdbcType=VARCHAR},
-        #{createTime,jdbcType=VARCHAR})
+        values (#{user_id,jdbcType=INTEGER}, #{address_id,jdbcType=INTEGER}, #{is_delete,jdbcType=INTEGER},
+        #{is_mystery,jdbcType=INTEGER}, #{address_type,jdbcType=VARCHAR}, #{address_book_type,jdbcType=VARCHAR},
+        #{create_time,jdbcType=VARCHAR})
     </insert>
 
     <insert id="insertSelective" parameterType="com.sftc.web.model.AddressBook" useGeneratedKeys="true">
@@ -169,7 +169,7 @@
 
 
     <!--地址验重-->
-    <select id="selectAddressForRemoveDuplicate " resultType="com.sftc.web.model.AddressBook">
+    <select id="selectAddressForRemoveDuplicate" resultType="com.sftc.web.model.AddressBook">
         SELECT * FROM sftc_address a ,sftc_address_book ab
         WHERE ab.address_id=a.id
         AND ab.user_id = #{user_id}
