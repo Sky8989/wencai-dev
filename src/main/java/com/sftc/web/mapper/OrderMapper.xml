@@ -116,7 +116,7 @@
         INSERT INTO sftc_order
         (freight,
         create_time, sender_province, sender_name, sender_mobile, sender_city,
-        sender_area,supplementary_info, sender_addr, word_message, image, voice,
+        sender_area, sender_addr, supplementary_info,word_message, image, voice,
         sender_user_id, gift_card_id, pay_method, distribution_method, longitude,
         latitude,order_type,voice_time,region_type)
         VALUES (

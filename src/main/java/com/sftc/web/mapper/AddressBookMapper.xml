@@ -172,7 +172,7 @@
     <select id="selectAddressForRemoveDuplicate" resultType="com.sftc.web.model.AddressBook">
         SELECT * FROM sftc_address a ,sftc_address_book ab
         WHERE ab.address_id=a.id
-        AND ab.user_id = #{user_id}
+        AND ab.user_id = #{user_id} AND  ab.is_delete = 0
         AND ab.address_type=#{address_type} AND ab.address_book_type = #{address_book_type}
         AND a.name = #{name} AND a.phone = #{phone}
         AND a.province =#{province} AND a.city = #{city} AND a.area =#{area}AND a.address =#{address} AND a.supplementary_info = #{supplementary_info}

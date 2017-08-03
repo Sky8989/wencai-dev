@@ -494,7 +494,7 @@ public class OrderCommitLogic {
 
         sf.put("orderid", orderId);
 
-        String str = gson.toJson(requestObject.getJSONObject("sf"));
+//        String str = gson.toJson(requestObject.getJSONObject("sf"));
 
         // 插入订单表
         Order order = new Order(
@@ -508,6 +508,7 @@ public class OrderCommitLogic {
                 (String) sf.get("j_city"),
                 (String) sf.get("j_county"),
                 (String) sf.get("j_address"),
+                sf.getString("j_supplementary_info"),//增加门牌号
                 0,
                 0,
                 "ORDER_BASIS",
@@ -519,7 +520,7 @@ public class OrderCommitLogic {
         order.setGift_card_id(Integer.parseInt((String) orderObject.get("gift_card_id")));
         order.setVoice_time(Integer.parseInt((String) orderObject.get("voice_time")));
         order.setRegion_type("REGION_NATION");
-        orderMapper.addOrder(order);
+        orderMapper.addOrder2(order);
 
         // 插入快递表
         OrderExpress orderExpress = new OrderExpress(
@@ -532,6 +533,7 @@ public class OrderCommitLogic {
                 (String) sf.get("d_city"),
                 (String) sf.get("d_county"),
                 (String) sf.get("d_address"),
+                sf.getString("d_supplementary_info"),//增加门牌号
                 "",
                 "",
                 "WAIT_HAND_OVER",
@@ -542,14 +544,20 @@ public class OrderCommitLogic {
                 0.0
         );
         orderExpress.setReserve_time((String) requestObject.getJSONObject("order").get("reserve_time"));
-        orderExpressMapper.addOrderExpress(orderExpress);
+        orderExpressMapper.addOrderExpress2(orderExpress);
 
         // 插入地址
-        setupAddress(order, orderExpress);
+//        setupAddress(order, orderExpress);
+        nationInsertAddressBookAndAddressHistory(order.getSender_user_id(), sf, Long.toString(System.currentTimeMillis()));
 
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
         JSONObject responseObject = new JSONObject();
         if (reserve_time == null || reserve_time.equals("")) {
+            JSONObject paramTemp = JSONObject.fromObject(sf);
+            Object j_address = paramTemp.remove("j_address");
+            paramTemp.put("j_address", j_address + paramTemp.getString("j_supplementary_info"));
+            String str = gson.toJson(paramTemp);
+
             // POST
             HttpPost post = new HttpPost(SF_CREATEORDER_URL);
             post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
@@ -588,7 +596,7 @@ public class OrderCommitLogic {
         return APIUtil.getResponse(status, responseObject);
     }
 
-    /// TODO: 插入地址
+    /// 插入地址
     private void setupAddress(Order order, OrderExpress oe) {
         // 插入地址表
         com.sftc.web.model.Address address = new com.sftc.web.model.Address(oe);
@@ -635,7 +643,7 @@ public class OrderCommitLogic {
         // 不做插入处理
     }
 
-    /// 下单使用的 一键添加2个地址簿 1个历史地址
+    /// 普通同城下单使用的 一键添加2个地址簿 1个历史地址
     private void tempInsertAddressBookAndAddressHistory(
             String create_time, JSONObject orderOBJ
             , JSONObject sourceAddressOBJ, JSONObject sourceOBJ
@@ -681,6 +689,52 @@ public class OrderCommitLogic {
                 create_time,
                 (Double) targetOBJ.getJSONObject("coordinate").get("longitude"),
                 (Double) targetOBJ.getJSONObject("coordinate").get("latitude")
+        );
+    }
+
+    /// 普通大网下单使用的 一键添加2个地址簿 1个历史地址
+    private void nationInsertAddressBookAndAddressHistory(int user_id, JSONObject sf, String create_time) {
+        // 插入地址簿 寄件人
+        insertAddressBookUtils("address_book", "sender",
+                user_id,
+                sf.getString("j_contact"),
+                sf.getString("j_mobile"),
+                sf.getString("j_province"),
+                sf.getString("j_city"),
+                sf.getString("j_county"),
+                sf.getString("j_address"),
+                sf.getString("j_supplementary_info"),
+                create_time,
+                0,
+                0
+        );
+        // 插入地址簿 收件人
+        insertAddressBookUtils("address_book", "ship",
+                user_id,// 这里的地址是属于寄件人的
+                sf.getString("d_contact"),
+                sf.getString("d_mobile"),
+                sf.getString("d_province"),
+                sf.getString("d_city"),
+                sf.getString("d_county"),
+                sf.getString("d_address"),
+                sf.getString("d_supplementary_info"),
+                create_time,
+                0,
+                0
+        );
+        // 插入历史地址
+        insertAddressBookUtils("address_history", "address_history",
+                user_id,
+                sf.getString("d_contact"),
+                sf.getString("d_mobile"),
+                sf.getString("d_province"),
+                sf.getString("d_city"),
+                sf.getString("d_county"),
+                sf.getString("d_address"),
+                sf.getString("d_supplementary_info"),
+                create_time,
+                0,
+                0
         );
     }
 
