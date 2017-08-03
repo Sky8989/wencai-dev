@@ -225,10 +225,10 @@ public class OrderCommitLogic {
 
             // TODO 把门牌号加到下单的参数json中
             Object removeStreet = requestObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").remove("street");
-            String newStreet = removeStreet.toString()+order.getSupplementary_info();
+            String newStreet = removeStreet.toString() + order.getSupplementary_info();
             requestObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").put("street", newStreet);
             Object removeStreet2 = requestObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").remove("street");
-            String newStreet2 = removeStreet2.toString()+order.getSupplementary_info();
+            String newStreet2 = removeStreet2.toString() + order.getSupplementary_info();
             requestObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").put("street", newStreet2);
 
 
@@ -329,6 +329,13 @@ public class OrderCommitLogic {
                 if (reserve_time != null && !reserve_time.equals("")) { // 预约件处理
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), null, reserve_time);
                 } else {
+                    // 处理street 和 门牌号的拼接
+                    Object j_address = sf.remove("j_address");
+                    Object d_address = sf.remove("d_address");
+                    sf.put("j_address", j_address + order.getSupplementary_info());
+                    sf.put("d_address", d_address + oe.getSupplementary_info());
+
+
                     // 立即提交订单
                     String paramStr = gson.toJson(JSONObject.fromObject(sf));
                     HttpPost post = new HttpPost(SF_CREATEORDER_URL);
@@ -418,27 +425,18 @@ public class OrderCommitLogic {
 
         JSONObject tempObject = JSONObject.fromObject(reqObject);
         tempObject.remove("order");
-        // TODO 把门牌号加到下单的参数json中
+//         TODO 把门牌号加到下单的参数json中
         String oldSourceAddressStreet = sourceAddressOBJ.getString("street");
         String oldTargetAddressStreet = targetAddressOBJ.getString("street");
-        String sourceAddressNewStreet = sourceAddressOBJ.getString("street") + sourceAddressOBJ.getString("supplementary_info");
-        String targetAddressNewStreet = targetAddressOBJ.getString("street") + targetAddressOBJ.getString("supplementary_info");
-        sourceAddressOBJ.remove("street");
-        sourceAddressOBJ.put("street", sourceAddressNewStreet);
-        sourceOBJ.remove("address");
-        sourceOBJ.put("address", sourceAddressOBJ);
-        requestOBJ.remove("source");
-        requestOBJ.put("source", sourceOBJ);
 
-        targetAddressOBJ.remove("street");
-        targetAddressOBJ.put("street", targetAddressNewStreet);
-        targetOBJ.remove("address");
-        targetOBJ.put("address", targetAddressOBJ);
-        requestOBJ.remove("source");
-        requestOBJ.put("source", targetOBJ);
+        // TODO 把门牌号加到下单的参数json中
+        Object removeStreet = tempObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").remove("street");
+        String newStreet = removeStreet.toString() + order.getSupplementary_info();
+        tempObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").put("street", newStreet);
+        Object removeStreet2 = tempObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").remove("street");
+        String newStreet2 = removeStreet2.toString() + tempObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").getString("supplementary_info");
+        tempObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").put("street", newStreet2);
 
-        tempObject.remove("request");
-        tempObject.put("request", requestOBJ);
 
         //向sf下单
         String requestSFParamStr = gson.toJson(tempObject);
@@ -588,6 +586,7 @@ public class OrderCommitLogic {
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
         JSONObject responseObject = new JSONObject();
         if (reserve_time == null || reserve_time.equals("")) {
+            // 处理 street和门牌号的拼接
             JSONObject paramTemp = JSONObject.fromObject(sf);
             Object j_address = paramTemp.remove("j_address");
             paramTemp.put("j_address", j_address + paramTemp.getString("j_supplementary_info"));
