@@ -254,7 +254,9 @@ public class OrderCommitLogic {
                 orderExpressMapper.updateOrderExpressStatus(oe.getId(), responseObject.getJSONObject("request").getString("status"));
 
                 // 插入地址
-                setupAddress(order, oe);
+                //setupAddress(order, oe);
+                //使用新的地址插入工具
+                setupAddress2(order,oe);
 
             } else { // error
                 //手动操作事务回滚
@@ -338,7 +340,9 @@ public class OrderCommitLogic {
                         orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
 
                         // 插入地址
-                        setupAddress(order, oe);
+                        //setupAddress(order, oe);
+                        //使用新的地址插入工具
+                        setupAddress2(order,oe);
                     }
                 }
             }
@@ -738,5 +742,46 @@ public class OrderCommitLogic {
         );
     }
 
+    private void setupAddress2(Order order, OrderExpress oe) {
+        // 插入地址簿 寄件人
+        insertAddressBookUtils("address_book", "sender",
+                order.getSender_user_id(),
+                order.getSender_name(),
+                order.getSender_mobile(),
+                order.getSender_province(),
+                order.getSender_city(),
+                order.getSender_area(),
+                order.getSender_addr(),
+                order.getSupplementary_info(),
+                order.getCreate_time(), order.getLongitude(),
+                order.getLatitude()
+        );
+        // 插入地址簿 收件人
+        insertAddressBookUtils("address_book", "ship",
+                order.getSender_user_id(),
+                oe.getShip_name(),
+                oe.getShip_mobile(),
+                oe.getShip_province(),
+                oe.getShip_city(),
+                oe.getShip_area(),
+                oe.getShip_addr(),
+                oe.getSupplementary_info(),
+                oe.getCreate_time(),
+                oe.getLongitude(),
+                oe.getLatitude());
+        // 插入历史地址
+        insertAddressBookUtils("address_history", "address_history",
+                order.getSender_user_id(),
+                order.getSender_name(),
+                order.getSender_mobile(),
+                order.getSender_province(),
+                order.getSender_city(),
+                order.getSender_area(),
+                order.getSender_addr(),
+                order.getSupplementary_info(),
+                order.getCreate_time(), order.getLongitude(),
+                order.getLatitude()
+        );
+    }
 }
 
