@@ -160,10 +160,9 @@
     <!--获取 历史地址列表-->
     <select id="selectAddressHistoryListByUserId" parameterType="int" resultMap="AddressMap">
         SELECT *
-        FROM sftc_address_history ah, sftc_address a
-        WHERE ah.address_id=a.id AND ah.user_id=#{user_id} AND ah.is_delete=0
-        GROUP BY phone, longitude, latitude
-        ORDER BY ah.create_time desc
+        FROM sftc_address_book ab, sftc_address a
+        WHERE ab.address_id=a.id AND ab.user_id=#{user_id} AND ab.is_delete=0 AND ab.address_type='address_history'
+        ORDER BY ab.create_time desc
         limit #{startIndex}, #{pageSize}
     </select>
 

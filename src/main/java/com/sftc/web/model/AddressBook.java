@@ -22,6 +22,8 @@ public class AddressBook {
     private String create_time;
 
     private Address address;
+    // 好友微信名
+    private String ship_wechatname;
 
     public AddressBook() {
         super();
@@ -72,5 +74,9 @@ public class AddressBook {
     public Address getAddress() {return address;}
 
     public void setAddress(Address address) {this.address = address;}
+
+    public String getShip_wechatname() {return ship_wechatname;}
+
+    public void setShip_wechatname(String ship_wechatname) {this.ship_wechatname = ship_wechatname;}
 }
 
