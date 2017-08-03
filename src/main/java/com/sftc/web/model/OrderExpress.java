@@ -23,6 +23,8 @@ public class OrderExpress extends Object {
     private String ship_area;
     // 收件人详细地址
     private String ship_addr;
+    // 门牌号
+    private String supplementary_info;
     // 包裹类型
     private String package_type;
     // 物品类型
@@ -72,6 +74,28 @@ public class OrderExpress extends Object {
         this.state = state;
     }
 
+    public OrderExpress(String order_time,String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
+                        String ship_city, String ship_area, String ship_addr, String supplementary_info, String package_type, String object_type,
+                        String state, int sender_user_id, int order_id, String uuid, Double latitude, Double longitude) {
+        this.order_time = order_time;
+        this.create_time = create_time;
+        this.order_number = order_number;
+        this.ship_name = ship_name;
+        this.ship_mobile = ship_mobile;
+        this.ship_province = ship_province;
+        this.ship_city = ship_city;
+        this.ship_area = ship_area;
+        this.ship_addr = ship_addr;
+        this.supplementary_info = supplementary_info;
+        this.package_type = package_type;
+        this.object_type = object_type;
+        this.state = state;
+        this.sender_user_id = sender_user_id;
+        this.order_id = order_id;
+        this.uuid = uuid;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
     public OrderExpress(String order_time,String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String package_type, String object_type,
                         String state, int sender_user_id, int order_id, String uuid, Double latitude, Double longitude) {
@@ -341,4 +365,8 @@ public class OrderExpress extends Object {
     public Evaluate getEvaluate() {return evaluate;}
 
     public void setEvaluate(Evaluate evaluate) {this.evaluate = evaluate;}
+
+    public String getSupplementary_info() {return supplementary_info;}
+
+    public void setSupplementary_info(String supplementary_info) {this.supplementary_info = supplementary_info;}
 }

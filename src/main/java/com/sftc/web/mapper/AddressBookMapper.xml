@@ -4,23 +4,196 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.mapper.AddressBookMapper">
 
+    <resultMap id="BaseResultMap" type="com.sftc.web.model.AddressBook">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="user_id" jdbcType="INTEGER"/>
+        <result column="address_id" property="address_id" jdbcType="INTEGER"/>
+        <result column="is_delete" property="is_delete" jdbcType="INTEGER"/>
+        <result column="is_mystery" property="is_mystery" jdbcType="INTEGER"/>
+        <result column="address_type" property="address_type" jdbcType="VARCHAR"/>
+        <result column="address_book_type" property="address_book_type" jdbcType="VARCHAR"/>
+        <result column="create_time" property="create_time" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, user_id, address_id, is_delete, is_mystery, address_type, address_book_type,
+        create_time
+    </sql>
 
-    <!-- 插入地址簿条目信息  -->
+    <resultMap id="AddressMap" type="com.sftc.web.model.AddressBook">
+        <result column="id" property="id"/>
+        <result column="user_id" property="user_id"/>
+        <result column="address_id" property="address_id"/>
+        <result column="is_delete" property="is_delete"/>
+        <result column="is_mystery" property="is_mystery"/>
+        <result column="create_time" property="create_time"/>
+        <association property="address" column="address_id" select="selectAddress"/>
+    </resultMap>
+    <select id="selectAddress" parameterType="int" resultType="com.sftc.web.model.Address">
+        SELECT * FROM sftc_address WHERE id=#{address_id}
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from sftc_address_book
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from sftc_address_book
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <insert id="insert" parameterType="com.sftc.web.model.AddressBook">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sftc_address_book (user_id, address_id, is_delete,
+        is_mystery, address_type, address_book_type,
+        create_time)
+        values (#{userId,jdbcType=INTEGER}, #{addressId,jdbcType=INTEGER}, #{isDelete,jdbcType=INTEGER},
+        #{isMystery,jdbcType=INTEGER}, #{addressType,jdbcType=VARCHAR}, #{addressBookType,jdbcType=VARCHAR},
+        #{createTime,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.sftc.web.model.AddressBook" useGeneratedKeys="true">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sftc_address_book
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="user_id != null">
+                user_id,
+            </if>
+            <if test="address_id != null">
+                address_id,
+            </if>
+            <if test="is_delete != null">
+                is_delete,
+            </if>
+            <if test="is_mystery != null">
+                is_mystery,
+            </if>
+            <if test="address_type != null">
+                address_type,
+            </if>
+            <if test="address_book_type != null">
+                address_book_type,
+            </if>
+            <if test="create_time != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="user_id != null">
+                #{user_id,jdbcType=INTEGER},
+            </if>
+            <if test="address_id != null">
+                #{address_id,jdbcType=INTEGER},
+            </if>
+            <if test="is_delete != null">
+                #{is_delete,jdbcType=INTEGER},
+            </if>
+            <if test="is_mystery != null">
+                #{is_mystery,jdbcType=INTEGER},
+            </if>
+            <if test="address_type != null">
+                #{address_type,jdbcType=VARCHAR},
+            </if>
+            <if test="address_book_type != null">
+                #{address_book_type,jdbcType=VARCHAR},
+            </if>
+            <if test="create_time != null">
+                #{create_time,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.sftc.web.model.AddressBook">
+        update sftc_address_book
+        <set>
+            <if test="user_id != null and user_id != 0">
+                user_id = #{user_id,jdbcType=INTEGER},
+            </if>
+            <if test="address_id != null and address_id != 0">
+                address_id = #{address_id,jdbcType=INTEGER},
+            </if>
+
+            <if test="address_type != null">
+                address_type = #{address_type,jdbcType=VARCHAR},
+            </if>
+            <if test="address_book_type != null">
+                address_book_type = #{address_book_type,jdbcType=VARCHAR},
+            </if>
+            <if test="create_time != null">
+                create_time = #{create_time,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.sftc.web.model.AddressBook">
+        update sftc_address_book
+        set user_id = #{user_id,jdbcType=INTEGER},
+        address_id = #{address_id,jdbcType=INTEGER},
+        is_delete = #{is_delete,jdbcType=INTEGER},
+        is_mystery = #{is_mystery,jdbcType=INTEGER},
+        address_type = #{address_type,jdbcType=VARCHAR},
+        address_book_type = #{address_book_type,jdbcType=VARCHAR},
+        create_time = #{create_time,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateIsDeleteStatusByPrimaryKey">
+        update sftc_address_book SET is_delete = #{is_delete} WHERE id = #{id}
+    </update>
+
+    <!--获取 地址簿列表-->
+    <select id="selectAddressBookList" resultMap="AddressMap">
+        SELECT *
+        FROM sftc_address_book ab, sftc_address a
+        WHERE ab.address_id=a.id AND ab.user_id=#{user_id} AND ab.is_delete=0
+        AND ab.address_type='address_book' AND ab.address_book_type = #{address_book_type}
+        ORDER BY ab.create_time desc
+    </select>
+
+    <!--获取 历史地址列表-->
+    <select id="selectAddressHistoryListByUserId" parameterType="int" resultMap="AddressMap">
+        SELECT *
+        FROM sftc_address_history ah, sftc_address a
+        WHERE ah.address_id=a.id AND ah.user_id=#{user_id} AND ah.is_delete=0
+        GROUP BY phone, longitude, latitude
+        ORDER BY ah.create_time desc
+        limit #{startIndex}, #{pageSize}
+    </select>
+
+
+    <!--地址验重-->
+    <select id="selectAddressForRemoveDuplicate " resultType="com.sftc.web.model.AddressBook">
+        SELECT * FROM sftc_address a ,sftc_address_book ab
+        WHERE ab.address_id=a.id
+        AND ab.user_id = #{user_id}
+        AND ab.address_type=#{address_type} AND ab.address_book_type = #{address_book_type}
+        AND a.name = #{name} AND a.phone = #{phone}
+        AND a.province =#{province} AND a.city = #{city} AND a.area =#{area}AND a.address =#{address} AND a.supplementary_info = #{supplementary_info}
+    </select>
+
+    <!--&lt;!&ndash; 插入地址簿条目信息  &ndash;&gt;
     <insert id="addAddressBook" useGeneratedKeys="true" keyProperty="id" parameterType="com.sftc.web.model.AddressBook">
         insert into sftc_address_book
         (user_id,name,phone,province,city,area,address,create_time<include refid="column1"/>)
         values
         (#{user_id},#{name},#{phone},#{province},#{city},#{area},#{address},#{create_time}<include refid="value1"/>)
     </insert>
-    <!--删除地址簿条目信息-->
+    &lt;!&ndash;删除地址簿条目信息&ndash;&gt;
     <delete id="deleteAddressBook" parameterType="int">
         DELETE FROM sftc_address_book WHERE user_id = #{user_id} and id = #{id}
     </delete>
-    <!--查询地址簿列表-->
+    &lt;!&ndash;查询地址簿列表&ndash;&gt;
     <select id="selectList" parameterType="int" resultType="com.sftc.web.model.AddressBook">
         SELECT * FROM sftc_address_book WHERE user_id = #{user_id} ORDER BY create_time DESC,id DESC ;
     </select>
-    <!--更细地址簿条目信息-->
+    &lt;!&ndash;更细地址簿条目信息&ndash;&gt;
     <update id="updateAddressBook" parameterType="String">
         UPDATE sftc_address_book
         <set>
@@ -41,9 +214,9 @@
     </update>
 
 
-    <!--动态插入-->
+    &lt;!&ndash;动态插入&ndash;&gt;
     <sql id="column1">
-        <!-- 去掉最后一个, -->
+        &lt;!&ndash; 去掉最后一个, &ndash;&gt;
         <trim suffixOverrides=",">
             <if test="longitude != null and longitude != 0">
                 ,longitude,
@@ -57,7 +230,7 @@
         </trim>
     </sql>
     <sql id="value1">
-        <!-- 去掉最后一个, -->
+        &lt;!&ndash; 去掉最后一个, &ndash;&gt;
         <trim suffixOverrides=",">
             <if test="longitude != null and longitude != 0">
                 ,#{longitude},
@@ -69,5 +242,5 @@
                 #{supplementary_info},
             </if>
         </trim>
-    </sql>
+    </sql>-->
 </mapper>

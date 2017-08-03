@@ -8,35 +8,29 @@ import java.util.List;
 import java.util.Map;
 
 public interface AddressBookMapper {
+    int deleteByPrimaryKey(Integer id);
 
-    /**
-     * 添加 地址簿条目信息
-     *
-     * @param addressBook
-     */
-    void addAddressBook(AddressBook addressBook);
+    int insert(AddressBook record);
 
-    /**
-     * 删除 地址簿条目信息
-     *
-     * @param user_id
-     * @param addressBook_id
-     */
-    void deleteAddressBook(@Param("user_id") int user_id, @Param("id") int addressBook_id);
+    int insertSelective(AddressBook record);
 
-    /**
-     * 查询 地址簿条目信息列表
-     *
-     * @param user_id
-     * @return
-     */
-    List<AddressBook> selectList(int user_id);
+    AddressBook selectByPrimaryKey(Integer id);
 
-    /**
-     * 修改 地址簿条目信息
-     *
-     * @param addressBook
-     */
-    void updateAddressBook(AddressBook addressBook);
+    int updateByPrimaryKeySelective(AddressBook record);
+
+    int updateByPrimaryKey(AddressBook record);
+
+    int updateIsDeleteStatusByPrimaryKey(@Param("id") int id, @Param("is_delete") int is_delete);
+
+    List<AddressBook> selectAddressBookList(@Param("user_id") int user_id, @Param("address_book_type") String address_book_type);
+
+    List<AddressBook> selectAddressHistoryListByUserId(int user_id, int startIndex, int pageSize);
+
+    // 查找重复的记录 可设置address_type address_book_type来区分各种地址映射
+    List<AddressBook> selectAddressForRemoveDuplicate(
+            @Param("user_id") int user_id, @Param("address_type") String address_type,@Param("address_book_type") String address_book_type,
+            @Param("name") String name, @Param("phone") String phone,
+            @Param("province") String province,@Param("city") String city,@Param("area") String area,@Param("address") String address,
+            @Param("supplementary_info") String supplementary_info);
 
 }
