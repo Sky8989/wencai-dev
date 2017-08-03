@@ -352,6 +352,13 @@ public class OrderCommitLogic {
     public APIResponse normalSameOrderCommit(Object object) {
 
         JSONObject reqObject = JSONObject.fromObject(object);
+        JSONObject requestOBJ = reqObject.getJSONObject("request");
+        JSONObject orderOBJ = reqObject.getJSONObject("order");
+        JSONObject sourceOBJ = requestOBJ.getJSONObject("source");
+        JSONObject targetOBJ = requestOBJ.getJSONObject("target");
+        JSONObject sourceAddressOBJ = sourceOBJ.getJSONObject("address");
+        JSONObject targetAddressOBJ = targetOBJ.getJSONObject("address");
+
 
         // 预约时间处理
         String reserve_time = (String) reqObject.getJSONObject("order").get("reserve_time");
@@ -366,34 +373,37 @@ public class OrderCommitLogic {
 
         Order order = new Order(
                 Long.toString(System.currentTimeMillis()),
-                (String) reqObject.getJSONObject("request").get("pay_type"),
-                (String) reqObject.getJSONObject("request").get("product_type"),
+                (String) requestOBJ.get("pay_type"),
+                (String) requestOBJ.get("product_type"),
                 0.0,
-                (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver"),
-                (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("mobile"),
-                (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("province"),
-                (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("city"),
-                (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("region"),
-                (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("street"),
-                (Double) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("coordinate").get("longitude"),
-                (Double) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("coordinate").get("latitude"),
+                (String) sourceAddressOBJ.get("receiver"),
+                (String) sourceAddressOBJ.get("mobile"),
+                (String) sourceAddressOBJ.get("province"),
+                (String) sourceAddressOBJ.get("city"),
+                (String) sourceAddressOBJ.get("region"),
+                (String) sourceAddressOBJ.get("street"),
+                (String) sourceAddressOBJ.get("supplementary_info"), //增加门牌号
+                (Double) sourceOBJ.getJSONObject("coordinate").get("longitude"),
+                (Double) sourceOBJ.getJSONObject("coordinate").get("latitude"),
                 "ORDER_BASIS",
-                Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id"))
+                Integer.parseInt((String) orderOBJ.get("sender_user_id"))
         );
-        order.setImage((String) reqObject.getJSONObject("order").get("image"));
-        order.setVoice((String) reqObject.getJSONObject("order").get("voice"));
-        order.setWord_message((String) reqObject.getJSONObject("order").get("word_message"));
-        order.setGift_card_id(Integer.parseInt((String) reqObject.getJSONObject("order").get("gift_card_id")));
-        order.setVoice_time(Integer.parseInt((String) reqObject.getJSONObject("order").get("voice_time")));
+        order.setImage((String) orderOBJ.get("image"));
+        order.setVoice((String) orderOBJ.get("voice"));
+        order.setWord_message((String) orderOBJ.get("word_message"));
+        order.setGift_card_id(Integer.parseInt((String) orderOBJ.get("gift_card_id")));
+        order.setVoice_time(Integer.parseInt((String) orderOBJ.get("voice_time")));
         order.setRegion_type("REGION_SAME");
 
         HttpPost post = new HttpPost(SF_REQUEST_URL);
-        post.addHeader("PushEnvelope-Device-Token", (String) reqObject.getJSONObject("request").getJSONObject("merchant").get("access_token"));
+        post.addHeader("PushEnvelope-Device-Token", (String) requestOBJ.getJSONObject("merchant").get("access_token"));
 //        JSONObject tempObject = JSONObject.fromObject(object);
 //        tempObject.remove("order");
         //使用修改后的请求体
+
         JSONObject tempObject = JSONObject.fromObject(reqObject);
         tempObject.remove("order");
+        // TODO 把门牌号加到下单的参数json中
 
         String requestSFParamStr = gson.toJson(tempObject);
         JSONObject respObject = JSONObject.fromObject(APIPostUtil.post(requestSFParamStr, post));
@@ -407,26 +417,33 @@ public class OrderCommitLogic {
                     Long.toString(System.currentTimeMillis()),
                     Long.toString(System.currentTimeMillis()),
                     respObject.getJSONObject("request").getString("request_num"),
-                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").getString("receiver"),
-                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").getString("mobile"),
-                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").getString("province"),
-                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").getString("city"),
-                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").getString("region"),
-                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").getString("street"),
-                    reqObject.getJSONObject("request").getJSONArray("packages").getJSONObject(0).getString("weight"),
-                    reqObject.getJSONObject("request").getJSONArray("packages").getJSONObject(0).getString("type"),
-                    respObject.getJSONObject("request").getString("status"),
+                    targetAddressOBJ.getString("receiver"),
+                    targetAddressOBJ.getString("mobile"),
+                    targetAddressOBJ.getString("province"),
+                    targetAddressOBJ.getString("city"),
+                    targetAddressOBJ.getString("region"),
+                    targetAddressOBJ.getString("street"),
+                    targetAddressOBJ.getString("supplementary_info"),
+                    requestOBJ.getJSONArray("packages").getJSONObject(0).getString("weight"),
+                    requestOBJ.getJSONArray("packages").getJSONObject(0).getString("type"),
+                    requestOBJ.getString("status"),
                     Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
                     order.getId(),
                     respObject.getJSONObject("request").getString("uuid"),
-                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").getDouble("latitude"),
-                    reqObject.getJSONObject("request").getJSONObject("target").getJSONObject("coordinate").getDouble("longitude")
+                    targetOBJ.getJSONObject("coordinate").getDouble("latitude"),
+                    targetOBJ.getJSONObject("coordinate").getDouble("longitude")
             );
             orderExpress.setReserve_time(reserve_time);
             orderExpressMapper.addOrderExpress(orderExpress);
 
             // 插入地址
-            setupAddress(order, orderExpress);
+            //setupAddress(order, orderExpress);
+            /**
+             * 使用地址映射插入工具
+             */
+            String create_time = Long.toString(System.currentTimeMillis());
+            tempInsertAddressBookAndAddressHistory(create_time, orderOBJ, sourceAddressOBJ, sourceOBJ, targetAddressOBJ, targetOBJ);
+
 
             // 返回结果添加订单编号
             respObject.put("order_id", order.getId());
@@ -592,7 +609,6 @@ public class OrderCommitLogic {
     }
 
 
-
     /// TODO: 插入地址簿  要去重
     // 通用地址簿插入utils
     private void insertAddressBookUtils(
@@ -619,10 +635,54 @@ public class OrderCommitLogic {
         // 不做插入处理
     }
 
+    /// 下单使用的 一键添加2个地址簿 1个历史地址
+    private void tempInsertAddressBookAndAddressHistory(
+            String create_time, JSONObject orderOBJ
+            , JSONObject sourceAddressOBJ, JSONObject sourceOBJ
+            , JSONObject targetAddressOBJ, JSONObject targetOBJ) {
+        // 插入地址簿 寄件人
+        insertAddressBookUtils("address_book", "sender",
+                orderOBJ.getInt("sender_user_id"),
+                sourceAddressOBJ.getString("receiver"),
+                sourceAddressOBJ.getString("mobile"),
+                sourceAddressOBJ.getString("province"),
+                sourceAddressOBJ.getString("city"),
+                sourceAddressOBJ.getString("region"),
+                sourceAddressOBJ.getString("street"),
+                sourceAddressOBJ.getString("supplementary_info"),
+                create_time,
+                (Double) sourceOBJ.getJSONObject("coordinate").get("longitude"),
+                (Double) sourceOBJ.getJSONObject("coordinate").get("latitude")
+        );
+        // 插入地址簿 收件人
+        insertAddressBookUtils("address_book", "ship",
+                orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
+                targetAddressOBJ.getString("receiver"),
+                targetAddressOBJ.getString("mobile"),
+                targetAddressOBJ.getString("province"),
+                targetAddressOBJ.getString("city"),
+                targetAddressOBJ.getString("region"),
+                targetAddressOBJ.getString("street"),
+                targetAddressOBJ.getString("supplementary_info"),
+                create_time,
+                (Double) targetOBJ.getJSONObject("coordinate").get("longitude"),
+                (Double) targetOBJ.getJSONObject("coordinate").get("latitude")
+        );
+        // 插入历史地址
+        insertAddressBookUtils("address_history", "address_history",
+                orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
+                targetAddressOBJ.getString("receiver"),
+                targetAddressOBJ.getString("mobile"),
+                targetAddressOBJ.getString("province"),
+                targetAddressOBJ.getString("city"),
+                targetAddressOBJ.getString("region"),
+                targetAddressOBJ.getString("street"),
+                targetAddressOBJ.getString("supplementary_info"),
+                create_time,
+                (Double) targetOBJ.getJSONObject("coordinate").get("longitude"),
+                (Double) targetOBJ.getJSONObject("coordinate").get("latitude")
+        );
+    }
+
 }
 
-
-
-
-
-}

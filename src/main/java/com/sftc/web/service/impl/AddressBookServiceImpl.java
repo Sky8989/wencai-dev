@@ -91,7 +91,7 @@ public class AddressBookServiceImpl implements AddressBookService {
     public APIResponse deleteAddressBook(APIRequest apiRequest) {
         ///验参
         HttpServletRequest httpServletRequest = apiRequest.getRequest();
-        if (httpServletRequest.getParameter("addressBook_id") == null)
+        if (httpServletRequest.getParameter("addressBook_id") == null || "".equals(httpServletRequest.getParameter("addressBook_id")))
             return APIUtil.paramErrorResponse("addressBook_id参数为空");
         int addressBook_id = Integer.parseInt(httpServletRequest.getParameter("addressBook_id"));
 
