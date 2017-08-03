@@ -223,11 +223,21 @@ public class OrderCommitLogic {
                 requestObject.getJSONObject("request").put("reserve_time", reserveTime);
             }
 
+            // TODO 把门牌号加到下单的参数json中
+            Object removeStreet = requestObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").remove("street");
+            String newStreet = removeStreet.toString()+order.getSupplementary_info();
+            requestObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").put("street", newStreet);
+            Object removeStreet2 = requestObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").remove("street");
+            String newStreet2 = removeStreet2.toString()+order.getSupplementary_info();
+            requestObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").put("street", newStreet2);
+
+
             /// Request
             Object tempObj = JSONObject.toBean(requestObject);
             // tempJsonObj 是为了保证对顺丰接口的请求体的完整，不能包含其它的键值对，例如接口的请求参数"order"
             JSONObject tempJsonObj = JSONObject.fromObject(tempObj);
             tempJsonObj.remove("order");
+
             // Param
             String paramStr = gson.toJson(JSONObject.fromObject(tempJsonObj));
             // POST
