@@ -121,6 +121,7 @@ public class Order extends Object {
         this.sender_city = orderParam.getSender_city();
         this.sender_area = orderParam.getSender_area();
         this.sender_addr = orderParam.getSender_addr();
+        this.supplementary_info = orderParam.getSupplementary_info();
         this.word_message = orderParam.getWord_message();
         this.image = orderParam.getImage();
         this.voice = orderParam.getVoice();
@@ -131,10 +132,6 @@ public class Order extends Object {
         this.gift_card_id = orderParam.getGift_card_id();
         this.order_type = orderParam.getOrder_type();
         this.region_type = orderParam.getRegion_type();
-        //新添加 经纬度
-        this.longitude = orderParam.getLongitude();
-        this.latitude = orderParam.getLatitude();
-
     }
 
     /**

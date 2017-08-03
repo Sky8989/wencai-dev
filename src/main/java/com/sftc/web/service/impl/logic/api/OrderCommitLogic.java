@@ -623,7 +623,7 @@ public class OrderCommitLogic {
 
     /// TODO: 插入地址簿  要去重
     // 通用地址簿插入utils
-    private void insertAddressBookUtils(
+    public void insertAddressBookUtils(
             String address_type, String address_book_type, int user_id, String name, String phone,
             String province, String city, String area, String address, String supplementary_info,
             String create_time, double longitude, double latitude) {

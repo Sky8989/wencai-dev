@@ -33,6 +33,8 @@ public class OrderCreateLogic {
     private UserContactMapper userContactMapper;
     @Resource
     private MessageMapper messageMapper;
+    @Resource
+    private OrderCommitLogic orderCommitLogic;
 
     /**
      * 寄件人填写订单
@@ -43,7 +45,7 @@ public class OrderCreateLogic {
 
         // 插入订单表
         Order order = new Order(orderParam);
-        orderMapper.addOrder(order);
+        orderMapper.addOrder2(order);
 
         // 插入快递表
         OrderExpress orderExpress = new OrderExpress();
@@ -158,6 +160,22 @@ public class OrderCreateLogic {
             } else {// 如果不为空 则好友度加1
                 userContactMapper.updateUserContactLntimacy(userContactNew2);
             }
+
+            ///插入地址映射关系 1 地址簿 1 历史地址
+            // 生成 收件人的寄件人地址簿
+            orderCommitLogic.insertAddressBookUtils("address_book", "sender",
+                    orderExpress.getShip_user_id(),//给收件人存
+                    orderExpress.getShip_name(), orderExpress.getShip_mobile(), orderExpress.getShip_province(),
+                    orderExpress.getShip_city(), orderExpress.getShip_area(), orderExpress.getShip_addr(), orderExpress.getSupplementary_info(),
+                    orderExpress.getCreate_time(), orderExpress.getLongitude(), orderExpress.getLatitude()
+            );
+            //提交地址同时（去重处理）保存到[寄件人]最近联系人
+            orderCommitLogic.insertAddressBookUtils("address_history", "address_history",
+                    order.getSender_user_id(),// 给寄件人存
+                    orderExpress.getShip_name(), orderExpress.getShip_mobile(), orderExpress.getShip_province(),
+                    orderExpress.getShip_city(), orderExpress.getShip_area(), orderExpress.getShip_addr(), orderExpress.getSupplementary_info(),
+                    orderExpress.getCreate_time(), orderExpress.getLongitude(), orderExpress.getLatitude()
+            );
 
         }
 

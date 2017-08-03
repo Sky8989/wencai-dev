@@ -94,6 +94,7 @@
         ship_city=#{ship_city, jdbcType=VARCHAR},
         ship_area=#{ship_area, jdbcType=VARCHAR},
         ship_addr=#{ship_addr, jdbcType=VARCHAR},
+        supplementary_info=#{supplementary_info, jdbcType=VARCHAR},
         state=#{state, jdbcType=VARCHAR},
         longitude=#{longitude, jdbcType=DOUBLE},
         latitude=#{latitude, jdbcType=DOUBLE},
