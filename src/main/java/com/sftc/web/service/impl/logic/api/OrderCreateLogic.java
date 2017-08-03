@@ -12,6 +12,7 @@ import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.UserContactNew;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.LinkedList;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 
+@Transactional
 @Component
 public class OrderCreateLogic {
 
@@ -64,8 +66,8 @@ public class OrderCreateLogic {
         }
 
         // 插入地址表
-        com.sftc.web.model.Address senderAddress = new com.sftc.web.model.Address(orderParam);
-        addressMapper.addAddress(senderAddress);
+        //com.sftc.web.model.Address senderAddress = new com.sftc.web.model.Address(orderParam);
+        //addressMapper.addAddress(senderAddress);
 
         return APIUtil.getResponse(SUCCESS, order.getId());
     }
@@ -161,13 +163,14 @@ public class OrderCreateLogic {
                 userContactMapper.updateUserContactLntimacy(userContactNew2);
             }
 
+            String current_create_time = Long.toString(System.currentTimeMillis());
             ///插入地址映射关系 1 地址簿 1 历史地址
             // 生成 收件人的寄件人地址簿
             orderCommitLogic.insertAddressBookUtils("address_book", "sender",
                     orderExpress.getShip_user_id(),//给收件人存
                     orderExpress.getShip_name(), orderExpress.getShip_mobile(), orderExpress.getShip_province(),
                     orderExpress.getShip_city(), orderExpress.getShip_area(), orderExpress.getShip_addr(), orderExpress.getSupplementary_info(),
-                    orderExpress.getCreate_time(), orderExpress.getLongitude(), orderExpress.getLatitude()
+                    current_create_time, orderExpress.getLongitude(), orderExpress.getLatitude()
             );
 
             //提交地址同时（去重处理）保存到[寄件人]最近联系人
@@ -175,9 +178,8 @@ public class OrderCreateLogic {
                     order.getSender_user_id(),// 给寄件人存
                     orderExpress.getShip_name(), orderExpress.getShip_mobile(), orderExpress.getShip_province(),
                     orderExpress.getShip_city(), orderExpress.getShip_area(), orderExpress.getShip_addr(), orderExpress.getSupplementary_info(),
-                    orderExpress.getCreate_time(), orderExpress.getLongitude(), orderExpress.getLatitude()
+                    current_create_time, orderExpress.getLongitude(), orderExpress.getLatitude()
             );
-
         }
         return APIUtil.getResponse(SUCCESS, orderExpress.getOrder_id());
     }

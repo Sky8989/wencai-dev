@@ -633,13 +633,15 @@ public class OrderCommitLogic {
                 province, city, area, address, supplementary_info,
                 longitude, latitude, create_time
         );
-        addressMapper.addAddress(addressParam);
+
         // 查找重复信息
         List<AddressBook> addressBookList = addressBookMapper.selectAddressForRemoveDuplicate(user_id,
                 address_type, address_book_type, name, phone,
                 province, city, area, address, supplementary_info);
+
         if (addressBookList.size() == 0) {// 0代表无重复信息
             //执行插入操作
+            addressMapper.addAddress(addressParam);
             AddressBook addressBook = new AddressBook(user_id, addressParam.getId(), 0, 0, address_type, address_book_type, create_time);
             addressBookMapper.insert(addressBook);
         }
