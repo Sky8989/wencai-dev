@@ -3,9 +3,11 @@ package com.sftc.web.service.impl;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.web.mapper.AddressBookMapper;
 import com.sftc.web.mapper.AddressHistoryMapper;
 import com.sftc.web.mapper.UserMapper;
 import com.sftc.web.model.Address;
+import com.sftc.web.model.AddressBook;
 import com.sftc.web.model.AddressHistory;
 import com.sftc.web.model.User;
 import com.sftc.web.service.AddressHistoryService;
@@ -22,6 +24,8 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
 
     @Resource
     private AddressHistoryMapper addressHistoryMapper;
+    @Resource
+    private AddressBookMapper addressBookMapper;
 
     @Resource
     private UserMapper userMapper;
@@ -44,18 +48,18 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
         if (pageNum < 1 || pageSzie < 1) return APIUtil.paramErrorResponse("分页参数无效");
 
         // Handle avatar
-        List<AddressHistory> addressHistories = addressHistoryMapper.selectAddressHistoryListByUserId(user_id, (pageNum - 1) * pageSzie, pageSzie);
-        for (AddressHistory ah : addressHistories) {
-            Address address = ah.getAddress();
+        List<AddressBook> AddressBookList = addressBookMapper.selectAddressHistoryListByUserId(user_id, (pageNum - 1) * pageSzie, pageSzie);
+        for (AddressBook ab : AddressBookList) {
+            Address address = ab.getAddress();
             User user = userMapper.selectUserByUserId(address.getUser_id());
             String avatar = (user == null || user.getAvatar() == null) ? DK_USER_AVATAR_DEFAULT : user.getAvatar();
             address.setAvatar(avatar);
             // handle wechatname by hxy
             String wechatname = (user == null || user.getName() == null) ? "default_name" : user.getName();
-            ah.setShip_wechatname(wechatname);
+            ab.setShip_wechatname(wechatname);
         }
 
-        return APIUtil.getResponse(SUCCESS, addressHistories);
+        return APIUtil.getResponse(SUCCESS, AddressBookList);
     }
 
     /**
@@ -70,7 +74,7 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
         if (address_history_id < 1)
             return APIUtil.paramErrorResponse("address_history_id不正确");
 
-        addressHistoryMapper.deleteAddressHistoryWithId(address_history_id);
+        addressBookMapper.updateIsDeleteStatusByPrimaryKey(address_history_id, 1);
 
         return APIUtil.getResponse(SUCCESS, null);
     }

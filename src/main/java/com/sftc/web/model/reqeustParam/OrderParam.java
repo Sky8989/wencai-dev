@@ -13,6 +13,8 @@ public class OrderParam {
     // 寄件人详细地址
     private String sender_area;
     // 寄件人详细地址
+    private String supplementary_info;
+    // 门牌号
     private String sender_addr;
     // 包裹图片
     private String image;
@@ -212,4 +214,8 @@ public class OrderParam {
     public void setRegion_type(String region_type) {
         this.region_type = region_type;
     }
+
+    public String getSupplementary_info() {return supplementary_info;}
+
+    public void setSupplementary_info(String supplementary_info) {this.supplementary_info = supplementary_info;}
 }

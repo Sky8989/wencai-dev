@@ -162,6 +162,7 @@ public class Address extends Object {
         this.setArea(orderParam.getSender_area());
         this.setAddress(orderParam.getSender_addr());
         this.setArea(orderParam.getSender_area());
+        this.setSupplementary_info(orderParam.getSupplementary_info());
         this.setLongitude(orderParam.getLongitude());
         this.setLatitude(orderParam.getLatitude());
         this.setCreate_time(Long.toString(System.currentTimeMillis()));

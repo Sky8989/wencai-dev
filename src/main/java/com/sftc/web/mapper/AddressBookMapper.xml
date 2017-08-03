@@ -51,9 +51,9 @@
         insert into sftc_address_book (user_id, address_id, is_delete,
         is_mystery, address_type, address_book_type,
         create_time)
-        values (#{userId,jdbcType=INTEGER}, #{addressId,jdbcType=INTEGER}, #{isDelete,jdbcType=INTEGER},
-        #{isMystery,jdbcType=INTEGER}, #{addressType,jdbcType=VARCHAR}, #{addressBookType,jdbcType=VARCHAR},
-        #{createTime,jdbcType=VARCHAR})
+        values (#{user_id,jdbcType=INTEGER}, #{address_id,jdbcType=INTEGER}, #{is_delete,jdbcType=INTEGER},
+        #{is_mystery,jdbcType=INTEGER}, #{address_type,jdbcType=VARCHAR}, #{address_book_type,jdbcType=VARCHAR},
+        #{create_time,jdbcType=VARCHAR})
     </insert>
 
     <insert id="insertSelective" parameterType="com.sftc.web.model.AddressBook" useGeneratedKeys="true">
@@ -160,19 +160,18 @@
     <!--获取 历史地址列表-->
     <select id="selectAddressHistoryListByUserId" parameterType="int" resultMap="AddressMap">
         SELECT *
-        FROM sftc_address_history ah, sftc_address a
-        WHERE ah.address_id=a.id AND ah.user_id=#{user_id} AND ah.is_delete=0
-        GROUP BY phone, longitude, latitude
-        ORDER BY ah.create_time desc
+        FROM sftc_address_book ab, sftc_address a
+        WHERE ab.address_id=a.id AND ab.user_id=#{user_id} AND ab.is_delete=0 AND ab.address_type='address_history'
+        ORDER BY ab.create_time desc
         limit #{startIndex}, #{pageSize}
     </select>
 
 
     <!--地址验重-->
-    <select id="selectAddressForRemoveDuplicate " resultType="com.sftc.web.model.AddressBook">
+    <select id="selectAddressForRemoveDuplicate" resultType="com.sftc.web.model.AddressBook">
         SELECT * FROM sftc_address a ,sftc_address_book ab
         WHERE ab.address_id=a.id
-        AND ab.user_id = #{user_id}
+        AND ab.user_id = #{user_id} AND  ab.is_delete = 0
         AND ab.address_type=#{address_type} AND ab.address_book_type = #{address_book_type}
         AND a.name = #{name} AND a.phone = #{phone}
         AND a.province =#{province} AND a.city = #{city} AND a.area =#{area}AND a.address =#{address} AND a.supplementary_info = #{supplementary_info}

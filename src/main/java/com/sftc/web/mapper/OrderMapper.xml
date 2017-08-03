@@ -111,6 +111,39 @@
         )
     </insert>
 
+    <!-- 添加订单 -->
+    <insert id="addOrder2" parameterType="com.sftc.web.model.Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sftc_order
+        (freight,
+        create_time, sender_province, sender_name, sender_mobile, sender_city,
+        sender_area, sender_addr, supplementary_info,word_message, image, voice,
+        sender_user_id, gift_card_id, pay_method, distribution_method, longitude,
+        latitude,order_type,voice_time,region_type)
+        VALUES (
+        #{freight, jdbcType=DOUBLE},
+        #{create_time, jdbcType=VARCHAR},
+        #{sender_province, jdbcType=VARCHAR},
+        #{sender_name, jdbcType=VARCHAR},
+        #{sender_mobile, jdbcType=VARCHAR},
+        #{sender_city, jdbcType=VARCHAR},
+        #{sender_area, jdbcType=VARCHAR},
+        #{sender_addr, jdbcType=VARCHAR},
+        #{supplementary_info, jdbcType=VARCHAR},
+        #{word_message, jdbcType=VARCHAR},
+        #{image, jdbcType=VARCHAR},
+        #{voice, jdbcType=VARCHAR},
+        #{sender_user_id, jdbcType=INTEGER},
+        #{gift_card_id, jdbcType=INTEGER},
+        #{pay_method, jdbcType=VARCHAR},
+        #{distribution_method, jdbcType=VARCHAR},
+        #{longitude, jdbcType=DOUBLE},
+        #{latitude, jdbcType=DOUBLE},
+        #{order_type, jdbcType=VARCHAR},
+        #{voice_time, jdbcType=INTEGER},
+        #{region_type, jdbcType=VARCHAR, javaType=String}
+        )
+    </insert>
+
     <update id="updateOrderRegionType">
         update sftc_order
         set region_type=#{region_type, jdbcType=VARCHAR}

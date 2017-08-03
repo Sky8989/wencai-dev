@@ -14,6 +14,10 @@ public interface OrderMapper {
      * 插入订单
      */
     void addOrder(Order order);
+    /**
+     * 插入订单
+     */
+    void addOrder2(Order order);//多增加门牌号信息
 
     /**
      * 更新订单区域类型

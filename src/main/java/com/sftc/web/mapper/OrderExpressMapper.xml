@@ -56,6 +56,34 @@
         )
     </insert>
 
+    <insert id="addOrderExpress2" parameterType="com.sftc.web.model.OrderExpress" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO sftc_order_express
+        (ship_name,ship_mobile,ship_province,ship_city,ship_area,
+        ship_addr,supplementary_info,order_number,package_type,object_type,create_time,sender_user_id,order_id,state,uuid,longitude,latitude,reserve_time,order_time)
+        VALUES (
+        #{ship_name, jdbcType=VARCHAR},
+        #{ship_mobile, jdbcType=VARCHAR},
+        #{ship_province, jdbcType=VARCHAR},
+        #{ship_city, jdbcType=VARCHAR},
+        #{ship_area, jdbcType=VARCHAR},
+        #{ship_addr, jdbcType=VARCHAR},
+        #{supplementary_info, jdbcType=VARCHAR},
+        #{order_number, jdbcType=VARCHAR},
+        #{package_type, jdbcType=VARCHAR},
+        #{object_type, jdbcType=VARCHAR},
+        #{create_time, jdbcType=VARCHAR},
+        #{sender_user_id, jdbcType=INTEGER},
+        #{order_id, jdbcType=INTEGER},
+        #{state, jdbcType=VARCHAR},
+        #{uuid, jdbcType=VARCHAR},
+        #{longitude, jdbcType=DOUBLE},
+        #{latitude, jdbcType=DOUBLE},
+        #{reserve_time, jdbcType=VARCHAR},
+        #{order_time, jdbcType=VARCHAR}
+        )
+    </insert>
+
     <!--更新快递信息，by 快递id，用于好友填写订单时回填信息-->
     <update id="updateOrderExpressByOrderExpressId" parameterType="com.sftc.web.model.OrderExpress">
         UPDATE sftc_order_express
@@ -66,6 +94,7 @@
         ship_city=#{ship_city, jdbcType=VARCHAR},
         ship_area=#{ship_area, jdbcType=VARCHAR},
         ship_addr=#{ship_addr, jdbcType=VARCHAR},
+        supplementary_info=#{supplementary_info, jdbcType=VARCHAR},
         state=#{state, jdbcType=VARCHAR},
         longitude=#{longitude, jdbcType=DOUBLE},
         latitude=#{latitude, jdbcType=DOUBLE},
