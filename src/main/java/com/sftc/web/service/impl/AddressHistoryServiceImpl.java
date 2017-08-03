@@ -74,7 +74,7 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
         if (address_history_id < 1)
             return APIUtil.paramErrorResponse("address_history_id不正确");
 
-        addressBookMapper.updateIsDeleteStatusByPrimaryKey(address_history_id,1);
+        addressBookMapper.updateIsDeleteStatusByPrimaryKey(address_history_id, 1);
 
         return APIUtil.getResponse(SUCCESS, null);
     }
