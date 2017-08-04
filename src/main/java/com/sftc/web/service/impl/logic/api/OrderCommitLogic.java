@@ -267,7 +267,7 @@ public class OrderCommitLogic {
                 // 插入地址
                 //setupAddress(order, oe);
                 //使用新的地址插入工具
-                setupAddress2(order, oe);
+                //setupAddress2(order, oe);
 
             } else { // error
                 //手动操作事务回滚
@@ -360,7 +360,7 @@ public class OrderCommitLogic {
                         // 插入地址
                         //setupAddress(order, oe);
                         //使用新的地址插入工具
-                        setupAddress2(order, oe);
+                        //setupAddress2(order, oe);
                     }
                 }
             }
