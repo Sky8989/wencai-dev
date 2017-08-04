@@ -168,6 +168,7 @@ public class OrderCreateLogic {
             // 生成 收件人的寄件人地址簿
             orderCommitLogic.insertAddressBookUtils("address_book", "sender",
                     orderExpress.getShip_user_id(),//给收件人存
+                    orderExpress.getShip_user_id(),//给收件人存
                     orderExpress.getShip_name(), orderExpress.getShip_mobile(), orderExpress.getShip_province(),
                     orderExpress.getShip_city(), orderExpress.getShip_area(), orderExpress.getShip_addr(), orderExpress.getSupplementary_info(),
                     current_create_time, orderExpress.getLongitude(), orderExpress.getLatitude()
@@ -176,6 +177,7 @@ public class OrderCreateLogic {
             //提交地址同时（去重处理）保存到[寄件人]最近联系人
             orderCommitLogic.insertAddressBookUtils("address_history", "address_history",
                     order.getSender_user_id(),// 给寄件人存
+                    orderExpress.getShip_user_id(),// id是收件人的 查历史地址时才能取到
                     orderExpress.getShip_name(), orderExpress.getShip_mobile(), orderExpress.getShip_province(),
                     orderExpress.getShip_city(), orderExpress.getShip_area(), orderExpress.getShip_addr(), orderExpress.getSupplementary_info(),
                     current_create_time, orderExpress.getLongitude(), orderExpress.getLatitude()
