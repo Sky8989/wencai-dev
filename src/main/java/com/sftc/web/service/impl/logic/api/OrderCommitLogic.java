@@ -654,25 +654,25 @@ public class OrderCommitLogic {
     /// TODO: 插入地址簿  要去重
     // 通用地址簿插入utils
     public void insertAddressBookUtils(
-            String address_type, String address_book_type, int user_id, String name, String phone,
+            String address_type, String address_book_type, int user_id_sender, int user_id_ship, String name, String phone,
             String province, String city, String area, String address, String supplementary_info,
             String create_time, double longitude, double latitude) {
 
         com.sftc.web.model.Address addressParam = new com.sftc.web.model.Address(
-                user_id, name, phone,
+                user_id_ship, name, phone,
                 province, city, area, address, supplementary_info,
                 longitude, latitude, create_time
         );
 
         // 查找重复信息
-        List<AddressBook> addressBookList = addressBookMapper.selectAddressForRemoveDuplicate(user_id,
+        List<AddressBook> addressBookList = addressBookMapper.selectAddressForRemoveDuplicate(user_id_sender,
                 address_type, address_book_type, name, phone,
                 province, city, area, address, supplementary_info);
 
         if (addressBookList.size() == 0) {// 0代表无重复信息
             //执行插入操作
             addressMapper.addAddress(addressParam);
-            AddressBook addressBook = new AddressBook(user_id, addressParam.getId(), 0, 0, address_type, address_book_type, create_time);
+            AddressBook addressBook = new AddressBook(user_id_sender, addressParam.getId(), 0, 0, address_type, address_book_type, create_time);
             addressBookMapper.insert(addressBook);
         }
         // addressBookList的size如果大于0 代表已经有相同地址
@@ -686,6 +686,7 @@ public class OrderCommitLogic {
             , JSONObject targetAddressOBJ, JSONObject targetOBJ) {
         // 插入地址簿 寄件人
         insertAddressBookUtils("address_book", "sender",
+                orderOBJ.getInt("sender_user_id"),
                 orderOBJ.getInt("sender_user_id"),
                 sourceAddressOBJ.getString("receiver"),
                 sourceAddressOBJ.getString("mobile"),
@@ -701,6 +702,7 @@ public class OrderCommitLogic {
         // 插入地址簿 收件人
         insertAddressBookUtils("address_book", "ship",
                 orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
+                orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
                 targetAddressOBJ.getString("receiver"),
                 targetAddressOBJ.getString("mobile"),
                 targetAddressOBJ.getString("province"),
@@ -714,6 +716,7 @@ public class OrderCommitLogic {
         );
         // 插入历史地址
         insertAddressBookUtils("address_history", "address_history",
+                orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
                 orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
                 targetAddressOBJ.getString("receiver"),
                 targetAddressOBJ.getString("mobile"),
@@ -729,10 +732,11 @@ public class OrderCommitLogic {
     }
 
     /// 普通大网下单使用的 一键添加2个地址簿 1个历史地址
-    private void nationInsertAddressBookAndAddressHistory(int user_id, JSONObject sf, String create_time) {
+    private void nationInsertAddressBookAndAddressHistory(int user_id_sender, JSONObject sf, String create_time) {
         // 插入地址簿 寄件人
         insertAddressBookUtils("address_book", "sender",
-                user_id,
+                user_id_sender,
+                user_id_sender,
                 sf.getString("j_contact"),
                 sf.getString("j_mobile"),
                 sf.getString("j_province"),
@@ -746,7 +750,8 @@ public class OrderCommitLogic {
         );
         // 插入地址簿 收件人
         insertAddressBookUtils("address_book", "ship",
-                user_id,// 这里的地址是属于寄件人的
+                user_id_sender,// 这里的地址是属于寄件人的
+                user_id_sender,// 这里的地址是属于寄件人的
                 sf.getString("d_contact"),
                 sf.getString("d_mobile"),
                 sf.getString("d_province"),
@@ -760,7 +765,8 @@ public class OrderCommitLogic {
         );
         // 插入历史地址
         insertAddressBookUtils("address_history", "address_history",
-                user_id,
+                user_id_sender,
+                user_id_sender,// 历史地址都是自己写的
                 sf.getString("d_contact"),
                 sf.getString("d_mobile"),
                 sf.getString("d_province"),
@@ -778,6 +784,7 @@ public class OrderCommitLogic {
         // 插入地址簿 寄件人
         insertAddressBookUtils("address_book", "sender",
                 order.getSender_user_id(),
+                order.getSender_user_id(),// 地址是收件人的
                 order.getSender_name(),
                 order.getSender_mobile(),
                 order.getSender_province(),
@@ -791,6 +798,7 @@ public class OrderCommitLogic {
         // 插入地址簿 收件人
         insertAddressBookUtils("address_book", "ship",
                 order.getSender_user_id(),
+                oe.getShip_user_id(),//地址是寄件人的
                 oe.getShip_name(),
                 oe.getShip_mobile(),
                 oe.getShip_province(),
@@ -804,6 +812,7 @@ public class OrderCommitLogic {
         // 插入历史地址
         insertAddressBookUtils("address_history", "address_history",
                 order.getSender_user_id(),
+                oe.getShip_user_id(),
                 order.getSender_name(),
                 order.getSender_mobile(),
                 order.getSender_province(),
