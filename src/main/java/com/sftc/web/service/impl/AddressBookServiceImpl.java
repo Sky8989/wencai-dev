@@ -107,17 +107,20 @@ public class AddressBookServiceImpl implements AddressBookService {
     public APIResponse updateAddressBook(APIRequest apiRequest) {
         // 修改地址时 改变创建时间 以供查询地址簿列表时根据时间排序
         JSONObject paramObject = JSONObject.fromObject(apiRequest.getRequestParam());
-        AddressBook addressBook = (AddressBook) JSONObject.toBean(paramObject, AddressBook.class);
+        AddressBook addressBookParam = (AddressBook) JSONObject.toBean(paramObject, AddressBook.class);
 
         ///更新 地址簿记录时间 包括映射关系和地址实体的时间
         String create_time = Long.toString(System.currentTimeMillis());
 
         //TODO 修改地址映射的时间
-        addressBook.setCreate_time(create_time);
-        addressBookMapper.updateByPrimaryKeySelective(addressBook);
+        addressBookParam.setCreate_time(create_time);
+        addressBookMapper.updateByPrimaryKeySelective(addressBookParam);
+
+        AddressBook addressBook = addressBookMapper.selectByPrimaryKey(addressBookParam.getId());
 
         //TODO 修改地址实体的时间
-        Address address = addressBook.getAddress();
+        Address address = addressBookParam.getAddress();
+        address.setId(addressBook.getAddress_id());
         address.setCreate_time(create_time);
         addressMapper.updateByPrimaryKey(address);
 

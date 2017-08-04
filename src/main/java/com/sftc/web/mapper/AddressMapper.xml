@@ -61,7 +61,6 @@
     </select>
 
 
-
     <update id="updateByPrimaryKey" parameterType="com.sftc.web.model.Address">
         UPDATE sftc_address
         <set>
