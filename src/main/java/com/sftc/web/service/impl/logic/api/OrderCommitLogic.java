@@ -717,7 +717,7 @@ public class OrderCommitLogic {
         // 插入历史地址
         insertAddressBookUtils("address_history", "address_history",
                 orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
-                orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
+                0,// 这里的地址是属于寄件人的
                 targetAddressOBJ.getString("receiver"),
                 targetAddressOBJ.getString("mobile"),
                 targetAddressOBJ.getString("province"),
@@ -766,7 +766,7 @@ public class OrderCommitLogic {
         // 插入历史地址
         insertAddressBookUtils("address_history", "address_history",
                 user_id_sender,
-                user_id_sender,// 历史地址都是自己写的
+                0,// 历史地址都是自己写的
                 sf.getString("d_contact"),
                 sf.getString("d_mobile"),
                 sf.getString("d_province"),
