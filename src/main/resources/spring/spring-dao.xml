@@ -34,12 +34,12 @@
         <property name="timeBetweenEvictionRunsMillis" value="3600000"/>
         <property name="testWhileIdle" value="true"/>
         <property name="validationQuery" value="select name from sftc_gift_card limit 1"/>
-        <property name="filters" value="stat,log4j" />
+        <property name="filters" value="stat,log4j"/>
     </bean>
     <!--慢SQL记录-->
     <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
-        <property name="slowSqlMillis" value="10000" />
-        <property name="logSlowSql" value="true" />
+        <property name="slowSqlMillis" value="10000"/>
+        <property name="logSlowSql" value="true"/>
     </bean>
 
     <!-- 把sqlMapConfig.xml交由spring管理 -->
@@ -85,7 +85,7 @@
             <tx:method name="update*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"/>
             <tx:method name="add*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"/>
             <tx:method name="insert*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"/>
-            <tx:method name="friend*" propagation="REQUIRED" read-only="false" />
+            <tx:method name="friend*" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
         </tx:attributes>
     </tx:advice>
 

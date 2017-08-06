@@ -11,6 +11,7 @@ import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.UserContactNew;
 import com.sftc.web.model.reqeustParam.OrderParam;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,11 +77,18 @@ public class OrderCreateLogic {
      * 好友填写寄件订单
      */
     public synchronized APIResponse friendFillOrder(Map rowData) {
-
+        JSONObject paramOBJ = JSONObject.fromObject(rowData);
         String orderExpressStr = rowData.toString();
-        // 修复 空格对Gson的影响
-        String strJsonResult = orderExpressStr.replace(" ", "");
-        OrderExpress orderExpress = new Gson().fromJson(strJsonResult, OrderExpress.class);
+//        // 修复 空格对Gson的影响
+//        String strJsonResult = orderExpressStr.replace(" ", "");
+//        OrderExpress orderExpress = new Gson().fromJson(strJsonResult, OrderExpress.class);
+        OrderExpress orderExpress = (OrderExpress) JSONObject.toBean(paramOBJ, OrderExpress.class);
+
+        //增加对supplementary_info的处理 保证有值
+        if (orderExpress.getSupplementary_info() == null || "".equals(orderExpress.getSupplementary_info())) {
+            orderExpress.setSupplementary_info(" ");
+        }
+
         // 判断订单是否下单
         Order order = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
         if (order.getRegion_type() != null && !"".equals(order.getRegion_type()) && order.getRegion_type().length() != 0) {
