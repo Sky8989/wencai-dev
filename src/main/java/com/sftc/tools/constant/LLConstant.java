@@ -12,11 +12,11 @@ import static java.lang.Math.sin;
  */
 public class LLConstant {
     // 最大生成数量
-    public static int MAX_LL_NUMBER = 5;
+    public static int MAX_LL_NUMBER = 6;
     // 最小生成数量
-    public static int MIN_LL_NUMBER = 1;
+    public static int MIN_LL_NUMBER = 3;
     // 生成范围 单位KM
-    public static double RANGE_NUMBER = 3;
+    public static double RANGE_NUMBER = 0.3;
 
     public static List<Map<String, Double>> calculate(double startlat, double startlon, double maxdist, int GeneratedNumber) {
 
