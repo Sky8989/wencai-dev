@@ -49,6 +49,9 @@ public class OrderExpress extends Object {
     private Double longitude;
     private int order_id;
 
+    // 错误信息
+    private String attributes;
+
     // extension 收件人头像
     private String ship_avatar;
 
@@ -74,7 +77,7 @@ public class OrderExpress extends Object {
         this.state = state;
     }
 
-    public OrderExpress(String order_time,String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
+    public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String supplementary_info, String package_type, String object_type,
                         String state, int sender_user_id, int order_id, String uuid, Double latitude, Double longitude) {
         this.order_time = order_time;
@@ -96,7 +99,8 @@ public class OrderExpress extends Object {
         this.latitude = latitude;
         this.longitude = longitude;
     }
-    public OrderExpress(String order_time,String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
+
+    public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String package_type, String object_type,
                         String state, int sender_user_id, int order_id, String uuid, Double latitude, Double longitude) {
         this.order_time = order_time;
@@ -129,6 +133,12 @@ public class OrderExpress extends Object {
     public OrderExpress(String state, String uuid) {
         this.state = state;
         this.uuid = uuid;
+    }
+
+    public OrderExpress(String state, String uuid, String attributes) {
+        this.state = state;
+        this.uuid = uuid;
+        this.attributes = attributes;
     }
 
     public OrderExpress(String order_number, String package_type, String object_type,
@@ -171,7 +181,7 @@ public class OrderExpress extends Object {
     }
 
     // cms 通过
-    public OrderExpress(HttpServletRequest request){
+    public OrderExpress(HttpServletRequest request) {
         if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
             this.id = Integer.parseInt(request.getParameter("id"));
         }
@@ -185,6 +195,7 @@ public class OrderExpress extends Object {
             this.order_id = Integer.parseInt(request.getParameter("order_id"));
         }
     }
+
     public int getId() {
         return id;
     }
@@ -354,19 +365,39 @@ public class OrderExpress extends Object {
         this.ship_avatar = ship_avatar;
     }
 
-    public String getReceive_time() {return receive_time;}
+    public String getReceive_time() {
+        return receive_time;
+    }
 
-    public void setReceive_time(String receive_time) {this.receive_time = receive_time;}
+    public void setReceive_time(String receive_time) {
+        this.receive_time = receive_time;
+    }
 
-    public String getOrder_time() {return order_time;}
+    public String getOrder_time() {
+        return order_time;
+    }
 
-    public void setOrder_time(String order_time) {this.order_time = order_time;}
+    public void setOrder_time(String order_time) {
+        this.order_time = order_time;
+    }
 
-    public Evaluate getEvaluate() {return evaluate;}
+    public Evaluate getEvaluate() {
+        return evaluate;
+    }
 
-    public void setEvaluate(Evaluate evaluate) {this.evaluate = evaluate;}
+    public void setEvaluate(Evaluate evaluate) {
+        this.evaluate = evaluate;
+    }
 
-    public String getSupplementary_info() {return supplementary_info;}
+    public String getSupplementary_info() {
+        return supplementary_info;
+    }
 
-    public void setSupplementary_info(String supplementary_info) {this.supplementary_info = supplementary_info;}
+    public void setSupplementary_info(String supplementary_info) {
+        this.supplementary_info = supplementary_info;
+    }
+
+    public String getAttributes() {return attributes;}
+
+    public void setAttributes(String attributes) {this.attributes = attributes;}
 }

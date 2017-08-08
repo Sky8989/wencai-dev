@@ -15,7 +15,8 @@ public class Orders {
     private String uuid;
     private String status;
     private boolean payed;
-
+    //错误信息
+    private String attributes;
     // private String INIT = "下单";
     // private String PAYING = "支付中";
     // private String WAIT_HAND_OVER = "待揽件";
@@ -90,5 +91,13 @@ public class Orders {
 
     public void setPayed(boolean payed) {
         this.payed = payed;
+    }
+
+    public String getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(String attributes) {
+        this.attributes = attributes;
     }
 }

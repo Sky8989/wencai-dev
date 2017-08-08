@@ -1,5 +1,7 @@
 package com.sftc.web.model.apiCallback;
 
+import net.sf.json.JSONObject;
+
 import java.util.List;
 
 public class OrderCallback {
@@ -21,6 +23,7 @@ public class OrderCallback {
         private String ship_addr;
         private String uuid;
         private String state;
+        private JSONObject attributes;
         private String order_number;
 
         public String getShip_name() {
@@ -62,6 +65,10 @@ public class OrderCallback {
         public void setOrder_number(String order_number) {
             this.order_number = order_number;
         }
+
+        public JSONObject getAttributes() {return attributes;}
+
+        public void setAttributes(JSONObject attributes) {this.attributes = attributes;}
     }
 
     public int getId() {

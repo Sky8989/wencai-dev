@@ -126,6 +126,7 @@
         update sftc_order_express
         set
         state=#{state, jdbcType=VARCHAR}
+        <if test="attributes != null and attributes != ''">,attributes=#{attributes, jdbcType=VARCHAR}</if>
         WHERE uuid=#{uuid}
     </update>
 
