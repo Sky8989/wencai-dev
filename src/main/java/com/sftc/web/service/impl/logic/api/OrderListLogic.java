@@ -1,9 +1,7 @@
 package com.sftc.web.service.impl.logic.api;
 
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResolve;
-import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIUtil;
+import com.google.gson.JsonArray;
+import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.mapper.EvaluateMapper;
 import com.sftc.web.mapper.OrderExpressMapper;
@@ -17,13 +15,13 @@ import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.apiCallback.OrderFriendCallback;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.sfmodel.Orders;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_ORDER_SYNC_URL;
@@ -204,19 +202,40 @@ public class OrderListLogic {
         if (uuid.equals("")) return null;
 
         String ordersURL = SF_ORDER_SYNC_URL.replace("{uuid}", uuid.substring(0, uuid.length() - 1));
-        List<Orders> ordersList;
-        try { // post and fetch express status list
-            ordersList = APIResolve.getOrdersJson(ordersURL, myOrderParam.getToken());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return APIUtil.selectErrorResponse(e.getLocalizedMessage(), e);
+        List<Orders> ordersList = new LinkedList<Orders>();
+        //post and fetch express status list
+        HttpGet httpGet = new HttpGet(ordersURL);
+        httpGet.addHeader("PushEnvelope-Device-Token", myOrderParam.getToken());
+        String resultStr = APIGetUtil.get(httpGet);
+        JSONObject resultOBJ = JSONObject.fromObject(resultStr);
+
+        if (resultOBJ.containsKey("error")) return APIUtil.selectErrorResponse("sf error", resultOBJ);
+        // 多个uuid 返回requests
+        if (resultOBJ.containsKey("requests")) {
+            JSONArray jsonArray = resultOBJ.getJSONArray("requests");
+            List list = jsonArray.subList(0, jsonArray.size());
+            for (Object temp : list) {
+                JSONObject jsonObject = JSONObject.fromObject(temp);
+                Orders tempOrders = new Orders();
+                tempOrders.setUuid(jsonObject.getString("uuid"));
+                tempOrders.setStatus(jsonObject.getString("status"));
+                tempOrders.setPayed(jsonObject.getBoolean("payed"));
+                JSONObject attributes = jsonObject.getJSONObject("attributes");
+                tempOrders.setAttributes(attributes.toString());
+                ordersList.add(tempOrders);
+            }
         }
+        // 单个uudi 返回request
+        if (resultOBJ.containsKey("request")) {
+            ordersList.add((Orders) resultOBJ.get("request"));
+        }
+
 
         // Update Dankal express info
         for (Orders orders : ordersList) {
             // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
             String status = orders.isPayed() && orders.getStatus().equals("PAYING") ? "WAIT_HAND_OVER" : orders.getStatus();
-            orderExpressMapper.updateOrderExpressForSF(new OrderExpress(status, orders.getUuid()));
+            orderExpressMapper.updateOrderExpressForSF(new OrderExpress(status, orders.getUuid(), orders.getAttributes()));
         }
 
         return null;
