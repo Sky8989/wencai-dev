@@ -397,11 +397,7 @@ public class OrderExpress extends Object {
         this.supplementary_info = supplementary_info;
     }
 
-    public String getAttributes() {
-        return attributes;
-    }
+    public String getAttributes() {return attributes;}
 
-    public void setAttributes(String attributes) {
-        this.attributes = attributes;
-    }
+    public void setAttributes(String attributes) {this.attributes = attributes;}
 }

@@ -101,6 +101,9 @@ public class OrderListLogic {
                 express.setShip_name(oe.getShip_name());
                 express.setShip_addr(oe.getShip_addr());
                 express.setOrder_number(oe.getOrder_number());
+                //如果有异常信息，则添加异常信息
+                if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
+                    express.setAttributes(JSONObject.fromObject(oe.getAttributes()));
                 expressList.add(express);
                 // 检查快递是否评价过
                 List<Evaluate> evaluateList = evaluateMapper.selectByUuid(oe.getUuid());
@@ -158,6 +161,9 @@ public class OrderListLogic {
                 express.setUuid(oe.getUuid());
                 express.setState(oe.getState());
                 express.setShip_name(oe.getShip_name());
+                //如果有异常信息，则添加异常信息
+                if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
+                    express.setAttributes(JSONObject.fromObject(oe.getAttributes()));
                 if (receiver != null && receiver.getAvatar() != null)
                     express.setShip_avatar(receiver.getAvatar());
                 expressList.add(express);
