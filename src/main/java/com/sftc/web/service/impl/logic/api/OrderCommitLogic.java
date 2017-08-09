@@ -381,6 +381,13 @@ public class OrderCommitLogic {
         JSONObject sourceAddressOBJ = sourceOBJ.getJSONObject("address");
         JSONObject targetAddressOBJ = targetOBJ.getJSONObject("address");
 
+        //处理supplementary_info非必填项的问题
+        if (!sourceAddressOBJ.containsKey("supplementary_info")) {
+            sourceAddressOBJ.put("supplementary_info", "");
+        }
+        if (!targetAddressOBJ.containsKey("supplementary_info")) {
+            targetAddressOBJ.put("supplementary_info", "");
+        }
 
         // 预约时间处理
         String reserve_time = (String) reqObject.getJSONObject("order").get("reserve_time");
@@ -528,6 +535,14 @@ public class OrderCommitLogic {
         sf.put("orderid", orderId);
 
 //        String str = gson.toJson(requestObject.getJSONObject("sf"));
+        //处理supplementary_info非必填项的问题
+        if (!sf.containsKey("j_supplementary_info")) {
+            sf.put("j_supplementary_info", "");
+        }
+        if (!sf.containsKey("d_supplementary_info")) {
+            sf.put("d_supplementary_info", "");
+        }
+
 
         // 插入订单表
         Order order = new Order(
