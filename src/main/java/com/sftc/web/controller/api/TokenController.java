@@ -3,6 +3,7 @@ package com.sftc.web.controller.api;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.common.ControllerHelper;
 import com.sftc.web.controller.AbstractBasicController;
 import com.sftc.web.service.TokenService;
 import org.springframework.http.HttpStatus;
@@ -37,20 +38,9 @@ public class TokenController extends AbstractBasicController {
         APIRequest apiRequest = new APIRequest();
         apiRequest.setRequestParam(object);
         APIResponse apiResponse = APIUtil.paramErrorResponse("测试错误");
-        ResponseEntity<APIResponse> responseEntity;
-        if (apiResponse.getState() == 200) {
-            responseEntity = new ResponseEntity<APIResponse>(apiResponse, HttpStatus.OK);
-            return responseEntity;
-        } else if (apiResponse.getState() == 500) {
-            responseEntity = new ResponseEntity<APIResponse>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-            return responseEntity;
-        } else if (apiResponse.getState() == 400) {
-            responseEntity = new ResponseEntity<APIResponse>(apiResponse, HttpStatus.BAD_REQUEST);
-            return responseEntity;
-        } else {
-            responseEntity = new ResponseEntity<APIResponse>(apiResponse, HttpStatus.NOT_ACCEPTABLE);
-            return responseEntity;
-        }
+        int i = 1/0;
+        return ControllerHelper.responseEntityBuilder(apiResponse);
+
     }
 
 }
