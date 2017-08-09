@@ -7,6 +7,8 @@ public class MyOrderParam {
     private int pageNum;
     private int pageSize;
     private String keyword;
+    //模糊查询的state关键字
+    private String keyword_state;
 
     public int getId() {
         return id;
@@ -47,4 +49,8 @@ public class MyOrderParam {
     public String getKeyword() {
         return keyword;
     }
+
+    public String getKeyword_state() {return keyword_state;}
+
+    public void setKeyword_state(String keyword_state) {this.keyword_state = keyword_state;}
 }

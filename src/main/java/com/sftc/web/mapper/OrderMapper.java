@@ -14,6 +14,7 @@ public interface OrderMapper {
      * 插入订单
      */
     void addOrder(Order order);
+
     /**
      * 插入订单
      */
@@ -28,6 +29,9 @@ public interface OrderMapper {
      * 查询我的订单列表
      */
     List<Order> selectMyOrderList(MyOrderParam param);
+
+    List<Order> selectMyOrderList2(MyOrderParam param);
+
 
     /**
      * 查询我的好友订单列表
