@@ -18,19 +18,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class GlobalControllerExceptionHandler {
 
-    @ExceptionHandler(value = MissingServletRequestParameterException.class)
-    @ResponseBody
-    public ResponseEntity<APIResponse> handle(JSONException ex) {
-        return ControllerHelper.responseEntityBuilder(APIUtil.logicErrorResponse("JSON_Resolve_Error", ex.getStackTrace()));
-    }
-
-    @ExceptionHandler(value = MissingServletRequestParameterException.class)
-    @ResponseBody
-    public ResponseEntity<APIResponse> handle(MissingServletRequestParameterException ex) {
-        return ControllerHelper.responseEntityBuilder(APIUtil.paramErrorResponse("Missing_Param"));
-    }
-
-
     // 通用异常的处理，返回500
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)  // 500
     @ExceptionHandler(Exception.class)
