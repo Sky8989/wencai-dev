@@ -68,7 +68,7 @@ public class APIUtil {
      */
     public static APIResponse logicErrorResponse(String message, Object errorObj) {
         APIResponse apiResponse = errorResponse(message);
-        apiResponse.setState(SELECT_FAIL.getState());
+        apiResponse.setState(LOGIC_ERROR.getState());
         apiResponse.setError(errorObj);
         return apiResponse;
     }
