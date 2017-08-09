@@ -35,24 +35,26 @@ public class SFOrderHelper {
 
     public static Map<String, String> getKeywordMap() {
         Map<String, String> map = new HashMap<String, String>();
+        //匹配完成状态
         map.put("已", "FINISHED");
         map.put("已完成", "FINISHED");
         map.put("完成", "FINISHED");
+        //匹配 取消
         map.put("取消", "CANCELED");
         map.put("已取消", "CANCELED");
         map.put("取消", "CANCELED");
+
+
         map.put("待填写", "WAIT_FILL");
         map.put("下单", "INIT");
         map.put("支付", "PAYING");
         map.put("支付中", "PAYING");
         map.put("待揽件", "WAIT_HAND_OVER");
         map.put("揽件", "WAIT_HAND_OVER");
-        map.put("待填写", "WAIT_FILL");
         map.put("已填写", "ALREADY_FILL");
         map.put("已退款", "REFUNDED");
         map.put("退款中", "REFUNDING");
         map.put("退款", "REFUNDING");
-
         return map;
     }
 }
