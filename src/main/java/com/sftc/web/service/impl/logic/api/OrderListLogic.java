@@ -56,7 +56,7 @@ public class OrderListLogic {
             Map<String, String> map = SFOrderHelper.getKeywordMap();
             for (Map.Entry entry : map.entrySet()) {
                 if (myOrderParam.getKeyword().equals(entry.getKey())) {
-                    myOrderParam.setKeyword((String) entry.getValue());
+                    myOrderParam.setKeyword_state((String) entry.getValue());
                     flag = false;
                 }
             }
@@ -70,13 +70,17 @@ public class OrderListLogic {
                     sb.append("%");
                 }
                 myOrderParam.setKeyword(sb.toString());
+            } else {
+                //两种状态值二选一
+                myOrderParam.setKeyword(null);
             }
         }
 
         // pageNum -> startIndex
         myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());
         // select
-        List<Order> orderList = orderMapper.selectMyOrderList(myOrderParam);
+//        List<Order> orderList = orderMapper.selectMyOrderList(myOrderParam);
+        List<Order> orderList = orderMapper.selectMyOrderList2(myOrderParam);
         List<OrderCallback> orderCallbacks = new ArrayList<OrderCallback>();
         for (Order order : orderList) {
             OrderCallback callback = new OrderCallback();

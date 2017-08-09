@@ -161,7 +161,7 @@
     </sql>
 
     <!-- 我的订单列表  -->
- <select id="selectMyOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+    <select id="selectMyOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
             resultMap="orderMap">
         SELECT * FROM sftc_order
         WHERE id IN (
@@ -188,15 +188,18 @@
         limit #{pageNum}, #{pageSize}
     </select>
     <!--解决多字段 转义的问题-->
-<!--    <select id="selectMyOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
-            resultMap="orderMap" statementType="STATEMENT">
+    <select id="selectMyOrderList2" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+            resultMap="orderMap">
         SELECT * FROM sftc_order
         WHERE id IN (
         SELECT o.id FROM sftc_order o, sftc_order_express oe
         WHERE o.id=oe.order_id AND o.sender_user_id=#{id}
+        <if test="keyword_state != null">
+            AND (oe.state REGEXP ${keyword_state} )
+        </if>
         <if test="keyword!=null">
             AND (
-            o.sender_name LIKE '${}' OR
+            o.sender_name LIKE #{keyword} OR
             o.sender_province LIKE #{keyword} OR
             o.sender_city LIKE #{keyword} OR
             o.sender_area LIKE #{keyword} OR
@@ -213,7 +216,7 @@
         )
         ORDER by create_time desc
         limit #{pageNum}, #{pageSize}
-    </select>-->
+    </select>
 
 
     <!-- 我的好友订单列表  -->
