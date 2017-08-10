@@ -17,6 +17,7 @@ import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_QUOTES_URL;
 import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
 import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
+import static com.sftc.tools.sf.SFTokenHelper.COMMON_UUID;
 
 @Component
 public class OrderPayLogic {
@@ -57,7 +58,7 @@ public class OrderPayLogic {
             post.addHeader("PushEnvelope-Device-Token", access_token);
         } else {
             // 下单时，如果还没登录，计价时uuid和token都没有，需要先写死
-            jsonObject.getJSONObject("request").getJSONObject("merchant").put("uuid", "2c9a85895c352c20015c3878647b017a");
+            jsonObject.getJSONObject("request").getJSONObject("merchant").put("uuid", COMMON_UUID);
             post.addHeader("PushEnvelope-Device-Token", COMMON_ACCESSTOKEN);
         }
 
