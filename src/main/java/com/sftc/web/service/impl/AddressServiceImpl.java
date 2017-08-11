@@ -25,6 +25,7 @@ import java.util.concurrent.Semaphore;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.ThirdPartyConstant.MAP_ADDRESS_DISTANCE_URL;
+import static com.sftc.tools.constant.ThirdPartyConstant.MAP_ADDRESS_DISTANCE_URL_2;
 import static com.sftc.tools.constant.ThirdPartyConstant.MAP_GEOCODER_URL;
 
 @Service("addressService")
@@ -145,7 +146,7 @@ public class AddressServiceImpl implements AddressService {
         return APIUtil.getResponse(status, resultJsonObject);
     }
 
-    public APIResponse getAddressDistance(APIRequest request) {
+    public APIResponse getAddressDistance2(APIRequest request) {
 
         Object object = request.getRequestParam();
         JSONObject requestObject = JSONObject.fromObject(object);
@@ -173,6 +174,43 @@ public class AddressServiceImpl implements AddressService {
         JSONArray elementObjects = resultObject.getJSONObject("result").getJSONArray("elements");
         JSONObject elementObject = (JSONObject) elementObjects.get(0);
         double distance = (Double) elementObject.get("distance");
+
+        Map<String, Double> resultMap = new HashMap<String, Double>();
+        resultMap.put("distance", distance);
+        return APIUtil.getResponse(SUCCESS, resultMap);
+    }
+
+    public APIResponse getAddressDistance(APIRequest request) {
+
+        Object object = request.getRequestParam();
+        JSONObject requestObject = JSONObject.fromObject(object);
+
+        JSONObject sourceObject = requestObject.getJSONObject("source");
+        JSONObject targetObject = requestObject.getJSONObject("target");
+        double senderLong = (Double) sourceObject.get("longitude");
+        double senderLat = (Double) sourceObject.get("latitude");
+        double receiverLong = (Double) targetObject.get("longitude");
+        double receiverLat = (Double) targetObject.get("latitude");
+
+        if (senderLong == 0 || receiverLong == 0 || senderLat == 0 || receiverLat == 0)
+            return APIUtil.paramErrorResponse("请求体不完整");
+
+        String from = senderLat + "," + senderLong;
+        String to = receiverLat + "," + receiverLong;
+        //使用 腾讯 路径规划服务
+        String url = MAP_ADDRESS_DISTANCE_URL_2.replace("{from}", from).replace("{to}", to);
+        String result = APIGetUtil.get(new HttpGet(url));
+        JSONObject resultObject = JSONObject.fromObject(result);
+
+        if ((Integer) resultObject.get("status") != 0)
+            return APIUtil.selectErrorResponse((String) resultObject.get("message"), null);
+
+        JSONArray routesObjects = resultObject.getJSONObject("result").getJSONArray("routes");
+        JSONObject routesObject = (JSONObject) routesObjects.get(0);
+        // 返回值实际上是int
+        double distance = routesObject.getDouble("distance");
+        //返回值为总距离（单位：米），换算成km
+        distance = distance / 1000;
 
         Map<String, Double> resultMap = new HashMap<String, Double>();
         resultMap.put("distance", distance);

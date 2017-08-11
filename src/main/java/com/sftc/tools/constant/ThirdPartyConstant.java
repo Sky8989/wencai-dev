@@ -53,4 +53,5 @@ public class ThirdPartyConstant {
      * 距离计算
      */
     public static final String MAP_ADDRESS_DISTANCE_URL = "http://apis.map.qq.com/ws/distance/v1/?key=" + MAP_GEOCODER_KEY + "&from={from}&to={to}";
+    public static final String MAP_ADDRESS_DISTANCE_URL_2 = "http://apis.map.qq.com/ws/direction/v1/driving/?key=" + MAP_GEOCODER_KEY + "&policy=REAL_TRAFFIC"+"&from={from}&to={to}";
 }
