@@ -120,12 +120,12 @@ public class UserServiceImpl implements UserService {
     public APIResponse superLogin(UserParam userParam) throws Exception {
         APIStatus status = SUCCESS;
         String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
-//        WechatUser wechatUser = APIResolve.getWechatJson(auth_url);
-        WechatUser wechatUser = new WechatUser();
-        wechatUser.setOpenid("123");
-        wechatUser.setSession_key("66==");
-        wechatUser.setErrmsg("sadsadcuowu");
-        wechatUser.setErrcode(500);
+        WechatUser wechatUser = APIResolve.getWechatJson(auth_url);
+//        WechatUser wechatUser = new WechatUser();
+//        wechatUser.setOpenid("123");
+//        wechatUser.setSession_key("66==");
+//        wechatUser.setErrmsg("sadsadcuowu");
+//        wechatUser.setErrcode(500);
         User user = null;
         Map<String, String> tokenInfo = new HashMap<String, String>();
         if (wechatUser.getOpenid() != null) {
