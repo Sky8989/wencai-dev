@@ -122,8 +122,8 @@ public class UserServiceImpl implements UserService {
         String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
         WechatUser wechatUser = APIResolve.getWechatJson(auth_url);
 //        WechatUser wechatUser = new WechatUser();
-//        wechatUser.setOpenid("oCFL80DaudC3jNVdnp5bQtXHkbUY");
-//        wechatUser.setSession_key("WP0iYNpNYwYwBdKT9eVPyw==");
+//        wechatUser.setOpenid("123");
+//        wechatUser.setSession_key("66==");
 //        wechatUser.setErrmsg("sadsadcuowu");
 //        wechatUser.setErrcode(500);
         User user = null;
@@ -156,15 +156,15 @@ public class UserServiceImpl implements UserService {
                 tokenInfo.put("token", myToken);
                 tokenInfo.put("user_id", (user2.getId() + ""));
             } else {
-                user.setOpen_id(wechatUser.getOpenid());
+//                user.setOpen_id(wechatUser.getOpenid());// 不更新
                 user.setSession_key(wechatUser.getSession_key());
-                user.setCreate_time(Long.toString(System.currentTimeMillis()));
+//                user.setCreate_time(Long.toString(System.currentTimeMillis()));//不更新
                 //更新头像和昵称
                 if (userParam.getName() != null && userParam.getAvatar() != null) {
                     user.setAvatar(userParam.getAvatar());
                     user.setName(userParam.getName());
-                    userMapper.updateUserOfAvatar(user);
                 }
+                userMapper.updateUserOfAvatar(user);
                 Token token = tokenMapper.getTokenById(user.getId());
                 if (token == null) {
                     token = new Token(user.getId(), makeToken(user.getCreate_time(), user.getOpen_id()));
