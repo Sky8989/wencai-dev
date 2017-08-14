@@ -1,17 +1,18 @@
 package com.sftc.web.service.impl;
 
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIStatus;
-import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.api.*;
 import com.sftc.tools.constant.LLConstant;
 import com.sftc.web.service.LatitudeLongitudeService;
 import net.sf.json.JSONObject;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import static com.sftc.tools.constant.ThirdPartyConstant.MAP_REGEOCODER_URL;
 
 /**
  * 随机获取经纬度
@@ -19,6 +20,7 @@ import java.util.Random;
  */
 @Service("latitudeLongitudeService")
 public class LatitudeLongitudeServiceImpl implements LatitudeLongitudeService {
+
 
     public APIResponse getLatitudeLongitude(APIRequest apiRequest) {
         JSONObject paramJSONObject = JSONObject.fromObject(apiRequest.getRequestParam());
@@ -34,7 +36,8 @@ public class LatitudeLongitudeServiceImpl implements LatitudeLongitudeService {
         // 计算生成经纬度点的数量
         int GeneratedNumber = (LLConstant.MIN_LL_NUMBER + new Random().nextInt(LLConstant.MAX_LL_NUMBER));
         // 调用算法
-        List<Map<String, Double>> LLResults = LLConstant.calculate(latitude, longitude, LLConstant.RANGE_NUMBER, GeneratedNumber);
+        List<Map<String, Double>> LLResults = LLConstant.calculate3(latitude, longitude, LLConstant.RANGE_NUMBER, GeneratedNumber);
+        if (LLResults == null) return APIUtil.selectErrorResponse("No_Point", null);
 
         return APIUtil.getResponse(APIStatus.SUCCESS, LLResults);
     }
