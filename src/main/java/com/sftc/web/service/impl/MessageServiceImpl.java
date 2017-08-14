@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.json.Json;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,15 +43,21 @@ public class MessageServiceImpl implements MessageService {
      */
 
     public APIResponse getMessage(APIRequest apiRequest) {
+        //参数处理
+//        String str = gson.toJson(apiRequest.getRequestParam());
+        JSONObject paramOBJ = JSONObject.fromObject(apiRequest.getRequestParam());
+        if (!paramOBJ.containsKey("deviceId")) return APIUtil.paramErrorResponse("Parameter_Missing");
+        if (!(paramOBJ.getJSONObject("message").getString("receiver").length() == 11))
+            return APIUtil.paramErrorResponse(" Mobile's length is not 11");
+        String deviceId = paramOBJ.getString("deviceId");
+        paramOBJ.remove("deviceId");
 
-        String str = gson.toJson(apiRequest.getRequestParam());
         HttpPost post = new HttpPost(SF_TAKE_MESSAGE_URL);
-        String res = APIPostUtil.post(str, post);
+        post.addHeader("PushEnvelope-Device-ID", deviceId);
+        String res = APIPostUtil.post(paramOBJ.toString(), post);
         JSONObject resultObject = JSONObject.fromObject(res);
-        if (resultObject.containsKey("errors"))
-            return APIUtil.submitErrorResponse("mobile错误", resultObject);
-        if (resultObject.containsKey("error"))
-            return APIUtil.submitErrorResponse("其他错误", resultObject);
+        if (resultObject.containsKey("errors") || resultObject.containsKey("error"))
+            return APIUtil.submitErrorResponse("SMS_Failed", resultObject);
 
         return APIUtil.getResponse(SUCCESS, resultObject);
     }

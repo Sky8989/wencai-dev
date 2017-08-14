@@ -50,6 +50,10 @@ public class ThirdPartyConstant {
      */
     public static final String MAP_GEOCODER_URL = "http://apis.map.qq.com/ws/geocoder/v1/?key=" + MAP_GEOCODER_KEY + "&address={address}";
     /**
+     * 逆地址解析接口地址
+     */
+    public static final String MAP_REGEOCODER_URL = "http://apis.map.qq.com/ws/geocoder/v1/?key=" + MAP_GEOCODER_KEY + "&location={location}"+"&get_poi=1"+"&poi_options={poi_options}";
+    /**
      * 距离计算
      */
     public static final String MAP_ADDRESS_DISTANCE_URL = "http://apis.map.qq.com/ws/distance/v1/?key=" + MAP_GEOCODER_KEY + "&from={from}&to={to}";
