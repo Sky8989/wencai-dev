@@ -74,7 +74,7 @@
             <if test="name!=null">name=#{name},</if>
             <if test="session_key!=null">session_key=#{session_key},</if>
         </trim>
-        WHERE open_id LIKE #{open_id}
+        WHERE open_id = #{open_id}
     </update>
 
 
