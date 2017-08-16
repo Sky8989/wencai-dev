@@ -155,6 +155,8 @@ public class OrderListLogic {
             callback.setCreate_time(order.getCreate_time());
             callback.setRegion_type(order.getRegion_type());
             callback.setIs_gift(order.getGift_card_id() > 0);
+            //增加支付类型
+            callback.setPay_method(order.getPay_method());
             // expressList
             List<OrderFriendCallback.OrderFriendCallbackExpress> expressList = new ArrayList<OrderFriendCallback.OrderFriendCallbackExpress>();
             for (OrderExpress oe : order.getOrderExpressList()) {
