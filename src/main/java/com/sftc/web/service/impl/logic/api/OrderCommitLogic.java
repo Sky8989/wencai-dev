@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.sftc.tools.api.*;
 import com.sftc.tools.common.DateUtils;
+import com.sftc.tools.common.EmojiFilter;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.mapper.*;
@@ -63,6 +64,9 @@ public class OrderCommitLogic {
         if (paramVerifyMessage != null) { // Param Error
             return APIUtil.paramErrorResponse(paramVerifyMessage);
         }
+        // 增加对emoji的过滤
+        boolean containsEmoji = EmojiFilter.containsEmoji(requestBody.toString());
+        if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
 
         JSONObject requestObject = JSONObject.fromObject(requestBody);
         if (requestObject.containsKey("request")) { // 同城
@@ -82,6 +86,9 @@ public class OrderCommitLogic {
         if (paramVerifyMessage != null) { // Param Error
             return APIUtil.paramErrorResponse(paramVerifyMessage);
         }
+        // 增加对emoji的过滤
+        boolean containsEmoji = EmojiFilter.containsEmoji(requestBody.toString());
+        if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
 
         JSONObject requestObject = JSONObject.fromObject(requestBody);
         if (requestObject.containsKey("request")) { // 同城
