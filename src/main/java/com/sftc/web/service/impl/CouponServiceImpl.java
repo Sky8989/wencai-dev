@@ -12,6 +12,8 @@ import org.apache.http.client.methods.HttpPut;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.sftc.tools.constant.SFConstant.SF_REGISTER_URL;
 import static com.sftc.tools.sf.SFResultHelper.*;
@@ -48,6 +50,10 @@ public class CouponServiceImpl implements CouponService {
      */
     public APIResponse exchangeCoupon(APIRequest apiRequest) {
         Promo promo = (Promo) apiRequest.getRequestParam();
+
+
+        if ("".equals(promo.getPromo_code()) || promo.getPromo_code().contains(" "))
+            return APIUtil.paramErrorResponse("Don't input '' or ' ' ");
         APIStatus status = APIStatus.SUCCESS;
         String COUPON_EXCHANGE_API = "http://api-dev.sf-rush.com/coupons?promo_code=";
         COUPON_EXCHANGE_API += promo.getPromo_code();
