@@ -59,6 +59,11 @@ public interface OrderMapper {
     List<Integer> selectNationUnCommitOrders();
 
     /**
+     * 查询好友多包裹未提交的订单列表
+     */
+    List<Integer> selectMutilExpressOrders();
+
+    /**
      * 查询同城未提交的订单列表
      */
     List<Integer> selectSameUnCommitOrders();

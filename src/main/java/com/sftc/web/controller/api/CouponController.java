@@ -22,9 +22,9 @@ public class CouponController {
 
     @RequestMapping(value = "/user/list", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse getUserCouponList(@RequestBody UserParam userParam) throws Exception {
+    APIResponse getUserCouponList(@RequestBody Object object) throws Exception {
         APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(userParam);
+        apiRequest.setRequestParam(object);
         return couponService.getUserCouponList(apiRequest);
     }
 

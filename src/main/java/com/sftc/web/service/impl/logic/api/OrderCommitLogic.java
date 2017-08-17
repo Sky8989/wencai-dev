@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.sftc.tools.api.*;
 import com.sftc.tools.common.DateUtils;
+import com.sftc.tools.common.EmojiFilter;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.mapper.*;
@@ -65,6 +66,13 @@ public class OrderCommitLogic {
         }
 
         JSONObject requestObject = JSONObject.fromObject(requestBody);
+
+        // 增加对emoji的过滤
+        if (requestObject.containsKey("request")) { // 同城
+            boolean containsEmoji = EmojiFilter.containsEmoji(requestObject.getJSONObject("request").getString("packages"));
+            if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
+        }
+
         if (requestObject.containsKey("request")) { // 同城
             return normalSameOrderCommit(requestBody);
         } else { // 大网
@@ -84,6 +92,13 @@ public class OrderCommitLogic {
         }
 
         JSONObject requestObject = JSONObject.fromObject(requestBody);
+
+        // 增加对emoji的过滤
+        if (requestObject.containsKey("request")) { // 同城
+            boolean containsEmoji = EmojiFilter.containsEmoji(requestObject.getJSONObject("request").getString("packages"));
+            if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
+        }
+
         if (requestObject.containsKey("request")) { // 同城
             return friendSameOrderCommit(requestObject);
         } else { // 大网
@@ -147,6 +162,7 @@ public class OrderCommitLogic {
                 } else {
                     // 存储快递信息
                     orderMapper.updateOrderRegionType(order.getId(), "REGION_NATION");
+                    //reserve_time置为null,不修改，sql中已经非null处理
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), oe.getUuid(), null);
                     orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
                     String ordernum = resultObject.getString("ordernum");

@@ -19,15 +19,17 @@ public interface CouponService {
 
     /**
      * 根据用户查询优惠券
+     *
      * @param apiRequest
      * @return
      */
-    APIResponse getUserCouponList(APIRequest apiRequest);
+    APIResponse getUserCouponList(APIRequest apiRequest) throws Exception;
 
     /**
      * 根据密语和token兑换优惠券
+     *
      * @param apiRequest
      * @return
      */
-    APIResponse exchangeCoupon(APIRequest apiRequest);
+    APIResponse exchangeCoupon(APIRequest apiRequest) throws Exception;
 }

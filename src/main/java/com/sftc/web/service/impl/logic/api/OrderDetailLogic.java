@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.lang.Object;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
@@ -38,6 +39,8 @@ public class OrderDetailLogic {
     private GiftCardMapper giftCardMapper;
     @Resource
     private OrderExpressTransformMapper orderExpressTransformMapper;
+    @Resource
+    private MessageMapper messageMapper;
 
     /**
      * 订单详情接口
@@ -75,6 +78,9 @@ public class OrderDetailLogic {
 
         resultMap.put("order", orderMap);
         resultMap.put("giftCard", giftCard);
+
+        //查询是否有未读收到好友地址消息 若有则消除
+        remarkMessageReceiveAddress(order.getOrderExpressList(), order.getSender_user_id());
 
         return APIUtil.getResponse(SUCCESS, resultMap);
     }
@@ -146,4 +152,21 @@ public class OrderDetailLogic {
 
         return APIUtil.getResponse(SUCCESS, respObject);
     }
+
+    //////////////////////消除 收到地址 的通知消息//////////////////////
+    private void remarkMessageReceiveAddress(List<OrderExpress> orderExpressList, int user_id) {
+        List<Message> messageReceiveAddress = messageMapper.selectMessageReceiveAddress(user_id);
+        //如果生成了“收到地址”通知消息
+        if (messageReceiveAddress.size() > 0) {
+            boolean flag = false;
+            // 查看生成消息的快递id 是否和所查询快递id的相同
+            for (OrderExpress orderExpress : orderExpressList) {
+                if (orderExpress.getId() == messageReceiveAddress.get(0).getExpress_id()) {
+                    flag = true;
+                }
+            }
+            if (flag) messageMapper.updateIsRead(messageReceiveAddress.get(0).getId());
+        }
+    }
+
 }

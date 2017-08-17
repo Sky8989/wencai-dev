@@ -22,7 +22,9 @@ public class LLConstant {
     // 最小生成数量
     public static int MIN_LL_NUMBER = 3;
     // 生成范围 单位KM
-    public static double RANGE_NUMBER = 0.3;
+    public static double RANGE_NUMBER = 1;
+    //生成点之间的距离 单位KM
+    public static double DISTANCE_BETWEEN_PONINT = RANGE_NUMBER / 3;
 
     public static List<Map<String, Double>> calculate(double startlat, double startlon, double maxdist, int GeneratedNumber) {
 
@@ -138,7 +140,7 @@ public class LLConstant {
 
                 double distance = distance2(lng, lat, map1.get("longitude"), map1.get("latitude")) * 1000;
                 //maxdist单位是km distance单位是m
-                if (distance < maxdist * 1000 / 4) flag = false;
+                if (distance < DISTANCE_BETWEEN_PONINT * 1000) flag = false;
             }
             //让内层控制外层循环
             if (!flag) continue;

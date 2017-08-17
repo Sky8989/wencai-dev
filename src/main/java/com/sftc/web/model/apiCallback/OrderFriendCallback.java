@@ -15,6 +15,8 @@ public class OrderFriendCallback {
     private String image;       // 包裹图片
     private String create_time;
     private boolean is_gift;
+    private String pay_method;//支付类型
+
 
     private List<OrderFriendCallbackExpress> expressList;
 
@@ -75,9 +77,13 @@ public class OrderFriendCallback {
             this.state = state;
         }
 
-        public JSONObject getAttributes() {return attributes;}
+        public JSONObject getAttributes() {
+            return attributes;
+        }
 
-        public void setAttributes(JSONObject attributes) {this.attributes = attributes;}
+        public void setAttributes(JSONObject attributes) {
+            this.attributes = attributes;
+        }
     }
 
     public int getId() {
@@ -167,4 +173,8 @@ public class OrderFriendCallback {
     public void setExpressList(List<OrderFriendCallbackExpress> expressList) {
         this.expressList = expressList;
     }
+
+    public String getPay_method() {return pay_method;}
+
+    public void setPay_method(String pay_method) {this.pay_method = pay_method;}
 }

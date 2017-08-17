@@ -134,7 +134,7 @@
         update sftc_order_express
         set
         <if test="uuid != null">uuid=#{uuid, jdbcType=VARCHAR},</if>
-        reserve_time=#{reserve_time, jdbcType=VARCHAR},
+        <if test="reserve_time != null">reserve_time=#{reserve_time, jdbcType=VARCHAR},</if>
         state='WAIT_HAND_OVER'
         WHERE id=#{id}
     </update>
