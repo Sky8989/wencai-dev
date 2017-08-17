@@ -162,6 +162,7 @@ public class OrderCommitLogic {
                 } else {
                     // 存储快递信息
                     orderMapper.updateOrderRegionType(order.getId(), "REGION_NATION");
+                    //reserve_time置为null,不修改，sql中已经非null处理
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), oe.getUuid(), null);
                     orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
                     String ordernum = resultObject.getString("ordernum");
