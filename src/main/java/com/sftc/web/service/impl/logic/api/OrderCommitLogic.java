@@ -70,7 +70,7 @@ public class OrderCommitLogic {
         // 增加对emoji的过滤
         if (requestObject.containsKey("request")) { // 同城
             boolean containsEmoji = EmojiFilter.containsEmoji(requestObject.getJSONObject("request").getString("packages"));
-            if (containsEmoji) return APIUtil.paramErrorResponse("包裹类型请勿输入emoji表情");
+            if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
         }
 
         if (requestObject.containsKey("request")) { // 同城
@@ -96,7 +96,7 @@ public class OrderCommitLogic {
         // 增加对emoji的过滤
         if (requestObject.containsKey("request")) { // 同城
             boolean containsEmoji = EmojiFilter.containsEmoji(requestObject.getJSONObject("request").getString("packages"));
-            if (containsEmoji) return APIUtil.paramErrorResponse("包裹类型请勿输入emoji表情");
+            if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
         }
 
         if (requestObject.containsKey("request")) { // 同城

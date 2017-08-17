@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.common.EmojiFilter;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.mapper.*;
 import com.sftc.web.model.Message;
@@ -45,6 +46,16 @@ public class OrderCreateLogic {
     public APIResponse friendPlaceOrder(APIRequest request) {
 
         OrderParam orderParam = (OrderParam) request.getRequestParam();
+
+        // 增加对emoji的过滤
+        if (orderParam.getPackage_type() != null && !"".equals(orderParam.getPackage_type())) {
+            boolean containsEmoji = EmojiFilter.containsEmoji(orderParam.getPackage_type());
+            if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
+        }
+        if (orderParam.getObject_type() != null && !"".equals(orderParam.getObject_type())) {
+            boolean containsEmoji = EmojiFilter.containsEmoji(orderParam.getObject_type());
+            if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
+        }
 
         // 插入订单表
         Order order = new Order(orderParam);
