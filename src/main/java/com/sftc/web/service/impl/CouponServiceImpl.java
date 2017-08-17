@@ -26,13 +26,21 @@ public class CouponServiceImpl implements CouponService {
      */
     public APIResponse getUserCouponList(APIRequest apiRequest) {
         APIStatus status = APIStatus.SUCCESS;
-        UserParam userParam = (UserParam) apiRequest.getRequestParam();
+        JSONObject paramOBJ = JSONObject.fromObject(apiRequest.getRequestParam());
+        if (!paramOBJ.containsKey("uuid")) return APIUtil.paramErrorResponse("Parameter missing uuid");
+        if (!paramOBJ.containsKey("token")) return APIUtil.paramErrorResponse("Parameter missing token");
+        String uuid = paramOBJ.getString("uuid");
+        String token = paramOBJ.getString("token");
 
-        String COUPON_LIST_API = "http://api-dev.sf-rush.com/coupons/by_user/user_uuid?status=INIT,ACTIVE,DISABLED,USED&limit=20&offset=0";
-        COUPON_LIST_API = COUPON_LIST_API.replace("user_uuid", userParam.getUuid() + "");
+        //limit offset是可选项
+        String limit = paramOBJ.containsKey("limit") ? paramOBJ.getString("limit") : String.valueOf(20);
+        String offset = paramOBJ.containsKey("offset") ? paramOBJ.getString("offset") : String.valueOf(0);
+
+        String COUPON_LIST_API = "http://api-dev.sf-rush.com/coupons/by_user/user_uuid?status=INIT,ACTIVE,DISABLED,USED&limit=" + limit + "&offset=" + offset;
+        COUPON_LIST_API = COUPON_LIST_API.replace("user_uuid", uuid + "");
         // 调用顺丰接口
         HttpGet httpGet = new HttpGet(COUPON_LIST_API);
-        httpGet.addHeader("PushEnvelope-Device-Token", userParam.getToken());
+        httpGet.addHeader("PushEnvelope-Device-Token", token);
         String res = APIGetUtil.get(httpGet);
 
         //处理错误信息
@@ -73,4 +81,6 @@ public class CouponServiceImpl implements CouponService {
         return APIUtil.getResponse(status, resJSONObject);
 
     }
+
+
 }
