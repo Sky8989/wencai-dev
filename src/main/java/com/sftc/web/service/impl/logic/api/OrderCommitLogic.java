@@ -64,11 +64,15 @@ public class OrderCommitLogic {
         if (paramVerifyMessage != null) { // Param Error
             return APIUtil.paramErrorResponse(paramVerifyMessage);
         }
-        // 增加对emoji的过滤
-        boolean containsEmoji = EmojiFilter.containsEmoji(requestBody.toString());
-        if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
 
         JSONObject requestObject = JSONObject.fromObject(requestBody);
+
+        // 增加对emoji的过滤
+        if (requestObject.containsKey("request")) { // 同城
+            boolean containsEmoji = EmojiFilter.containsEmoji(requestObject.getJSONObject("request").getString("packages"));
+            if (containsEmoji) return APIUtil.paramErrorResponse("包裹类型请勿输入emoji表情");
+        }
+
         if (requestObject.containsKey("request")) { // 同城
             return normalSameOrderCommit(requestBody);
         } else { // 大网
@@ -86,11 +90,15 @@ public class OrderCommitLogic {
         if (paramVerifyMessage != null) { // Param Error
             return APIUtil.paramErrorResponse(paramVerifyMessage);
         }
-        // 增加对emoji的过滤
-        boolean containsEmoji = EmojiFilter.containsEmoji(requestBody.toString());
-        if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
 
         JSONObject requestObject = JSONObject.fromObject(requestBody);
+
+        // 增加对emoji的过滤
+        if (requestObject.containsKey("request")) { // 同城
+            boolean containsEmoji = EmojiFilter.containsEmoji(requestObject.getJSONObject("request").getString("packages"));
+            if (containsEmoji) return APIUtil.paramErrorResponse("包裹类型请勿输入emoji表情");
+        }
+
         if (requestObject.containsKey("request")) { // 同城
             return friendSameOrderCommit(requestObject);
         } else { // 大网
