@@ -39,9 +39,11 @@ public class OrderParam {
     // 语音时长
     private int voice_time;
     // 包裹类型
-    private String package_type;
+    private String package_comments;
     // 物品类型
     private  String object_type;
+    // 包裹补充信息
+    private  String package_type;
     // 订单类型 普通/神秘
     private String order_type;
     // 订单地域 同城/大网
@@ -218,4 +220,12 @@ public class OrderParam {
     public String getSupplementary_info() {return supplementary_info;}
 
     public void setSupplementary_info(String supplementary_info) {this.supplementary_info = supplementary_info;}
+
+    public String getPackage_comments() {
+        return package_comments;
+    }
+
+    public void setPackage_comments(String package_comments) {
+        this.package_comments = package_comments;
+    }
 }

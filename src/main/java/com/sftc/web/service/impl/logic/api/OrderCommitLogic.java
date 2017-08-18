@@ -400,6 +400,8 @@ public class OrderCommitLogic {
         JSONObject targetOBJ = requestOBJ.getJSONObject("target");
         JSONObject sourceAddressOBJ = sourceOBJ.getJSONObject("address");
         JSONObject targetAddressOBJ = targetOBJ.getJSONObject("address");
+        //处理非必传参数package里的comments
+        String comments = requestOBJ.getJSONArray("packages").getJSONObject(0).containsKey("comments") ? requestOBJ.getJSONArray("packages").getJSONObject(0).getString("comments") : "";
 
         //处理supplementary_info非必填项的问题
         if (!sourceAddressOBJ.containsKey("supplementary_info")) {
@@ -452,11 +454,11 @@ public class OrderCommitLogic {
 
         JSONObject tempObject = JSONObject.fromObject(reqObject);
         tempObject.remove("order");
-//         TODO 把门牌号加到下单的参数json中
+        //  把门牌号加到下单的参数json中
         String oldSourceAddressStreet = sourceAddressOBJ.getString("street");
         String oldTargetAddressStreet = targetAddressOBJ.getString("street");
 
-        // TODO 把门牌号加到下单的参数json中
+        //  把门牌号加到下单的参数json中
         Object removeStreet = tempObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").remove("street");
         String newStreet = removeStreet.toString() + order.getSupplementary_info();
         tempObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").put("street", newStreet);
@@ -487,6 +489,7 @@ public class OrderCommitLogic {
                     targetAddressOBJ.getString("supplementary_info"),
                     requestOBJ.getJSONArray("packages").getJSONObject(0).getString("weight"),
                     requestOBJ.getJSONArray("packages").getJSONObject(0).getString("type"),
+                    comments, //TODO:增加快递包裹描述comments
                     respObject.getJSONObject("request").getString("status"),
                     Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
                     order.getId(),
@@ -539,6 +542,7 @@ public class OrderCommitLogic {
         JSONObject requestObject = JSONObject.fromObject(object);
         JSONObject orderObject = requestObject.getJSONObject("order");
         JSONObject sf = requestObject.getJSONObject("sf");
+        JSONObject packagesOBJ = requestObject.getJSONArray("packages").getJSONObject(0);
 
         // handle pay_method
         String pay_method = (String) sf.get("pay_method");
@@ -602,8 +606,9 @@ public class OrderCommitLogic {
                 (String) sf.get("d_county"),
                 (String) sf.get("d_address"),
                 sf.getString("d_supplementary_info"),//增加门牌号
-                "",
-                "",
+                packagesOBJ.getString("weight"),
+                packagesOBJ.getString("type"),
+                packagesOBJ.containsKey("comments") ? packagesOBJ.getString("comments") : "",//TODO:增加快递包裹描述comments
                 "WAIT_HAND_OVER",
                 Integer.parseInt((String) orderObject.get("sender_user_id")),
                 order.getId(),
@@ -686,7 +691,7 @@ public class OrderCommitLogic {
     }
 
 
-    /// TODO: 插入地址簿  要去重
+    /// 插入地址簿  要去重
     // 通用地址簿插入utils
     public void insertAddressBookUtils(
             String address_type, String address_book_type, int user_id_sender, int user_id_ship, String name, String phone,

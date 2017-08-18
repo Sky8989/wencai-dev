@@ -56,6 +56,12 @@ public class OrderCreateLogic {
             boolean containsEmoji = EmojiFilter.containsEmoji(orderParam.getObject_type());
             if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
         }
+        if (orderParam.getPackage_comments() != null && !"".equals(orderParam.getPackage_comments())) {
+            boolean containsEmoji = EmojiFilter.containsEmoji(orderParam.getPackage_comments());
+            if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
+        }
+        // 处理package_comments 非必填参数
+        String package_comments = orderParam.getPackage_comments() != null ? orderParam.getPackage_comments() : "";
 
         // 插入订单表
         Order order = new Order(orderParam);
@@ -71,10 +77,11 @@ public class OrderCreateLogic {
         orderExpress.setSender_user_id(orderParam.getSender_user_id());
         orderExpress.setReserve_time("");
         orderExpress.setOrder_id(order.getId());
+        orderExpress.setPackage_comments(package_comments);
         for (int i = 0; i < orderParam.getPackage_count(); i++) {
             // 写入uuid 保证每个快递的uuid不同
             orderExpress.setUuid(SFOrderHelper.getOrderNumber());
-            orderExpressMapper.addOrderExpress(orderExpress);
+            orderExpressMapper.addOrderExpress(orderExpress);//TODO:要插入包裹补充信息
         }
 
         // 插入地址表

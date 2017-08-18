@@ -29,6 +29,8 @@ public class OrderExpress extends Object {
     private String package_type;
     // 物品类型
     private String object_type;
+    // 包裹补充描述信息
+    private String package_comments;
     // 订单状态
     private String state;
     // 是否已经填写
@@ -79,7 +81,7 @@ public class OrderExpress extends Object {
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String supplementary_info, String package_type, String object_type,
-                        String state, int sender_user_id, int order_id, String uuid, Double latitude, Double longitude) {
+                        String package_comments, String state, int sender_user_id, int order_id, String uuid, Double latitude, Double longitude) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -92,6 +94,7 @@ public class OrderExpress extends Object {
         this.supplementary_info = supplementary_info;
         this.package_type = package_type;
         this.object_type = object_type;
+        this.package_comments = package_comments;//增加快递描述
         this.state = state;
         this.sender_user_id = sender_user_id;
         this.order_id = order_id;
@@ -397,7 +400,19 @@ public class OrderExpress extends Object {
         this.supplementary_info = supplementary_info;
     }
 
-    public String getAttributes() {return attributes;}
+    public String getAttributes() {
+        return attributes;
+    }
 
-    public void setAttributes(String attributes) {this.attributes = attributes;}
+    public void setAttributes(String attributes) {
+        this.attributes = attributes;
+    }
+
+    public String getPackage_comments() {
+        return package_comments;
+    }
+
+    public void setPackage_comments(String package_comments) {
+        this.package_comments = package_comments;
+    }
 }
