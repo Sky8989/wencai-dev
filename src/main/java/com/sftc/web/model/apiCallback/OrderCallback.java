@@ -25,6 +25,12 @@ public class OrderCallback {
         private String state;
         private JSONObject attributes;
         private String order_number;
+        //为C端小程序的物品类型，
+        private String package_type;
+        // 包裹的类型
+        private String object_type;
+        //当物品类型在packageType罗列的类型之外时填写
+        private String package_comments;
 
         public String getShip_name() {
             return ship_name;
@@ -69,6 +75,18 @@ public class OrderCallback {
         public JSONObject getAttributes() {return attributes;}
 
         public void setAttributes(JSONObject attributes) {this.attributes = attributes;}
+
+        public String getPackage_type() {return package_type;}
+
+        public void setPackage_type(String package_type) {this.package_type = package_type;}
+
+        public String getObject_type() {return object_type;}
+
+        public void setObject_type(String object_type) {this.object_type = object_type;}
+
+        public String getPackage_comments() {return package_comments;}
+
+        public void setPackage_comments(String package_comments) {this.package_comments = package_comments;}
     }
 
     public int getId() {

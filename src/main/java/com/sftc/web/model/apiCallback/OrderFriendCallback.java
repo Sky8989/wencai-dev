@@ -28,6 +28,12 @@ public class OrderFriendCallback {
         private String uuid;
         private String state;
         private JSONObject attributes;
+        //为C端小程序的物品类型，
+        private String package_type;
+        // 包裹的类型
+        private String object_type;
+        //当物品类型在packageType罗列的类型之外时填写
+        private String package_comments;
 
         public int getId() {
             return id;
@@ -84,6 +90,18 @@ public class OrderFriendCallback {
         public void setAttributes(JSONObject attributes) {
             this.attributes = attributes;
         }
+
+        public String getPackage_type() {return package_type;}
+
+        public void setPackage_type(String package_type) {this.package_type = package_type;}
+
+        public String getObject_type() {return object_type;}
+
+        public void setObject_type(String object_type) {this.object_type = object_type;}
+
+        public String getPackage_comments() {return package_comments;}
+
+        public void setPackage_comments(String package_comments) {this.package_comments = package_comments;}
     }
 
     public int getId() {
@@ -174,7 +192,11 @@ public class OrderFriendCallback {
         this.expressList = expressList;
     }
 
-    public String getPay_method() {return pay_method;}
+    public String getPay_method() {
+        return pay_method;
+    }
 
-    public void setPay_method(String pay_method) {this.pay_method = pay_method;}
+    public void setPay_method(String pay_method) {
+        this.pay_method = pay_method;
+    }
 }

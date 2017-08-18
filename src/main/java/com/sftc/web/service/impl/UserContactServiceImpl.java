@@ -105,7 +105,6 @@ public class UserContactServiceImpl implements UserContactService {
         if (userContactParam.getAccess_token() == null || userContactParam.getAccess_token().length() == 0) {
             //传入公共token
             userContactParam.setAccess_token(SFTokenHelper.COMMON_ACCESSTOKEN);
-            //return APIUtil.paramErrorResponse("access_token不能为空");
         } else if (userContactParam.getUser_id() == 0) {
             return APIUtil.paramErrorResponse("用户id不能为空");
         } else if (userContactParam.getFriend_id() == 0) {
