@@ -39,6 +39,8 @@ public class ContactCallback {
 
     //当物品类型在packageType罗列的类型之外时填写
     private String package_comments;
+    //快递uuid
+    private String uuid;
 
     public int getId() {
         return id;
@@ -136,19 +138,43 @@ public class ContactCallback {
         this.create_time = create_time;
     }
 
-    public String getSender_wechatname() {return sender_wechatname;}
+    public String getSender_wechatname() {
+        return sender_wechatname;
+    }
 
-    public void setSender_wechatname(String sender_wechatname) {this.sender_wechatname = sender_wechatname;}
+    public void setSender_wechatname(String sender_wechatname) {
+        this.sender_wechatname = sender_wechatname;
+    }
 
-    public String getShip_wechatname() {return ship_wechatname;}
+    public String getShip_wechatname() {
+        return ship_wechatname;
+    }
 
-    public void setShip_wechatname(String ship_wechatname) {this.ship_wechatname = ship_wechatname;}
+    public void setShip_wechatname(String ship_wechatname) {
+        this.ship_wechatname = ship_wechatname;
+    }
 
-    public String getPackage_type() {return package_type;}
+    public String getPackage_type() {
+        return package_type;
+    }
 
-    public void setPackage_type(String package_type) {this.package_type = package_type;}
+    public void setPackage_type(String package_type) {
+        this.package_type = package_type;
+    }
 
-    public String getPackage_comments() {return package_comments;}
+    public String getPackage_comments() {
+        return package_comments;
+    }
 
-    public void setPackage_comments(String package_comments) {this.package_comments = package_comments;}
+    public void setPackage_comments(String package_comments) {
+        this.package_comments = package_comments;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 }

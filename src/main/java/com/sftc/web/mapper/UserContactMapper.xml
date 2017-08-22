@@ -30,6 +30,7 @@
         <result column="package_type" property="package_type"/>
         <result column="object_type" property="object_type"/>
         <result column="package_comments" property="package_comments"/>
+        <result column="uuid" property="uuid"/>
     </resultMap>
 
     <select id="selectUser" parameterType="int" resultType="com.sftc.web.model.User">
