@@ -70,7 +70,9 @@ public class OrderCancelLogic {
         if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
             // 取消同城订单
             orderMapper.updateCancelOrderById(order_id);
-            orderExpressMapper.updateOrderExpressCanceled(order_id);
+//            orderExpressMapper.updateOrderExpressCanceled(order_id);
+            // 同城 超时未填写或者支付超时 都更新为超时DANKAL_OVERTIME
+            orderExpressMapper.updateOrderExpressOvertime(order_id);
         }
     }
 

@@ -108,11 +108,13 @@ public class OrderTimerLogic {
                     public void run() {
                         logger.info("开始取消大网超时单");
                         List<Integer> orderIds = orderMapper.selectNationUnCommitOrders();
-                        //将未提交的好友多包裹的订单号加到取消序列中
-                        List<Integer> orderIds2 = orderMapper.selectMutilExpressOrders();
-                        orderIds.addAll(orderIds2);
                         for (int order_id : orderIds) {
                             orderCancelLogic.cancelNationUnCommitOrder(order_id, timeOutInterval);
+                        }
+                        //好友多包裹的订单 超时更新为DANKAL_OVERTIME 而不是CANCELED
+                        List<Integer> orderIds2 = orderMapper.selectMutilExpressOrders();
+                        for (int order_id : orderIds2) {
+                            orderCancelLogic.cancelSameUnCommitOrder(order_id, timeOutInterval);
                         }
                         logger.info("大网超时订单取消完毕");
                     }

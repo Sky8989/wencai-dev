@@ -124,6 +124,12 @@
         WHERE  order_id=#{order_id}
     </update>
 
+    <update id="updateOrderExpressOvertime" parameterType="int">
+        UPDATE sftc_order_express
+        SET state='DANKAL_OVERTIME'
+        WHERE  order_id=#{order_id}
+    </update>
+
     <update id="updateOrderExpressForSF" parameterType="com.sftc.web.model.OrderExpress">
         update sftc_order_express
         set
