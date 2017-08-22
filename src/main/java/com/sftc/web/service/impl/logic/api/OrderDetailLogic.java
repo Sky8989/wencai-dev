@@ -80,7 +80,7 @@ public class OrderDetailLogic {
         resultMap.put("giftCard", giftCard);
 
         //查询是否有未读收到好友地址消息 若有则消除
-        remarkMessageReceiveAddress(order.getOrderExpressList(), order.getSender_user_id());
+        //remarkMessageReceiveAddress(order.getOrderExpressList(), order.getSender_user_id());
 
         return APIUtil.getResponse(SUCCESS, resultMap);
     }

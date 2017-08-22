@@ -34,6 +34,11 @@ public class ContactCallback {
     private String sender_wechatname;
     // 收件人微信名
     private String ship_wechatname;
+    //为C端小程序的物品类型，
+    private String package_type;
+
+    //当物品类型在packageType罗列的类型之外时填写
+    private String package_comments;
 
     public int getId() {
         return id;
@@ -138,4 +143,12 @@ public class ContactCallback {
     public String getShip_wechatname() {return ship_wechatname;}
 
     public void setShip_wechatname(String ship_wechatname) {this.ship_wechatname = ship_wechatname;}
+
+    public String getPackage_type() {return package_type;}
+
+    public void setPackage_type(String package_type) {this.package_type = package_type;}
+
+    public String getPackage_comments() {return package_comments;}
+
+    public void setPackage_comments(String package_comments) {this.package_comments = package_comments;}
 }

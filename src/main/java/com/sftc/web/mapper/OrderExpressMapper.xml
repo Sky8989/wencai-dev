@@ -33,7 +33,7 @@
             keyProperty="id">
         INSERT INTO sftc_order_express
         (ship_name,ship_mobile,ship_province,ship_city,ship_area,
-        ship_addr,order_number,package_type,object_type,create_time,sender_user_id,order_id,state,uuid,longitude,latitude,reserve_time,order_time)
+        ship_addr,order_number,package_type,object_type,package_comments,create_time,sender_user_id,order_id,state,uuid,longitude,latitude,reserve_time,order_time)
         VALUES (
         #{ship_name, jdbcType=VARCHAR},
         #{ship_mobile, jdbcType=VARCHAR},
@@ -44,6 +44,7 @@
         #{order_number, jdbcType=VARCHAR},
         #{package_type, jdbcType=VARCHAR},
         #{object_type, jdbcType=VARCHAR},
+        #{package_comments, jdbcType=VARCHAR},
         #{create_time, jdbcType=VARCHAR},
         #{sender_user_id, jdbcType=INTEGER},
         #{order_id, jdbcType=INTEGER},
@@ -60,7 +61,7 @@
             keyProperty="id">
         INSERT INTO sftc_order_express
         (ship_name,ship_mobile,ship_province,ship_city,ship_area,
-        ship_addr,supplementary_info,order_number,package_type,object_type,create_time,sender_user_id,order_id,state,uuid,longitude,latitude,reserve_time,order_time)
+        ship_addr,supplementary_info,order_number,package_type,object_type,package_comments,create_time,sender_user_id,order_id,state,uuid,longitude,latitude,reserve_time,order_time)
         VALUES (
         #{ship_name, jdbcType=VARCHAR},
         #{ship_mobile, jdbcType=VARCHAR},
@@ -72,6 +73,7 @@
         #{order_number, jdbcType=VARCHAR},
         #{package_type, jdbcType=VARCHAR},
         #{object_type, jdbcType=VARCHAR},
+        #{package_comments, jdbcType=VARCHAR},
         #{create_time, jdbcType=VARCHAR},
         #{sender_user_id, jdbcType=INTEGER},
         #{order_id, jdbcType=INTEGER},

@@ -105,6 +105,9 @@ public class OrderListLogic {
                 express.setShip_name(oe.getShip_name());
                 express.setShip_addr(oe.getShip_addr());
                 express.setOrder_number(oe.getOrder_number());
+                express.setPackage_type(oe.getPackage_type());  //增加包裹类型的三个字段
+                express.setObject_type(oe.getObject_type());
+                express.setPackage_comments(oe.getPackage_comments());
                 //如果有异常信息，则添加异常信息
                 if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
                     express.setAttributes(JSONObject.fromObject(oe.getAttributes()));
@@ -167,6 +170,10 @@ public class OrderListLogic {
                 express.setUuid(oe.getUuid());
                 express.setState(oe.getState());
                 express.setShip_name(oe.getShip_name());
+                express.setPackage_type(oe.getPackage_type());  //增加包裹类型的三个字段
+                express.setObject_type(oe.getObject_type());
+                express.setPackage_comments(oe.getPackage_comments());
+
                 //如果有异常信息，则添加异常信息
                 if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
                     express.setAttributes(JSONObject.fromObject(oe.getAttributes()));
