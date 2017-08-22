@@ -102,6 +102,12 @@ public class OrderDetailLogic {
         JSONObject respObject = new JSONObject();
 
         String regionType = order.getRegion_type();
+
+        if (regionType == null) { //增加对未提交订单的查询，此时regionType无值
+            respObject.put("order", order);
+            return APIUtil.getResponse(SUCCESS, respObject);
+        }
+
         if (regionType.equals("REGION_NATION")) { // 大网
 
             // 兜底单
