@@ -126,7 +126,7 @@
 
     <update id="updateOrderExpressOvertime" parameterType="int">
         UPDATE sftc_order_express
-        SET state='DANKAL_OVERTIME'
+        SET state='OVERTIME'
         WHERE  order_id=#{order_id}
     </update>
 
