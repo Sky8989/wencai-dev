@@ -31,7 +31,8 @@ public interface OrderExpressMapper {
 
     // 更改 快递状态 为 取消 CANCELED
     void updateOrderExpressCanceled(int order_id);
-    // 更改 快递状态 为 超时 DANKAL_OVERTIME
+
+    // 更改 快递状态 为 超时 OVERTIME
     void updateOrderExpressOvertime(int order_id);
 
     // 更新快递信息，by 快递id，用于好友填写订单时回填信息
