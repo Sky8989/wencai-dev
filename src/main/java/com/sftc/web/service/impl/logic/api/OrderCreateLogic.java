@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.common.DateUtils.iSO8601DateWithTimeStamp;
 
 @Transactional
 @Component
@@ -213,7 +212,7 @@ public class OrderCreateLogic {
                     current_create_time, orderExpress.getLongitude(), orderExpress.getLatitude()
             );
         }
-        System.out.println("-   -好友填写订单完成的时间：" + iSO8601DateWithTimeStamp(System.currentTimeMillis()));
+
         return APIUtil.getResponse(SUCCESS, orderExpress.getOrder_id());
     }
 }
