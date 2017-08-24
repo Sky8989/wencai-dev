@@ -21,6 +21,8 @@ import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
@@ -29,9 +31,11 @@ import java.util.TreeMap;
 
 import static com.sftc.tools.api.APIStatus.SUBMIT_FAIL;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.common.DateUtils.iSO8601DateWithTimeStamp;
 import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
 import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
 import static com.sftc.tools.constant.WXConstant.WX_template_id_1;
+import static org.springframework.transaction.TransactionDefinition.ISOLATION_SERIALIZABLE;
 
 @Component
 public class OrderCommitLogic {
@@ -83,6 +87,7 @@ public class OrderCommitLogic {
     /**
      * 好友订单提交
      */
+    @Transactional(isolation = Isolation.SERIALIZABLE)  //使用最高级别的事物防止提交过程中有好友包裹被填写
     public APIResponse friendOrderCommit(APIRequest request) {
         Object requestBody = request.getRequestParam();
         // Param Verify
@@ -198,7 +203,7 @@ public class OrderCommitLogic {
     }
 
     /// 好友同城订单提交
-    public APIResponse friendSameOrderCommit(JSONObject requestObject) {
+    private APIResponse friendSameOrderCommit(JSONObject requestObject) {
         // Param
         int order_id = ((Double) requestObject.getJSONObject("order").get("order_id")).intValue();
         if (order_id < 0)
@@ -302,7 +307,7 @@ public class OrderCommitLogic {
     }
 
     /// 好友大网订单提交
-    private APIResponse friendNationOrderCommit(JSONObject requestObject) {
+    private synchronized APIResponse friendNationOrderCommit(JSONObject requestObject) {
         // handle param
         int order_id = ((Double) requestObject.getJSONObject("order").get("order_id")).intValue();
         if (order_id < 0)
@@ -311,7 +316,9 @@ public class OrderCommitLogic {
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
         orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
 
-        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+        //使用 含有排他性的行级锁 进行查询
+
+        Order order = orderMapper.selectOrderDetailByOrderIdForUpdate(order_id);
         for (OrderExpress oe : order.getOrderExpressList()) {
             // 拼接大网订单地址参数
             JSONObject sf = requestObject.getJSONObject("sf");
@@ -355,7 +362,6 @@ public class OrderCommitLogic {
                     sf.put("j_address", j_address + order.getSupplementary_info());
                     sf.put("d_address", d_address + oe.getSupplementary_info());
 
-
                     // 立即提交订单
                     String paramStr = gson.toJson(JSONObject.fromObject(sf));
                     HttpPost post = new HttpPost(SF_CREATEORDER_URL);
@@ -381,12 +387,12 @@ public class OrderCommitLogic {
                         //setupAddress(order, oe);
                         //使用新的地址插入工具
                         //setupAddress2(order, oe);
+
                     }
                 }
             }
         }
         order = orderMapper.selectOrderDetailByOrderId(order_id);
-
         return APIUtil.getResponse(SUCCESS, order);
     }
 

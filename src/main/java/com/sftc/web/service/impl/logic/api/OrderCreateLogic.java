@@ -14,6 +14,8 @@ import com.sftc.web.model.UserContactNew;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.common.DateUtils.iSO8601DateWithTimeStamp;
 
 @Transactional
 @Component
@@ -94,18 +97,14 @@ public class OrderCreateLogic {
     /**
      * 好友填写寄件订单
      */
+    //使用最高级别的事物 防止提交过程中有好友包裹被填写
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
     public synchronized APIResponse friendFillOrder(Map rowData) {
         JSONObject paramOBJ = JSONObject.fromObject(rowData);
-        String orderExpressStr = rowData.toString();
 //        // 修复 空格对Gson的影响
 //        String strJsonResult = orderExpressStr.replace(" ", "");
 //        OrderExpress orderExpress = new Gson().fromJson(strJsonResult, OrderExpress.class);
         OrderExpress orderExpress = (OrderExpress) JSONObject.toBean(paramOBJ, OrderExpress.class);
-
-        //增加对supplementary_info的处理 保证有值
-        if (orderExpress.getSupplementary_info() == null || "".equals(orderExpress.getSupplementary_info())) {
-            orderExpress.setSupplementary_info(" ");
-        }
 
         // 判断订单是否下单
         Order order = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
@@ -123,9 +122,14 @@ public class OrderCreateLogic {
                 realList.add(oe);
         }
 
+
         if (realList.isEmpty()) { // 已抢完
             return APIUtil.submitErrorResponse("包裹已经分发完", null);
         } else {
+            //增加对supplementary_info的处理 保证有值
+            if (orderExpress.getSupplementary_info() == null || "".equals(orderExpress.getSupplementary_info())) {
+                orderExpress.setSupplementary_info(" ");
+            }
             orderExpress.setState("ALREADY_FILL");
             orderExpress.setId(realList.get(0).getId());
             orderExpress.setReceive_time(Long.toString(System.currentTimeMillis()));
@@ -209,6 +213,7 @@ public class OrderCreateLogic {
                     current_create_time, orderExpress.getLongitude(), orderExpress.getLatitude()
             );
         }
+        System.out.println("-   -好友填写订单完成的时间：" + iSO8601DateWithTimeStamp(System.currentTimeMillis()));
         return APIUtil.getResponse(SUCCESS, orderExpress.getOrder_id());
     }
 }

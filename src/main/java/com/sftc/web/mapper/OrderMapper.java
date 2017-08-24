@@ -44,6 +44,14 @@ public interface OrderMapper {
     Order selectOrderDetailByOrderId(int order_id);
 
     /**
+     * 添加了行级锁和排他锁的订单详情查询
+     *
+     * @param order_id
+     * @return
+     */
+    Order selectOrderDetailByOrderIdForUpdate(int order_id);
+
+    /**
      * 根据快递id查询订单详情
      */
     Order selectOrderDetailByExpressId(int express_id);
