@@ -5,11 +5,11 @@
     <artifactId>sftc</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>tcsu Maven Webapp</name>
+    <name>sftc Maven Webapp</name>
     <url>http://maven.apache.org</url>
 
     <build>
-        <finalName>tcsu</finalName>
+        <finalName>sftc</finalName>
         <resources>
             <resource>
                 <directory>src/main/java</directory>
@@ -20,6 +20,7 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <!--增加对编译级别的定义-->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
