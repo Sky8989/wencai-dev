@@ -10,7 +10,7 @@ public class DateUtils {
 
     public static String iSO8601DateWithTimeStamp(long timeStamp) {
         Date date = new Date(timeStamp);
-        String pattern = "yyyy-MM-dd'T'HH:mm:ssZZ";
+        String pattern = "yyyy-MM-dd'T'HH:mm:sssZZ";
 
         return DateFormatUtils.format(date, pattern);
     }

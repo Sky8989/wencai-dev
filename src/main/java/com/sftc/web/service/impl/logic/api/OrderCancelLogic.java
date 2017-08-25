@@ -88,22 +88,21 @@ public class OrderCancelLogic {
 
     // 取消同城订单 与 未提交单
     private APIResponse cancelSAMEOrder(int order_id, String access_token) {
+
         List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
-        StringBuilder stringBuilder = new StringBuilder();
-        //遍历所有的快递列表
-        for (OrderExpress eachOrderExpress : arrayList) {
-            if (eachOrderExpress.getUuid() != null && !"".equals(eachOrderExpress.getUuid())) {
-                stringBuilder.append(eachOrderExpress.getUuid());
-                stringBuilder.append(",");
-            }
-        }
-
-        orderMapper.updateCancelOrderById(order_id);
-        orderExpressMapper.updateOrderExpressCanceled(order_id);
 
         boolean falg = order.getRegion_type() == null || "".equals(order.getRegion_type());
-        if (!falg) { //这是订单已经提交付款了的操作
+        if (!falg) {
+            StringBuilder stringBuilder = new StringBuilder();
+            //遍历所有的快递列表
+            for (OrderExpress eachOrderExpress : arrayList) {
+                if (eachOrderExpress.getUuid() != null && !"".equals(eachOrderExpress.getUuid())) {
+                    stringBuilder.append(eachOrderExpress.getUuid());
+                    stringBuilder.append(",");
+                }
+            }
+            //这是订单已经提交付款了的操作
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 
             // 下面是 顺丰方面取消订单的逻辑
@@ -113,12 +112,16 @@ public class OrderCancelLogic {
             post.addHeader("PushEnvelope-Device-Token", access_token);
             String res = APIPostUtil.post(str, post);
             JSONObject resJSONObject = JSONObject.fromObject(res);
-            if (resJSONObject.get("error") != null) {
+            if (resJSONObject.containsKey("error") || resJSONObject.containsKey("errors")) {
                 return APIUtil.submitErrorResponse("订单取消失败", resJSONObject);
             }
-        } else { // 订单还未提交给顺丰的情况，只更新order的信息即可
-            return APIUtil.getResponse(APIStatus.SUCCESS, null);
         }
+
+        // 订单还未提交给顺丰的情况，只更新order的信息即可
+        // 订单已提交，仍然需要更新
+        orderMapper.updateCancelOrderById(order_id);
+        orderExpressMapper.updateOrderExpressCanceled(order_id);
+
         return APIUtil.getResponse(APIStatus.SUCCESS, null);
     }
 }

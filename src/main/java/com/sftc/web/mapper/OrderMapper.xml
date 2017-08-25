@@ -85,6 +85,11 @@
         SELECT * FROM sftc_order WHERE id=#{order_id}
     </select>
 
+    <!--添加了行级锁和排他锁的订单详情查询-->
+    <select id="selectOrderDetailByOrderIdForUpdate" resultMap="orderMap" parameterType="int">
+        SELECT * FROM sftc_order WHERE id=#{order_id} FOR UPDATE
+    </select>
+
     <select id="selectOrderDetailByExpressId" resultMap="orderMap" parameterType="int">
         SELECT *
         FROM sftc_order o, sftc_order_express oe

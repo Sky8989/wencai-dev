@@ -21,17 +21,21 @@ import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import static com.sftc.tools.api.APIStatus.SUBMIT_FAIL;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
 import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
 import static com.sftc.tools.constant.WXConstant.WX_template_id_1;
+import static org.springframework.transaction.TransactionDefinition.ISOLATION_SERIALIZABLE;
 
 @Component
 public class OrderCommitLogic {
@@ -83,6 +87,7 @@ public class OrderCommitLogic {
     /**
      * 好友订单提交
      */
+    @Transactional(isolation = Isolation.SERIALIZABLE)  //使用最高级别的事物防止提交过程中有好友包裹被填写
     public APIResponse friendOrderCommit(APIRequest request) {
         Object requestBody = request.getRequestParam();
         // Param Verify
@@ -198,7 +203,7 @@ public class OrderCommitLogic {
     }
 
     /// 好友同城订单提交
-    public APIResponse friendSameOrderCommit(JSONObject requestObject) {
+    private APIResponse friendSameOrderCommit(JSONObject requestObject) {
         // Param
         int order_id = ((Double) requestObject.getJSONObject("order").get("order_id")).intValue();
         if (order_id < 0)
@@ -206,6 +211,11 @@ public class OrderCommitLogic {
 
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+
+        //增加对包裹数量的验证，确保是只有一个订单里只有一个同城包裹
+        if (order.getOrderExpressList().size() != 1)
+            return APIUtil.submitErrorResponse("Order infomation has been changed,please check again!", null);
+
         for (OrderExpress oe : order.getOrderExpressList()) {
             // 拼接同城订单参数中的 source 和 target
             Source source = new Source();
@@ -302,7 +312,7 @@ public class OrderCommitLogic {
     }
 
     /// 好友大网订单提交
-    private APIResponse friendNationOrderCommit(JSONObject requestObject) {
+    private synchronized APIResponse friendNationOrderCommit(JSONObject requestObject) {
         // handle param
         int order_id = ((Double) requestObject.getJSONObject("order").get("order_id")).intValue();
         if (order_id < 0)
@@ -311,7 +321,22 @@ public class OrderCommitLogic {
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
         orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
 
-        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+        Order order = orderMapper.selectOrderDetailByOrderIdForUpdate(order_id);
+
+        //增加对包裹数量的验证，确保是只有一个订单里只有一个同城包裹
+        if (requestObject.getJSONObject("order").containsKey("package_count")) {
+            int package_count = requestObject.getJSONObject("order").getInt("package_count");
+            int real_count = 0;
+            for (OrderExpress oe : order.getOrderExpressList()) {
+                if (oe.getShip_mobile() != null) {//如果有手机号，则表明已填写
+                    real_count++;
+                }
+            }
+            if (real_count != package_count) //数据库的已填写包裹数和客户端的包裹数不一致
+                return APIUtil.submitErrorResponse("Order infomation has been changed,please check again!", null);
+        }
+
+
         for (OrderExpress oe : order.getOrderExpressList()) {
             // 拼接大网订单地址参数
             JSONObject sf = requestObject.getJSONObject("sf");
@@ -355,7 +380,6 @@ public class OrderCommitLogic {
                     sf.put("j_address", j_address + order.getSupplementary_info());
                     sf.put("d_address", d_address + oe.getSupplementary_info());
 
-
                     // 立即提交订单
                     String paramStr = gson.toJson(JSONObject.fromObject(sf));
                     HttpPost post = new HttpPost(SF_CREATEORDER_URL);
@@ -381,12 +405,12 @@ public class OrderCommitLogic {
                         //setupAddress(order, oe);
                         //使用新的地址插入工具
                         //setupAddress2(order, oe);
+
                     }
                 }
             }
         }
         order = orderMapper.selectOrderDetailByOrderId(order_id);
-
         return APIUtil.getResponse(SUCCESS, order);
     }
 
