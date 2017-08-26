@@ -116,8 +116,13 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         // handle address
         senderCity = senderCity.replace("市", "");
         receiverCity = receiverCity.replace("市", "");
-        if (!senderArea.endsWith("区")) senderArea = senderArea + "区";
-        if (!receiverArea.endsWith("区")) receiverArea = receiverArea + "区";
+        //取消对area的末尾加上区，改为去除 区、县 sf接口不支持 ‘紫金县区’
+//        if (!senderArea.endsWith("区")) senderArea = senderArea + "区";
+//        if (!receiverArea.endsWith("区")) receiverArea = receiverArea + "区";
+        if (senderArea.endsWith("区")) senderArea = senderArea.replace("区", "");
+        if (senderArea.endsWith("县")) senderArea = senderArea.replace("县", "");
+        if (receiverArea.endsWith("区")) receiverArea = receiverArea.replace("区", "");
+        if (receiverArea.endsWith("县")) receiverArea = receiverArea.replace("县", "");
 
 //        SFServiceAddress senderCityAddress = sfServiceAddressMapper.selectServiceAddressByNameAndLevel(senderCity, 3);
 //        SFServiceAddress receiveCityAddress = sfServiceAddressMapper.selectServiceAddressByNameAndLevel(receiverCity, 3);
