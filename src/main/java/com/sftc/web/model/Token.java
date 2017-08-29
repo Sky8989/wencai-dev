@@ -1,5 +1,7 @@
 package com.sftc.web.model;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -35,6 +37,20 @@ public class Token extends Object {
     private int user_id;
 
     public Token() {
+
+    }
+
+    /**
+     * CMS使用的构造方法
+     * @param request
+     */
+    public Token(HttpServletRequest request) {
+        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
+            this.id = Integer.parseInt(request.getParameter("id"));
+        }
+        if (request.getParameter("user_id") != null && !"".equals(request.getParameter("user_id"))) {
+            this.user_id = Integer.parseInt(request.getParameter("user_id"));
+        }
     }
 
     public Token(int user_id, String token) {
@@ -99,7 +115,6 @@ public class Token extends Object {
     }
 
 
-
     public String getGmt_modified() {
         return gmt_modified;
     }
@@ -115,7 +130,6 @@ public class Token extends Object {
     public void setGmt_expiry(String gmt_expiry) {
         this.gmt_expiry = gmt_expiry;
     }
-
 
 
     public int getUser_id() {
