@@ -1,6 +1,7 @@
 package com.sftc.web.service.impl.logic.cms;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
@@ -27,11 +28,14 @@ public class CMSOrderListLogic {
         int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
         PageHelper.startPage(pageNumKey, pageSizeKey);
         Order order = new Order(httpServletRequest);
-        List<Order> orderList = orderMapper.selectOrderByPage(order);
-        if (orderList.size() == 0) {
+//        List<Order> orderList = orderMapper.selectOrderByPage(order);
+        //  使用lambab表达式 配合pageHelper实现对用户列表和查询相关信息的统一查询
+        PageInfo<Object> pageInfo = PageHelper.startPage(pageNumKey, pageSizeKey).doSelectPageInfo(() -> orderMapper.selectOrderByPage(order));
+
+        if (pageInfo.getList().size() == 0) {
             return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
         } else {
-            return APIUtil.getResponse(SUCCESS, orderList);
+            return APIUtil.getResponse(SUCCESS, pageInfo);
         }
     }
 }

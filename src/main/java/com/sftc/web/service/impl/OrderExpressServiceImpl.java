@@ -1,6 +1,7 @@
 package com.sftc.web.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIStatus;
@@ -14,6 +15,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+import static com.sftc.tools.api.APIStatus.SUCCESS;
+
 @Service
 public class OrderExpressServiceImpl implements OrderExpressService {
     @Resource
@@ -21,18 +24,22 @@ public class OrderExpressServiceImpl implements OrderExpressService {
 
     //cms 获取快递信息列表 分页+条件
     public APIResponse selectOrderExpressListByPage(APIRequest apiRequest) {
-        APIStatus status = APIStatus.SUCCESS;
+
         HttpServletRequest httpServletRequest = apiRequest.getRequest();
         // 此处封装了 OrderExpress的构造方法
         OrderExpress orderExpress = new OrderExpress(httpServletRequest);
         int pageNumKey = Integer.parseInt(httpServletRequest.getParameter("pageNumKey"));
         int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
         PageHelper.startPage(pageNumKey, pageSizeKey);
-        List<OrderExpress> orderExpressList = orderExpressMapper.selectOrderExpressByPage(orderExpress);
-        if (orderExpressList.size() == 0) {
+//        List<OrderExpress> orderExpressList = orderExpressMapper.selectOrderExpressByPage(orderExpress);
+
+        //  使用lambab表达式 配合pageHelper实现对用户列表和查询相关信息的统一查询
+        PageInfo<Object> pageInfo = PageHelper.startPage(pageNumKey, pageSizeKey).doSelectPageInfo(() -> orderExpressMapper.selectOrderExpressByPage(orderExpress));
+        //  处理结果
+        if (pageInfo.getList().size() == 0) {
             return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
         } else {
-            return APIUtil.getResponse(status, orderExpressList);
+            return APIUtil.getResponse(SUCCESS, pageInfo);
         }
     }
 }

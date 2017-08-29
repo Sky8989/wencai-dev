@@ -300,7 +300,7 @@ public class UserServiceImpl implements UserService {
      * 下面是CMS的内容
      */
     public APIResponse selectUserListByPage(APIRequest request) throws Exception {
-        APIStatus status = SUCCESS;
+
         HttpServletRequest httpServletRequest = request.getRequest();
         // 此处封装了 User的构造方法
         User user = new User(httpServletRequest);
@@ -312,7 +312,7 @@ public class UserServiceImpl implements UserService {
         if (pageInfo.getList().size() == 0) {
             return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
         } else {
-            return APIUtil.getResponse(status, pageInfo);
+            return APIUtil.getResponse(SUCCESS, pageInfo);
         }
     }
 }
