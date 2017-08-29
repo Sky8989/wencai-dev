@@ -44,6 +44,14 @@
         select * from sftc_token where local_token=#{token}
     </select>
 
+    <select id="getTokenList" parameterType="com.sftc.web.model.Token" resultType="com.sftc.web.model.Token">
+        select * from sftc_token
+        <where>
+            <if test="id != 0">and id = #{id}</if>
+            <if test="user_id != null">and user_id LIKE '%${user_id}%'</if>
+        </where>
+    </select>
+
 
 </mapper>
 

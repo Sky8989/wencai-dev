@@ -18,4 +18,12 @@ public interface TokenService {
      * @throws Exception
      */
     APIResponse token(APIRequest apiRequest) throws Exception;
+
+    /**
+     * 为CMS提供token列表查询接口
+     * @param apiRequest
+     * @return
+     * @throws Exception
+     */
+    APIResponse getTokenList(APIRequest apiRequest) throws Exception;
 }
