@@ -6,6 +6,15 @@
 
     <display-name>Archetype Created Web Application</display-name>
 
+    <filter>
+        <filter-name>CORSFilter</filter-name>
+        <filter-class>com.sftc.tools.common.CORSFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CORSFilter</filter-name>
+        <url-pattern>/cms</url-pattern>
+    </filter-mapping>
+
     <!-- 加载spring容器 -->
     <context-param>
         <param-name>contextConfigLocation</param-name>
