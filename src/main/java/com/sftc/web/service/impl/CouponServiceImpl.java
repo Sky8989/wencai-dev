@@ -30,10 +30,17 @@ public class CouponServiceImpl implements CouponService {
      * 根据用户查询优惠券
      */
     public APIResponse getUserCouponList(APIRequest apiRequest) throws Exception {
+        String status_valid = "INIT,ACTIVE";
+        String status_invalid = "DISABLED,USED";
+        String status_all = "INIT,ACTIVE,DISABLED,USED";
+
+
         APIStatus status = APIStatus.SUCCESS;
         JSONObject paramOBJ = JSONObject.fromObject(apiRequest.getRequestParam());
         if (!paramOBJ.containsKey("uuid")) return APIUtil.paramErrorResponse("Parameter missing uuid");
         if (!paramOBJ.containsKey("token")) return APIUtil.paramErrorResponse("Parameter missing token");
+        if (!paramOBJ.containsKey("status")) return APIUtil.paramErrorResponse("Parameter missing token");
+
         String uuid = paramOBJ.getString("uuid");
         String token = paramOBJ.getString("token");
 
@@ -41,7 +48,18 @@ public class CouponServiceImpl implements CouponService {
         String limit = paramOBJ.containsKey("limit") ? paramOBJ.getString("limit") : String.valueOf(20);
         String offset = paramOBJ.containsKey("offset") ? paramOBJ.getString("offset") : String.valueOf(0);
 
-        String COUPON_LIST_API = "http://api-dev.sf-rush.com/coupons/by_user/user_uuid?status=INIT,ACTIVE,DISABLED,USED&limit=" + limit + "&offset=" + offset;
+        //处理范围：有效/无效
+        String status_temp = paramOBJ.getString("status");
+        String status_final;
+        if (status_temp.equals("valid")) {
+            status_final = status_valid;
+        } else if (status_temp.equals("invalid")) {
+            status_final = status_invalid;
+        } else {
+            status_final = status_all;
+        }
+
+        String COUPON_LIST_API = "http://api-dev.sf-rush.com/coupons/by_user/user_uuid?status=" + status_final + "&limit=" + limit + "&offset=" + offset;
         COUPON_LIST_API = COUPON_LIST_API.replace("user_uuid", uuid + "");
         // 调用顺丰接口
         HttpGet httpGet = new HttpGet(COUPON_LIST_API);
