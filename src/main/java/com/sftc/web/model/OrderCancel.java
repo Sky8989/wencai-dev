@@ -1,5 +1,7 @@
 package com.sftc.web.model;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -69,4 +71,14 @@ public class OrderCancel extends Object {
     public void setOrder_id(int order_id) {
         this.order_id = order_id;
     }
+
+    public OrderCancel() {
+    }
+
+    public OrderCancel(HttpServletRequest request) {
+        if (request.getParameter("order_id") != null && !"".equals(request.getParameter("order_id")))
+        {this.order_id = Integer.parseInt(request.getParameter("order_id"));}
+    }
+
+
 }
