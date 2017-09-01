@@ -6,7 +6,7 @@
     <insert id="addCancelOrder">
                 INSERT INTO sftc_order_cancel (order_id,reason,question_describe,create_time)
                 VALUES (#{order_id},#{reason},#{create_time},#{question_describe})
-        </insert>
+    </insert>
 
     <select id="selectCanceledOrderList" parameterType="com.sftc.web.model.OrderCancel"
             resultType="com.sftc.web.model.OrderCancel">
