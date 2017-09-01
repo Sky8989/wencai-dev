@@ -54,7 +54,7 @@ public class CMSOrderListLogic {
 //        List<Order> orderList = orderMapper.selectOrderByPage(order);
         //  使用lambab表达式 配合pageHelper实现对用户列表和查询相关信息的统一查询
         PageInfo<Object> pageInfo = PageHelper.startPage(pageNumKey, pageSizeKey).doSelectPageInfo(() -> orderCancelMapper.selectCanceledOrderList(orderCancel));
-        
+
         if (pageInfo.getList().size() == 0) {
             return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
         } else {

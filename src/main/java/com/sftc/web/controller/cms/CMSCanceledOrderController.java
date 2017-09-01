@@ -19,14 +19,11 @@ import javax.servlet.http.HttpServletRequest;
 public class CMSCanceledOrderController extends AbstractBasicController {
 
     @Resource
-    OrderService orderService;
+    private OrderService orderService;
 
-    @RequestMapping("/list")
-    public APIResponse selectCanceledOrderList(@RequestBody OrderCancel orderCancel){
-
-
-
-        return null;
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public APIResponse selectCanceledOrderList(HttpServletRequest httpServletRequest) {
+        return orderService.selectCanceledOrderList(new APIRequest(httpServletRequest));
     }
 
 

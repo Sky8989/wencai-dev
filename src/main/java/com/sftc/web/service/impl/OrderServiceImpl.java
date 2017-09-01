@@ -130,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public APIResponse selectCanceledOrderList(APIRequest request) {
-        return cmsOrderListLogic.selectOrderListByPage(request);
+        return cmsOrderListLogic.selectCanceledOrderList(request);
     }
 
 

@@ -16,4 +16,12 @@ import com.sftc.tools.api.APIResponse;
 public interface OrderExpressService {
     //cms 获取快递信息列表 分页+条件
     APIResponse selectOrderExpressListByPage(APIRequest apiRequest);
+
+
+    /**
+     * 查询已经大网转单的订单
+     * @param apiRequest 通用请求
+     * @return APIResponse
+     */
+    APIResponse selectOrderExpressTransformList(APIRequest apiRequest);
 }
