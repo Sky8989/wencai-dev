@@ -1,12 +1,17 @@
-var config = {
+var config_url = {
     dev_hostAddress: 'https://sftc.dankal.cn/sftc',
     localhost_hostAddress: 'http://localhost:8080/sftc',
     dev_qiniu_getToken: 'https://sftc.dankal.cn/sftc/qiniu/uptoken',
-    localhost_qiniu_getToken: 'https://localhost:8080/sftc/qiniu/uptoken',
-    hostAddress: 'http://localhost:8080/sftc',
-    qiniu_getToken: 'https://localhost:8080/sftc/qiniu/uptoken',
+    localhost_qiniu_getToken: 'http://localhost:8080/sftc/qiniu/uptoken',
+}
+
+var config = {
+
+    hostAddress: config_url.dev_hostAddress,
+    qiniu_getToken: config_url.dev_qiniu_getToken,
     pageSizeKey:10
 };
+
 
 $(function () {
     custom_navbar_left();
