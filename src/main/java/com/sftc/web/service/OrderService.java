@@ -124,5 +124,13 @@ public interface OrderService {
      * 获取 订单列表 支持分页查询 和 条件查询
      */
     APIResponse selectOrderListByPage(APIRequest request);
+
+    /**
+     * 查询已取消的订单
+     *
+     * @param request 通用请求参数
+     * @return 返回APIResponse
+     */
+    public APIResponse selectCanceledOrderList(APIRequest request);
 }
 

@@ -5,9 +5,11 @@ import com.sftc.tools.api.APIPostUtil;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.web.mapper.OrderCancelMapper;
 import com.sftc.web.mapper.OrderExpressMapper;
 import com.sftc.web.mapper.OrderMapper;
 import com.sftc.web.model.Order;
+import com.sftc.web.model.OrderCancel;
 import com.sftc.web.model.OrderExpress;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
@@ -25,6 +27,8 @@ public class OrderCancelLogic {
     private OrderMapper orderMapper;
     @Resource
     private OrderExpressMapper orderExpressMapper;
+    @Resource
+    private OrderCancelMapper orderCancelMapper;
 
     //////////////////// Public Method ////////////////////
 
@@ -45,6 +49,7 @@ public class OrderCancelLogic {
         }
         // 不同地域类型的订单 进行不同的取消方式 大网是软取消 同城是硬取消
         if ("REGION_NATION".equals(order.getRegion_type())) {// true 大网单
+            addCancelRecord(id, "大网订单取消", "无");
             return cancelNATIONOrder(id);
         } else { // false 同城单 或者 未提交单
             return cancelSAMEOrder(id, access_token);
@@ -59,6 +64,7 @@ public class OrderCancelLogic {
         if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
             // 取消大网订单
             cancelNATIONOrder(order_id);
+            addCancelRecord(order_id, "大网订单超时取消", "无");
         }
     }
 
@@ -73,6 +79,7 @@ public class OrderCancelLogic {
 //            orderExpressMapper.updateOrderExpressCanceled(order_id);
             // 同城 超时未填写或者支付超时 都更新为超时OVERTIME
             orderExpressMapper.updateOrderExpressOvertime(order_id);
+            addCancelRecord(order_id, "同城订单超时取消", "无");
         }
     }
 
@@ -113,6 +120,7 @@ public class OrderCancelLogic {
             String res = APIPostUtil.post(str, post);
             JSONObject resJSONObject = JSONObject.fromObject(res);
             if (resJSONObject.containsKey("error") || resJSONObject.containsKey("errors")) {
+                addCancelRecord(order_id, "订单取消失败记录", "同城");
                 return APIUtil.submitErrorResponse("订单取消失败", resJSONObject);
             }
         }
@@ -122,6 +130,17 @@ public class OrderCancelLogic {
         orderMapper.updateCancelOrderById(order_id);
         orderExpressMapper.updateOrderExpressCanceled(order_id);
 
+        //添加订单取消记录
+        addCancelRecord(order_id, falg ? "未提交的订单已取消" : "已下单的同城订单取消", "同城");
         return APIUtil.getResponse(APIStatus.SUCCESS, null);
+    }
+
+    private void addCancelRecord(int order_id, String reason, String question_describe) {
+        OrderCancel orderCancel = new OrderCancel();
+        orderCancel.setOrder_id(order_id);
+        orderCancel.setReason(reason);
+        orderCancel.setQuestion_describe(question_describe);
+        orderCancel.setCreate_time(Long.toString(System.currentTimeMillis()));
+        orderCancelMapper.addCancelOrder(orderCancel);
     }
 }

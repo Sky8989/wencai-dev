@@ -8,6 +8,7 @@ import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.mapper.OrderExpressMapper;
 import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.OrderExpressTransform;
 import com.sftc.web.service.OrderExpressService;
 import org.springframework.stereotype.Service;
 
@@ -42,4 +43,25 @@ public class OrderExpressServiceImpl implements OrderExpressService {
             return APIUtil.getResponse(SUCCESS, pageInfo);
         }
     }
+
+    public APIResponse selectOrderExpressTransformList(APIRequest apiRequest) {
+
+        HttpServletRequest httpServletRequest = apiRequest.getRequest();
+        // 此处封装了 OrderExpress的构造方法
+        OrderExpressTransform orderExpressTransform = new OrderExpressTransform(httpServletRequest);
+        int pageNumKey = Integer.parseInt(httpServletRequest.getParameter("pageNumKey"));
+        int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
+        PageHelper.startPage(pageNumKey, pageSizeKey);
+
+        //  使用lambab表达式 配合pageHelper实现对用户列表和查询相关信息的统一查询
+        PageInfo<Object> pageInfo = PageHelper.startPage(pageNumKey, pageSizeKey).doSelectPageInfo(() -> orderExpressMapper.selectOrderExpressTransformList(orderExpressTransform));
+        //  处理结果
+        if (pageInfo.getList().size() == 0) {
+            return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
+        } else {
+            return APIUtil.getResponse(SUCCESS, pageInfo);
+        }
+    }
+
+
 }

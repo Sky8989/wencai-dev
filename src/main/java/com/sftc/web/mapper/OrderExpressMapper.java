@@ -1,6 +1,7 @@
 package com.sftc.web.mapper;
 
 import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.OrderExpressTransform;
 import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import org.apache.ibatis.annotations.Param;
@@ -53,4 +54,14 @@ public interface OrderExpressMapper {
 
     //     <!--下面是cms系统用到的mapper-->
     List<OrderExpress> selectOrderExpressByPage(OrderExpress orderExpress);
+
+    /**
+     * 获取大网兜底单列表
+     *
+     * @param orderExpressTransform 转单快递的模型
+     * @return 返回的是orderExpressTransform
+     */
+    List<OrderExpressTransform> selectOrderExpressTransformList(OrderExpressTransform orderExpressTransform);
+
+
 }
