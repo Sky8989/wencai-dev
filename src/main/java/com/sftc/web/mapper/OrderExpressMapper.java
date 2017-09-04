@@ -52,7 +52,27 @@ public interface OrderExpressMapper {
     // 更新订单的order_number为sf好友同城下单接口返回值 此id是快递信息的id
     void updateOrderNumber(@Param("id") int id, @Param("order_number") String order_number);
 
-    //     <!--下面是cms系统用到的mapper-->
+
+    /**
+     * 用于同步sf订单状态
+     * 获取该用户需要查询的订单的id
+     *
+     * @param user_id 用户id
+     * @return 返回订单id的列表
+     */
+    List<Integer> selectOrderIdForsyncSFExpressStatus(int user_id);
+
+    /**
+     * 批量查询快递信息
+     *
+     * @param orderIdList 订单id列表
+     * @return 返回快递列表
+     */
+    List<OrderExpress> selectExpressForsyncSFExpressStatus(List<Integer> orderIdList);
+
+
+    ////////////////////下面是cms系统用到的mapper//////////////////////////
+
     List<OrderExpress> selectOrderExpressByPage(OrderExpress orderExpress);
 
     /**
