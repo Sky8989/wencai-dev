@@ -1,5 +1,6 @@
 package com.sftc.web.service.impl.logic.api;
 
+import com.github.pagehelper.PageHelper;
 import com.google.gson.JsonArray;
 import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFOrderHelper;
@@ -198,15 +199,17 @@ public class OrderListLogic {
         if (myOrderParam.getToken().length() == 0) {
             //内置token
             myOrderParam.setToken(COMMON_ACCESSTOKEN);
-            //return APIUtil.paramErrorResponse("token不能为空");
         } else if (myOrderParam.getId() == 0) {
             return APIUtil.paramErrorResponse("用户id不能为空");
         } else if (myOrderParam.getPageNum() < 1 || myOrderParam.getPageSize() < 1) {
             return APIUtil.paramErrorResponse("分页参数无效");
         }
 
-        // handle SF orders url
-        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(myOrderParam.getId());
+        /// handle SF orders url
+        //更新用户的同城订单，更新sf状态的订单数 >= 接口查询的
+        List<OrderExpress> orderExpressList = selectOrderExpressListForStatusUpdate(myOrderParam);
+        if (orderExpressList == null || orderExpressList.size() == 0) return null;
+//        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(myOrderParam.getId());
         StringBuilder uuidSB = new StringBuilder();
         for (OrderExpress oe : orderExpressList) {
             if (oe.getUuid() != null && oe.getUuid().length() != 0) {
@@ -258,5 +261,17 @@ public class OrderListLogic {
         }
 
         return null;
+    }
+
+    // 根据分页参数和用户id 去查查找该用户的相关快递信息
+    private List<OrderExpress> selectOrderExpressListForStatusUpdate(MyOrderParam myOrderParam) {
+        // 查出该用户id相关的订单号
+        PageHelper.startPage(myOrderParam.getPageNum(), myOrderParam.getPageSize());
+        List<Integer> orderIdList = orderExpressMapper.selectOrderIdForsyncSFExpressStatus(myOrderParam.getId());
+        if (orderIdList.size() == 0) return null;
+        //使用mybatis的批量查询功能 将orderExpress查询出来
+        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForsyncSFExpressStatus(orderIdList);
+        if (orderExpressList.size() == 0) return null;
+        return orderExpressList;
     }
 }

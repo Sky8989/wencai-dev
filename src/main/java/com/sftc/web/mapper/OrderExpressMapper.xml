@@ -187,4 +187,22 @@
             <if test="nation_uuid != null and nation_uuid != '' ">and nation_uuid = #{nation_uuid}</if>
         </where>
     </select>
+
+    <select id="selectOrderIdForsyncSFExpressStatus" parameterType="int" resultType="int">
+     SELECT * FROM sftc_order o
+        WHERE id IN (
+            SELECT t.order_id FROM (
+              SELECT distinct oe.order_id FROM sftc_order_express oe WHERE (oe.sender_user_id=#{id} OR oe.ship_user_id=#{id})
+            ) AS t
+        ) AND order_type='ORDER_MYSTERY'
+        ORDER by o.create_time desc
+    </select>
+
+    <select id="selectExpressForsyncSFExpressStatus" resultType="com.sftc.web.model.OrderExpress">
+        SELECT * FROM sftc_order_express oe WHERE oe.order_id
+        IN
+        <foreach collection="list" item="order_id" open="(" close=")" separator=",">
+            #{order_id}
+        </foreach>
+    </select>
 </mapper>
