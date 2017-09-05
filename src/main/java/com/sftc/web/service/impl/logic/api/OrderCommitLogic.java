@@ -389,9 +389,9 @@ public class OrderCommitLogic {
                     JSONObject jsonObject = JSONObject.fromObject(resultStr);
 //                    String messageType = (String) jsonObject.get("Message_Type");
 
-//                    if (messageType != null && messageType.contains("ERROR")) {
-//                    if (messageType != null && (messageType.contains("ERROR"))) {
-                    if (jsonObject.containsKey("error") || jsonObject.containsKey("Message")) { //对大网下单结果进行判断
+//                    if (messageType != null && messageType.contains("ERROR")) { //旧20170905
+                    // 增加对下单结果的判断  含有error Message 或者 没有ordernum 都算是提交失败
+                    if (jsonObject.containsKey("error") || jsonObject.containsKey("Message") || !jsonObject.containsKey("ordernum")) {
                         //手动操作事务回滚
                         TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                         return APIUtil.submitErrorResponse("下单失败", jsonObject);
