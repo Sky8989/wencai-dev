@@ -277,7 +277,8 @@ public class OrderCommitLogic {
             String resultStr = APIPostUtil.post(paramStr, post);
             JSONObject responseObject = JSONObject.fromObject(resultStr);
 
-            if (!responseObject.containsKey("error")) {
+//            if (!responseObject.containsKey("error")) {
+            if (!(responseObject.containsKey("error") || responseObject.containsKey("errors"))) {
                 String uuid = (String) responseObject.getJSONObject("request").get("uuid");
                 // 获取sf返回的编号
                 String request_num = responseObject.getJSONObject("request").getString("request_num");
@@ -386,9 +387,11 @@ public class OrderCommitLogic {
                     post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
                     String resultStr = APIPostUtil.post(paramStr, post);
                     JSONObject jsonObject = JSONObject.fromObject(resultStr);
-                    String messageType = (String) jsonObject.get("Message_Type");
+//                    String messageType = (String) jsonObject.get("Message_Type");
 
-                    if (messageType != null && messageType.contains("ERROR")) {
+//                    if (messageType != null && messageType.contains("ERROR")) {
+//                    if (messageType != null && (messageType.contains("ERROR"))) {
+                    if (jsonObject.containsKey("error") || jsonObject.containsKey("Message")) { //对大网下单结果进行判断
                         //手动操作事务回滚
                         TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                         return APIUtil.submitErrorResponse("下单失败", jsonObject);
@@ -662,7 +665,8 @@ public class OrderCommitLogic {
             String res = APIPostUtil.post(str, post);
             responseObject = JSONObject.fromObject(res);
 
-            if (responseObject.get("Message") != null || (responseObject.get("Message_Type") != null && ((String) responseObject.get("Message_Type")).contains("ERROR"))) {
+//            if (responseObject.containsKey("error") || responseObject.get("Message") != null || (responseObject.get("Message_Type") != null && ((String) responseObject.get("Message_Type")).contains("ERROR"))) {
+            if (responseObject.containsKey("error") || requestObject.containsKey("Message")) {//增加对下单结果的判断
                 status = SUBMIT_FAIL;
                 //手动操作事务回滚
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
