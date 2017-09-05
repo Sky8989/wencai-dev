@@ -194,7 +194,7 @@
             SELECT t.order_id FROM (
               SELECT distinct oe.order_id FROM sftc_order_express oe WHERE (oe.sender_user_id=#{id} OR oe.ship_user_id=#{id})
             ) AS t
-        ) AND order_type='ORDER_MYSTERY'
+        ) AND region_type = 'REGION_SAME'
         ORDER by o.create_time desc
     </select>
 

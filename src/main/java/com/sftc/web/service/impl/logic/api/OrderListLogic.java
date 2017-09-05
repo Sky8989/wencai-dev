@@ -265,7 +265,7 @@ public class OrderListLogic {
 
     // 根据分页参数和用户id 去查查找该用户的相关快递信息
     private List<OrderExpress> selectOrderExpressListForStatusUpdate(MyOrderParam myOrderParam) {
-        // 查出该用户id相关的订单号
+        // 查出该用户id相关的订单号 把同城的单抓出来
         PageHelper.startPage(myOrderParam.getPageNum(), myOrderParam.getPageSize());
         List<Integer> orderIdList = orderExpressMapper.selectOrderIdForsyncSFExpressStatus(myOrderParam.getId());
         if (orderIdList.size() == 0) return null;
