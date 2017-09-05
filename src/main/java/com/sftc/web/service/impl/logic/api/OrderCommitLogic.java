@@ -277,7 +277,8 @@ public class OrderCommitLogic {
             String resultStr = APIPostUtil.post(paramStr, post);
             JSONObject responseObject = JSONObject.fromObject(resultStr);
 
-            if (!responseObject.containsKey("error")) {
+//            if (!responseObject.containsKey("error")) {
+            if (!(responseObject.containsKey("error") || responseObject.containsKey("errors"))) {
                 String uuid = (String) responseObject.getJSONObject("request").get("uuid");
                 // 获取sf返回的编号
                 String request_num = responseObject.getJSONObject("request").getString("request_num");
@@ -386,9 +387,11 @@ public class OrderCommitLogic {
                     post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
                     String resultStr = APIPostUtil.post(paramStr, post);
                     JSONObject jsonObject = JSONObject.fromObject(resultStr);
-                    String messageType = (String) jsonObject.get("Message_Type");
+//                    String messageType = (String) jsonObject.get("Message_Type");
 
-                    if (messageType != null && messageType.contains("ERROR")) {
+//                    if (messageType != null && messageType.contains("ERROR")) { //旧20170905
+                    // 增加对下单结果的判断  含有error Message 或者 没有ordernum 都算是提交失败
+                    if (jsonObject.containsKey("error") || jsonObject.containsKey("Message") || !jsonObject.containsKey("ordernum")) {
                         //手动操作事务回滚
                         TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                         return APIUtil.submitErrorResponse("下单失败", jsonObject);
@@ -632,7 +635,7 @@ public class OrderCommitLogic {
                 sf.getString("d_supplementary_info"),//增加门牌号
                 packagesOBJ.getString("weight"),
                 packagesOBJ.getString("type"),
-                packagesOBJ.containsKey("comments") ? packagesOBJ.getString("comments") : "",//TODO:增加快递包裹描述comments
+                packagesOBJ.containsKey("comments") ? packagesOBJ.getString("comments") : "",//增加快递包裹描述comments
                 "WAIT_HAND_OVER",
                 Integer.parseInt((String) orderObject.get("sender_user_id")),
                 order.getId(),
@@ -658,11 +661,13 @@ public class OrderCommitLogic {
 
             // POST
             HttpPost post = new HttpPost(SF_CREATEORDER_URL);
-            post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
+            post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken()); //TODO：临时注释
             String res = APIPostUtil.post(str, post);
             responseObject = JSONObject.fromObject(res);
 
-            if (responseObject.get("Message") != null || (responseObject.get("Message_Type") != null && ((String) responseObject.get("Message_Type")).contains("ERROR"))) {
+//            if (responseObject.containsKey("error") || responseObject.get("Message") != null || (responseObject.get("Message_Type") != null && ((String) responseObject.get("Message_Type")).contains("ERROR"))) {
+            // 增加对下单结果的判断  含有error Message 或者 没有ordernum 都算是提交失败
+            if (responseObject.containsKey("error") || responseObject.containsKey("Message") || !responseObject.containsKey("ordernum")) {
                 status = SUBMIT_FAIL;
                 //手动操作事务回滚
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
