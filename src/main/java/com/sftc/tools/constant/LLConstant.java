@@ -26,6 +26,10 @@ public class LLConstant {
     //生成点之间的距离 单位KM
     public static double DISTANCE_BETWEEN_PONINT = RANGE_NUMBER / 3;
 
+    // 每天开始时间 用于界定生成随机点的时间
+    public static int BEGIN_HOUR = 6;
+    // 每天结束时间
+    public static int END_HOUR = 21;
     public static List<Map<String, Double>> calculate(double startlat, double startlon, double maxdist, int GeneratedNumber) {
 
         //将所有纬度和经度转换为弧度。
