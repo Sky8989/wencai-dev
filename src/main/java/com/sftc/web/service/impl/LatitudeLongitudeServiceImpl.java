@@ -8,6 +8,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -23,6 +24,11 @@ public class LatitudeLongitudeServiceImpl implements LatitudeLongitudeService {
 
 
     public APIResponse getLatitudeLongitude(APIRequest apiRequest) {
+
+        //核对时间 限定范围时间内 才可以获取
+        APIResponse apiResponse = checkTimeIsLogical();
+        if (apiResponse != null) return apiResponse;
+
         JSONObject paramJSONObject = JSONObject.fromObject(apiRequest.getRequestParam());
         // 验参
         if (!paramJSONObject.containsKey("latitude")) {
@@ -57,6 +63,28 @@ public class LatitudeLongitudeServiceImpl implements LatitudeLongitudeService {
         LLConstant.MIN_LL_NUMBER = paramJSONObject.getInt("MIN_LL_NUMBER");
         LLConstant.RANGE_NUMBER = paramJSONObject.getDouble("RANGE_NUMBER");
 
+        if (paramJSONObject.containsKey("END_HOUR")) LLConstant.END_HOUR = paramJSONObject.getInt("END_HOUR");
+        if (paramJSONObject.containsKey("BEGIN_HOUR")) LLConstant.BEGIN_HOUR = paramJSONObject.getInt("BEGIN_HOUR");
+
+
         return APIUtil.getResponse(APIStatus.SUCCESS, paramJSONObject);
+    }
+
+
+    //////////////////////////////private////////////////////////////////////
+
+    /**
+     * 检测获取随机点的时间是否符合逻辑
+     *
+     * @return APIResponse
+     */
+    private APIResponse checkTimeIsLogical() {
+        //核对时间 限定范围时间内 才可以获取
+        LocalTime now = LocalTime.now();
+        int now_hour = LocalTime.now().getHour();
+        if (now_hour >= LLConstant.END_HOUR || now_hour < LLConstant.BEGIN_HOUR) {
+            return APIUtil.selectErrorResponse("No_Point", null);
+        }
+        return null;
     }
 }
