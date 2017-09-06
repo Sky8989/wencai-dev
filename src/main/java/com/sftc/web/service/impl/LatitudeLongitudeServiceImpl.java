@@ -63,6 +63,10 @@ public class LatitudeLongitudeServiceImpl implements LatitudeLongitudeService {
         LLConstant.MIN_LL_NUMBER = paramJSONObject.getInt("MIN_LL_NUMBER");
         LLConstant.RANGE_NUMBER = paramJSONObject.getDouble("RANGE_NUMBER");
 
+        if (paramJSONObject.containsKey("END_HOUR")) LLConstant.END_HOUR = paramJSONObject.getInt("END_HOUR");
+        if (paramJSONObject.containsKey("BEGIN_HOUR")) LLConstant.BEGIN_HOUR = paramJSONObject.getInt("BEGIN_HOUR");
+
+
         return APIUtil.getResponse(APIStatus.SUCCESS, paramJSONObject);
     }
 
@@ -78,7 +82,7 @@ public class LatitudeLongitudeServiceImpl implements LatitudeLongitudeService {
         //核对时间 限定范围时间内 才可以获取
         LocalTime now = LocalTime.now();
         int now_hour = LocalTime.now().getHour();
-        if (now_hour >= LLConstant.END_HOUR || now_hour <= LLConstant.BEGIN_HOUR) {
+        if (now_hour >= LLConstant.END_HOUR || now_hour < LLConstant.BEGIN_HOUR) {
             return APIUtil.selectErrorResponse("No_Point", null);
         }
         return null;
