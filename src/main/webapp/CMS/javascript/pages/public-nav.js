@@ -24,9 +24,9 @@ var custom_navbar_left = function () { //公共的侧边栏部分
 };
 
 var custom_footer = function () { //公共的footer部分
-    $('#custom_btm-ft').append(
-        '<p class="clear"> ' +
-        '<span class="fr text-info"> <em class="uppercase"> <i class="icon-user"></i>系统技术支持 : *****</em> </span> ' +
-        '</p>'
-    )
+    // $('#custom_btm-ft').append(
+    //     '<p class="clear"> ' +
+    //     '<span class="fr text-info"> <em class="uppercase"> <i class="icon-user"></i>系统技术支持 : *****</em> </span> ' +
+    //     '</p>'
+    // )
 };

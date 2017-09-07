@@ -43,7 +43,7 @@ public class MessageServiceImpl implements MessageService {
      */
 
     public APIResponse getMessage(APIRequest apiRequest) {
-        //参数处理
+        ////参数处理
 //        String str = gson.toJson(apiRequest.getRequestParam());
         JSONObject paramOBJ = JSONObject.fromObject(apiRequest.getRequestParam());
         if (!paramOBJ.containsKey("deviceId")) return APIUtil.paramErrorResponse("Parameter_Missing");
@@ -51,6 +51,15 @@ public class MessageServiceImpl implements MessageService {
             return APIUtil.paramErrorResponse(" Mobile's length is not 11");
         String deviceId = paramOBJ.getString("deviceId");
         paramOBJ.remove("deviceId");
+        //处理captcha相关的验证码
+        if (paramOBJ.containsKey("captcha")) {
+            if (!paramOBJ.getJSONObject("captcha").containsKey("uuid") || !paramOBJ.getJSONObject("captcha").containsKey("content"))
+                return APIUtil.paramErrorResponse("Parameter_Missing in captcha");
+            String content = paramOBJ.getJSONObject("captcha").getString("content");
+            String uuid = paramOBJ.getJSONObject("captcha").getString("uuid");
+            if (uuid.length() < 4 || content.length() < 4)
+                return APIUtil.paramErrorResponse("length is wrong in captcha");
+        }
 
         HttpPost post = new HttpPost(SF_TAKE_MESSAGE_URL);
         post.addHeader("PushEnvelope-Device-ID", deviceId);
@@ -242,4 +251,20 @@ public class MessageServiceImpl implements MessageService {
         }
     }
 
+    /**
+     * 获取图片验证码
+     *
+     * @return APIResponse
+     */
+    public APIResponse captchas() {
+        // 接口要求传空json
+        String jsonParam = "{   }";
+        String postURL = SF_TAKE_CAPTCHAS_MESSAGE_URL;
+        HttpPost httpPost = new HttpPost(postURL);
+        String resultStr = APIPostUtil.post(jsonParam, httpPost);
+        JSONObject resultJSONObject = JSONObject.fromObject(resultStr);
+        if (resultJSONObject.containsKey("error") || resultJSONObject.containsKey("errors"))
+            return APIUtil.submitErrorResponse("GET_SMS_CAPTCHAS_Failed", resultJSONObject);
+        return APIUtil.getResponse(SUCCESS, resultJSONObject);
+    }
 }

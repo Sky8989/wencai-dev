@@ -152,8 +152,8 @@ function data_rendering(data) {
         $('#order_list').append(
             '<tr class="cen">' +
             '<td>' + dataD.id + '</td>' +
-            '<td>' + dataD.create_time + '</td>' +
-            '<td>' + dataD.pay_time + '</td>' +
+            '<td>' +  timeTransfer(dataD.create_time) + '</td>' +
+            '<td>' +  timeTransfer(dataD.pay_time) + '</td>' +
 
             '<td>' + dataD.order_type + '</td>' +
             '<td>' + dataD.region_type + '</td>' +
@@ -166,7 +166,7 @@ function data_rendering(data) {
             '<td>' + dataD.is_cancel + '</td>' +
 
             '<td>' +
-            '<a title="编辑" class="mr-5">编辑</a>' +
+            '<a title="编辑" class="mr-5">其他</a>' +
             '</td>' +
             '</tr>'
         );

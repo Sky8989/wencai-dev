@@ -141,13 +141,13 @@ function data_rendering(data) {
             '<td>' + uuid + '</td>' +
             '<td>' + name + '</td>' +
             '<td>' + mobile + '</td>' +
-            '<td><img class="user-avatar" src=' + avatar + '/>' +
+            '<td><img class="user-avatar" src=' + avatar + ' />' +
             '</td>' +
             '<td>' + user_password + '</td>' +
             '<td>' + session_key + '</td>' +
             '<td>' + timeTransfer(create_time) + '</td>' +
             '<td>' +
-            '<a title="编辑" class="mr-5">编辑</a>' +
+            '<a title="编辑" class="mr-5">其他</a>' +
             '</td>' +
             '</tr>'
         );

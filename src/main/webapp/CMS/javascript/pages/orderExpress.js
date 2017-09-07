@@ -166,13 +166,13 @@ function data_rendering(data) {
             '<td>' + dataD.package_comments + '</td>' +
             '<td>' + dataD.state + '</td>' +
 
-            '<td>' + dataD.reserve_time + '</td>' +
-            '<td>' + dataD.receive_time + '</td>' +
-            '<td>' + dataD.order_time + '</td>' +
-            '<td>' + dataD.create_time + '</td>' +
+            '<td>' + timeTransfer(dataD.reserve_time) + '</td>' +
+            '<td>' + timeTransfer(dataD.receive_time) + '</td>' +
+            '<td>' + timeTransfer(dataD.order_time) + '</td>' +
+            '<td>' + timeTransfer(dataD.create_time) + '</td>' +
 
             '<td>' +
-            '<a title="编辑" class="mr-5">编辑</a>' +
+            '<a title="编辑" class="mr-5">其他</a>' +
             '</td>' +
             '</tr>'
         );

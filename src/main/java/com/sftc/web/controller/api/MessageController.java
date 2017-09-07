@@ -4,6 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.AbstractBasicController;
 import com.sftc.web.model.Result;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +64,13 @@ public class MessageController extends AbstractBasicController {
     @RequestMapping(value = "/quotes", method = RequestMethod.POST)
     void quotes(@RequestBody Result r) throws Exception {
         System.out.println(r.getRequest().getPackages().get(0).getType() + r.getRequest().getPackages().get(1).getType());
+    }
+
+    @RequestMapping(value = "/message/captchas", method = RequestMethod.GET)
+    @ResponseBody
+    APIResponse messagCeaptchas() throws Exception {
+
+        return messageService.captchas();
     }
 
 }
