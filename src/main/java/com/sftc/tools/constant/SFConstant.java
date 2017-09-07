@@ -43,6 +43,13 @@ public class SFConstant {
      * 获取验证码
      */
     public static String SF_TAKE_MESSAGE_URL = SF_SAME_DOMAIN + "messages";
+
+    /**
+     * 获取图片验证码
+     */
+    public static String SF_TAKE_CAPTCHAS_MESSAGE_URL = SF_SAME_DOMAIN + "captchas";
+
+
     /**
      * 获取token
      */

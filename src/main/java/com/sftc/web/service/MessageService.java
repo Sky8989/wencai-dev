@@ -31,4 +31,11 @@ public interface MessageService {
      */
     void sendWXTemplateMessage(int touser_id, String[] messageArr, String pagePath, String form_id, String template_id);
 
+    /**
+     * 获取图片验证码
+     *
+     * @return APIResponse
+     */
+    APIResponse captchas();
+
 }

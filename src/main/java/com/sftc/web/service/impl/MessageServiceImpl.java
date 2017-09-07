@@ -242,4 +242,20 @@ public class MessageServiceImpl implements MessageService {
         }
     }
 
+    /**
+     * 获取图片验证码
+     *
+     * @return APIResponse
+     */
+    public APIResponse captchas() {
+        // 接口要求传空json
+        String jsonParam = "{   }";
+        String postURL = SF_TAKE_CAPTCHAS_MESSAGE_URL;
+        HttpPost httpPost = new HttpPost(postURL);
+        String resultStr = APIPostUtil.post(jsonParam, httpPost);
+        JSONObject resultJSONObject = JSONObject.fromObject(resultStr);
+        if (resultJSONObject.containsKey("error") || resultJSONObject.containsKey("errors"))
+            return APIUtil.submitErrorResponse("GET_SMS_CAPTCHAS_Failed", resultJSONObject);
+        return APIUtil.getResponse(SUCCESS, resultJSONObject);
+    }
 }
