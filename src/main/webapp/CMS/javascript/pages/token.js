@@ -142,11 +142,11 @@ function data_rendering(data) {
             '<td>' + dataD.local_token + '</td>' +
             '<td>' + dataD.access_token + '</td>' +
             '<td>' + dataD.refresh_token + '</td>' +
-            '<td>' + dataD.create_time + '</td>' +
+            '<td>' + timeTransfer(dataD.create_time) + '</td>' +
 
 
             '<td>' +
-            '<a title="编辑" class="mr-5">编辑</a>' +
+            '<a title="编辑" class="mr-5">其他</a>' +
             '</td>' +
             '</tr>'
         );

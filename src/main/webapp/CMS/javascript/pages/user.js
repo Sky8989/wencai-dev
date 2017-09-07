@@ -147,7 +147,7 @@ function data_rendering(data) {
             '<td>' + session_key + '</td>' +
             '<td>' + timeTransfer(create_time) + '</td>' +
             '<td>' +
-            '<a title="编辑" class="mr-5">编辑</a>' +
+            '<a title="编辑" class="mr-5">其他</a>' +
             '</td>' +
             '</tr>'
         );

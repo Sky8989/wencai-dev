@@ -157,7 +157,7 @@ function data_rendering(data) {
             '<td>' + type + '</td>' +
             '<td>' + timeTransfer(create_time) + '</td>' +
             '<td>' +
-            '<button class="layui-btn layui-btn-small"><i class="layui-icon"></i>编辑</button>' +
+            '<button class="layui-btn layui-btn-small"><i class="layui-icon"></i>其他</button>' +
             '<button  data-id=' + dataD.id + ' onclick="delete_self(' + dataD.id + ')" ' + ' class=" layui-btn layui-btn-small layui-btn-normal delete_giftcard "><i class="layui-icon"></i> 删除</button>' +
             '</td>' +
             '</tr>'
