@@ -141,7 +141,7 @@ function data_rendering(data) {
             '<td>' + uuid + '</td>' +
             '<td>' + name + '</td>' +
             '<td>' + mobile + '</td>' +
-            '<td><img class="user-avatar" src=' + avatar + ' />' +
+            '<td><img class="user-avatar" src="' + avatar + '" />' +
             '</td>' +
             '<td>' + user_password + '</td>' +
             '<td>' + session_key + '</td>' +
