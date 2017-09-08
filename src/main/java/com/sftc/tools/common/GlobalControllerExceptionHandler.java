@@ -56,7 +56,7 @@ public class GlobalControllerExceptionHandler {
         ServletWebRequest.getParameterMap().forEach((k, v) -> System.out.print(k + ":" + Arrays.toString(v)));
         logger.error(" Exception: " + ex.getMessage());
         logger.error(" StackTrace: " + Arrays.toString(ex.getStackTrace()));
-        return ControllerHelper.responseEntityBuilder(APIUtil.logicErrorResponse("Dankal_Server_Error"
+        return ControllerHelper.responseEntityBuilder(APIUtil.logicErrorResponse("系统异常，请您稍后再尝试"
                 , resultOBJ));
     }
 

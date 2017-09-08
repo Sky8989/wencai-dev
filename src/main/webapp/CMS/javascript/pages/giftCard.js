@@ -153,7 +153,7 @@ function data_rendering(data) {
             '<tr class="cen">' +
             '<td>' + id + '</td>' +
             '<td>' + name + '</td>' +
-            '<td><img class="gift-card-icon" src=' + icon + ' /></td>' +
+            '<td><img class="gift-card-icon" src="' + icon + '" /></td>' +
             '<td>' + type + '</td>' +
             '<td>' + timeTransfer(create_time) + '</td>' +
             '<td>' +

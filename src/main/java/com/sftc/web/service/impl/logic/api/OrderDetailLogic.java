@@ -146,6 +146,11 @@ public class OrderDetailLogic {
 
             // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
             String order_status = respObject.getJSONObject("request").getString("status");
+
+            if (order_status.equals("WAIT_HAND_OVER")) { // 当同城查询出来的状态是待揽件  我方库中也要存为待揽件
+                orderExpressMapper.updateOrderExpressStatusByUUID(uuid, "WAIT_HAND_OVER");
+            }
+
             boolean payed = respObject.getJSONObject("request").getBoolean("payed");
             if (payed && order_status.equals("PAYING")) {
                 respObject.getJSONObject("request").put("status", "WAIT_HAND_OVER");
