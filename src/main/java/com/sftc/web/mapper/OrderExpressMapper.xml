@@ -205,4 +205,10 @@
             #{order_id}
         </foreach>
     </select>
+
+    <select id="selectExpressForContactInfo" parameterType="int" resultType="com.sftc.web.model.OrderExpress">
+        SELECT * FROM sftc_order_express
+        WHERE (sender_user_id=#{sender_user_id} and ship_user_id=#{ship_user_id} )
+        or( sender_user_id=#{ship_user_id} and ship_user_id=#{sender_user_id})
+    </select>
 </mapper>
