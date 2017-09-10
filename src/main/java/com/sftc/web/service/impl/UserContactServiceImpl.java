@@ -35,6 +35,9 @@ public class UserContactServiceImpl implements UserContactService {
     private OrderExpressMapper orderExpressMapper;
 
     @Resource
+    private OrderMapper orderMapper;
+
+    @Resource
     private UserMapper userMapper;
 
     /*
@@ -115,38 +118,12 @@ public class UserContactServiceImpl implements UserContactService {
             return APIUtil.paramErrorResponse("分页参数无效");
         }
 
+        APIResponse apiResponse = syncFriendExpress(userContactParam);
+        if (apiResponse != null) return apiResponse;
+
+
+        //修改为物理分页参数
         userContactParam.setPageNum((userContactParam.getPageNum() - 1) * userContactParam.getPageSize()); // pageNum -> startIndex
-
-        // handle url
-        String ORDERS_URL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
-        String uuids = "";
-        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(userContactParam.getUser_id());
-        for (OrderExpress oe : orderExpressList) {
-            String uuid = oe.getUuid();
-            if (uuid != null && uuid.length() > 1) {
-                uuids = uuids + oe.getUuid() + ",";
-            }
-        }
-        uuids = uuids.substring(0, uuids.length() - 1);
-        ORDERS_URL = ORDERS_URL.replace("uuid", uuids);
-
-        // POST
-        List<Orders> orderses = null;
-        try {
-            orderses = APIResolve.getOrdersJson(ORDERS_URL, userContactParam.getAccess_token());
-        } catch (Exception e) {
-            return APIUtil.submitErrorResponse("SF token error", e);
-        }
-
-        // update express status
-        if (orderses != null) {
-            for (Orders orders : orderses) {
-                String uuid = orders.getUuid();
-                String order_status = orders.getStatus();
-                orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
-            }
-        }
-
         // callback
         List<ContactCallback> contactCallbacks = userContactMapper.selectCirclesContact(userContactParam);
         for (ContactCallback contactCallback : contactCallbacks) {
@@ -162,6 +139,48 @@ public class UserContactServiceImpl implements UserContactService {
             }
         }
         return APIUtil.getResponse(SUCCESS, contactCallbacks);
+    }
+
+    private APIResponse syncFriendExpress(UserContactParam userContactParam) {
+        // handle url
+        String ORDERS_URL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
+        String uuids = "";
+
+
+//        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(userContactParam.getUser_id());
+        PageHelper.startPage(userContactParam.getPageNum(), userContactParam.getPageSize());
+        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForContactInfo(userContactParam.getUser_id(), userContactParam.getFriend_id());
+
+
+        for (OrderExpress oe : orderExpressList) { //此处订单若过多 url过长 sf接口会报414
+            Order order = orderMapper.selectOrderDetailByOrderId(oe.getOrder_id());
+            if (order != null && order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) {
+                // 只有同城的订单能同步快递状态
+                uuids = uuids + oe.getUuid() + ",";
+            }
+        }
+
+        if (uuids.equals("")) return null; //无需同步的订单 直接返回
+        uuids = uuids.substring(0, uuids.length() - 1);
+        ORDERS_URL = ORDERS_URL.replace("uuid", uuids);
+
+        // POST
+        List<Orders> orderses = null;
+        try {
+            orderses = APIResolve.getOrdersJson(ORDERS_URL, userContactParam.getAccess_token());
+        } catch (Exception e) {
+            return APIUtil.submitErrorResponse("正在同步来往记录订单状态，稍后重试", e);
+        }
+
+        // update express status
+        if (orderses != null) {
+            for (Orders orders : orderses) {
+                String uuid = orders.getUuid();
+                String order_status = orders.getStatus();
+                orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
+            }
+        }
+        return null;
     }
 
     /**
@@ -207,7 +226,7 @@ public class UserContactServiceImpl implements UserContactService {
         String picture_address = jsonObject.getString("picture_address");
         String mobile = jsonObject.getString("mobile");
         userContactMapper.updateNotesPictureMobile(user_contact_id, notes, picture_address, mobile);
-        String resultStr = user_contact_id+" notes:"+notes+"mobile:"+mobile+"picture："+picture_address;
+        String resultStr = user_contact_id + " notes:" + notes + "mobile:" + mobile + "picture：" + picture_address;
         return APIUtil.getResponse(SUCCESS, resultStr);
     }
 
