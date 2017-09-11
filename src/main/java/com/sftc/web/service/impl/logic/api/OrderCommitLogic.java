@@ -648,7 +648,7 @@ public class OrderCommitLogic {
 
         // 插入地址
 //        setupAddress(order, orderExpress);
-        nationInsertAddressBookAndAddressHistory(order.getSender_user_id(), sf, Long.toString(System.currentTimeMillis()));
+        nationInsertAddressBookAndAddressHistory(order.getSender_user_id(), orderObject, sf, Long.toString(System.currentTimeMillis()));
 
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
         JSONObject responseObject = new JSONObject();
@@ -800,7 +800,7 @@ public class OrderCommitLogic {
     }
 
     /// 普通大网下单使用的 一键添加2个地址簿 1个历史地址
-    private void nationInsertAddressBookAndAddressHistory(int user_id_sender, JSONObject sf, String create_time) {
+    private void nationInsertAddressBookAndAddressHistory(int user_id_sender, JSONObject orderObject, JSONObject sf, String create_time) {
         // 插入地址簿 寄件人
         insertAddressBookUtils("address_book", "sender",
                 user_id_sender,
@@ -813,8 +813,8 @@ public class OrderCommitLogic {
                 sf.getString("j_address"),
                 sf.getString("j_supplementary_info"),
                 create_time,
-                0,
-                0
+                orderObject.getDouble("j_longitude"),
+                orderObject.getDouble("j_latitude")
         );
         // 插入地址簿 收件人
         insertAddressBookUtils("address_book", "ship",
@@ -828,8 +828,8 @@ public class OrderCommitLogic {
                 sf.getString("d_address"),
                 sf.getString("d_supplementary_info"),
                 create_time,
-                0,
-                0
+                orderObject.getDouble("d_longitude"),
+                orderObject.getDouble("d_latitude")
         );
         // 插入历史地址
         insertAddressBookUtils("address_history", "address_history",
@@ -843,8 +843,8 @@ public class OrderCommitLogic {
                 sf.getString("d_address"),
                 sf.getString("d_supplementary_info"),
                 create_time,
-                0,
-                0
+                orderObject.getDouble("d_longitude"),
+                orderObject.getDouble("d_latitude")
         );
     }
 
