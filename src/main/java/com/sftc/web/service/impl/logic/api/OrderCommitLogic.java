@@ -516,7 +516,7 @@ public class OrderCommitLogic {
                     targetAddressOBJ.getString("supplementary_info"),
                     requestOBJ.getJSONArray("packages").getJSONObject(0).getString("weight"),
                     requestOBJ.getJSONArray("packages").getJSONObject(0).getString("type"),
-                    comments, //TODO:增加快递包裹描述comments
+                    comments, //增加快递包裹描述comments
                     respObject.getJSONObject("request").getString("status"),
                     Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
                     order.getId(),
@@ -661,14 +661,13 @@ public class OrderCommitLogic {
 
             // POST
             HttpPost post = new HttpPost(SF_CREATEORDER_URL);
-            post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken()); //TODO：临时注释
+            post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
             String res = APIPostUtil.post(str, post);
             responseObject = JSONObject.fromObject(res);
 
 //            if (responseObject.containsKey("error") || responseObject.get("Message") != null || (responseObject.get("Message_Type") != null && ((String) responseObject.get("Message_Type")).contains("ERROR"))) {
             // 增加对下单结果的判断  含有error Message 或者 没有ordernum 都算是提交失败
             if (responseObject.containsKey("error") || responseObject.containsKey("Message") || !responseObject.containsKey("ordernum")) {
-                status = SUBMIT_FAIL;
                 //手动操作事务回滚
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 return APIUtil.submitErrorResponse("SF提示错误", responseObject);
@@ -849,6 +848,7 @@ public class OrderCommitLogic {
         );
     }
 
+    ///普通同城下单使用的 一键添加2个地址簿 1个历史地址
     private void setupAddress2(Order order, OrderExpress oe) {
         // 插入地址簿 寄件人
         insertAddressBookUtils("address_book", "sender",
@@ -880,17 +880,17 @@ public class OrderCommitLogic {
                 oe.getLatitude());
         // 插入历史地址
         insertAddressBookUtils("address_history", "address_history",
-                order.getSender_user_id(),
+                oe.getSender_user_id(), //这个地址是属于某个用户的地址 但是地址内容是历史地址 保存的是寄件时产生的收件人地址
                 oe.getShip_user_id(),
-                order.getSender_name(),
-                order.getSender_mobile(),
-                order.getSender_province(),
-                order.getSender_city(),
-                order.getSender_area(),
-                order.getSender_addr(),
-                order.getSupplementary_info(),
-                order.getCreate_time(), order.getLongitude(),
-                order.getLatitude()
+                oe.getShip_name(),
+                oe.getShip_mobile(),
+                oe.getShip_province(),
+                oe.getShip_city(),
+                oe.getShip_area(),
+                oe.getShip_addr(),
+                oe.getSupplementary_info(),
+                oe.getCreate_time(), oe.getLongitude(),
+                oe.getLatitude()
         );
     }
 }
