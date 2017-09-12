@@ -46,22 +46,22 @@ public class AddressBookServiceImpl implements AddressBookService {
     public APIResponse addAddressBook(APIRequest apiRequest) {
         ///验参
         JSONObject paramObject = JSONObject.fromObject(apiRequest.getRequestParam());
-        if (!paramObject.containsKey("user_id")) return APIUtil.paramErrorResponse("参数为空");
-        if (!paramObject.containsKey("is_delete")) return APIUtil.paramErrorResponse("参数为空");
-        if (!paramObject.containsKey("is_mystery")) return APIUtil.paramErrorResponse("参数为空");
-        if (!paramObject.containsKey("address_type")) return APIUtil.paramErrorResponse("参数为空");
-        if (!paramObject.containsKey("address_book_type")) return APIUtil.paramErrorResponse("参数为空");
-        if (!paramObject.containsKey("address")) return APIUtil.paramErrorResponse("参数为空");
+        if (!paramObject.containsKey("user_id")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        if (!paramObject.containsKey("is_delete")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        if (!paramObject.containsKey("is_mystery")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        if (!paramObject.containsKey("address_type")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        if (!paramObject.containsKey("address_book_type")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        if (!paramObject.containsKey("address")) return APIUtil.paramErrorResponse("地址簿参数为空");
         JSONObject address_OBJ = paramObject.getJSONObject("address");
-        if (!address_OBJ.containsKey("name")) return APIUtil.paramErrorResponse("参数为空");
-        if (!address_OBJ.containsKey("phone")) return APIUtil.paramErrorResponse("参数为空");
-        if (!address_OBJ.containsKey("province")) return APIUtil.paramErrorResponse("参数为空");
-        if (!address_OBJ.containsKey("city")) return APIUtil.paramErrorResponse("参数为空");
-        if (!address_OBJ.containsKey("area")) return APIUtil.paramErrorResponse("参数为空");
-        if (!address_OBJ.containsKey("address")) return APIUtil.paramErrorResponse("参数为空");
-        if (!address_OBJ.containsKey("supplementary_info")) return APIUtil.paramErrorResponse("参数为空");
-        if (!address_OBJ.containsKey("longitude")) return APIUtil.paramErrorResponse("参数为空");
-        if (!address_OBJ.containsKey("latitude")) return APIUtil.paramErrorResponse("参数为空");
+        if (!address_OBJ.containsKey("name")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        if (!address_OBJ.containsKey("phone")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        if (!address_OBJ.containsKey("province")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        if (!address_OBJ.containsKey("city")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        if (!address_OBJ.containsKey("area")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        if (!address_OBJ.containsKey("address")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        if (!address_OBJ.containsKey("supplementary_info")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        if (!address_OBJ.containsKey("longitude")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        if (!address_OBJ.containsKey("latitude")) return APIUtil.paramErrorResponse("地址簿参数为空");
 
 
         AddressBook addressBook;
@@ -72,6 +72,16 @@ public class AddressBookServiceImpl implements AddressBookService {
         } catch (JSONException e) {
             return APIUtil.paramErrorResponse("参数含有非法字符");
         }
+
+        // 查找重复信息  去重
+        List<AddressBook> addressBookList = addressBookMapper.selectAddressForRemoveDuplicate(paramObject.getInt("user_id"),
+                paramObject.getString("address_type"), paramObject.getString("address_book_type")
+                , address_OBJ.getString("name"), address_OBJ.getString("phone")
+                , address_OBJ.getString("province"), address_OBJ.getString("city")
+                , address_OBJ.getString("area"), address_OBJ.getString("address")
+                , address_OBJ.getString("supplementary_info"));
+
+        if (addressBookList.size() != 0) return APIUtil.submitErrorResponse("地址簿已有该地址", null);
 
         String create_time = Long.toString(System.currentTimeMillis());
         // 插入地址记录
@@ -142,4 +152,6 @@ public class AddressBookServiceImpl implements AddressBookService {
             return APIUtil.selectErrorResponse("用户无地址簿信息", null);
         }
     }
+
+
 }
