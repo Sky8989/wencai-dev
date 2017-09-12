@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 public class OrderServiceImplTest {
 
     OrderServiceImpl orderService = new OrderServiceImpl();
-    @Test
+
     public void test1(){
         String reserve_time = "1501506000517";
         Locale locale =  Locale.CHINA;
@@ -28,5 +28,9 @@ public class OrderServiceImplTest {
         System.out.println("1-  -"+format);
         String format2 = DateFormatUtils.format(System.currentTimeMillis(), "yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale);
         System.out.println("2-  -"+format2);
+    }
+    @Test
+    public void t2(){
+        System.out.println("222"+Long.toString(System.currentTimeMillis() + 2592000000L));
     }
 }

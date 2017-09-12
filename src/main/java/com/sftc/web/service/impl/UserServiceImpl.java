@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
                 } else {
                     String gmt_modified = Long.toString(System.currentTimeMillis());
                     if (Long.parseLong(gmt_modified) > Long.parseLong(token.getGmt_expiry())) {
-                        token.setGmt_expiry(Long.toString(System.currentTimeMillis() + 2592000 * 1000));
+                        token.setGmt_expiry(Long.toString(System.currentTimeMillis() + 2592000000L));
                         String myToken = makeToken(gmt_modified, user.getOpen_id());
                         token.setLocal_token(myToken);
                     }
