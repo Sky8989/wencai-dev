@@ -81,13 +81,17 @@ public class OrderPayLogic {
         String uuid = (String) request.getParameter("uuid");
         String access_token = (String) request.getParameter("access_token");
 
-        Token tokenPram = tokenMapper.selectUserIdByToken(token);
-        if (token == null || token.equals("") || tokenPram == null)
+
+        if (token == null || token.equals(""))
             return APIUtil.paramErrorResponse("token参数缺失");
         if (uuid == null || uuid.equals(""))
             return APIUtil.paramErrorResponse("uuid参数缺失");
         if (access_token == null || access_token.equals(""))
             return APIUtil.paramErrorResponse("access_token参数缺失");
+
+        Token tokenPram = tokenMapper.selectUserIdByToken(token);
+        if (tokenPram == null) return APIUtil.paramErrorResponse("token无效，库中无该token");
+
 
         User user = userMapper.selectUserByUserId(tokenPram.getUser_id());
         String pay_url = SF_REQUEST_URL + "/" + uuid + "/js_pay?open_id=" + user.getOpen_id();
