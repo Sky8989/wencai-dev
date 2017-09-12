@@ -42,6 +42,7 @@ public class Token extends Object {
 
     /**
      * CMS使用的构造方法
+     *
      * @param request
      */
     public Token(HttpServletRequest request) {
@@ -58,7 +59,7 @@ public class Token extends Object {
         this.local_token = token;
         this.create_time = Long.toString(System.currentTimeMillis());
         this.gmt_modified = Long.toString(System.currentTimeMillis());
-        this.gmt_expiry = (Long.parseLong(gmt_modified) + 1209600) + "";
+        this.gmt_expiry = (Long.parseLong(gmt_modified) + 2592000000L) + "";
     }
 
     public Token(String create_time, int is_logout, String gmt_modified, String gmt_expiry, int user_id) {
