@@ -14,6 +14,7 @@ import com.sftc.web.model.OrderExpress;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -35,6 +36,7 @@ public class OrderCancelLogic {
     /**
      * 取消订单
      */
+    @Transactional
     public APIResponse cancelOrder(Object object) {
         JSONObject paramJsonObject = JSONObject.fromObject(object);
         //获取订单id，便于后续取消订单操作的取用
@@ -123,6 +125,15 @@ public class OrderCancelLogic {
                 addCancelRecord(order_id, "订单取消失败记录", "同城");
                 return APIUtil.submitErrorResponse("订单取消失败", resJSONObject);
             }
+            if (resJSONObject.containsKey("requests")) {
+
+                String status = resJSONObject.getJSONArray("requests").getJSONObject(0).getString("status");
+                if (!"CANCELED".equals(status)) return APIUtil.submitErrorResponse("订单取消失败,同城状态为：", resJSONObject);
+
+            } else {
+                return APIUtil.submitErrorResponse("订单取消失败,无requests", resJSONObject);
+            }
+
         }
 
         // 订单还未提交给顺丰的情况，只更新order的信息即可
