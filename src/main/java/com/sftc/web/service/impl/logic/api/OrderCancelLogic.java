@@ -125,14 +125,14 @@ public class OrderCancelLogic {
                 addCancelRecord(order_id, "订单取消失败记录", "同城");
                 return APIUtil.submitErrorResponse("订单取消失败", resJSONObject);
             }
-            if (resJSONObject.containsKey("requests")) {
-
-                String status = resJSONObject.getJSONArray("requests").getJSONObject(0).getString("status");
-                if (!"CANCELED".equals(status)) return APIUtil.submitErrorResponse("订单取消失败,同城状态为：", resJSONObject);
-
-            } else {
+//            if (resJSONObject.containsKey("requests")) {
+//                String status = resJSONObject.getJSONArray("requests").getJSONObject(0).getString("status");
+//                if (!"CANCELED".equals(status)) return APIUtil.submitErrorResponse("订单取消失败,同城状态为：", resJSONObject);
+//            } else {
+//                return APIUtil.submitErrorResponse("订单取消失败,无requests", resJSONObject);
+//            }
+            if (!resJSONObject.containsKey("requests"))
                 return APIUtil.submitErrorResponse("订单取消失败,无requests", resJSONObject);
-            }
 
         }
 
