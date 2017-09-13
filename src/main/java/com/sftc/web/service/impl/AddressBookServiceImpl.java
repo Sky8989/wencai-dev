@@ -1,37 +1,22 @@
 package com.sftc.web.service.impl;
 
 
-import com.google.gson.Gson;
-import com.google.gson.JsonNull;
 import com.sftc.tools.api.*;
 import com.sftc.web.mapper.AddressBookMapper;
 import com.sftc.web.mapper.AddressMapper;
-import com.sftc.web.mapper.AddressResolutionMapper;
 import com.sftc.web.model.Address;
 import com.sftc.web.model.AddressBook;
-import com.sftc.web.model.AddressResolution;
 import com.sftc.web.service.AddressBookService;
-import com.sftc.web.service.AddressService;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
-import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
-import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.ThirdPartyConstant.MAP_ADDRESS_DISTANCE_URL;
-import static com.sftc.tools.constant.ThirdPartyConstant.MAP_GEOCODER_URL;
 
 @Transactional
 @Service("addressBookService")
@@ -46,22 +31,25 @@ public class AddressBookServiceImpl implements AddressBookService {
     public APIResponse addAddressBook(APIRequest apiRequest) {
         ///验参
         JSONObject paramObject = JSONObject.fromObject(apiRequest.getRequestParam());
-        if (!paramObject.containsKey("user_id")) return APIUtil.paramErrorResponse("地址簿参数为空");
-        if (!paramObject.containsKey("is_delete")) return APIUtil.paramErrorResponse("地址簿参数为空");
-        if (!paramObject.containsKey("is_mystery")) return APIUtil.paramErrorResponse("地址簿参数为空");
-        if (!paramObject.containsKey("address_type")) return APIUtil.paramErrorResponse("地址簿参数为空");
-        if (!paramObject.containsKey("address_book_type")) return APIUtil.paramErrorResponse("地址簿参数为空");
-        if (!paramObject.containsKey("address")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        if (!paramObject.containsKey("user_id")) return APIUtil.paramErrorResponse("地址簿参数user_id为空");
+        if (!paramObject.containsKey("is_delete")) return APIUtil.paramErrorResponse("地址簿参数is_delete为空");
+        if (!paramObject.containsKey("is_mystery")) return APIUtil.paramErrorResponse("地址簿参数is_mystery为空");
+        if (!paramObject.containsKey("address_type")) return APIUtil.paramErrorResponse("地址簿参数address_type为空");
+        if (!paramObject.containsKey("address_book_type"))
+            return APIUtil.paramErrorResponse("地址簿参数address_book_type为空");
+        if (!paramObject.containsKey("address")) return APIUtil.paramErrorResponse("地址簿参数address为空");
         JSONObject address_OBJ = paramObject.getJSONObject("address");
-        if (!address_OBJ.containsKey("name")) return APIUtil.paramErrorResponse("地址簿参数为空");
-        if (!address_OBJ.containsKey("phone")) return APIUtil.paramErrorResponse("地址簿参数为空");
-        if (!address_OBJ.containsKey("province")) return APIUtil.paramErrorResponse("地址簿参数为空");
-        if (!address_OBJ.containsKey("city")) return APIUtil.paramErrorResponse("地址簿参数为空");
-        if (!address_OBJ.containsKey("area")) return APIUtil.paramErrorResponse("地址簿参数为空");
-        if (!address_OBJ.containsKey("address")) return APIUtil.paramErrorResponse("地址簿参数为空");
-        if (!address_OBJ.containsKey("supplementary_info")) return APIUtil.paramErrorResponse("地址簿参数为空");
-        if (!address_OBJ.containsKey("longitude")) return APIUtil.paramErrorResponse("地址簿参数为空");
-        if (!address_OBJ.containsKey("latitude")) return APIUtil.paramErrorResponse("地址簿参数为空");
+        String supplementary_info =
+                address_OBJ.containsKey("supplementary_info") ? address_OBJ.remove("supplementary_info").toString() : "";
+        if (address_OBJ.containsValue("")) return APIUtil.paramErrorResponse("地址簿参数不可为''");
+        if (!address_OBJ.containsKey("name")) return APIUtil.paramErrorResponse("地址簿参数name为空");
+        if (!address_OBJ.containsKey("phone")) return APIUtil.paramErrorResponse("地址簿参数phone为空");
+        if (!address_OBJ.containsKey("province")) return APIUtil.paramErrorResponse("地址簿参数province为空");
+        if (!address_OBJ.containsKey("city")) return APIUtil.paramErrorResponse("地址簿参数city为空");
+        if (!address_OBJ.containsKey("area")) return APIUtil.paramErrorResponse("地址簿参数area为空");
+        if (!address_OBJ.containsKey("address")) return APIUtil.paramErrorResponse("地址簿参数address为空");
+        if (!address_OBJ.containsKey("longitude")) return APIUtil.paramErrorResponse("地址簿参数longitude为空");
+        if (!address_OBJ.containsKey("latitude")) return APIUtil.paramErrorResponse("地址簿参数latitude为空");
 
 
         AddressBook addressBook;
@@ -79,7 +67,7 @@ public class AddressBookServiceImpl implements AddressBookService {
                 , address_OBJ.getString("name"), address_OBJ.getString("phone")
                 , address_OBJ.getString("province"), address_OBJ.getString("city")
                 , address_OBJ.getString("area"), address_OBJ.getString("address")
-                , address_OBJ.getString("supplementary_info"));
+                , supplementary_info);
 
         if (addressBookList.size() != 0) return APIUtil.submitErrorResponse("地址簿已有该地址", null);
 

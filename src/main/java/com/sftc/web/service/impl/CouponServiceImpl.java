@@ -46,7 +46,7 @@ public class CouponServiceImpl implements CouponService {
 
         //limit offset是可选项
         String limit = paramOBJ.containsKey("limit") ? paramOBJ.getString("limit") : String.valueOf(20);
-        String offset = paramOBJ.containsKey("offset") ? paramOBJ.getString("offset") : String.valueOf(0);
+        String offset = paramOBJ.containsKey("offset") ? String.valueOf(paramOBJ.getInt("offset") - 1) : String.valueOf(0);
 
         //处理范围：有效/无效
         String status_temp = paramOBJ.getString("status");
