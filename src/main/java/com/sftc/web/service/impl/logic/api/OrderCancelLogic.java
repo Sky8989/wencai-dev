@@ -14,6 +14,7 @@ import com.sftc.web.model.OrderExpress;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -35,6 +36,7 @@ public class OrderCancelLogic {
     /**
      * 取消订单
      */
+    @Transactional
     public APIResponse cancelOrder(Object object) {
         JSONObject paramJsonObject = JSONObject.fromObject(object);
         //获取订单id，便于后续取消订单操作的取用
