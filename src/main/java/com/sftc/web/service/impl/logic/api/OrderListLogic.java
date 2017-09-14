@@ -256,8 +256,10 @@ public class OrderListLogic {
         // Update Dankal express info
         for (Orders orders : ordersList) {
             // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
-//            String status = orders.isPayed() && orders.getStatus().equals("PAYING") ? "WAIT_HAND_OVER" : orders.getStatus();
-            String status = orders.getStatus();
+
+            //这个status的改动是因为是预约单 预约单支付后，派单前都是PAYING
+            String status = orders.isPayed() && orders.getStatus().equals("PAYING") ? "WAIT_HAND_OVER" : orders.getStatus();
+//            String status = orders.getStatus();
             orderExpressMapper.updateOrderExpressForSF(new OrderExpress(status, orders.getUuid(), orders.getAttributes()));
         }
 
