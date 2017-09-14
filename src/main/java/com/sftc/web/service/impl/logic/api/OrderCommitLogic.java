@@ -249,7 +249,7 @@ public class OrderCommitLogic {
             requestObject.getJSONObject("request").put("source", source);
             requestObject.getJSONObject("request").put("target", target);
             if (reserve_time != null && !reserve_time.equals("")) {
-                String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
                 requestObject.getJSONObject("request").put("reserve_time", reserveTime);
             }
 

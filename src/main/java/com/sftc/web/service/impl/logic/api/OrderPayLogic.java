@@ -44,7 +44,7 @@ public class OrderPayLogic {
         String reserve_time = (String) requestObject.get("reserve_time");
         requestObject.remove("reserve_time");
         if (!reserve_time.equals("")) {
-            reserve_time = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            reserve_time = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             requestObject.put("reserve_time", reserve_time);
         }
 
