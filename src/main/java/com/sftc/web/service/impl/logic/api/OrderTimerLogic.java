@@ -59,8 +59,8 @@ public class OrderTimerLogic {
                     public void run() {
                         logger.info("开始提交大网预约单");
                         List<Integer> orderIds = orderMapper.selectNationReserveOrders();
+                        long currentTimeMillis = System.currentTimeMillis();
                         for (int order_id : orderIds) {
-                            long currentTimeMillis = System.currentTimeMillis();
                             orderCommitLogic.nationOrderReserveCommit(order_id, currentTimeMillis);
                         }
                         logger.info("大网预约单提交完毕");
