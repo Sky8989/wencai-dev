@@ -114,15 +114,20 @@ public class OrderCommitLogic {
     /**
      * 大网预约订单提交
      */
-    public void nationOrderReserveCommit(int order_id) {
+    public void nationOrderReserveCommit(int order_id, long currentTimeMillis) {
 
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         for (OrderExpress oe : order.getOrderExpressList()) {
 
             //过滤 不在预约时间周期内的订单      当前时间>X>当前时间-1800000的订单才下单 ，处于其补集区间的订单则跳出
-            if (Long.parseLong(oe.getReserve_time()) >= System.currentTimeMillis()
-                    || Long.parseLong(oe.getReserve_time()) <= System.currentTimeMillis() - 1800000)
-                return; // 1未到预约时间,则不下单 2 预约时间超出上一个下单时间周期，属于过期订单 也不下单
+//            if (Long.parseLong(oe.getReserve_time()) >= System.currentTimeMillis()
+//                    || Long.parseLong(oe.getReserve_time()) <= System.currentTimeMillis() - 1800000)
+//                return; // 1未到预约时间,则不下单 2 预约时间超出上一个下单时间周期，属于过期订单 也不下单
+            ///改为提前半小时下单
+            final long Reserve_time = Long.parseLong(oe.getReserve_time());
+            if (Reserve_time < currentTimeMillis || Reserve_time >= currentTimeMillis + 1800000L)
+                return;
+
 
             // 大网订单提交参数
             JSONObject sf = new JSONObject();
