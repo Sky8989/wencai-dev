@@ -334,12 +334,12 @@ public class OrderCommitLogic {
             int package_count = requestObject.getJSONObject("order").getInt("package_count");
             int real_count = 0;
             for (OrderExpress oe : order.getOrderExpressList()) {
-                if (oe.getShip_mobile() != null) {//如果有手机号，则表明已填写
+                if (oe.getShip_province() != null && !"".equals(oe.getShip_province())) {//如果有省份信息，则表明已填写
                     real_count++;
                 }
             }
             if (real_count != package_count) //数据库的已填写包裹数和客户端的包裹数不一致
-                return APIUtil.submitErrorResponse("Order infomation has been changed,please check again!", null);
+                return APIUtil.submitErrorResponse("包裹信息有变化，请返回列表刷新订单！Order infomation has been changed,please check again!", null);
         }
 
 
