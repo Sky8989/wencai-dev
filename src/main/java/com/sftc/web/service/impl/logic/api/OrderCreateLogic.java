@@ -111,6 +111,10 @@ public class OrderCreateLogic {
             return APIUtil.submitErrorResponse("订单已经下单，现在您无法再填写信息", orderExpress.getOrder_id());
         }
 
+        if (order.getIs_cancel() != null && "Cancelled".equals(order.getIs_cancel())) {
+            return APIUtil.submitErrorResponse("订单已取消，现在您无法再填写信息", null);
+        }
+
         // 判断同一个用户重复填写
         LinkedList<OrderExpress> realList = new LinkedList<OrderExpress>();
         List<OrderExpress> preList = orderExpressMapper.findAllOrderExpressByOrderId(orderExpress.getOrder_id());
