@@ -1,5 +1,9 @@
 package com.sftc.web.model.apiCallback;
 
+import com.sftc.web.model.OrderExpress;
+
+import java.util.List;
+
 public class ContactCallback {
 
     private int id;
@@ -36,11 +40,15 @@ public class ContactCallback {
     private String ship_wechatname;
     //为C端小程序的物品类型，
     private String package_type;
+    //支付方式
+    private String pay_method;
 
     //当物品类型在packageType罗列的类型之外时填写
     private String package_comments;
     //快递uuid
     private String uuid;
+
+    private List<OrderExpress> orderExpressList;
 
     public int getId() {
         return id;
@@ -177,4 +185,12 @@ public class ContactCallback {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
+
+    public List<OrderExpress> getOrderExpressList() {return orderExpressList;}
+
+    public void setOrderExpressList(List<OrderExpress> orderExpressList) {this.orderExpressList = orderExpressList;}
+
+    public String getPay_method() {return pay_method;}
+
+    public void setPay_method(String pay_method) {this.pay_method = pay_method;}
 }

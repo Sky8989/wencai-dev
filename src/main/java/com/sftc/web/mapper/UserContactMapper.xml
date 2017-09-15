@@ -31,7 +31,16 @@
         <result column="object_type" property="object_type"/>
         <result column="package_comments" property="package_comments"/>
         <result column="uuid" property="uuid"/>
+        <result column="pay_method" property="pay_method"/>
+
+        <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress" select="selectExpressList"
+                    column="order_id">
+        </collection>
     </resultMap>
+
+    <select id="selectExpressList" parameterType="java.lang.String" resultType="com.sftc.web.model.OrderExpress">
+        select * from sftc_order_express where order_id=#{id}
+    </select>
 
     <select id="selectUser" parameterType="int" resultType="com.sftc.web.model.User">
         select id,name,avatar,create_time
