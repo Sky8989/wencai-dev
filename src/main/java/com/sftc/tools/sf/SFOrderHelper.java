@@ -43,8 +43,8 @@ public class SFOrderHelper {
         map.put("待填写", "'WAIT_FILL'");
         map.put("下单", "'INIT'");
         map.put("支付", "'PAYING'");
-        map.put("支付中", "'PAYING'");
-        map.put("待支付", "'PAYING'");
+        map.put("支付中", "'PAYING|INIT'");
+        map.put("待支付", "'PAYING|INIT'");
         map.put("待揽件", "'WAIT_HAND_OVER'");
         map.put("揽件", "'WAIT_HAND_OVER'");
         map.put("已填写", "'ALREADY_FILL'");
