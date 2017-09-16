@@ -339,7 +339,8 @@ public class OrderCommitLogic {
                 }
             }
             if (real_count != package_count) //数据库的已填写包裹数和客户端的包裹数不一致
-                return APIUtil.submitErrorResponse("包裹信息有变化，请返回列表刷新订单！Order infomation has been changed,please check again!", null);
+//                return APIUtil.submitErrorResponse("包裹信息有变化，请返回列表刷新订单！Order infomation has been changed,please check again!", null);
+                return APIUtil.submitErrorResponse("包裹信息有变化，请返回列表刷新订单！", null);
         }
 
 

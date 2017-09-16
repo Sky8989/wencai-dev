@@ -34,6 +34,8 @@ public class ContactCallback {
     // 创建时间
     private String create_time;
 
+    private String region_type;
+
     // 寄件人微信名
     private String sender_wechatname;
     // 收件人微信名
@@ -42,6 +44,14 @@ public class ContactCallback {
     private String package_type;
     //支付方式
     private String pay_method;
+
+    public String getRegion_type() {
+        return region_type;
+    }
+
+    public void setRegion_type(String region_type) {
+        this.region_type = region_type;
+    }
 
     //当物品类型在packageType罗列的类型之外时填写
     private String package_comments;

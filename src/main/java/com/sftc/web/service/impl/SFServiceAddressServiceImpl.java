@@ -1,6 +1,7 @@
 package com.sftc.web.service.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.APIGetUtil;
 import com.sftc.tools.api.APIRequest;
@@ -8,6 +9,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.mapper.OrderMapper;
 import com.sftc.web.mapper.SFServiceAddressMapper;
+import com.sftc.web.model.Express;
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.sfmodel.SFServiceAddress;
@@ -19,9 +21,12 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.List;
+import java.text.ParseException;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 
@@ -187,6 +192,8 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         String result = APIGetUtil.get(get);
 
         Object resultObj = gson.fromJson(result, Object.class);
+
+
         return APIUtil.getResponse(SUCCESS, resultObj);
     }
 
