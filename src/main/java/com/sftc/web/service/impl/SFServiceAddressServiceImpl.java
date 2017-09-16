@@ -192,26 +192,30 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         String result = APIGetUtil.get(get);
 //        Object resultObj = gson.fromJson(result, Object.class);
 
-        Type type = new TypeToken<ArrayList<Express>>(){}.getType();
+        Type type = new TypeToken<ArrayList<Express>>() {
+        }.getType();
 
-        List<Express> lists = gson.fromJson(result,type);
+        List<Express> lists = gson.fromJson(result, type);
 
-        Collections.sort(lists, new Comparator<Express>() {
-            @Override
-            public int compare(Express o1, Express o2) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        if (lists !=null && lists.size()!=0 && lists.size() >= 2) {
 
-                long minTime = -2;
-                long maxTime = -4;
-                try {
-                    minTime = simpleDateFormat.parse(o1.getDeliverTime()).getTime();
-                    maxTime = simpleDateFormat.parse(o2.getDeliverTime()).getTime();
-                } catch (ParseException e) {
-                    e.printStackTrace();
+            Collections.sort(lists, new Comparator<Express>() {
+                @Override
+                public int compare(Express o1, Express o2) {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+                    long minTime = -2;
+                    long maxTime = -4;
+                    try {
+                        minTime = simpleDateFormat.parse(o1.getDeliverTime()).getTime();
+                        maxTime = simpleDateFormat.parse(o2.getDeliverTime()).getTime();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    return Long.compare(minTime, maxTime);
                 }
-                return Long.compare(minTime,maxTime);
-            }
-        });
+            });
+        }
         return APIUtil.getResponse(SUCCESS, lists);
     }
 
