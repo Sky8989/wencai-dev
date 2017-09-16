@@ -30,6 +30,8 @@ public class Order extends Object {
     private String sender_area;
     // 寄件人详细地址
     private String sender_addr;
+    // 寄件人门牌号
+    private String supplementary_info;
     // 文字寄语
     private String word_message;
     // 包裹图片
@@ -71,6 +73,26 @@ public class Order extends Object {
 
     public Order(String create_time, String pay_method,
                  String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
+                 String sender_city, String sender_area, String sender_addr,String supplementary_info,
+                 double longitude, double latitude, String order_type, int sender_user_id) {
+        this.create_time = create_time;
+        this.pay_method = pay_method;
+        this.distribution_method = distribution_method;
+        this.freight = freight;
+        this.sender_name = sender_name;
+        this.sender_mobile = sender_mobile;
+        this.sender_province = sender_province;
+        this.sender_city = sender_city;
+        this.sender_area = sender_area;
+        this.sender_addr = sender_addr;
+        this.supplementary_info = supplementary_info;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.order_type = order_type;
+        this.sender_user_id = sender_user_id;
+    }
+    public Order(String create_time, String pay_method,
+                 String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,
                  double longitude, double latitude, String order_type, int sender_user_id) {
         this.create_time = create_time;
@@ -99,6 +121,7 @@ public class Order extends Object {
         this.sender_city = orderParam.getSender_city();
         this.sender_area = orderParam.getSender_area();
         this.sender_addr = orderParam.getSender_addr();
+        this.supplementary_info = orderParam.getSupplementary_info();
         this.word_message = orderParam.getWord_message();
         this.image = orderParam.getImage();
         this.voice = orderParam.getVoice();
@@ -109,10 +132,6 @@ public class Order extends Object {
         this.gift_card_id = orderParam.getGift_card_id();
         this.order_type = orderParam.getOrder_type();
         this.region_type = orderParam.getRegion_type();
-        //新添加 经纬度
-        this.longitude = orderParam.getLongitude();
-        this.latitude = orderParam.getLatitude();
-
     }
 
     /**
@@ -341,4 +360,8 @@ public class Order extends Object {
     public void setEvaluate(Evaluate evaluate) {
         this.evaluate = evaluate;
     }
+
+    public String getSupplementary_info() {return supplementary_info;}
+
+    public void setSupplementary_info(String supplementary_info) {this.supplementary_info = supplementary_info;}
 }

@@ -30,11 +30,10 @@ public class AddressBookController {
         return addressBookService.addAddressBook(apiRequest);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public @ResponseBody
-    APIResponse deleteAddress(@RequestBody Object object) throws Exception {
-        APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(object);
+    APIResponse deleteAddress(HttpServletRequest httpServletRequest) throws Exception {
+        APIRequest apiRequest = new APIRequest(httpServletRequest);
         return addressBookService.deleteAddressBook(apiRequest);
     }
 

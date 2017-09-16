@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>顺丰如时送达后台管理系统</title>
+    <meta name="author" content="Bingo"/>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
+    <link rel="icon" href="images/icon/favicon.ico" type="image/x-icon"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <script src="javascript/jquery.js"></script>
+    <script src="javascript/plug-ins/customScrollbar.min.js"></script>
+    <script src="javascript/plug-ins/echarts.min.js"></script>
+    <script src="javascript/plug-ins/layerUi/layer.js"></script>
+    <script src="javascript/plug-ins/pagination.js"></script>
+    <script src="javascript/public.js"></script>
+    <!--加入分页插件-->
+    <link rel="stylesheet" href="css/jquery.pagination.css"/>
+</head>
+<body>
+<div class="main-wrap">
+    <div class="side-nav" id="custom_side-nav">
+        <!-- 使用统一管理的js注入-->
+
+    </div>
+    <div class="content-wrap">
+        <header class="top-hd" id="custom_top-hd">
+            <div class="hd-lt">
+                <a class="icon-reorder"></a>
+            </div>
+            <div class="hd-rt">
+                <ul>
+                    <li>
+                        <a><i class="icon-user"></i>管理员 <em>Bingo</em></a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" id="JsSignOut"><i class="icon-signout"></i>安全退出</a>
+                    </li>
+                </ul>
+            </div>
+        </header>
+        <main class="main-cont content mCustomScrollbar">
+            <div class="page-wrap">
+                <section class="page-hd">
+                    <header>
+                        <h2 class="title">订单列表</h2>
+
+                        <p class="title-description">
+                            暂时只提供查看功能，暂未开放修改和删除功能。
+                        </p>
+                    </header>
+                    <hr>
+                </section>
+
+
+                <section class="page-hd">
+                    <strong>条件查询</strong>
+                    <b>订单id</b><input type="text" id="condition_order_id" class="text-primary" value=""/>
+                    <b>订单类型</b><input type="text" id="condition_order_type" class="text-primary" value=""/>
+                    <b>地域类型</b><input type="text" id="condition_region_type" class="text-primary" value=""/>
+                    <b>寄件人手机号</b><input type="text" id="condition_sender_mobile" class="text-primary" value=""/>
+                    <input type="button" value="查询" id="condition_select" class="mcsb_buttonup"/>
+                    <input type="button" value="清空查询条件" id="condition_empty" class="mcsb_buttonup"/>
+                    <hr>
+                </section>
+
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>订单编号</th>
+                        <th>创建时间</th>
+                        <th>支付时间</th>
+
+                        <th>订单类型</th>
+                        <th>地域类型</th>
+
+                        <th>寄件人id</th>
+                        <th>寄件人姓名</th>
+                        <th>寄件人mobile</th>
+
+                        <th>支付方式</th>
+                        <th>是否取消</th>
+
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody class="" id="order_list">
+                    <tr class="cen">
+                        <th>订单编号</th>
+                        <th>创建时间</th>
+                        <th>支付时间</th>
+
+                        <th>订单类型</th>
+                        <th>地域类型</th>
+
+                        <th>寄件人id</th>
+                        <th>寄件人姓名</th>
+                        <th>寄件人mobile</th>
+
+                        <th>支付方式</th>
+                        <th>是否取消</th>
+
+                        <th>操作</th>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="box ">
+                    <div id="pagination1" class="page fl">
+                        <div class="ui-pagination-container">
+                            <a href="javascript:void(0);" class="ui-pagination-page-item active" data-current="1">1</a>
+                            <a href="javascript:void(0);" class="ui-pagination-page-item" data-current="2">2</a>
+                            <a href="javascript:void(0);" class="ui-pagination-page-item" data-current="3">3</a>
+                            <a href="javascript:void(0);" class="ui-pagination-page-item" data-current="4">4</a>
+                            <a href="javascript:void(0);" class="ui-pagination-page-item" data-current="5">5</a>
+                            <a href="javascript:void(0);" class="ui-pagination-page-item" data-current="2">下一页</a>
+                            <a href="javascript:void(0);" class="ui-pagination-page-item" data-current="12">尾页</a></div>
+                    </div>
+                    <div class="info fl">
+                        <p>当前页数：<span id="current1">1</span></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="btm-ft" id="custom_btm-ft">
+            <!-- 使用统一管理的js注入-->
+        </footer>
+    </div>
+</div>
+
+<script src="javascript/pages/public-nav.js"></script>
+<script src="javascript/pages/public.js"></script>
+<script src="javascript/pages/order.js"></script>
+<script src="javascript/jquery.pagination.min.js"></script>
+</body>
+</html>

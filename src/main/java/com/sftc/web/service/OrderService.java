@@ -14,12 +14,12 @@ public interface OrderService {
     /**
      * 普通订单提交
      */
-    APIResponse normalOrderCommit(APIRequest request);
+    APIResponse addNormalOrderCommit(APIRequest request);
 
     /**
      * 好友订单提交
      */
-    APIResponse friendOrderCommit(APIRequest request);
+    APIResponse addFriendOrderCommit(APIRequest request);
 
     /**
      * 支付订单
@@ -50,6 +50,11 @@ public interface OrderService {
      * 更改订单状态
      */
     APIResponse updateOrderStatus(APIRequest request);
+
+    /**
+     * 更改订单快递状态
+     */
+    APIResponse updateOrderExpressStatus(APIRequest request);
 
     /**
      * 我的订单列表
@@ -119,5 +124,13 @@ public interface OrderService {
      * 获取 订单列表 支持分页查询 和 条件查询
      */
     APIResponse selectOrderListByPage(APIRequest request);
+
+    /**
+     * 查询已取消的订单
+     *
+     * @param request 通用请求参数
+     * @return 返回APIResponse
+     */
+    public APIResponse selectCanceledOrderList(APIRequest request);
 }
 

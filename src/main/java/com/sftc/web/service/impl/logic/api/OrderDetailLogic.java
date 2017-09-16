@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.lang.Object;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
@@ -38,6 +39,8 @@ public class OrderDetailLogic {
     private GiftCardMapper giftCardMapper;
     @Resource
     private OrderExpressTransformMapper orderExpressTransformMapper;
+    @Resource
+    private MessageMapper messageMapper;
 
     /**
      * 订单详情接口
@@ -76,6 +79,9 @@ public class OrderDetailLogic {
         resultMap.put("order", orderMap);
         resultMap.put("giftCard", giftCard);
 
+        //查询是否有未读收到好友地址消息 若有则消除
+        //remarkMessageReceiveAddress(order.getOrderExpressList(), order.getSender_user_id());
+
         return APIUtil.getResponse(SUCCESS, resultMap);
     }
 
@@ -96,6 +102,12 @@ public class OrderDetailLogic {
         JSONObject respObject = new JSONObject();
 
         String regionType = order.getRegion_type();
+
+        if (regionType == null) { //增加对未提交订单的查询，此时regionType无值
+            respObject.put("order", order);
+            return APIUtil.getResponse(SUCCESS, respObject);
+        }
+
         if (regionType.equals("REGION_NATION")) { // 大网
 
             // 兜底单
@@ -127,9 +139,18 @@ public class OrderDetailLogic {
             access_token = (access_token == null || access_token.equals("") ? COMMON_ACCESSTOKEN : access_token);
 
             respObject = SFExpressHelper.getExpressDetail(uuid, access_token);
+            //处理错误信息
+            if (respObject.containsKey("error") || respObject.containsKey("errors") || respObject.containsKey("ERROR")) {
+                return APIUtil.selectErrorResponse("查询失败", respObject);
+            }
 
             // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
             String order_status = respObject.getJSONObject("request").getString("status");
+
+            if (order_status.equals("WAIT_HAND_OVER")) { // 当同城查询出来的状态是待揽件  我方库中也要存为待揽件
+                orderExpressMapper.updateOrderExpressStatusByUUID(uuid, "WAIT_HAND_OVER");
+            }
+
             boolean payed = respObject.getJSONObject("request").getBoolean("payed");
             if (payed && order_status.equals("PAYING")) {
                 respObject.getJSONObject("request").put("status", "WAIT_HAND_OVER");
@@ -142,4 +163,21 @@ public class OrderDetailLogic {
 
         return APIUtil.getResponse(SUCCESS, respObject);
     }
+
+    //////////////////////消除 收到地址 的通知消息//////////////////////
+    private void remarkMessageReceiveAddress(List<OrderExpress> orderExpressList, int user_id) {
+        List<Message> messageReceiveAddress = messageMapper.selectMessageReceiveAddress(user_id);
+        //如果生成了“收到地址”通知消息
+        if (messageReceiveAddress.size() > 0) {
+            boolean flag = false;
+            // 查看生成消息的快递id 是否和所查询快递id的相同
+            for (OrderExpress orderExpress : orderExpressList) {
+                if (orderExpress.getId() == messageReceiveAddress.get(0).getExpress_id()) {
+                    flag = true;
+                }
+            }
+            if (flag) messageMapper.updateIsRead(messageReceiveAddress.get(0).getId());
+        }
+    }
+
 }

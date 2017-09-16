@@ -16,6 +16,11 @@ public interface OrderMapper {
     void addOrder(Order order);
 
     /**
+     * 插入订单
+     */
+    void addOrder2(Order order);//多增加门牌号信息
+
+    /**
      * 更新订单区域类型
      */
     void updateOrderRegionType(@Param("id") int id, @Param("region_type") String region_type);
@@ -24,6 +29,9 @@ public interface OrderMapper {
      * 查询我的订单列表
      */
     List<Order> selectMyOrderList(MyOrderParam param);
+
+    List<Order> selectMyOrderList2(MyOrderParam param);
+
 
     /**
      * 查询我的好友订单列表
@@ -34,6 +42,14 @@ public interface OrderMapper {
      * 根据订单id查询订单详情
      */
     Order selectOrderDetailByOrderId(int order_id);
+
+    /**
+     * 添加了行级锁和排他锁的订单详情查询
+     *
+     * @param order_id
+     * @return
+     */
+    Order selectOrderDetailByOrderIdForUpdate(int order_id);
 
     /**
      * 根据快递id查询订单详情
@@ -49,6 +65,11 @@ public interface OrderMapper {
      * 查询大网未提交的订单列表
      */
     List<Integer> selectNationUnCommitOrders();
+
+    /**
+     * 查询好友多包裹未提交的订单列表
+     */
+    List<Integer> selectMutilExpressOrders();
 
     /**
      * 查询同城未提交的订单列表

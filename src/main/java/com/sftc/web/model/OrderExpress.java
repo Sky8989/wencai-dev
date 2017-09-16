@@ -23,10 +23,14 @@ public class OrderExpress extends Object {
     private String ship_area;
     // 收件人详细地址
     private String ship_addr;
+    // 门牌号
+    private String supplementary_info;
     // 包裹类型
     private String package_type;
     // 物品类型
     private String object_type;
+    // 包裹补充描述信息
+    private String package_comments;
     // 订单状态
     private String state;
     // 是否已经填写
@@ -46,6 +50,9 @@ public class OrderExpress extends Object {
     private Double latitude;
     private Double longitude;
     private int order_id;
+
+    // 错误信息
+    private String attributes;
 
     // extension 收件人头像
     private String ship_avatar;
@@ -72,7 +79,31 @@ public class OrderExpress extends Object {
         this.state = state;
     }
 
-    public OrderExpress(String order_time,String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
+    public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
+                        String ship_city, String ship_area, String ship_addr, String supplementary_info, String package_type, String object_type,
+                        String package_comments, String state, int sender_user_id, int order_id, String uuid, Double latitude, Double longitude) {
+        this.order_time = order_time;
+        this.create_time = create_time;
+        this.order_number = order_number;
+        this.ship_name = ship_name;
+        this.ship_mobile = ship_mobile;
+        this.ship_province = ship_province;
+        this.ship_city = ship_city;
+        this.ship_area = ship_area;
+        this.ship_addr = ship_addr;
+        this.supplementary_info = supplementary_info;
+        this.package_type = package_type;
+        this.object_type = object_type;
+        this.package_comments = package_comments;//增加快递描述
+        this.state = state;
+        this.sender_user_id = sender_user_id;
+        this.order_id = order_id;
+        this.uuid = uuid;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String package_type, String object_type,
                         String state, int sender_user_id, int order_id, String uuid, Double latitude, Double longitude) {
         this.order_time = order_time;
@@ -105,6 +136,12 @@ public class OrderExpress extends Object {
     public OrderExpress(String state, String uuid) {
         this.state = state;
         this.uuid = uuid;
+    }
+
+    public OrderExpress(String state, String uuid, String attributes) {
+        this.state = state;
+        this.uuid = uuid;
+        this.attributes = attributes;
     }
 
     public OrderExpress(String order_number, String package_type, String object_type,
@@ -147,7 +184,7 @@ public class OrderExpress extends Object {
     }
 
     // cms 通过
-    public OrderExpress(HttpServletRequest request){
+    public OrderExpress(HttpServletRequest request) {
         if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
             this.id = Integer.parseInt(request.getParameter("id"));
         }
@@ -161,6 +198,7 @@ public class OrderExpress extends Object {
             this.order_id = Integer.parseInt(request.getParameter("order_id"));
         }
     }
+
     public int getId() {
         return id;
     }
@@ -330,15 +368,51 @@ public class OrderExpress extends Object {
         this.ship_avatar = ship_avatar;
     }
 
-    public String getReceive_time() {return receive_time;}
+    public String getReceive_time() {
+        return receive_time;
+    }
 
-    public void setReceive_time(String receive_time) {this.receive_time = receive_time;}
+    public void setReceive_time(String receive_time) {
+        this.receive_time = receive_time;
+    }
 
-    public String getOrder_time() {return order_time;}
+    public String getOrder_time() {
+        return order_time;
+    }
 
-    public void setOrder_time(String order_time) {this.order_time = order_time;}
+    public void setOrder_time(String order_time) {
+        this.order_time = order_time;
+    }
 
-    public Evaluate getEvaluate() {return evaluate;}
+    public Evaluate getEvaluate() {
+        return evaluate;
+    }
 
-    public void setEvaluate(Evaluate evaluate) {this.evaluate = evaluate;}
+    public void setEvaluate(Evaluate evaluate) {
+        this.evaluate = evaluate;
+    }
+
+    public String getSupplementary_info() {
+        return supplementary_info;
+    }
+
+    public void setSupplementary_info(String supplementary_info) {
+        this.supplementary_info = supplementary_info;
+    }
+
+    public String getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(String attributes) {
+        this.attributes = attributes;
+    }
+
+    public String getPackage_comments() {
+        return package_comments;
+    }
+
+    public void setPackage_comments(String package_comments) {
+        this.package_comments = package_comments;
+    }
 }

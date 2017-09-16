@@ -1,5 +1,7 @@
 package com.sftc.web.model;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 兜底记录表，记录从同城单转下到大网的订单信息
  */
@@ -79,4 +81,23 @@ public class OrderExpressTransform {
     public void setCreate_time(String create_time) {
         this.create_time = create_time;
     }
+
+    public OrderExpressTransform() {
+    }
+
+    public OrderExpressTransform(HttpServletRequest request) {
+
+        if (request.getParameter("express_id") != null && !"".equals(request.getParameter("express_id"))) {
+            this.express_id = Integer.parseInt(request.getParameter("express_id"));
+        }
+        if (request.getParameter("same_uuid") != null && !"".equals(request.getParameter("same_uuid"))) {
+            this.same_uuid = request.getParameter("same_uuid");
+        }
+        if (request.getParameter("nation_uuid") != null && !"".equals(request.getParameter("nation_uuid"))) {
+            this.nation_uuid = request.getParameter("nation_uuid");
+        }
+
+    }
+
+
 }

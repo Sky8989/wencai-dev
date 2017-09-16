@@ -64,8 +64,17 @@
         </association>
     </resultMap>
 
-    <update id="updateUserOfAvatar" parameterType="com.sftc.web.model.User">
+<!--    <update id="updateUserOfAvatar" parameterType="com.sftc.web.model.User">
         UPDATE sftc_user SET avatar = #{avatar} ,name = #{name} WHERE open_id LIKE #{open_id}
+    </update>-->
+    <update id="updateUserOfAvatar" parameterType="com.sftc.web.model.User">
+        UPDATE sftc_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="avatar!=null">avatar=#{avatar},</if>
+            <if test="name!=null">name=#{name},</if>
+            <if test="session_key!=null">session_key=#{session_key},</if>
+        </trim>
+        WHERE open_id = #{open_id}
     </update>
 
 
@@ -82,7 +91,7 @@
         SELECT * FROM sftc_user
         <where>
             <if test="id != 0">and id = #{id}</if>
-            <if test="name != null">and name LIKE '%tcsu Maven Webapp%'</if>
+            <if test="name != null">and name LIKE '%sftc Maven Webapp%'</if>
         </where>
     </select>
 </mapper>

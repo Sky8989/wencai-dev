@@ -1,6 +1,7 @@
 package com.sftc.web.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
@@ -100,7 +101,7 @@ public class UserServiceImpl implements UserService {
                 } else {
                     String gmt_modified = Long.toString(System.currentTimeMillis());
                     if (Long.parseLong(gmt_modified) > Long.parseLong(token.getGmt_expiry())) {
-                        token.setGmt_expiry(Long.toString(System.currentTimeMillis() + 1209600));
+                        token.setGmt_expiry(Long.toString(System.currentTimeMillis() + 2592000000L));
                         String myToken = makeToken(gmt_modified, user.getOpen_id());
                         token.setLocal_token(myToken);
                     }
@@ -122,8 +123,8 @@ public class UserServiceImpl implements UserService {
         String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
         WechatUser wechatUser = APIResolve.getWechatJson(auth_url);
 //        WechatUser wechatUser = new WechatUser();
-//        wechatUser.setOpenid("oCFL80DaudC3jNVdnp5bQtXHkbUY");
-//        wechatUser.setSession_key("WP0iYNpNYwYwBdKT9eVPyw==");
+//        wechatUser.setOpenid("123");
+//        wechatUser.setSession_key("66==");
 //        wechatUser.setErrmsg("sadsadcuowu");
 //        wechatUser.setErrcode(500);
         User user = null;
@@ -156,15 +157,15 @@ public class UserServiceImpl implements UserService {
                 tokenInfo.put("token", myToken);
                 tokenInfo.put("user_id", (user2.getId() + ""));
             } else {
-                user.setOpen_id(wechatUser.getOpenid());
+//                user.setOpen_id(wechatUser.getOpenid());// 不更新
                 user.setSession_key(wechatUser.getSession_key());
-                user.setCreate_time(Long.toString(System.currentTimeMillis()));
+//                user.setCreate_time(Long.toString(System.currentTimeMillis()));//不更新
                 //更新头像和昵称
                 if (userParam.getName() != null && userParam.getAvatar() != null) {
                     user.setAvatar(userParam.getAvatar());
                     user.setName(userParam.getName());
-                    userMapper.updateUserOfAvatar(user);
                 }
+                userMapper.updateUserOfAvatar(user);
                 Token token = tokenMapper.getTokenById(user.getId());
                 if (token == null) {
                     token = new Token(user.getId(), makeToken(user.getCreate_time(), user.getOpen_id()));
@@ -172,7 +173,7 @@ public class UserServiceImpl implements UserService {
                 } else {
                     String gmt_modified = Long.toString(System.currentTimeMillis());
                     if (Long.parseLong(gmt_modified) > Long.parseLong(token.getGmt_expiry())) {
-                        token.setGmt_expiry(Long.toString(System.currentTimeMillis() + 1209600));
+                        token.setGmt_expiry(Long.toString(System.currentTimeMillis() + 2592000000L));
                         String myToken = makeToken(gmt_modified, user.getOpen_id());
                         token.setLocal_token(myToken);
                     }
@@ -299,18 +300,19 @@ public class UserServiceImpl implements UserService {
      * 下面是CMS的内容
      */
     public APIResponse selectUserListByPage(APIRequest request) throws Exception {
-        APIStatus status = SUCCESS;
+
         HttpServletRequest httpServletRequest = request.getRequest();
         // 此处封装了 User的构造方法
         User user = new User(httpServletRequest);
         int pageNumKey = Integer.parseInt(httpServletRequest.getParameter("pageNumKey"));
         int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
-        PageHelper.startPage(pageNumKey, pageSizeKey);
-        List<User> userList = userMapper.selectByPage(user);
-        if (userList.size() == 0) {
+        //  使用lambab表达式 配合pageHelper实现对用户列表和查询相关信息的统一查询
+        PageInfo<Object> pageInfo = PageHelper.startPage(pageNumKey, pageSizeKey).doSelectPageInfo(() -> userMapper.selectByPage(user));
+        //  处理结果
+        if (pageInfo.getList().size() == 0) {
             return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
         } else {
-            return APIUtil.getResponse(status, userList);
+            return APIUtil.getResponse(SUCCESS, pageInfo);
         }
     }
 }

@@ -1,31 +1,43 @@
 package com.sftc.web.model;
 
 /**
- * 寄件人地址簿
+ * 地址关系总映射
  * Created by huxingyue on 2017/7/26.
  */
 public class AddressBook {
     private int id;
     // 用户编号
     private int user_id;
-    // 寄件人姓名
-    private String name;
-    // 寄件人手机号
-    private String phone;
-    // 省份
-    private String province;
-    // 城市
-    private String city;
-    // 地区
-    private String area;
-    // 详细地址
-    private String address;
-    // 经度
-    private double longitude;
-    // 纬度
-    private double latitude;
+    // 映射关系 地址编号
+    private int address_id;
+
+    private int is_delete;
+    private int is_mystery;
+
+    // 地址类型 address_history / address_book
+    private String address_type;
+    // 地址簿类型 sender / ship
+    private String address_book_type;
     // 创建时间
     private String create_time;
+
+    private Address address;
+    // 好友微信名
+    private String ship_wechatname;
+
+    public AddressBook() {
+        super();
+    }
+
+    public AddressBook(int user_id, int address_id, int is_delete, int is_mystery, String address_type, String address_book_type, String create_time) {
+        this.user_id = user_id;
+        this.address_id = address_id;
+        this.is_delete = is_delete;
+        this.is_mystery = is_mystery;
+        this.address_type = address_type;
+        this.address_book_type = address_book_type;
+        this.create_time = create_time;
+    }
 
     public int getId() {return id;}
 
@@ -35,58 +47,36 @@ public class AddressBook {
 
     public void setUser_id(int user_id) {this.user_id = user_id;}
 
-    public String getName() {return name;}
+    public int getAddress_id() {return address_id;}
 
-    public void setName(String name) {this.name = name;}
+    public void setAddress_id(int address_id) {this.address_id = address_id;}
 
-    public String getPhone() {return phone;}
+    public int getIs_delete() {return is_delete;}
 
-    public void setPhone(String phone) {this.phone = phone;}
+    public void setIs_delete(int is_delete) {this.is_delete = is_delete;}
 
-    public String getProvince() {return province;}
+    public int getIs_mystery() {return is_mystery;}
 
-    public void setProvince(String province) {this.province = province;}
+    public void setIs_mystery(int is_mystery) {this.is_mystery = is_mystery;}
 
-    public String getCity() {return city;}
+    public String getAddress_type() {return address_type;}
 
-    public void setCity(String city) {this.city = city;}
+    public void setAddress_type(String address_type) {this.address_type = address_type;}
 
-    public String getArea() {return area;}
+    public String getAddress_book_type() {return address_book_type;}
 
-    public void setArea(String area) {this.area = area;}
-
-    public String getAddress() {return address;}
-
-    public void setAddress(String address) {this.address = address;}
-
-    public double getLongitude() {return longitude;}
-
-    public void setLongitude(double longitude) {this.longitude = longitude;}
-
-    public double getLatitude() {return latitude;}
-
-    public void setLatitude(double latitude) {this.latitude = latitude;}
+    public void setAddress_book_type(String address_book_type) {this.address_book_type = address_book_type;}
 
     public String getCreate_time() {return create_time;}
 
     public void setCreate_time(String create_time) {this.create_time = create_time;}
 
-    public AddressBook() { super();}
+    public Address getAddress() {return address;}
 
-    public AddressBook(int id, int user_id, String name, String phone, String province,
-                       String city, String area, String address, double longitude,
-                       double latitude, String create_time) {
-        this.id = id;
-        this.user_id = user_id;
-        this.name = name;
-        this.phone = phone;
-        this.province = province;
-        this.city = city;
-        this.area = area;
-        this.address = address;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.create_time = create_time;
-    }
+    public void setAddress(Address address) {this.address = address;}
+
+    public String getShip_wechatname() {return ship_wechatname;}
+
+    public void setShip_wechatname(String ship_wechatname) {this.ship_wechatname = ship_wechatname;}
 }
 

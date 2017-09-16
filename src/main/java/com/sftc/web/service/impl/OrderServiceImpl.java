@@ -39,11 +39,11 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private CMSOrderListLogic cmsOrderListLogic;
 
-    public APIResponse normalOrderCommit(APIRequest request) {
+    public APIResponse addNormalOrderCommit(APIRequest request) {
         return orderCommitLogic.normalOrderCommit(request);
     }
 
-    public APIResponse friendOrderCommit(APIRequest request) {
+    public APIResponse addFriendOrderCommit(APIRequest request) {
         return orderCommitLogic.friendOrderCommit(request);
     }
 
@@ -95,6 +95,10 @@ public class OrderServiceImpl implements OrderService {
         return orderStatusLogic.updateOrderStatus(request);
     }
 
+    public APIResponse updateOrderExpressStatus(APIRequest request) {
+        return orderStatusLogic.updateOrderExpressStatus(request);
+    }
+
     public APIResponse getMyOrderList(APIRequest request) {
         return orderListLogic.getMyOrderList(request);
     }
@@ -124,4 +128,10 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse selectOrderListByPage(APIRequest request) {
         return cmsOrderListLogic.selectOrderListByPage(request);
     }
+
+    public APIResponse selectCanceledOrderList(APIRequest request) {
+        return cmsOrderListLogic.selectCanceledOrderList(request);
+    }
+
+
 }

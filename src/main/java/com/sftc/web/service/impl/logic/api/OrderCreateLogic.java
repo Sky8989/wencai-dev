@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.common.EmojiFilter;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.mapper.*;
 import com.sftc.web.model.Message;
@@ -11,7 +12,11 @@ import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.UserContactNew;
 import com.sftc.web.model.reqeustParam.OrderParam;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.LinkedList;
@@ -20,6 +25,7 @@ import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 
+@Transactional
 @Component
 public class OrderCreateLogic {
 
@@ -33,6 +39,8 @@ public class OrderCreateLogic {
     private UserContactMapper userContactMapper;
     @Resource
     private MessageMapper messageMapper;
+    @Resource
+    private OrderCommitLogic orderCommitLogic;
 
     /**
      * 寄件人填写订单
@@ -41,9 +49,25 @@ public class OrderCreateLogic {
 
         OrderParam orderParam = (OrderParam) request.getRequestParam();
 
+        // 增加对emoji的过滤
+        if (orderParam.getPackage_type() != null && !"".equals(orderParam.getPackage_type())) {
+            boolean containsEmoji = EmojiFilter.containsEmoji(orderParam.getPackage_type());
+            if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
+        }
+        if (orderParam.getObject_type() != null && !"".equals(orderParam.getObject_type())) {
+            boolean containsEmoji = EmojiFilter.containsEmoji(orderParam.getObject_type());
+            if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
+        }
+        if (orderParam.getPackage_comments() != null && !"".equals(orderParam.getPackage_comments())) {
+            boolean containsEmoji = EmojiFilter.containsEmoji(orderParam.getPackage_comments());
+            if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
+        }
+        // 处理package_comments 非必填参数
+        String package_comments = orderParam.getPackage_comments() != null ? orderParam.getPackage_comments() : "";
+
         // 插入订单表
         Order order = new Order(orderParam);
-        orderMapper.addOrder(order);
+        orderMapper.addOrder2(order);
 
         // 插入快递表
         OrderExpress orderExpress = new OrderExpress();
@@ -55,15 +79,16 @@ public class OrderCreateLogic {
         orderExpress.setSender_user_id(orderParam.getSender_user_id());
         orderExpress.setReserve_time("");
         orderExpress.setOrder_id(order.getId());
+        orderExpress.setPackage_comments(package_comments);
         for (int i = 0; i < orderParam.getPackage_count(); i++) {
             // 写入uuid 保证每个快递的uuid不同
             orderExpress.setUuid(SFOrderHelper.getOrderNumber());
-            orderExpressMapper.addOrderExpress(orderExpress);
+            orderExpressMapper.addOrderExpress(orderExpress);//TODO:要插入包裹补充信息
         }
 
         // 插入地址表
-        com.sftc.web.model.Address senderAddress = new com.sftc.web.model.Address(orderParam);
-        addressMapper.addAddress(senderAddress);
+        //com.sftc.web.model.Address senderAddress = new com.sftc.web.model.Address(orderParam);
+        //addressMapper.addAddress(senderAddress);
 
         return APIUtil.getResponse(SUCCESS, order.getId());
     }
@@ -71,16 +96,23 @@ public class OrderCreateLogic {
     /**
      * 好友填写寄件订单
      */
+    //使用最高级别的事物 防止提交过程中有好友包裹被填写
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
     public synchronized APIResponse friendFillOrder(Map rowData) {
+        JSONObject paramOBJ = JSONObject.fromObject(rowData);
+//        // 修复 空格对Gson的影响
+//        String strJsonResult = orderExpressStr.replace(" ", "");
+//        OrderExpress orderExpress = new Gson().fromJson(strJsonResult, OrderExpress.class);
+        OrderExpress orderExpress = (OrderExpress) JSONObject.toBean(paramOBJ, OrderExpress.class);
 
-        String orderExpressStr = rowData.toString();
-        // 修复 空格对Gson的影响
-        String strJsonResult = orderExpressStr.replace(" ", "");
-        OrderExpress orderExpress = new Gson().fromJson(strJsonResult, OrderExpress.class);
         // 判断订单是否下单
         Order order = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
         if (order.getRegion_type() != null && !"".equals(order.getRegion_type()) && order.getRegion_type().length() != 0) {
             return APIUtil.submitErrorResponse("订单已经下单，现在您无法再填写信息", orderExpress.getOrder_id());
+        }
+
+        if (order.getIs_cancel() != null && "Cancelled".equals(order.getIs_cancel())) {
+            return APIUtil.submitErrorResponse("订单已取消，现在您无法再填写信息", null);
         }
 
         // 判断同一个用户重复填写
@@ -93,9 +125,14 @@ public class OrderCreateLogic {
                 realList.add(oe);
         }
 
+
         if (realList.isEmpty()) { // 已抢完
             return APIUtil.submitErrorResponse("包裹已经分发完", null);
         } else {
+            //增加对supplementary_info的处理 保证有值
+            if (orderExpress.getSupplementary_info() == null || "".equals(orderExpress.getSupplementary_info())) {
+                orderExpress.setSupplementary_info(" ");
+            }
             orderExpress.setState("ALREADY_FILL");
             orderExpress.setId(realList.get(0).getId());
             orderExpress.setReceive_time(Long.toString(System.currentTimeMillis()));
@@ -159,6 +196,25 @@ public class OrderCreateLogic {
                 userContactMapper.updateUserContactLntimacy(userContactNew2);
             }
 
+            String current_create_time = Long.toString(System.currentTimeMillis());
+            ///插入地址映射关系 1 地址簿 1 历史地址
+            // 生成 收件人的寄件人地址簿
+            orderCommitLogic.insertAddressBookUtils("address_book", "sender",
+                    orderExpress.getShip_user_id(),//给收件人存
+                    orderExpress.getShip_user_id(),//给收件人存
+                    orderExpress.getShip_name(), orderExpress.getShip_mobile(), orderExpress.getShip_province(),
+                    orderExpress.getShip_city(), orderExpress.getShip_area(), orderExpress.getShip_addr(), orderExpress.getSupplementary_info(),
+                    current_create_time, orderExpress.getLongitude(), orderExpress.getLatitude()
+            );
+
+            //提交地址同时（去重处理）保存到[寄件人]最近联系人
+            orderCommitLogic.insertAddressBookUtils("address_history", "address_history",
+                    order.getSender_user_id(),// 给寄件人存
+                    orderExpress.getShip_user_id(),// id是收件人的 查历史地址时才能取到
+                    orderExpress.getShip_name(), orderExpress.getShip_mobile(), orderExpress.getShip_province(),
+                    orderExpress.getShip_city(), orderExpress.getShip_area(), orderExpress.getShip_addr(), orderExpress.getSupplementary_info(),
+                    current_create_time, orderExpress.getLongitude(), orderExpress.getLatitude()
+            );
         }
 
         return APIUtil.getResponse(SUCCESS, orderExpress.getOrder_id());

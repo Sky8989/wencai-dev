@@ -7,12 +7,12 @@ import com.sftc.web.model.wechat.WechatUser;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.client.methods.HttpGet;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class APIResolve {
 
@@ -38,6 +38,19 @@ public class APIResolve {
         Map map = (Map) jasonObject;
         String new_json = map.get("requests").toString();
         orderses = (List<Orders>) JSONArray.toList(JSONArray.fromObject(new_json), Orders.class);
+        return orderses;
+    }
+
+    public static List<Orders> getOrdersJson2(String apiUrl, String token) throws Exception {
+        List<Orders> orderses = new LinkedList<Orders>();
+        HttpGet httpGet = new HttpGet(apiUrl);
+        httpGet.addHeader("PushEnvelope-Device-Token", token);
+        String resultStr = APIGetUtil.get(httpGet);
+        JSONObject resultOBJ = JSONObject.fromObject(resultStr);
+        Collection collection = JSONArray.toCollection(JSONArray.fromObject(resultOBJ.get("request")));
+        for (Object aCollection : collection) {
+            orderses.add((Orders) aCollection);
+        }
         return orderses;
     }
 

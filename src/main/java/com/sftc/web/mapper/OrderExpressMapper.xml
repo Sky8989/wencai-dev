@@ -33,7 +33,7 @@
             keyProperty="id">
         INSERT INTO sftc_order_express
         (ship_name,ship_mobile,ship_province,ship_city,ship_area,
-        ship_addr,order_number,package_type,object_type,create_time,sender_user_id,order_id,state,uuid,longitude,latitude,reserve_time,order_time)
+        ship_addr,order_number,package_type,object_type,package_comments,create_time,sender_user_id,order_id,state,uuid,longitude,latitude,reserve_time,order_time)
         VALUES (
         #{ship_name, jdbcType=VARCHAR},
         #{ship_mobile, jdbcType=VARCHAR},
@@ -44,6 +44,36 @@
         #{order_number, jdbcType=VARCHAR},
         #{package_type, jdbcType=VARCHAR},
         #{object_type, jdbcType=VARCHAR},
+        #{package_comments, jdbcType=VARCHAR},
+        #{create_time, jdbcType=VARCHAR},
+        #{sender_user_id, jdbcType=INTEGER},
+        #{order_id, jdbcType=INTEGER},
+        #{state, jdbcType=VARCHAR},
+        #{uuid, jdbcType=VARCHAR},
+        #{longitude, jdbcType=DOUBLE},
+        #{latitude, jdbcType=DOUBLE},
+        #{reserve_time, jdbcType=VARCHAR},
+        #{order_time, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="addOrderExpress2" parameterType="com.sftc.web.model.OrderExpress" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO sftc_order_express
+        (ship_name,ship_mobile,ship_province,ship_city,ship_area,
+        ship_addr,supplementary_info,order_number,package_type,object_type,package_comments,create_time,sender_user_id,order_id,state,uuid,longitude,latitude,reserve_time,order_time)
+        VALUES (
+        #{ship_name, jdbcType=VARCHAR},
+        #{ship_mobile, jdbcType=VARCHAR},
+        #{ship_province, jdbcType=VARCHAR},
+        #{ship_city, jdbcType=VARCHAR},
+        #{ship_area, jdbcType=VARCHAR},
+        #{ship_addr, jdbcType=VARCHAR},
+        #{supplementary_info, jdbcType=VARCHAR},
+        #{order_number, jdbcType=VARCHAR},
+        #{package_type, jdbcType=VARCHAR},
+        #{object_type, jdbcType=VARCHAR},
+        #{package_comments, jdbcType=VARCHAR},
         #{create_time, jdbcType=VARCHAR},
         #{sender_user_id, jdbcType=INTEGER},
         #{order_id, jdbcType=INTEGER},
@@ -66,6 +96,7 @@
         ship_city=#{ship_city, jdbcType=VARCHAR},
         ship_area=#{ship_area, jdbcType=VARCHAR},
         ship_addr=#{ship_addr, jdbcType=VARCHAR},
+        supplementary_info=#{supplementary_info, jdbcType=VARCHAR},
         state=#{state, jdbcType=VARCHAR},
         longitude=#{longitude, jdbcType=DOUBLE},
         latitude=#{latitude, jdbcType=DOUBLE},
@@ -93,10 +124,17 @@
         WHERE  order_id=#{order_id}
     </update>
 
+    <update id="updateOrderExpressOvertime" parameterType="int">
+        UPDATE sftc_order_express
+        SET state='OVERTIME'
+        WHERE  order_id=#{order_id}
+    </update>
+
     <update id="updateOrderExpressForSF" parameterType="com.sftc.web.model.OrderExpress">
         update sftc_order_express
         set
         state=#{state, jdbcType=VARCHAR}
+        <if test="attributes != null and attributes != ''">,attributes=#{attributes, jdbcType=VARCHAR}</if>
         WHERE uuid=#{uuid}
     </update>
 
@@ -104,7 +142,7 @@
         update sftc_order_express
         set
         <if test="uuid != null">uuid=#{uuid, jdbcType=VARCHAR},</if>
-        reserve_time=#{reserve_time, jdbcType=VARCHAR},
+        <if test="reserve_time != null">reserve_time=#{reserve_time, jdbcType=VARCHAR},</if>
         state='WAIT_HAND_OVER'
         WHERE id=#{id}
     </update>
@@ -137,5 +175,40 @@
             <if test="ship_mobile != null">and ship_mobile = #{ship_mobile}</if>
             <if test="uuid != null">and uuid = #{uuid}</if>
         </where>
+    </select>
+
+
+    <select id="selectOrderExpressTransformList" resultType="com.sftc.web.model.OrderExpressTransform"
+            parameterType="com.sftc.web.model.OrderExpressTransform">
+        SELECT * FROM sftc_order_express_transform
+        <where>
+            <if test="express_id != null and express_id != 0">and express_id = #{express_id}</if>
+            <if test="same_uuid != null and same_uuid != '' ">and same_uuid = #{same_uuid}</if>
+            <if test="nation_uuid != null and nation_uuid != '' ">and nation_uuid = #{nation_uuid}</if>
+        </where>
+    </select>
+
+    <select id="selectOrderIdForsyncSFExpressStatus" parameterType="int" resultType="int">
+     SELECT * FROM sftc_order o
+        WHERE id IN (
+            SELECT t.order_id FROM (
+              SELECT distinct oe.order_id FROM sftc_order_express oe WHERE (oe.sender_user_id=#{id} OR oe.ship_user_id=#{id})
+            ) AS t
+        ) AND region_type = 'REGION_SAME'
+        ORDER by o.create_time desc
+    </select>
+
+    <select id="selectExpressForsyncSFExpressStatus" resultType="com.sftc.web.model.OrderExpress">
+        SELECT * FROM sftc_order_express oe WHERE oe.order_id
+        IN
+        <foreach collection="list" item="order_id" open="(" close=")" separator=",">
+            #{order_id}
+        </foreach>
+    </select>
+
+    <select id="selectExpressForContactInfo" parameterType="int" resultType="com.sftc.web.model.OrderExpress">
+        SELECT * FROM sftc_order_express
+        WHERE (sender_user_id=#{sender_user_id} and ship_user_id=#{ship_user_id} )
+        or( sender_user_id=#{ship_user_id} and ship_user_id=#{sender_user_id})
     </select>
 </mapper>

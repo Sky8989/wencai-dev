@@ -1,6 +1,7 @@
 package com.sftc.web.service.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.APIGetUtil;
 import com.sftc.tools.api.APIRequest;
@@ -8,6 +9,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.mapper.OrderMapper;
 import com.sftc.web.mapper.SFServiceAddressMapper;
+import com.sftc.web.model.Express;
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.sfmodel.SFServiceAddress;
@@ -19,9 +21,12 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.List;
+import java.text.ParseException;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 
@@ -116,8 +121,13 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         // handle address
         senderCity = senderCity.replace("市", "");
         receiverCity = receiverCity.replace("市", "");
-        if (!senderArea.endsWith("区")) senderArea = senderArea + "区";
-        if (!receiverArea.endsWith("区")) receiverArea = receiverArea + "区";
+        //取消对area的末尾加上区，改为去除 区、县 sf接口不支持 ‘紫金县区’
+//        if (!senderArea.endsWith("区")) senderArea = senderArea + "区";
+//        if (!receiverArea.endsWith("区")) receiverArea = receiverArea + "区";
+        if (senderArea.endsWith("区")) senderArea = senderArea.replace("区", "");
+        if (senderArea.endsWith("县")) senderArea = senderArea.replace("县", "");
+        if (receiverArea.endsWith("区")) receiverArea = receiverArea.replace("区", "");
+        if (receiverArea.endsWith("县")) receiverArea = receiverArea.replace("县", "");
 
 //        SFServiceAddress senderCityAddress = sfServiceAddressMapper.selectServiceAddressByNameAndLevel(senderCity, 3);
 //        SFServiceAddress receiveCityAddress = sfServiceAddressMapper.selectServiceAddressByNameAndLevel(receiverCity, 3);
@@ -133,6 +143,12 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         // request sf param
         String senderAreaCode = getServiceAddressCode(senderArea, 4, senderCityAddress.getCode());
         String receiverAreaCode = getServiceAddressCode(receiverArea, 4, receiveCityAddress.getCode());
+
+        if (senderAreaCode == null)
+            return APIUtil.selectErrorResponse("顺丰不支持寄件人城市", null);
+        if (receiverAreaCode == null)
+            return APIUtil.selectErrorResponse("顺丰不支持收件人城市", null);
+
         Object weightObject = requestObject.get("weight");
         String weightStr = "1";
         if (weightObject != null) {
@@ -174,9 +190,32 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         String rateUrl = SF_SERVICE_RATE.replace("{origin}", origin).replace("{dest}", dest).replace("{time}", time).replace("{weight}", weight);
         HttpGet get = new HttpGet(rateUrl);
         String result = APIGetUtil.get(get);
+//        Object resultObj = gson.fromJson(result, Object.class);
 
-        Object resultObj = gson.fromJson(result, Object.class);
-        return APIUtil.getResponse(SUCCESS, resultObj);
+        Type type = new TypeToken<ArrayList<Express>>() {
+        }.getType();
+
+        List<Express> lists = gson.fromJson(result, type);
+
+        if (lists !=null && lists.size()!=0 && lists.size() >= 2) {
+
+            Collections.sort(lists, new Comparator<Express>() {
+                @Override
+                public int compare(Express o1, Express o2) {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    long time1 = 0;
+                    long time2 = 0;
+                    try {
+                        if (o1.getDeliverTime() != null) time1 = simpleDateFormat.parse(o1.getDeliverTime()).getTime();
+                        if (o2.getDeliverTime() != null) time2 = simpleDateFormat.parse(o2.getDeliverTime()).getTime();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    return Long.compare(time1, time2);
+                }
+            });
+        }
+        return APIUtil.getResponse(SUCCESS, lists);
     }
 
     public APIResponse updateServiceAddress(APIRequest request) {

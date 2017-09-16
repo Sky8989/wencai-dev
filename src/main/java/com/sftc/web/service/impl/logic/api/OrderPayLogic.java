@@ -17,6 +17,7 @@ import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_QUOTES_URL;
 import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
 import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
+import static com.sftc.tools.sf.SFTokenHelper.COMMON_UUID;
 
 @Component
 public class OrderPayLogic {
@@ -43,7 +44,7 @@ public class OrderPayLogic {
         String reserve_time = (String) requestObject.get("reserve_time");
         requestObject.remove("reserve_time");
         if (!reserve_time.equals("")) {
-            reserve_time = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            reserve_time = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             requestObject.put("reserve_time", reserve_time);
         }
 
@@ -57,7 +58,7 @@ public class OrderPayLogic {
             post.addHeader("PushEnvelope-Device-Token", access_token);
         } else {
             // 下单时，如果还没登录，计价时uuid和token都没有，需要先写死
-            jsonObject.getJSONObject("request").getJSONObject("merchant").put("uuid", "2c9a85895c352c20015c3878647b017a");
+            jsonObject.getJSONObject("request").getJSONObject("merchant").put("uuid", COMMON_UUID);
             post.addHeader("PushEnvelope-Device-Token", COMMON_ACCESSTOKEN);
         }
 
@@ -80,13 +81,17 @@ public class OrderPayLogic {
         String uuid = (String) request.getParameter("uuid");
         String access_token = (String) request.getParameter("access_token");
 
-        Token tokenPram = tokenMapper.selectUserIdByToken(token);
-        if (token == null || token.equals("") || tokenPram == null)
-            return APIUtil.paramErrorResponse("token无效");
+
+        if (token == null || token.equals(""))
+            return APIUtil.paramErrorResponse("token参数缺失");
         if (uuid == null || uuid.equals(""))
-            return APIUtil.paramErrorResponse("uuid无效");
+            return APIUtil.paramErrorResponse("uuid参数缺失");
         if (access_token == null || access_token.equals(""))
-            return APIUtil.paramErrorResponse("access_token无效");
+            return APIUtil.paramErrorResponse("access_token参数缺失");
+
+        Token tokenPram = tokenMapper.selectUserIdByToken(token);
+        if (tokenPram == null) return APIUtil.paramErrorResponse("token无效，库中无该token");
+
 
         User user = userMapper.selectUserByUserId(tokenPram.getUser_id());
         String pay_url = SF_REQUEST_URL + "/" + uuid + "/js_pay?open_id=" + user.getOpen_id();

@@ -11,7 +11,7 @@
     </resultMap>
 
     <!-- 添加标签   -->
-    <insert id="addLabel" parameterType="com.sftc.web.model.UserContactLabel">
+    <insert id="addLabel" parameterType="com.sftc.web.model.UserContactLabel" useGeneratedKeys="true">
                 INSERT INTO sftc_user_contact_label (label,user_contact_id,create_time) VALUES
                 (#{label},#{user_contact_id},#{create_time})
         </insert>

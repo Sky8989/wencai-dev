@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @Controller
@@ -34,7 +35,7 @@ public class OrderController extends AbstractBasicController {
     APIResponse placeOrder(@RequestBody Object object) throws Exception {
         APIRequest request = new APIRequest();
         request.setRequestParam(object);
-        return orderService.normalOrderCommit(request);
+        return orderService.addNormalOrderCommit(request);
     }
 
     /**
@@ -45,7 +46,7 @@ public class OrderController extends AbstractBasicController {
     APIResponse friendOrderCommit(@RequestBody Object object) throws Exception {
         APIRequest request = new APIRequest();
         request.setRequestParam(object);
-        return orderService.friendOrderCommit(request);
+        return orderService.addFriendOrderCommit(request);
     }
 
     /**
@@ -86,9 +87,13 @@ public class OrderController extends AbstractBasicController {
         return orderService.payOrder(new APIRequest(request));
     }
 
+    /**
+     * 订单详情
+     */
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     public @ResponseBody
-    APIResponse detail(HttpServletRequest request) throws Exception {
+    APIResponse detail(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        response.addHeader("Access-Control-Allow-Origin", "*");
         return orderService.selectOrderDetail(new APIRequest(request));
     }
 
@@ -132,6 +137,17 @@ public class OrderController extends AbstractBasicController {
         APIRequest request = new APIRequest();
         request.setRequestParam(object);
         return orderService.updateOrderStatus(request);
+    }
+
+    /**
+     * 更改订单快递状态
+     */
+    @RequestMapping(value = "/updateExpressStatus", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse updateOrderExpressStatus(@RequestBody Object object) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.updateOrderExpressStatus(request);
     }
 
     /**
