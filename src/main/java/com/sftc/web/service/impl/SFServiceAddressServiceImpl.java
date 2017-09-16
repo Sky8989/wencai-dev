@@ -203,16 +203,15 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
                 @Override
                 public int compare(Express o1, Express o2) {
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
-                    long minTime = -2;
-                    long maxTime = -4;
+                    long time1 = 0;
+                    long time2 = 0;
                     try {
-                        minTime = simpleDateFormat.parse(o1.getDeliverTime()).getTime();
-                        maxTime = simpleDateFormat.parse(o2.getDeliverTime()).getTime();
+                        if (o1.getDeliverTime() != null) time1 = simpleDateFormat.parse(o1.getDeliverTime()).getTime();
+                        if (o2.getDeliverTime() != null) time2 = simpleDateFormat.parse(o2.getDeliverTime()).getTime();
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    return Long.compare(minTime, maxTime);
+                    return Long.compare(time1, time2);
                 }
             });
         }
