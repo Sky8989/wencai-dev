@@ -32,14 +32,15 @@
         <result column="package_comments" property="package_comments"/>
         <result column="uuid" property="uuid"/>
         <result column="pay_method" property="pay_method"/>
+        <result column="region_type" property="region_type"/>
 
         <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress" select="selectExpressList"
-                    column="order_id">
+                    column="uuid">
         </collection>
     </resultMap>
 
     <select id="selectExpressList" parameterType="java.lang.String" resultType="com.sftc.web.model.OrderExpress">
-        select * from sftc_order_express where order_id=#{id}
+        select * from sftc_order_express where uuid=#{uuid}
     </select>
 
     <select id="selectUser" parameterType="int" resultType="com.sftc.web.model.User">
