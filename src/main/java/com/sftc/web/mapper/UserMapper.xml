@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sftc.web.mapper.UserMapper">
+
+    <select id="selectUserByLogin" parameterType="com.sftc.web.model.User" resultType="com.sftc.web.model.User">
+
+        select * from sftc_user
+
+
+        where
+        <if test="mobile!=null">
+            mobile=#{mobile}
+        </if>
+        <if test="open_id!=null">
+            open_id=#{open_id}
+        </if>
+
+    </select>
+
+
+    <select id="selectUserByPhone" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
+
+        select * from sftc_user where mobile=#{mobile}
+    </select>
+
+    <select id="selectUserByOpenid" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
+        select * from sftc_user where open_id=#{open_id}
+    </select>
+
+    <select id="selectUserByUserId" parameterType="int" resultType="com.sftc.web.model.User">
+        select * from sftc_user where id=#{user_id}
+    </select>
+
+    <insert id="insertOpenid" parameterType="com.sftc.web.model.User" useGeneratedKeys="true" keyProperty="id">
+        insert into sftc_user (open_id,create_time,session_key)
+        values
+        (#{open_id},#{create_time},#{session_key})
+
+    </insert>
+    <insert id="insertWithAvatarAndName" parameterType="com.sftc.web.model.User" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into sftc_user (open_id,create_time,session_key,avatar,name)
+        values
+        (#{open_id},#{create_time},#{session_key},#{avatar},#{name})
+    </insert>
+
+    <!--添加顺丰传过来的Merchant信息-->
+
+    <insert id="addMerchant" parameterType="com.sftc.web.model.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sftc_user (mobile,user_password,open_id,create_time,avatar,uuid,name)VALUES
+         (#{mobile},#{user_password},#{open_id},#{create_time},#{avatar},#{uuid},#{name})
+    </insert>
+
+    <select id="getUuidAndtoken" parameterType="int" resultType="com.sftc.web.model.User" resultMap="User">
+        SELECT u.uuid,t.access_token from sftc_user u,sftc_token t,sftc_order o WHERE
+        u.id=o.sender_user_id AND u.id=t.user_id AND o.id=#{id}
+    </select>
+    <resultMap id="User" type="com.sftc.web.model.User">
+        <result column="uuid" property="uuid"/>
+        <association property="token" javaType="com.sftc.web.model.Token">
+            <result property="access_token" column="access_token"/>
+        </association>
+    </resultMap>
+
+<!--    <update id="updateUserOfAvatar" parameterType="com.sftc.web.model.User">
+        UPDATE sftc_user SET avatar = #{avatar} ,name = #{name} WHERE open_id LIKE #{open_id}
+    </update>-->
+    <update id="updateUserOfAvatar" parameterType="com.sftc.web.model.User">
+        UPDATE sftc_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="avatar!=null">avatar=#{avatar},</if>
+            <if test="name!=null">name=#{name},</if>
+            <if test="session_key!=null">session_key=#{session_key},</if>
+        </trim>
+        WHERE open_id = #{open_id}
+    </update>
+
+
+    <update id="updateUser" parameterType="com.sftc.web.model.User">
+        update sftc_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="uuid!=null">uuid=#{uuid},</if>
+            <if test="mobile!=null">mobile=#{mobile},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+    <!--下面是cms系统用到的mapper-->
+    <select id="selectByPage" resultType="com.sftc.web.model.User" parameterType="com.sftc.web.model.User">
+        SELECT * FROM sftc_user
+        <where>
+            <if test="id != 0">and id = #{id}</if>
+            <if test="name != null">and name LIKE '%${name}%'</if>
+        </where>
+    </select>
+</mapper>
