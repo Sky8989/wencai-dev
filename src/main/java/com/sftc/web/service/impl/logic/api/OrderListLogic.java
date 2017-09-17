@@ -1,8 +1,10 @@
 package com.sftc.web.service.impl.logic.api;
 
 import com.github.pagehelper.PageHelper;
-import com.google.gson.JsonArray;
-import com.sftc.tools.api.*;
+import com.sftc.tools.api.APIGetUtil;
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.mapper.EvaluateMapper;
 import com.sftc.web.mapper.OrderExpressMapper;
@@ -109,6 +111,7 @@ public class OrderListLogic {
                 express.setPackage_type(oe.getPackage_type());  //增加包裹类型的三个字段
                 express.setObject_type(oe.getObject_type());
                 express.setPackage_comments(oe.getPackage_comments());
+                express.setReserve_time(oe.getReserve_time());
                 //如果有异常信息，则添加异常信息
                 if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
                     express.setAttributes(JSONObject.fromObject(oe.getAttributes()));
@@ -174,6 +177,7 @@ public class OrderListLogic {
                 express.setPackage_type(oe.getPackage_type());  //增加包裹类型的三个字段
                 express.setObject_type(oe.getObject_type());
                 express.setPackage_comments(oe.getPackage_comments());
+                express.setReserve_time(oe.getReserve_time());
 
                 //如果有异常信息，则添加异常信息
                 if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
