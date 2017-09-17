@@ -34,6 +34,7 @@ public class OrderFriendCallback {
         private String object_type;
         //当物品类型在packageType罗列的类型之外时填写
         private String package_comments;
+        private String reserve_time;
 
         public int getId() {
             return id;
@@ -102,6 +103,14 @@ public class OrderFriendCallback {
         public String getPackage_comments() {return package_comments;}
 
         public void setPackage_comments(String package_comments) {this.package_comments = package_comments;}
+
+        public String getReserve_time() {
+            return reserve_time;
+        }
+
+        public void setReserve_time(String reserve_time) {
+            this.reserve_time = reserve_time;
+        }
     }
 
     public int getId() {
