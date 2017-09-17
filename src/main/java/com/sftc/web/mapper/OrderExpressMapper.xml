@@ -147,6 +147,15 @@
         WHERE id=#{id}
     </update>
 
+    <update id="updateOrderExpressUuidAndOrderNumberWithId">
+        update sftc_order_express
+        set
+        <if test="uuid != null">uuid=#{uuid, jdbcType=VARCHAR},</if>
+        <if test="order_number != null">order_number=#{order_number, jdbcType=VARCHAR},</if>
+        state='WAIT_HAND_OVER'
+        WHERE id=#{id}
+    </update>
+
     <!-- 根据uuid查询快递 -->
     <select id="selectExpressByUuid" resultType="com.sftc.web.model.OrderExpress" parameterType="String">
         select * from sftc_order_express where uuid = #{uuid}

@@ -20,6 +20,8 @@ public interface OrderExpressMapper {
 
     void updateOrderExpressUuidAndReserveTimeById(@Param("id") int id, @Param("uuid") String uuid, @Param("reserve_time") String reserve_time);
 
+    void updateOrderExpressUuidAndOrderNumberWithId(@Param("id") int id, @Param("uuid") String uuid, @Param("order_number") String order_number);
+
     /**
      * 根据id更改快递状态
      */
