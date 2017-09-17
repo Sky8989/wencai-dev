@@ -51,8 +51,11 @@ public class OrderCancelLogic {
         }
         // 不同地域类型的订单 进行不同的取消方式 大网是软取消 同城是硬取消
         if ("REGION_NATION".equals(order.getRegion_type())) {// true 大网单
-            addCancelRecord(id, "大网订单取消", "无");
-            return cancelNATIONOrder(id);
+            APIResponse cancelResult = cancelNATIONOrder(id);
+            if (cancelResult.getState() == 200) {
+                addCancelRecord(id, "主动软取消", "大网");
+            }
+            return cancelResult;
         } else { // false 同城单 或者 未提交单
             return cancelSAMEOrder(id, access_token);
         }
@@ -66,7 +69,7 @@ public class OrderCancelLogic {
         if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
             // 取消大网订单
             cancelNATIONOrder(order_id);
-            addCancelRecord(order_id, "大网订单超时取消", "无");
+            addCancelRecord(order_id, "超时软取消", "大网");
         }
     }
 
@@ -78,10 +81,9 @@ public class OrderCancelLogic {
         if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
             // 取消同城订单
             orderMapper.updateCancelOrderById(order_id);
-//            orderExpressMapper.updateOrderExpressCanceled(order_id);
             // 同城 超时未填写或者支付超时 都更新为超时OVERTIME
             orderExpressMapper.updateOrderExpressOvertime(order_id);
-            addCancelRecord(order_id, "同城订单超时取消", "无");
+            addCancelRecord(order_id, "超时软取消", "同城");
         }
     }
 
@@ -89,11 +91,14 @@ public class OrderCancelLogic {
 
     // 取消大网订单
     private APIResponse cancelNATIONOrder(int order_id) {
-        orderMapper.updateCancelOrderById(order_id);
-        orderExpressMapper.updateOrderExpressCanceled(order_id);
-        return APIUtil.getResponse(APIStatus.SUCCESS, "该订单已做软取消处理");
+        try {
+            orderMapper.updateCancelOrderById(order_id);
+            orderExpressMapper.updateOrderExpressCanceled(order_id);
+            return APIUtil.getResponse(APIStatus.SUCCESS, "订单取消成功");
+        } catch (Exception e) {
+            return APIUtil.logicErrorResponse("数据库操作异常", e);
+        }
     }
-
 
     // 取消同城订单 与 未提交单
     private APIResponse cancelSAMEOrder(int order_id, String access_token) {
@@ -101,8 +106,8 @@ public class OrderCancelLogic {
         List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
 
-        boolean falg = order.getRegion_type() == null || "".equals(order.getRegion_type());
-        if (!falg) {
+        boolean isDidCommitToSF = order.getRegion_type() != null && !(order.getRegion_type().equals(""));
+        if (isDidCommitToSF) { // 已经提交到顺丰，需要先从顺丰取消
             StringBuilder stringBuilder = new StringBuilder();
             //遍历所有的快递列表
             for (OrderExpress eachOrderExpress : arrayList) {
@@ -121,28 +126,18 @@ public class OrderCancelLogic {
             post.addHeader("PushEnvelope-Device-Token", access_token);
             String res = APIPostUtil.post(str, post);
             JSONObject resJSONObject = JSONObject.fromObject(res);
-            if (resJSONObject.containsKey("error") || resJSONObject.containsKey("errors")) {
-                addCancelRecord(order_id, "订单取消失败记录", "同城");
+            if (resJSONObject.containsKey("error") || resJSONObject.containsKey("errors") || !resJSONObject.containsKey("requests")) {
                 return APIUtil.submitErrorResponse("订单取消失败", resJSONObject);
             }
-//            if (resJSONObject.containsKey("requests")) {
-//                String status = resJSONObject.getJSONArray("requests").getJSONObject(0).getString("status");
-//                if (!"CANCELED".equals(status)) return APIUtil.submitErrorResponse("订单取消失败,同城状态为：", resJSONObject);
-//            } else {
-//                return APIUtil.submitErrorResponse("订单取消失败,无requests", resJSONObject);
-//            }
-            if (!resJSONObject.containsKey("requests"))
-                return APIUtil.submitErrorResponse("订单取消失败,无requests", resJSONObject);
-
         }
 
         // 订单还未提交给顺丰的情况，只更新order的信息即可
         // 订单已提交，仍然需要更新
         orderMapper.updateCancelOrderById(order_id);
         orderExpressMapper.updateOrderExpressCanceled(order_id);
+        // 添加订单取消记录
+        addCancelRecord(order_id, isDidCommitToSF ? "主动取消" : "主动软取消", "同城");
 
-        //添加订单取消记录
-        addCancelRecord(order_id, falg ? "未提交的订单已取消" : "已下单的同城订单取消", "同城");
         return APIUtil.getResponse(APIStatus.SUCCESS, null);
     }
 
