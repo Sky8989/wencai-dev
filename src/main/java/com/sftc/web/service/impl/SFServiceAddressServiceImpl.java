@@ -190,7 +190,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         String rateUrl = SF_SERVICE_RATE.replace("{origin}", origin).replace("{dest}", dest).replace("{time}", time).replace("{weight}", weight);
         HttpGet get = new HttpGet(rateUrl);
         String result = APIGetUtil.get(get);
-//        Object resultObj = gson.fromJson(result, Object.class);
+//      Object resultObj = gson.fromJson(result, Object.class);
 
         Type type = new TypeToken<ArrayList<Express>>() {
         }.getType();
