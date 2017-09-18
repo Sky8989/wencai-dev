@@ -47,6 +47,7 @@ public class OrderCancelLogic {
         Order order = orderMapper.selectOrderDetailByOrderId(id);
         if ("Cancelled".equals(order.getIs_cancel()) || !"".equals(order.getIs_cancel())) {//is_cancel字段默认是空字符串
             //return APIUtil.getResponse(APIStatus.CANCEL_ORDER_FALT, null);
+            System.out.print(order.getIs_cancel());
             return APIUtil.submitErrorResponse("订单已经取消，请勿重复取消操作", null);
         }
         // 不同地域类型的订单 进行不同的取消方式 大网是软取消 同城是硬取消

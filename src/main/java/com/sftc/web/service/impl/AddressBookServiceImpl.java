@@ -50,8 +50,7 @@ public class AddressBookServiceImpl implements AddressBookService {
         if (!address_OBJ.containsKey("address")) return APIUtil.paramErrorResponse("地址簿参数address为空");
         if (!address_OBJ.containsKey("longitude")) return APIUtil.paramErrorResponse("地址簿参数longitude为空");
         if (!address_OBJ.containsKey("latitude")) return APIUtil.paramErrorResponse("地址簿参数latitude为空");
-
-
+        
         AddressBook addressBook;
         Address address;
         try {
@@ -112,15 +111,28 @@ public class AddressBookServiceImpl implements AddressBookService {
 
         //TODO 修改地址映射的时间
         addressBookParam.setCreate_time(create_time);
-        addressBookMapper.updateByPrimaryKeySelective(addressBookParam);
 
-        AddressBook addressBook = addressBookMapper.selectByPrimaryKey(addressBookParam.getId());
+        // 查找重复信息  去重
+        JSONObject address_OBJ = paramObject.getJSONObject("address");
+        List<AddressBook> addressBookList = addressBookMapper.selectAddressForRemoveDuplicateV2(
+                address_OBJ.getString("name"), address_OBJ.getString("phone")
+                , address_OBJ.getString("province"), address_OBJ.getString("city")
+                , address_OBJ.getString("area"),address_OBJ.getString("address")
+                , address_OBJ.getString("supplementary_info"), address_OBJ.getString("longitude")
+                , address_OBJ.getString("latitude"));
 
-        //TODO 修改地址实体的时间
-        Address address = addressBookParam.getAddress();
-        address.setId(addressBook.getAddress_id());
-        address.setCreate_time(create_time);
-        addressMapper.updateByPrimaryKey(address);
+        if (addressBookList.size() != 0){
+            addressBookParam.setCreate_time(create_time);
+        } else {
+            addressBookMapper.updateByPrimaryKeySelective(addressBookParam);
+            AddressBook addressBook = addressBookMapper.selectByPrimaryKey(addressBookParam.getId());
+
+            //TODO 修改地址实体的时间
+            Address address = addressBookParam.getAddress();
+            address.setId(addressBook.getAddress_id());
+            address.setCreate_time(create_time);
+            addressMapper.updateByPrimaryKey(address);
+        }
 
         return APIUtil.getResponse(SUCCESS, null);
     }
