@@ -131,15 +131,6 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
 
-    <select id="selectAddressForRemoveDuplicateV2" resultType="com.sftc.web.model.AddressBook">
-        SELECT * FROM sftc_address a ,sftc_address_book ab
-        WHERE ab.address_id=a.id
-        AND  ab.is_delete = 0
-        AND a.name = #{name} AND a.phone = #{phone}
-        AND a.province =#{province} AND a.city = #{city} AND a.area =#{area} AND a.address =#{address} AND a.supplementary_info = #{supplementary_info}
-        AND a.longitude = #{longitude} AND a.latitude = #{latitude}
-    </select>
-
     <update id="updateByPrimaryKey" parameterType="com.sftc.web.model.AddressBook">
         update sftc_address_book
         set user_id = #{user_id,jdbcType=INTEGER},
@@ -154,8 +145,8 @@
 
     <update id="updateByCreatetime">
         update sftc_address_book
-        set create_time = #{create_time,jdbcType=VARCHAR}
-        where id = #{id,jdbcType=INTEGER}
+        set create_time = #{create_time}
+        where id = #{id}
     </update>
 
     <update id="updateIsDeleteStatusByPrimaryKey">
@@ -180,15 +171,34 @@
         limit #{startIndex}, #{pageSize}
     </select>
 
-
     <!--地址验重-->
     <select id="selectAddressForRemoveDuplicate" resultType="com.sftc.web.model.AddressBook">
-        SELECT * FROM sftc_address a ,sftc_address_book ab
+        SELECT ab.* FROM sftc_address_book ab, sftc_address a
+        WHERE ab.address_id = a.id
+        AND ab.user_id = #{user_id}
+        AND ab.address_type = #{address_type}
+        AND ab.address_book_type = #{address_book_type}
+        AND a.name = #{name}
+        AND a.phone = #{phone}
+        AND a.province = #{province}
+        AND a.city = #{city}
+        AND a.area = #{area}
+        AND a.address = #{address}
+        AND a.supplementary_info = #{supplementary_info}
+    </select>
+
+    <select id="selectDuplicateAddress" resultType="com.sftc.web.model.AddressBook">
+        SELECT ab.* FROM sftc_address_book ab, sftc_address a
         WHERE ab.address_id=a.id
-        AND ab.user_id = #{user_id} AND  ab.is_delete = 0
-        AND ab.address_type=#{address_type} AND ab.address_book_type = #{address_book_type}
-        AND a.name = #{name} AND a.phone = #{phone}
-        AND a.province =#{province} AND a.city = #{city} AND a.area =#{area}AND a.address =#{address} AND a.supplementary_info = #{supplementary_info}
+        AND ab.is_delete = 0
+        AND a.name = #{name}
+        AND a.phone = #{phone}
+        AND a.province =#{province}
+        AND a.city = #{city}
+        AND a.area =#{area}
+        AND a.address =#{address}
+        AND a.supplementary_info = #{supplementary_info}
+        AND a.longitude = #{longitude} AND a.latitude = #{latitude}
     </select>
 
     <!--&lt;!&ndash; 插入地址簿条目信息  &ndash;&gt;

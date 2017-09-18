@@ -61,12 +61,18 @@ public class AddressBookServiceImpl implements AddressBookService {
         }
 
         // 查找重复信息  去重
-        List<AddressBook> addressBookList = addressBookMapper.selectAddressForRemoveDuplicate(paramObject.getInt("user_id"),
-                paramObject.getString("address_type"), paramObject.getString("address_book_type")
-                , address_OBJ.getString("name"), address_OBJ.getString("phone")
-                , address_OBJ.getString("province"), address_OBJ.getString("city")
-                , address_OBJ.getString("area"), address_OBJ.getString("address")
-                , supplementary_info);
+        List<AddressBook> addressBookList = addressBookMapper.selectAddressForRemoveDuplicate(
+                paramObject.getInt("user_id"),
+                paramObject.getString("address_type"),
+                paramObject.getString("address_book_type"),
+                address_OBJ.getString("name"),
+                address_OBJ.getString("phone"),
+                address_OBJ.getString("province"),
+                address_OBJ.getString("city"),
+                address_OBJ.getString("area"),
+                address_OBJ.getString("address"),
+                supplementary_info
+        );
 
         if (addressBookList.size() != 0) return APIUtil.submitErrorResponse("地址簿已有该地址", null);
 
@@ -114,15 +120,20 @@ public class AddressBookServiceImpl implements AddressBookService {
 
         // 查找重复信息  去重
         JSONObject address_OBJ = paramObject.getJSONObject("address");
-        List<AddressBook> addressBookList = addressBookMapper.selectAddressForRemoveDuplicateV2(
-                address_OBJ.getString("name"), address_OBJ.getString("phone")
-                , address_OBJ.getString("province"), address_OBJ.getString("city")
-                , address_OBJ.getString("area"),address_OBJ.getString("address")
-                , address_OBJ.getString("supplementary_info"), address_OBJ.getString("longitude")
-                , address_OBJ.getString("latitude"));
+        List<AddressBook> addressBookList = addressBookMapper.selectDuplicateAddress(
+                address_OBJ.getString("name"),
+                address_OBJ.getString("phone"),
+                address_OBJ.getString("province"),
+                address_OBJ.getString("city"),
+                address_OBJ.getString("area"),
+                address_OBJ.getString("address"),
+                address_OBJ.getString("supplementary_info"),
+                address_OBJ.getString("longitude"),
+                address_OBJ.getString("latitude")
+        );
 
         if (addressBookList.size() != 0){
-            addressBookParam.setCreate_time(create_time);
+            addressBookMapper.updateByCreatetime(addressBookList.get(0).getId(), create_time);
         } else {
             addressBookMapper.updateByPrimaryKeySelective(addressBookParam);
             AddressBook addressBook = addressBookMapper.selectByPrimaryKey(addressBookParam.getId());
