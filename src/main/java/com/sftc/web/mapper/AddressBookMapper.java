@@ -50,9 +50,7 @@ public interface AddressBookMapper {
             @Param("city") String city,
             @Param("area") String area,
             @Param("address") String address,
-            @Param("supplementary_info") String supplementary_info,
-            @Param("longitude") String longitude,
-            @Param("latitude") String latitude
+            @Param("supplementary_info") String supplementary_info
     );
 
 }
