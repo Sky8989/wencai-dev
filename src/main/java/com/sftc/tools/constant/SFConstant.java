@@ -1,5 +1,8 @@
 package com.sftc.tools.constant;
 
+import static com.sftc.tools.constant.DKConstant.DKEnvironment.DKEnvironmentDev;
+import static com.sftc.tools.constant.DKConstant.DKEnvironment.DKEnvironmentProduct;
+import static com.sftc.tools.constant.DKConstant.DKEnvironment.DKEnvironmentStage;
 import static com.sftc.tools.constant.SFConstant.SFEnvironment.SFEnvironmentDev;
 import static com.sftc.tools.constant.SFConstant.SFEnvironment.SFEnvironmentStage;
 
@@ -23,7 +26,8 @@ public class SFConstant {
 
     private static final String SF_SAME_DOMAIN_DEV = "http://api-dev.sf-rush.com/";     // dev
     private static final String SF_SAME_DOMAIN_STAGE = "http://api-stage.sf-rush.com/"; // test
-    private static final String SF_SAME_DOMAIN_PRODUCT = "http://api.sf-rush.com/";     // product
+//    private static final String SF_SAME_DOMAIN_PRODUCT = "http://api.sf-rush.com/";   // product
+    private static final String SF_SAME_DOMAIN_PRODUCT = "http://192.168.0.31:8080/";   // product
 
     /**
      * 同城根地址
@@ -114,6 +118,19 @@ public class SFConstant {
 
     public static void setEnvironment(SFEnvironment environment) {
         SFConstant.environment = environment;
+
+        switch (environment) {
+            case SFEnvironmentDev:
+                DKConstant.setEnvironment(DKEnvironmentDev);
+                break;
+            case SFEnvironmentStage:
+                DKConstant.setEnvironment(DKEnvironmentStage);
+                break;
+            case SFEnvironmentProduct:
+                DKConstant.setEnvironment(DKEnvironmentProduct);
+                break;
+        }
+
         SF_SAME_DOMAIN = (environment == SFEnvironmentDev ? SF_SAME_DOMAIN_DEV : (environment == SFEnvironmentStage ? SF_SAME_DOMAIN_STAGE : SF_SAME_DOMAIN_PRODUCT));
         SF_TAKE_MESSAGE_URL = SF_SAME_DOMAIN + "messages";
         SF_GET_TOKEN = SF_SAME_DOMAIN + "merchants/me/token";
