@@ -20,10 +20,9 @@ public class DKConstant {
 
     /////////////// 顺丰API根域名 ///////////////
 
-    private static final String DK_DOMAIN_DEV = "https://sftc.dankal.cn/";              // dev
-    private static final String DK_DOMAIN_STAGE = "https://test.sf-api.dankal.cn/";     // test
-//    private static final String DK_DOMAIN_PRODUCT = "https://api-wxc.sf-rush.com/";   // product
-    private static final String DK_DOMAIN_PRODUCT = "http://localhost/";                // product
+    private static final String DK_DOMAIN_DEV = "https://sftc.dankal.cn/";            // dev
+    private static final String DK_DOMAIN_STAGE = "https://test.sf-api.dankal.cn/";   // test
+    private static final String DK_DOMAIN_PRODUCT = "https://api-wxc.sf-rush.com/";   // product
 
     private static DKEnvironment environment = DKEnvironmentDev;
 
@@ -46,7 +45,6 @@ public class DKConstant {
      * phantomJS 配置
      */
     private static final String DK_PHANTOMJS_PATH = "/data/wwwroot/sftc.dankal.cn/phantomjs/";
-//    private static final String DK_PHANTOMJS_PATH =  "/Users/bingo/Desktop/phantomjs-2.1.1-macosx/"; // bingo.local
 
     /**
      * phantomJS 脚本路径
