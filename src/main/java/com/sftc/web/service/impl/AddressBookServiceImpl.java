@@ -127,9 +127,7 @@ public class AddressBookServiceImpl implements AddressBookService {
                 address_OBJ.getString("city"),
                 address_OBJ.getString("area"),
                 address_OBJ.getString("address"),
-                address_OBJ.getString("supplementary_info"),
-                address_OBJ.getString("longitude"),
-                address_OBJ.getString("latitude")
+                address_OBJ.getString("supplementary_info")
         );
 
         if (addressBookList.size() != 0){

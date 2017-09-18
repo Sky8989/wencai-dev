@@ -175,30 +175,63 @@
     <select id="selectAddressForRemoveDuplicate" resultType="com.sftc.web.model.AddressBook">
         SELECT ab.* FROM sftc_address_book ab, sftc_address a
         WHERE ab.address_id = a.id
+        <if test="user_id != null and user_id != 0">
         AND ab.user_id = #{user_id}
+        </if>
+        <if test="address_type != null">
         AND ab.address_type = #{address_type}
+        </if>
+        <if test="address_book_type != null">
         AND ab.address_book_type = #{address_book_type}
+        </if>
+        <if test="name != null">
         AND a.name = #{name}
+        </if>
+        <if test="phone != null">
         AND a.phone = #{phone}
+        </if>
+        <if test="province != null">
         AND a.province = #{province}
+        </if>
+        <if test="city != null">
         AND a.city = #{city}
+        </if>
+        <if test="area != null">
         AND a.area = #{area}
+        </if>
+        <if test="address != null">
         AND a.address = #{address}
+        </if>
+        <if test="supplementary_info != null and supplementary_info != ''">
         AND a.supplementary_info = #{supplementary_info}
+        </if>
     </select>
 
     <select id="selectDuplicateAddress" resultType="com.sftc.web.model.AddressBook">
         SELECT ab.* FROM sftc_address_book ab, sftc_address a
         WHERE ab.address_id=a.id
         AND ab.is_delete = 0
-        AND a.name = #{name}
-        AND a.phone = #{phone}
-        AND a.province =#{province}
-        AND a.city = #{city}
-        AND a.area =#{area}
-        AND a.address =#{address}
-        AND a.supplementary_info = #{supplementary_info}
-        AND a.longitude = #{longitude} AND a.latitude = #{latitude}
+        <if test="name != null">
+            AND a.name = #{name}
+        </if>
+        <if test="phone != null">
+            AND a.phone = #{phone}
+        </if>
+        <if test="province != null">
+            AND a.province = #{province}
+        </if>
+        <if test="city != null">
+            AND a.city = #{city}
+        </if>
+        <if test="area != null">
+            AND a.area = #{area}
+        </if>
+        <if test="address != null">
+            AND a.address = #{address}
+        </if>
+        <if test="supplementary_info != null and supplementary_info != '">
+            AND a.supplementary_info = #{supplementary_info}
+        </if>
     </select>
 
     <!--&lt;!&ndash; 插入地址簿条目信息  &ndash;&gt;
