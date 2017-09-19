@@ -268,7 +268,7 @@ public class OrderListLogic {
             //这个status的改动是因为是预约单 预约单支付后，派单前都是PAYING
             Order order = orderMapper.selectOrderDetailByUuid(orders.getUuid());
             if (order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) {
-                String status = (orders.isPayed() && orders.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_COLLECT")) ? "WAIT_HAND_OVER" : orders.getStatus();
+                String status = (orders.isPayed() && orders.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orders.getStatus();
                 orderExpressMapper.updateOrderExpressForSF(new OrderExpress(status, orders.getUuid(), orders.getAttributes()));
             }
         }
