@@ -229,7 +229,7 @@
         <if test="address != null">
             AND a.address = #{address}
         </if>
-        <if test="supplementary_info != null and supplementary_info != '">
+        <if test="supplementary_info != null and supplementary_info != ''">
             AND a.supplementary_info = #{supplementary_info}
         </if>
     </select>
