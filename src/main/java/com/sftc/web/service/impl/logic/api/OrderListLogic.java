@@ -166,6 +166,7 @@ public class OrderListLogic {
             callback.setPay_method(order.getPay_method());
             // expressList
             List<OrderFriendCallback.OrderFriendCallbackExpress> expressList = new ArrayList<OrderFriendCallback.OrderFriendCallbackExpress>();
+            HashSet flagSetIsEvaluated = new HashSet();
             for (OrderExpress oe : order.getOrderExpressList()) {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
                 OrderFriendCallback.OrderFriendCallbackExpress express = new OrderFriendCallback().new OrderFriendCallbackExpress();
@@ -185,8 +186,13 @@ public class OrderListLogic {
                 if (receiver != null && receiver.getAvatar() != null)
                     express.setShip_avatar(receiver.getAvatar());
                 expressList.add(express);
+                // 检查快递是否评价过
+                List<Evaluate> evaluateList = evaluateMapper.selectByUuid(oe.getUuid());
+                // 如果被评价过，且有评价信息，则返回1 如果无评价信息 则返回0
+                flagSetIsEvaluated.add((evaluateList.size() == 0) ? 0 : 1);
             }
             callback.setExpressList(expressList);
+            callback.setIs_evaluated(flagSetIsEvaluated.contains(1));
 
             orderCallbacks.add(callback);
         }
