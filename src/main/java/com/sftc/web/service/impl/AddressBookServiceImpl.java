@@ -35,12 +35,9 @@ public class AddressBookServiceImpl implements AddressBookService {
         if (!paramObject.containsKey("is_delete")) return APIUtil.paramErrorResponse("地址簿参数is_delete为空");
         if (!paramObject.containsKey("is_mystery")) return APIUtil.paramErrorResponse("地址簿参数is_mystery为空");
         if (!paramObject.containsKey("address_type")) return APIUtil.paramErrorResponse("地址簿参数address_type为空");
-        if (!paramObject.containsKey("address_book_type"))
-            return APIUtil.paramErrorResponse("地址簿参数address_book_type为空");
+        if (!paramObject.containsKey("address_book_type")) return APIUtil.paramErrorResponse("地址簿参数address_book_type为空");
         if (!paramObject.containsKey("address")) return APIUtil.paramErrorResponse("地址簿参数address为空");
         JSONObject address_OBJ = paramObject.getJSONObject("address");
-        String supplementary_info =
-                address_OBJ.containsKey("supplementary_info") ? address_OBJ.remove("supplementary_info").toString() : "";
         if (address_OBJ.containsValue("")) return APIUtil.paramErrorResponse("地址簿参数不可为''");
         if (!address_OBJ.containsKey("name")) return APIUtil.paramErrorResponse("地址簿参数name为空");
         if (!address_OBJ.containsKey("phone")) return APIUtil.paramErrorResponse("地址簿参数phone为空");
@@ -50,7 +47,8 @@ public class AddressBookServiceImpl implements AddressBookService {
         if (!address_OBJ.containsKey("address")) return APIUtil.paramErrorResponse("地址簿参数address为空");
         if (!address_OBJ.containsKey("longitude")) return APIUtil.paramErrorResponse("地址簿参数longitude为空");
         if (!address_OBJ.containsKey("latitude")) return APIUtil.paramErrorResponse("地址簿参数latitude为空");
-        
+
+        String supplementary_info = address_OBJ.containsKey("supplementary_info") ? address_OBJ.getString("supplementary_info") : null;
         AddressBook addressBook;
         Address address;
         try {
@@ -120,6 +118,7 @@ public class AddressBookServiceImpl implements AddressBookService {
 
         // 查找重复信息  去重
         JSONObject address_OBJ = paramObject.getJSONObject("address");
+        String supplementary_info = address_OBJ.containsKey("supplementary_info") ? address_OBJ.getString("supplementary_info") : null;
         List<AddressBook> addressBookList = addressBookMapper.selectDuplicateAddress(
                 address_OBJ.getString("name"),
                 address_OBJ.getString("phone"),
@@ -127,7 +126,7 @@ public class AddressBookServiceImpl implements AddressBookService {
                 address_OBJ.getString("city"),
                 address_OBJ.getString("area"),
                 address_OBJ.getString("address"),
-                address_OBJ.getString("supplementary_info")
+                supplementary_info
         );
 
         if (addressBookList.size() != 0){
