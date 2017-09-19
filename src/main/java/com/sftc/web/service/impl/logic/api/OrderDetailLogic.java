@@ -152,7 +152,7 @@ public class OrderDetailLogic {
             }
 
             boolean payed = respObject.getJSONObject("request").getBoolean("payed");
-            if (payed && order_status.equals("PAYING")) {
+            if (payed && order_status.equals("PAYING") && order.getPay_method().equals("FREIGHT_COLLECT")) {
                 respObject.getJSONObject("request").put("status", "WAIT_HAND_OVER");
                 orderExpressMapper.updateOrderExpressStatusByUUID(uuid, "WAIT_HAND_OVER");
                 order = orderMapper.selectOrderDetailByUuid(uuid);
