@@ -396,7 +396,10 @@ public class OrderCommitLogic {
                     // 增加对下单结果的判断  含有error Message 或者 没有ordernum 都算是提交失败
                     if (jsonObject.containsKey("error") || jsonObject.containsKey("Message") || !jsonObject.containsKey("ordernum")) {
                         //手动操作事务回滚
-                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                        // TODO: 回滚了哪个事务？为什么要回滚？为什么会抛异常？不回滚会怎么样？
+//                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                        // TODO: 直接手动把`region_type`置空，有没有其他问题？
+                        orderMapper.updateOrderRegionType(order_id, null);
                         return APIUtil.submitErrorResponse("下单失败", jsonObject);
                     } else {
                         // 存储订单信息
