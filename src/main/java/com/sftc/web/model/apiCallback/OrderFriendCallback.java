@@ -15,6 +15,7 @@ public class OrderFriendCallback {
     private String image;       // 包裹图片
     private String create_time;
     private boolean is_gift;
+    private boolean is_evaluated;
     private String pay_method;//支付类型
 
 
@@ -191,6 +192,14 @@ public class OrderFriendCallback {
 
     public void setIs_gift(boolean is_gift) {
         this.is_gift = is_gift;
+    }
+
+    public boolean isIs_evaluated() {
+        return is_evaluated;
+    }
+
+    public void setIs_evaluated(boolean is_evaluated) {
+        this.is_evaluated = is_evaluated;
     }
 
     public List<OrderFriendCallbackExpress> getExpressList() {

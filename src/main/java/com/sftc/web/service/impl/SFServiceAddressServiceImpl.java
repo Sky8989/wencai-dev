@@ -210,7 +210,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
                         if (o2.getDeliverTime() != null) time2 = simpleDateFormat.parse(o2.getDeliverTime()).getTime();
                     } catch (ParseException e) {
                         e.printStackTrace();
-                    }
+                    }//
                     return Long.compare(time1, time2);
                 }
             });
