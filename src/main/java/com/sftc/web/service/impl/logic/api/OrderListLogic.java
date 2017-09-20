@@ -166,6 +166,7 @@ public class OrderListLogic {
             callback.setPay_method(order.getPay_method());
             // expressList
             List<OrderFriendCallback.OrderFriendCallbackExpress> expressList = new ArrayList<OrderFriendCallback.OrderFriendCallbackExpress>();
+            HashSet flagSetIsEvaluated = new HashSet();
             for (OrderExpress oe : order.getOrderExpressList()) {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
                 OrderFriendCallback.OrderFriendCallbackExpress express = new OrderFriendCallback().new OrderFriendCallbackExpress();
@@ -185,8 +186,13 @@ public class OrderListLogic {
                 if (receiver != null && receiver.getAvatar() != null)
                     express.setShip_avatar(receiver.getAvatar());
                 expressList.add(express);
+                // 检查快递是否评价过
+                List<Evaluate> evaluateList = evaluateMapper.selectByUuid(oe.getUuid());
+                // 如果被评价过，且有评价信息，则返回1 如果无评价信息 则返回0
+                flagSetIsEvaluated.add((evaluateList.size() == 0) ? 0 : 1);
             }
             callback.setExpressList(expressList);
+            callback.setIs_evaluated(flagSetIsEvaluated.contains(1));
 
             orderCallbacks.add(callback);
         }
@@ -213,7 +219,6 @@ public class OrderListLogic {
         //更新用户的同城订单，更新sf状态的订单数 >= 接口查询的
         List<OrderExpress> orderExpressList = selectOrderExpressListForStatusUpdate(myOrderParam);
         if (orderExpressList == null || orderExpressList.size() == 0) return null;
-//        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(myOrderParam.getId());
         StringBuilder uuidSB = new StringBuilder();
         for (OrderExpress oe : orderExpressList) {
             if (oe.getUuid() != null && oe.getUuid().length() != 0) {
@@ -260,11 +265,12 @@ public class OrderListLogic {
         // Update Dankal express info
         for (Orders orders : ordersList) {
             // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
-
             //这个status的改动是因为是预约单 预约单支付后，派单前都是PAYING
-            String status = orders.isPayed() && orders.getStatus().equals("PAYING") ? "WAIT_HAND_OVER" : orders.getStatus();
-//            String status = orders.getStatus();
-            orderExpressMapper.updateOrderExpressForSF(new OrderExpress(status, orders.getUuid(), orders.getAttributes()));
+            Order order = orderMapper.selectOrderDetailByUuid(orders.getUuid());
+            if (order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) {
+                String status = (orders.isPayed() && orders.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orders.getStatus();
+                orderExpressMapper.updateOrderExpressForSF(new OrderExpress(status, orders.getUuid(), orders.getAttributes()));
+            }
         }
 
         return null;
