@@ -303,9 +303,19 @@ public class OrderCommitLogic {
                 //setupAddress2(order, oe);
 
             } else { // error
-                //手动操作事务回滚
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return APIUtil.getResponse(SUBMIT_FAIL, responseObject);
+                String message = "";
+                try {
+                    if (responseObject.containsKey("error")) {
+                        message = responseObject.getString("error");
+                    } else {
+                        message = responseObject.getJSONArray("errors").getJSONObject(0).getString("message");
+                    }
+                    //手动操作事务回滚
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                } catch (Exception e) {
+                    message = "下单失败";
+                }
+                return APIUtil.submitErrorResponse(message, responseObject);
             }
         }
 
