@@ -303,9 +303,19 @@ public class OrderCommitLogic {
                 //setupAddress2(order, oe);
 
             } else { // error
-                //手动操作事务回滚
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return APIUtil.getResponse(SUBMIT_FAIL, responseObject);
+                String message = "";
+                try {
+                    if (responseObject.containsKey("error")) {
+                        message = responseObject.getString("error");
+                    } else {
+                        message = responseObject.getJSONArray("errors").getJSONObject(0).getString("message");
+                    }
+                    //手动操作事务回滚
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                } catch (Exception e) {
+                    message = "下单失败";
+                }
+                return APIUtil.submitErrorResponse(message, responseObject);
             }
         }
 
@@ -390,14 +400,21 @@ public class OrderCommitLogic {
                     post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
                     String resultStr = APIPostUtil.post(paramStr, post);
                     JSONObject jsonObject = JSONObject.fromObject(resultStr);
-//                    String messageType = (String) jsonObject.get("Message_Type");
 
-//                    if (messageType != null && messageType.contains("ERROR")) { //旧20170905
                     // 增加对下单结果的判断  含有error Message 或者 没有ordernum 都算是提交失败
                     if (jsonObject.containsKey("error") || jsonObject.containsKey("Message") || !jsonObject.containsKey("ordernum")) {
                         //手动操作事务回滚
-                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                        return APIUtil.submitErrorResponse("下单失败", jsonObject);
+                        // TODO: 回滚了哪个事务？为什么要回滚？为什么会抛异常？不回滚会怎么样？
+//                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                        // TODO: 直接手动把`region_type`置空，有没有其他问题？
+                        orderMapper.updateOrderRegionType(order_id, null);
+                        String message = "下单失败";
+                        if (jsonObject.containsKey("Message")) {
+                            message = jsonObject.getString("Message");
+                        } else if (jsonObject.containsKey("error")) {
+                            message = jsonObject.getJSONObject("error").getString("message");
+                        }
+                        return APIUtil.submitErrorResponse(message, jsonObject);
                     } else {
                         // 存储订单信息
                         String order_time = Long.toString(System.currentTimeMillis());
@@ -667,19 +684,26 @@ public class OrderCommitLogic {
             post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
             String res = APIPostUtil.post(str, post);
             responseObject = JSONObject.fromObject(res);
-
-//            if (responseObject.containsKey("error") || responseObject.get("Message") != null || (responseObject.get("Message_Type") != null && ((String) responseObject.get("Message_Type")).contains("ERROR"))) {
             // 增加对下单结果的判断  含有error Message 或者 没有ordernum 都算是提交失败
             if (responseObject.containsKey("error") || responseObject.containsKey("Message") || !responseObject.containsKey("ordernum")) {
-                //手动操作事务回滚
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return APIUtil.submitErrorResponse("SF提示错误", responseObject);
+                String message = "下单失败";
+                if (responseObject.containsKey("Message")) {
+                    message = responseObject.getString("Message");
+                } else if (responseObject.containsKey("error")) {
+                    message = responseObject.getJSONObject("error").getString("message");
+                }
+                try {
+                    // 手动操作事务回滚
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                } catch (Exception e) {
+                    return APIUtil.logicErrorResponse(e.getLocalizedMessage(), e);
+                }
+                return APIUtil.submitErrorResponse(message, responseObject);
             } else {
                 // 返回结果添加订单编号
                 String ordernum = responseObject.getString("ordernum");
                 orderExpressMapper.updateOrderNumber(orderExpress.getId(), ordernum);
                 orderExpress.setOrder_number(ordernum);
-
             }
         } else { // 预约件
             responseObject.put("message", "大网订单预约成功");

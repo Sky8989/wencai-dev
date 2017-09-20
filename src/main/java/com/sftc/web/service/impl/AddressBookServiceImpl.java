@@ -35,12 +35,9 @@ public class AddressBookServiceImpl implements AddressBookService {
         if (!paramObject.containsKey("is_delete")) return APIUtil.paramErrorResponse("地址簿参数is_delete为空");
         if (!paramObject.containsKey("is_mystery")) return APIUtil.paramErrorResponse("地址簿参数is_mystery为空");
         if (!paramObject.containsKey("address_type")) return APIUtil.paramErrorResponse("地址簿参数address_type为空");
-        if (!paramObject.containsKey("address_book_type"))
-            return APIUtil.paramErrorResponse("地址簿参数address_book_type为空");
+        if (!paramObject.containsKey("address_book_type")) return APIUtil.paramErrorResponse("地址簿参数address_book_type为空");
         if (!paramObject.containsKey("address")) return APIUtil.paramErrorResponse("地址簿参数address为空");
         JSONObject address_OBJ = paramObject.getJSONObject("address");
-        String supplementary_info =
-                address_OBJ.containsKey("supplementary_info") ? address_OBJ.remove("supplementary_info").toString() : "";
         if (address_OBJ.containsValue("")) return APIUtil.paramErrorResponse("地址簿参数不可为''");
         if (!address_OBJ.containsKey("name")) return APIUtil.paramErrorResponse("地址簿参数name为空");
         if (!address_OBJ.containsKey("phone")) return APIUtil.paramErrorResponse("地址簿参数phone为空");
@@ -51,7 +48,7 @@ public class AddressBookServiceImpl implements AddressBookService {
         if (!address_OBJ.containsKey("longitude")) return APIUtil.paramErrorResponse("地址簿参数longitude为空");
         if (!address_OBJ.containsKey("latitude")) return APIUtil.paramErrorResponse("地址簿参数latitude为空");
 
-
+        String supplementary_info = address_OBJ.containsKey("supplementary_info") ? address_OBJ.getString("supplementary_info") : null;
         AddressBook addressBook;
         Address address;
         try {
@@ -62,12 +59,18 @@ public class AddressBookServiceImpl implements AddressBookService {
         }
 
         // 查找重复信息  去重
-        List<AddressBook> addressBookList = addressBookMapper.selectAddressForRemoveDuplicate(paramObject.getInt("user_id"),
-                paramObject.getString("address_type"), paramObject.getString("address_book_type")
-                , address_OBJ.getString("name"), address_OBJ.getString("phone")
-                , address_OBJ.getString("province"), address_OBJ.getString("city")
-                , address_OBJ.getString("area"), address_OBJ.getString("address")
-                , supplementary_info);
+        List<AddressBook> addressBookList = addressBookMapper.selectAddressForRemoveDuplicate(
+                paramObject.getInt("user_id"),
+                paramObject.getString("address_type"),
+                paramObject.getString("address_book_type"),
+                address_OBJ.getString("name"),
+                address_OBJ.getString("phone"),
+                address_OBJ.getString("province"),
+                address_OBJ.getString("city"),
+                address_OBJ.getString("area"),
+                address_OBJ.getString("address"),
+                supplementary_info
+        );
 
         if (addressBookList.size() != 0) return APIUtil.submitErrorResponse("地址簿已有该地址", null);
 
@@ -112,15 +115,32 @@ public class AddressBookServiceImpl implements AddressBookService {
 
         //TODO 修改地址映射的时间
         addressBookParam.setCreate_time(create_time);
-        addressBookMapper.updateByPrimaryKeySelective(addressBookParam);
 
-        AddressBook addressBook = addressBookMapper.selectByPrimaryKey(addressBookParam.getId());
+        // 查找重复信息  去重
+        JSONObject address_OBJ = paramObject.getJSONObject("address");
+        String supplementary_info = address_OBJ.containsKey("supplementary_info") ? address_OBJ.getString("supplementary_info") : null;
+        List<AddressBook> addressBookList = addressBookMapper.selectDuplicateAddress(
+                address_OBJ.getString("name"),
+                address_OBJ.getString("phone"),
+                address_OBJ.getString("province"),
+                address_OBJ.getString("city"),
+                address_OBJ.getString("area"),
+                address_OBJ.getString("address"),
+                supplementary_info
+        );
 
-        //TODO 修改地址实体的时间
-        Address address = addressBookParam.getAddress();
-        address.setId(addressBook.getAddress_id());
-        address.setCreate_time(create_time);
-        addressMapper.updateByPrimaryKey(address);
+        if (addressBookList.size() != 0){
+            addressBookMapper.updateByCreatetime(addressBookList.get(0).getId(), create_time);
+        } else {
+            addressBookMapper.updateByPrimaryKeySelective(addressBookParam);
+            AddressBook addressBook = addressBookMapper.selectByPrimaryKey(addressBookParam.getId());
+
+            //TODO 修改地址实体的时间
+            Address address = addressBookParam.getAddress();
+            address.setId(addressBook.getAddress_id());
+            address.setCreate_time(create_time);
+            addressMapper.updateByPrimaryKey(address);
+        }
 
         return APIUtil.getResponse(SUCCESS, null);
     }
