@@ -18,6 +18,7 @@ import java.lang.Object;
 import java.util.List;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.SFConstant.SF_ORDER_SYNC_URL;
 
 @Service("userContactService")
 public class UserContactServiceImpl implements UserContactService {
@@ -143,7 +144,7 @@ public class UserContactServiceImpl implements UserContactService {
 
     private APIResponse syncFriendExpress(UserContactParam userContactParam) {
         // handle url
-        String ORDERS_URL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
+        String ORDERS_URL = SF_ORDER_SYNC_URL;
         String uuids = "";
 
 
@@ -162,7 +163,7 @@ public class UserContactServiceImpl implements UserContactService {
 
         if (uuids.equals("")) return null; //无需同步的订单 直接返回
         uuids = uuids.substring(0, uuids.length() - 1);
-        ORDERS_URL = ORDERS_URL.replace("uuid", uuids);
+        ORDERS_URL = ORDERS_URL.replace("{uuid}", uuids);
 
         // POST
         List<Orders> orderses = null;
