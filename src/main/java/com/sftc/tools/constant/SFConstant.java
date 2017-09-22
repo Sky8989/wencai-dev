@@ -81,7 +81,7 @@ public class SFConstant {
     /**
      * 优惠券兑换
      */
-    public static String SF_COUPON_EXCHANGE_API = SF_SAME_DOMAIN + "?promo_code={promo_code}";
+    public static String SF_COUPON_EXCHANGE_API = SF_SAME_DOMAIN + "coupons?promo_code={promo_code}";
     /**
      * 通用订单请求地址
      */
