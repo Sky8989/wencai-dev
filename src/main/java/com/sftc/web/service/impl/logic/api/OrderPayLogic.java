@@ -58,7 +58,7 @@ public class OrderPayLogic {
             post.addHeader("PushEnvelope-Device-Token", access_token);
         } else {
             // 下单时，如果还没登录，计价时uuid和token都没有，需要先写死
-            jsonObject.getJSONObject("request").getJSONObject("merchant").put("uuid", COMMON_UUID);
+//            jsonObject.getJSONObject("request").getJSONObject("merchant").put("uuid", COMMON_UUID);
             post.addHeader("PushEnvelope-Device-Token", COMMON_ACCESSTOKEN);
         }
 

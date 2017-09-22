@@ -104,7 +104,7 @@ public class CouponServiceImpl implements CouponService {
         JSONObject resJSONObject = JSONObject.fromObject(res);
         if (resJSONObject.containsKey(ERROR_STRING_1) || resJSONObject.containsKey(ERROR_STRING_2)
                 || resJSONObject.containsKey(ERROR_STRING_3) || resJSONObject.containsKey(ERROR_STRING_4)) {
-            return APIUtil.submitErrorResponse("兑换失败", resJSONObject);
+            return APIUtil.submitErrorResponse("兑换失败：" + resJSONObject.getJSONObject("error").getString("message"), resJSONObject);
         }
 
         return APIUtil.getResponse(status, resJSONObject);

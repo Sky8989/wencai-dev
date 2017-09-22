@@ -146,7 +146,7 @@ public class SFConstant {
         SF_LOGIN = SF_SAME_DOMAIN + "merchants/me";
         SF_QUOTES_URL = SF_SAME_DOMAIN + "quotes";
         SF_COUPON_LIST_URL = SF_SAME_DOMAIN + "coupons/by_user/{user_uuid}?status={status}&limit={limit}&offset={offset}";
-        SF_COUPON_EXCHANGE_API = SF_SAME_DOMAIN + "?promo_code={promo_code}";
+        SF_COUPON_EXCHANGE_API = SF_SAME_DOMAIN + "coupons?promo_code={promo_code}";
         SF_REQUEST_URL = SF_SAME_DOMAIN + "requests";
         SF_CONSTANTS_URL = SF_SAME_DOMAIN + "constants/";
         SF_ORDER_SYNC_URL = SF_SAME_DOMAIN + "requests/{uuid}/status?batch=true";
