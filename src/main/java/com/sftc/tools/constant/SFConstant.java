@@ -71,9 +71,17 @@ public class SFConstant {
     /////////////// 同城订单相关 ///////////////
 
     /**
-     * 优惠券
+     * 计价
      */
     public static String SF_QUOTES_URL = SF_SAME_DOMAIN + "quotes";
+    /**
+     * 优惠券获取
+     */
+    public static String SF_COUPON_LIST_URL = SF_SAME_DOMAIN + "coupons/by_user/{user_uuid}?status={status}&limit={limit}&offset={offset}";
+    /**
+     * 优惠券兑换
+     */
+    public static String SF_COUPON_EXCHANGE_API = SF_SAME_DOMAIN + "?promo_code={promo_code}";
     /**
      * 通用订单请求地址
      */
