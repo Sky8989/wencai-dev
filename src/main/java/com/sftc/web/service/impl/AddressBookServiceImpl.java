@@ -38,6 +38,7 @@ public class AddressBookServiceImpl implements AddressBookService {
         if (!paramObject.containsKey("address_book_type")) return APIUtil.paramErrorResponse("地址簿参数address_book_type为空");
         if (!paramObject.containsKey("address")) return APIUtil.paramErrorResponse("地址簿参数address为空");
         JSONObject address_OBJ = paramObject.getJSONObject("address");
+
         if (address_OBJ.containsValue("")) return APIUtil.paramErrorResponse("地址簿参数不可为''");
         if (!address_OBJ.containsKey("name")) return APIUtil.paramErrorResponse("地址簿参数name为空");
         if (!address_OBJ.containsKey("phone")) return APIUtil.paramErrorResponse("地址簿参数phone为空");
