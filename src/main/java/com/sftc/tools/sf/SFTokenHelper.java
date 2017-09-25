@@ -11,8 +11,8 @@ public class SFTokenHelper {
      * 顺丰共用access_token
      * 使用本token的接口：来往记录 好友圈 我的订单
      */
-    public static String COMMON_ACCESSTOKEN = "urr280kPrlK74EGFAOB9";
-    public static String COMMON_UUID = "2c9a85895d78ae17015d7911fa810029";
+    public static String COMMON_ACCESSTOKEN = "0UjuP51pdFBv5KKvPitx";
+    public static String COMMON_UUID = "2c9280825bfbaafe015c09d9a7092c4e";
 
     public static String getToken() {
 

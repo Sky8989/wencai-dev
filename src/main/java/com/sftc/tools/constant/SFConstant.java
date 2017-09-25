@@ -71,9 +71,17 @@ public class SFConstant {
     /////////////// 同城订单相关 ///////////////
 
     /**
-     * 优惠券
+     * 计价
      */
     public static String SF_QUOTES_URL = SF_SAME_DOMAIN + "quotes";
+    /**
+     * 优惠券获取
+     */
+    public static String SF_COUPON_LIST_URL = SF_SAME_DOMAIN + "coupons/by_user/{user_uuid}?status={status}&limit={limit}&offset={offset}";
+    /**
+     * 优惠券兑换
+     */
+    public static String SF_COUPON_EXCHANGE_API = SF_SAME_DOMAIN + "coupons?promo_code={promo_code}";
     /**
      * 通用订单请求地址
      */
@@ -137,9 +145,12 @@ public class SFConstant {
         SF_REGISTER_URL = SF_SAME_DOMAIN + "merchants";
         SF_LOGIN = SF_SAME_DOMAIN + "merchants/me";
         SF_QUOTES_URL = SF_SAME_DOMAIN + "quotes";
+        SF_COUPON_LIST_URL = SF_SAME_DOMAIN + "coupons/by_user/{user_uuid}?status={status}&limit={limit}&offset={offset}";
+        SF_COUPON_EXCHANGE_API = SF_SAME_DOMAIN + "coupons?promo_code={promo_code}";
         SF_REQUEST_URL = SF_SAME_DOMAIN + "requests";
         SF_CONSTANTS_URL = SF_SAME_DOMAIN + "constants/";
         SF_ORDER_SYNC_URL = SF_SAME_DOMAIN + "requests/{uuid}/status?batch=true";
+
     }
 
     public static String getSfSameDomain() {

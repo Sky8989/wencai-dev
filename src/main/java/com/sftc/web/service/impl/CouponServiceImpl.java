@@ -1,30 +1,22 @@
 package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
-import com.sftc.web.model.reqeustParam.UserParam;
-import com.sftc.web.model.sfmodel.Coupon;
 import com.sftc.web.model.sfmodel.Promo;
 import com.sftc.web.service.CouponService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static com.sftc.tools.constant.SFConstant.SF_LOGIN;
-import static com.sftc.tools.constant.SFConstant.SF_REGISTER_URL;
+import static com.sftc.tools.constant.SFConstant.*;
 import static com.sftc.tools.sf.SFResultHelper.*;
 
 @Service("couponService")
@@ -67,10 +59,13 @@ public class CouponServiceImpl implements CouponService {
             status_final = status_all;
         }
 
-        String COUPON_LIST_API = "http://api-dev.sf-rush.com/coupons/by_user/user_uuid?status=" + status_final + "&limit=" + limit + "&offset=" + offset;
-        COUPON_LIST_API = COUPON_LIST_API.replace("user_uuid", uuid + "");
+        String coupon_list_url = SF_COUPON_LIST_URL.
+                replace("{user_uuid}", uuid).
+                replace("{status}", status_final).
+                replace("{limit}", limit).
+                replace("{offset}", offset);
         // 调用顺丰接口
-        HttpGet httpGet = new HttpGet(COUPON_LIST_API);
+        HttpGet httpGet = new HttpGet(coupon_list_url);
         httpGet.addHeader("PushEnvelope-Device-Token", token);
         String res = APIGetUtil.get(httpGet);
 
@@ -94,16 +89,14 @@ public class CouponServiceImpl implements CouponService {
         if ("".equals(promo.getPromo_code()) || promo.getPromo_code().contains(" "))
             return APIUtil.paramErrorResponse("Don't input '' or ' ' ");
         APIStatus status = APIStatus.SUCCESS;
-        String COUPON_EXCHANGE_API = "http://api-dev.sf-rush.com/coupons?promo_code=";
-        COUPON_EXCHANGE_API += promo.getPromo_code();
+        String coupon_exchange_url = SF_COUPON_EXCHANGE_API.replace("{promo_code}", promo.getPromo_code());
 
         //更新商户信息
         APIResponse apiResponse = updateMerchantAddress(promo.getToken());
         if (apiResponse != null) return apiResponse;
 
-
         // 调用顺丰接口
-        HttpPost httpPost = new HttpPost(COUPON_EXCHANGE_API);
+        HttpPost httpPost = new HttpPost(coupon_exchange_url);
         httpPost.addHeader("PushEnvelope-Device-Token", promo.getToken());
         String res = APIPostUtil.post("", httpPost);
 
@@ -111,7 +104,7 @@ public class CouponServiceImpl implements CouponService {
         JSONObject resJSONObject = JSONObject.fromObject(res);
         if (resJSONObject.containsKey(ERROR_STRING_1) || resJSONObject.containsKey(ERROR_STRING_2)
                 || resJSONObject.containsKey(ERROR_STRING_3) || resJSONObject.containsKey(ERROR_STRING_4)) {
-            return APIUtil.submitErrorResponse("兑换失败", resJSONObject);
+            return APIUtil.submitErrorResponse("兑换失败：" + resJSONObject.getJSONObject("error").getString("message"), resJSONObject);
         }
 
         return APIUtil.getResponse(status, resJSONObject);
