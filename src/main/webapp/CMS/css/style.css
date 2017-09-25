@@ -1158,6 +1158,8 @@ a:active {
   visibility: hidden;
 }
 .page-hd header .title {
+  position: relative;
+  float: left;
   font-weight: 600;
   font-size: 18px;
   color: #4f5f6f;
@@ -1860,6 +1862,15 @@ dialog [class^="icon-"] {
 }
 .btn-drop-group.open .drop-list {
   display: block;
+}
+.btn .addQuestion{
+  position: relative;
+  float: right;
+  color: #02b7cd;
+  height: 20px;
+  width: 30px;
+  text-align: center;
+  margin-left: 500px;
 }
 /*===================面包屑===================*/
 .breadcrumb {

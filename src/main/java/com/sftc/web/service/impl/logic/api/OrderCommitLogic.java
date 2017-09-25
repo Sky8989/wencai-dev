@@ -676,7 +676,10 @@ public class OrderCommitLogic {
             // 处理 street和门牌号的拼接
             JSONObject paramTemp = JSONObject.fromObject(sf);
             Object j_address = paramTemp.remove("j_address");
+            Object d_address = paramTemp.remove("d_address");
             paramTemp.put("j_address", j_address + paramTemp.getString("j_supplementary_info"));
+            paramTemp.put("d_address", d_address + paramTemp.getString("d_supplementary_info"));
+
             String str = gson.toJson(paramTemp);
 
             // POST

@@ -21,8 +21,8 @@ $.ajax({
                 '<td class="lt td-content">' + content + '</td>' +
                 '<td>' + timeTransfer(create_time) + '</td>' +
                 '<td>' +
-                '<a title="编辑" class="mr-5">其他</a>' +
-                '<a title="删除" class="mr-5">其他</a>' +
+                '<a title="编辑" class="mr-5">编辑</a>' +
+                '<a title="删除" class="mr-5">删除</a>' +
                 '</td>' +
                 '</tr>'
             );
