@@ -7,8 +7,8 @@ var config_url = {
 
 var config = {
 
-    hostAddress: config_url.dev_hostAddress,
-    qiniu_getToken: config_url.dev_qiniu_getToken,
+    hostAddress: config_url.localhost_hostAddress,
+    qiniu_getToken: config_url.localhost_qiniu_getToken,
     pageSizeKey:10
 };
 
