@@ -97,7 +97,7 @@ a:active {
   font-family: "iconfont";
   src: url('font/fontawesome-webfont.eot?t=1483266488331');
   src: url('font/fontawesome-webfont.eot?t=1483266488331#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('font/fontawesome-webfont.woff?t=1483266488331') format('woff'), /* chrome, firefox */ url('font/fontawesome-webfont.ttf?t=1483266488331') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/ url('font/fontawesome-webfont.svg?t=1483266488331#iconfont') format('svg');
-  
+
   /* IE9*/
   /* iOS 4.1- */
 }
@@ -1757,6 +1757,17 @@ dialog [class^="icon-"] {
   border-color: #46c5f2;
   background: #46c5f2;
 }
+
+#addCommonQuestion{
+  position: relative;
+  float: right;
+  text-align: center;
+  margin-right: 20px;
+  width: 100px;
+  height: 35px;
+  color: #333;
+}
+
 .btn-info-outline {
   background-color: transparent;
   border-color: #76d4f5;
