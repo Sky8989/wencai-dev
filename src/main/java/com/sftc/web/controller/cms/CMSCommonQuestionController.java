@@ -57,7 +57,7 @@ public class CMSCommonQuestionController {
      */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse updateGiftCard(@RequestBody CommonQuestion commonQuestion) throws Exception {
+    APIResponse updateCommonQuestion(@RequestBody CommonQuestion commonQuestion) throws Exception {
         return commonQuestionService.updateCommonQuestion(commonQuestion);
     }
 
