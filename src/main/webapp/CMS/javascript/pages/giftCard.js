@@ -241,7 +241,6 @@ layui.use(['layer', 'form', 'upload'], function () { //独立版的layer无需�
 //新增giftcard
 function ajax_addGiftCard(json_data) {
 
-
     var post_param = JSON.parse(json_data);
     post_param.icon = (icon == undefined) ? 'uploadurl_param' : icon;
 
