@@ -12,9 +12,14 @@
     <script src="javascript/jquery.js"></script>
     <script src="javascript/plug-ins/customScrollbar.min.js"></script>
     <script src="javascript/plug-ins/echarts.min.js"></script>
-    <script src="javascript/plug-ins/layerUi/layer.js"></script>
     <script src="javascript/plug-ins/pagination.js"></script>
     <script src="javascript/public.js"></script>
+    <script src="javascript/question.js"></script>
+    <script src="layui/layui.js"></script>
+    <!--加入分页插件-->
+    <link rel="stylesheet" href="css/jquery.pagination.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
 </head>
 <body>
 <div class="main-wrap">
@@ -43,7 +48,7 @@
                 <section class="page-hd">
                     <header>
                         <h2 class="title">常见问题</h2>
-                        <button class="btn addQuestion" id="addQuestionbtn">新增常见问题</button>
+                        <button class="addCommonQuestion" id="addCommonQuestion">新增常见问题</button>
 
                         <p class="title-description">
 
@@ -51,6 +56,41 @@
                     </header>
                     <hr>
                 </section>
+
+                <!-- 这是一个隐藏域-->
+                <div class="page-wrap" style="display:none;" id="display_form">
+                    <div>
+                        <!--<div  id="display_form">-->
+                        <hr>
+                        <form class="layui-form" action="">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">标题</label>
+
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="title" lay-verify="required" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline">
+                                    <label class="layui-form-label" style="width:100px;margin-top: 42px;">问题内容</label>
+                                    <div class="layui-input-block">
+                                        <textarea name="content" placeholder="请输入内容" class="layui-textarea" style="width: 300px;margin-top: 20px;"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn" lay-submit lay-filter="submit_1" id="submit_2">立即提交</button>
+                                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
 
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
@@ -63,20 +103,24 @@
                     </tr>
                     </thead>
                     <tbody class="question_list">
-                    <tr class="cen">
-                        <td>1</td>
-                        <td>顺丰如时服务时间</td>
-                        <td class="lt td-content">顺丰如时提供24小时服务，节假日正常服务，全年无休，您有需要可以随时下单;小哥上班时间08:00～20:00
-                            ，在此期间我们全程监控您的订单，可以确保安全快速完成
-                        </td>
-                        <td>2017-06-30</td>
-                        <td>
-                            <a title="编辑" class="mr-5">编辑</a>
-                            <a title="删除" class="mr-5">删除</a>
-                        </td>
-                    </tr>
+
                     </tbody>
                 </table>
+            </div>
+            <div class="box ">
+                <div id="pagination1" class="page fl">
+                    <div class="ui-pagination-container">
+                        <a href="javascript:void(0);" class="ui-pagination-page-item active" data-current="1">1</a>
+                        <a href="javascript:void(0);" class="ui-pagination-page-item" data-current="2">2</a>
+                        <a href="javascript:void(0);" class="ui-pagination-page-item" data-current="3">3</a>
+                        <a href="javascript:void(0);" class="ui-pagination-page-item" data-current="4">4</a>
+                        <a href="javascript:void(0);" class="ui-pagination-page-item" data-current="5">5</a>
+                        <a href="javascript:void(0);" class="ui-pagination-page-item" data-current="2">下一页</a>
+                        <a href="javascript:void(0);" class="ui-pagination-page-item" data-current="12">尾页</a></div>
+                </div>
+                <div class="question fl" style="margin-top: 6px;">
+                    <p>当前页数：<span id="current1">1</span></p>
+                </div>
             </div>
         </main>
         <footer class="btm-ft" id="custom_btm-ft">
