@@ -9,8 +9,8 @@ var config_url = {
 
 var config = {
 
-    hostAddress: config_url.product_hostAddress,
-    qiniu_getToken: config_url.product_qiniu_getToken,
+    hostAddress: config_url.localhost_hostAddress,
+    qiniu_getToken: config_url.localhost_qiniu_getToken,
     pageSizeKey:10
 };
 

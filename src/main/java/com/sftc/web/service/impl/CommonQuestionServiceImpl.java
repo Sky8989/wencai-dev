@@ -3,7 +3,9 @@ package com.sftc.web.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.sftc.tools.api.*;
 import com.sftc.web.mapper.CommonQuestionMapper;
+import com.sftc.web.mapper.UserMapper;
 import com.sftc.web.model.CommonQuestion;
+import com.sftc.web.model.User;
 import com.sftc.web.service.CommonQuestionService;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +47,19 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
             return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
         } else {
             return APIUtil.getResponse(status, commonQuestionList);
+        }
+    }
+
+    //根据id查询常见问题
+    public APIResponse selectListById(APIRequest request) throws Exception {
+        HttpServletRequest httpServletRequest = request.getRequest();
+        // 此处封装了 User的构造方法
+        CommonQuestion commonQuestion = new CommonQuestion(httpServletRequest);
+        CommonQuestion commonQuestion1 = commonQuestionMapper.selectListById(commonQuestion);
+        if (commonQuestion1 == null) {
+            return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
+        } else {
+            return APIUtil.getResponse(APIStatus.SUCCESS, commonQuestion1);
         }
     }
 

@@ -32,6 +32,9 @@ public interface CommonQuestionService {
      */
     APIResponse selectList(APIRequest apiRequest) throws Exception;
 
+    //根据id查询常见问题
+    APIResponse selectListById(APIRequest apiRequest) throws Exception;
+
     /**
      * CMS 系统 添加礼品卡信息
      *
