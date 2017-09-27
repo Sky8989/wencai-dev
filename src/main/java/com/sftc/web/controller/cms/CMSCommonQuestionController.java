@@ -35,6 +35,13 @@ public class CMSCommonQuestionController {
         return commonQuestionService.selectList(new APIRequest(httpServletRequest));
     }
 
+    //根据id查询常见问题
+    @RequestMapping(value = "/question", method = RequestMethod.GET)
+    public @ResponseBody
+    APIResponse selectListById(HttpServletRequest httpServletRequest) throws Exception {
+        return commonQuestionService.selectListById(new APIRequest(httpServletRequest));
+    }
+
     /**
      * 添加常见问题信息
      *

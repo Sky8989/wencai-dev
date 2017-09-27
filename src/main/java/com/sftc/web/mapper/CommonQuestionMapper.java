@@ -17,6 +17,9 @@ public interface CommonQuestionMapper {
      */
     List<CommonQuestion> selectByPage(CommonQuestion commonQuestion);
 
+    //根据id查询常见问题
+    CommonQuestion selectListById(CommonQuestion commonQuestion);
+
     /**
      * CMS 系统 添加常用问题
      *

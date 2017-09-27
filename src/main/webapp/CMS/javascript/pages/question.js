@@ -11,24 +11,24 @@ var conditions = '';
 //ajax更新数据
 function ajax_self(currentPage, count, conditions) {
     $.ajax({
-        url: config.hostAddress + '/cms/commonQuestion/list?pageNumKey=' + currentPage + '&pageSizeKey=' + count + conditions,
-        type: 'get',
-        dataType: 'json',
-        scriptCharset: 'utf-8',
-        async: false, // 同步执行
-        cache: false,//不缓存
-        success: function (data) {
-            if (data.state != 200) {
-                if (data.state == 500) {
-                    alert('service error：' + data.message);
-                    return;
-                }
-                if (data.state == 401) {
-                    alert('查询到结果：' + data.message);
-                    return;
-                }
+                url: config.hostAddress + '/cms/commonQuestion/list?pageNumKey=' + currentPage + '&pageSizeKey=' + count + conditions,
+                type: 'get',
+                dataType: 'json',
+                scriptCharset: 'utf-8',
+                async: false, // 同步执行
+                cache: false,//不缓存
+                success: function (data) {
+                    if (data.state != 200) {
+                        if (data.state == 500) {
+                            alert('service error：' + data.message);
+                            return;
+                        }
+                        if (data.state == 401) {
+                            alert('查询到结果：' + data.message);
+                            return;
+                        }
 
-            }
+                    }
             //写入本次查询 获取的结果 当前页数 总页数
             totalPage_self = data.result.pages;
             currentPage_self = data.result.pageNum;
@@ -83,14 +83,15 @@ function data_rendering(data) {
         var create_time = dataD.create_time;
         var title = dataD.title;
         var content = dataD.content;
+
         $('.question_list').append(
             '<tr class="cen">' +
             '<td>' + id + '</td>' +
-            '<td class="td-title" contenteditable="true">' + title + '</td>' +
-            '<td class="lt td-content" contenteditable="true">' + content + '</td>' +
+            '<td class="td-title">' + title + '</td>' +
+            '<td class="lt td-content">' + content + '</td>' +
             '<td>' + timeTransfer(create_time) + '</td>' +
             '<td>' +
-            '<a title="保存" data-id=' + dataD + 'href="javascript:void(0);" onclick="ajax_updateCommonQuestion(' + dataD + ')" '+' class="mr-5" >保存</a>' +
+            '<a title="编辑" data-id=' + dataD.id + 'href="javascript:void(0);" onclick="editPage('+dataD.id+')" class="mr-5" >编辑</a>' +
             '<a title="删除" data-id=' + dataD.id + 'href="javascript:void(0);" onclick="delete_self(' + dataD.id + ')" '+' class="mr-5">删除</a>' +
             '</td>' +
             '</tr>'
@@ -99,6 +100,42 @@ function data_rendering(data) {
     }
 
 }
+
+function editPage(id) {
+    $.ajax({
+        url: config.hostAddress + '/cms/commonQuestion/question?id=' + id,
+        type: 'get',
+        dataType: 'json',
+        scriptCharset: 'utf-8',
+        async: false, // 同步执行
+        cache: false,//不缓存
+        success: function (data) {
+            if (data.state != 200) {
+                if (data.state == 500) {
+                    alert('service error：' + data.message);
+                    return;
+                }
+                if (data.state == 401) {
+                    alert('查询到结果：' + data.message);
+                    return;
+                }
+
+            }
+            var dataD = data.result;
+            var title = dataD.title;
+            var content = dataD.content;
+            localStorage.setItem("questEditTitle",title);
+            localStorage.setItem("questEditContent",content);
+            localStorage.setItem("id",id);
+            window.location.href = 'questionEdit.html';
+        },
+        error: function (data) {
+            console.log('数据获取失败' + '请求url是：' + this.url);
+
+        }
+    });
+}
+
 
 //监听新增常见问题的按钮
 $("#addCommonQuestion").click(function () {
@@ -200,57 +237,4 @@ function delete_self(id) {
             alert('添加失败，请30s后重试');
         }
     });
-}
-
-
-//修改commentQuestion
-function ajax_updateCommonQuestion(dataD) {
-    var layer = layui.layer;
-    layer.alert(dataD);
-    // var title = $(".td-title").val();
-    // var content = $(".lt .td-content").val();
-    // dataD.title = title;
-    // dataD.content = content;
-    // var post_param = JSON.parse(dataD);
-    //
-    // if (title != null && title != undefined && title != ''&& content != null
-    //     && content != undefined && content != '') {
-    //
-    //     $.ajax({
-    //         type: "post",
-    //         url: config.hostAddress + '/cms/commonQuestion/update',
-    //         async: false, // 使用同步方式
-    //         data: JSON.stringify(post_param),
-    //         contentType: "application/json; charset=utf-8",
-    //         dataType: "json",
-    //         success: function (data) {
-    //             if (data.state != 200) {
-    //                 if (data.state == 500) {
-    //                     alert('service error：' + data.message);
-    //                     return;
-    //                 }
-    //                 if (data.state == 401) {
-    //                     alert('修改失败：' + data.message);
-    //                     return;
-    //                 }
-    //                 if (data.state == 403) {
-    //                     alert('参数问题：' + data.message);
-    //                     return;
-    //                 }
-    //             }
-    //             alert('ajax常见问题修改成功');
-    //             //上传成功 则隐藏 修改常见问题的表单 并重新查询
-    //             $('.question_list').empty();
-    //             ajax_self(1, pageSizeKey, '');
-    //         },
-    //         error: function (data) {
-    //             console.log('数据添加失败' + 'url是：' + this.url + '数据内容是：' + JSON.stringify(post_param));
-    //             console.log('原因：' + data.message);
-    //             alert('修改失败，请30s后重试');
-    //         }
-    //     });
-    // }else {
-    //     alert('标题或问题内容不可为空');
-    // }
-
 }
