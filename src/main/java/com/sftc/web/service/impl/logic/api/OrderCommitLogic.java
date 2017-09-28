@@ -213,7 +213,6 @@ public class OrderCommitLogic {
 
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
-        OrderExpress orderExpress = (OrderExpress) order.getOrderExpressList();
         //增加对包裹数量的验证，确保是只有一个订单里只有一个同城包裹
         if (order.getOrderExpressList().size() != 1)
             return APIUtil.submitErrorResponse("Order infomation has been changed,please check again!", null);
@@ -260,7 +259,7 @@ public class OrderCommitLogic {
             String newStreet = removeStreet.toString() + order.getSupplementary_info();
             requestObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").put("street", newStreet);
             Object removeStreet2 = requestObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").remove("street");
-            String newStreet2 = removeStreet2.toString() + orderExpress.getSupplementary_info();
+            String newStreet2 = removeStreet2.toString() + oe.getSupplementary_info();
             requestObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").put("street", newStreet2);
 
 
