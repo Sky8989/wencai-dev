@@ -19,12 +19,12 @@ layui.use('form',function () {
     form.on('submit(formDemo)',function (data) {
         var json_data = JSON.stringify(data.field);
         ajax_updateCommonQuestion(json_data);
+
     });
 });
 
 function ajax_updateCommonQuestion(json_data) {
 
-    alert(json_data);
     var post_param = JSON.parse(json_data);
 
     $.ajax({
@@ -49,9 +49,8 @@ function ajax_updateCommonQuestion(json_data) {
                     return;
                 }
             }
-            alert('ajax常见问题修改成功');
-            //上传成功 则隐藏 新增常见问题的表单 并重新查询
             window.location.href = 'question.html';
+            //上传成功 则隐藏 新增常见问题的表单 并重新查询
         },
         error: function (data) {
             console.log('数据修改失败' + 'url是：' + this.url + '数据内容是：' + JSON.stringify(post_param));
