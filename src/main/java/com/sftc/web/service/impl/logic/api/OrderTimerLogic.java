@@ -5,7 +5,8 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.mapper.OrderMapper;
 import net.sf.json.JSONObject;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -20,7 +21,7 @@ import static com.sftc.tools.api.APIStatus.SUCCESS;
 @Component
 public class OrderTimerLogic {
 
-    private Logger logger = Logger.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Resource
     private OrderMapper orderMapper;

@@ -1,7 +1,6 @@
 package com.sftc.web.service.impl.logic.api;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.sftc.tools.api.*;
 import com.sftc.tools.common.DateUtils;
 import com.sftc.tools.common.EmojiFilter;
@@ -19,7 +18,8 @@ import com.sftc.web.model.sfmodel.Target;
 import com.sftc.web.service.MessageService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,21 +27,18 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import static com.sftc.tools.api.APIStatus.SUBMIT_FAIL;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
 import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
 import static com.sftc.tools.constant.WXConstant.WX_template_id_1;
-import static org.springframework.transaction.TransactionDefinition.ISOLATION_SERIALIZABLE;
 
 @Component
 public class OrderCommitLogic {
 
     private Gson gson = new Gson();
-    private Logger logger = Logger.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Resource
     private OrderMapper orderMapper;
