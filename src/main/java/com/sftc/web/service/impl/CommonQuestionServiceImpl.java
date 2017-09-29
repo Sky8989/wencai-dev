@@ -7,6 +7,7 @@ import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.jpa.CommonQuestionDao;
 import com.sftc.web.dao.mybatis.CommonQuestionMapper;
+import com.sftc.web.dao.redis.CommonQuestionRedisDao;
 import com.sftc.web.model.CommonQuestion;
 import com.sftc.web.service.CommonQuestionService;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,19 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
     @Resource
     private CommonQuestionDao commonQuestionDao;
 
+    @Resource
+    private CommonQuestionRedisDao commonQuestionRedisDao;
+
+    // 获取常见问题
     public APIResponse getCommonQuestion() {
-        APIStatus status = APIStatus.SELECT_FAIL;
-        List<CommonQuestion> commonQuestionList = commonQuestionMapper.getCommonQuestion();
-        if (commonQuestionList != null) status = APIStatus.SUCCESS;
-        return APIUtil.getResponse(status, commonQuestionList);
+        // 尝试从redis缓存中获取数据
+        List<CommonQuestion> commonQuestionList = commonQuestionRedisDao.getCommonQuestionsFromCache();
+        if (commonQuestionList == null) {
+            commonQuestionList = commonQuestionMapper.getCommonQuestion();
+            commonQuestionRedisDao.setCommonQuestionsToCache(commonQuestionList);
+        }
+
+        return APIUtil.getResponse(APIStatus.SUCCESS, commonQuestionList);
     }
 
 
@@ -70,6 +79,7 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
     public APIResponse addCommonQuestion(CommonQuestion commonQuestion) throws Exception {
         commonQuestion.setCreate_time(Long.toString(System.currentTimeMillis()));
         commonQuestionDao.save(commonQuestion);
+        commonQuestionRedisDao.clearCommonQuestionsCache();
 
         return APIUtil.getResponse(APIStatus.SUCCESS, commonQuestion);
     }
@@ -79,6 +89,8 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
      */
     public APIResponse updateCommonQuestion(CommonQuestion commonQuestion) throws Exception {
         commonQuestionMapper.updateCommonQuestion(commonQuestion);
+        commonQuestionRedisDao.clearCommonQuestionsCache();
+
         return APIUtil.getResponse(APIStatus.SUCCESS, commonQuestion);
     }
 
@@ -87,6 +99,8 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
      */
     public APIResponse deleteCommonQuestion(int id) throws Exception {
         commonQuestionMapper.deleteCommonQuestion(id);
+        commonQuestionRedisDao.clearCommonQuestionsCache();
+
         return APIUtil.getResponse(APIStatus.SUCCESS, id);
     }
 }
