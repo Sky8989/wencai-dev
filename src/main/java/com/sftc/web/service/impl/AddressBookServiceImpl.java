@@ -2,8 +2,8 @@ package com.sftc.web.service.impl;
 
 
 import com.sftc.tools.api.*;
-import com.sftc.web.mapper.AddressBookMapper;
-import com.sftc.web.mapper.AddressMapper;
+import com.sftc.web.dao.mybatis.AddressBookMapper;
+import com.sftc.web.dao.mybatis.AddressMapper;
 import com.sftc.web.model.Address;
 import com.sftc.web.model.AddressBook;
 import com.sftc.web.service.AddressBookService;

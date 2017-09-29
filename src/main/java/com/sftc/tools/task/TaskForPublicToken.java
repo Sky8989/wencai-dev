@@ -1,6 +1,6 @@
 package com.sftc.tools.task;
 
-import com.sftc.web.mapper.TokenMapper;
+import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.model.Token;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -26,7 +26,7 @@ public class TaskForPublicToken {
 
     private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass());
     @Resource
-    TokenMapper tokenMapper;
+    private TokenMapper tokenMapper;
 
     private final int fixedRate = 24 * 3600 * 1000;
 

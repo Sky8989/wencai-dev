@@ -1,19 +1,14 @@
 package com.sftc.web.model;
 
+import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @author _KeMing
- * @version 1.0
- * @Package com.sftc.web.model
- * @Description: 常见问题类
- * @date 2017/4/25
- * @Time 上午10:46
- */
+@Entity
+@Table(name = "sftc_common_question")
 public class CommonQuestion extends Object {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     // 创建时间
     private String create_time;
@@ -50,7 +45,9 @@ public class CommonQuestion extends Object {
         return content;
     }
 
-    public void setContent(String content) {this.content = content;}
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public CommonQuestion() {
     }

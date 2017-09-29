@@ -1,11 +1,13 @@
 package com.sftc.web.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.sftc.tools.api.*;
-import com.sftc.web.mapper.CommonQuestionMapper;
-import com.sftc.web.mapper.UserMapper;
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIStatus;
+import com.sftc.tools.api.APIUtil;
+import com.sftc.web.dao.jpa.CommonQuestionDao;
+import com.sftc.web.dao.mybatis.CommonQuestionMapper;
 import com.sftc.web.model.CommonQuestion;
-import com.sftc.web.model.User;
 import com.sftc.web.service.CommonQuestionService;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,9 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
     @Resource
     private CommonQuestionMapper commonQuestionMapper;
 
+    @Resource
+    private CommonQuestionDao commonQuestionDao;
+
     public APIResponse getCommonQuestion() {
         APIStatus status = APIStatus.SELECT_FAIL;
         List<CommonQuestion> commonQuestionList = commonQuestionMapper.getCommonQuestion();
@@ -28,11 +33,7 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
 
 
     /**
-     * CMS 系统 获取常见问题列表 条件查询+分页
-     *
-     * @param apiRequest
-     * @return
-     * @throws Exception
+     * CMS 获取常见问题列表 条件查询+分页
      */
     public APIResponse selectList(APIRequest apiRequest) throws Exception {
         APIStatus status = APIStatus.SUCCESS;
@@ -50,7 +51,7 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
         }
     }
 
-    //根据id查询常见问题
+    // 根据id查询常见问题
     public APIResponse selectListById(APIRequest request) throws Exception {
         HttpServletRequest httpServletRequest = request.getRequest();
         // 此处封装了 User的构造方法
@@ -64,24 +65,17 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
     }
 
     /**
-     * CMS 系统 添加常见问题信息
-     *
-     * @param commonQuestion
-     * @return
-     * @throws Exception
+     * CMS 添加常见问题信息
      */
     public APIResponse addCommonQuestion(CommonQuestion commonQuestion) throws Exception {
         commonQuestion.setCreate_time(Long.toString(System.currentTimeMillis()));
-        commonQuestionMapper.insertCommonQuestion(commonQuestion);
+        commonQuestionDao.save(commonQuestion);
+
         return APIUtil.getResponse(APIStatus.SUCCESS, commonQuestion);
     }
 
     /**
-     * CMS 系统 修改礼品卡信息
-     *
-     * @param commonQuestion
-     * @return
-     * @throws Exception
+     * CMS 修改礼品卡信息
      */
     public APIResponse updateCommonQuestion(CommonQuestion commonQuestion) throws Exception {
         commonQuestionMapper.updateCommonQuestion(commonQuestion);
@@ -89,11 +83,7 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
     }
 
     /**
-     * CMS 系统 删除礼品卡信息
-     *
-     * @param id
-     * @return
-     * @throws Exception
+     * CMS 删除礼品卡信息
      */
     public APIResponse deleteCommonQuestion(int id) throws Exception {
         commonQuestionMapper.deleteCommonQuestion(id);
