@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.0.xsd"
+       default-lazy-init="true">
+    <description>Redis缓存配置</description>
+
+    <!-- Jedis 连接池属性配置-->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <!--最大连接数-->
+        <property name="maxTotal" value="${redis.pool.maxTotal}"/>
+        <!--最大空闲连接数-->
+        <property name="maxIdle" value="${redis.pool.maxIdle}"/>
+        <!--初始化连接数-->
+        <property name="minIdle" value="${redis.pool.minIdle}"/>
+        <!--最大等待时间-->
+        <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}"/>
+        <!--对拿到的connection进行validateObject校验-->
+        <property name="testOnBorrow" value="${redis.pool.testOnBorrow}"/>
+        <!--在进行returnObject对返回的connection进行validateObject校验-->
+        <property name="testOnReturn" value="${redis.pool.testOnReturn}"/>
+        <!--定时对线程池中空闲的链接进行validateObject校验-->
+        <property name="testWhileIdle" value="true"/>
+    </bean>
+
+    <!-- 配置Jedis的地址和端口号  -->
+    <bean id="hostAndPort" class="redis.clients.jedis.HostAndPort">
+        <constructor-arg index="0" value="${redis.host}"/>
+        <constructor-arg index="1" value="${redis.port}"/>
+    </bean>
+
+    <!-- Jedis配置连接信息 -->
+    <bean id="connectionInfo" class="com.sftc.web.modules.nosql.redis.pool.ConnectionInfo">
+        <!-- timeout超时时间 	-->
+        <property name="timeout" value="${redis.timeout}"/>
+        <property name="password" value="${redis.pass}"/>
+    </bean>
+
+    <!-- Jedis连接池配置 -->
+    <bean id="jedisPool" class="com.sftc.web.modules.nosql.redis.pool.JedisDirectPool" destroy-method="destroy">
+        <constructor-arg value="pool"/>
+        <constructor-arg ref="hostAndPort"/>
+        <constructor-arg ref="connectionInfo"/>
+        <constructor-arg ref="jedisPoolConfig"/>
+    </bean>
+
+    <!-- Jedis模板配置  -->
+    <bean id="jedisTemplate" class="com.sftc.web.modules.nosql.redis.JedisTemplate">
+        <constructor-arg ref="jedisPool"/>
+    </bean>
+
+    <!-- Spring集成Redis客户端连接工厂配置 -->
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+          destroy-method="destroy">
+        <property name="poolConfig" ref="jedisPoolConfig"/>
+        <property name="hostName" value="${redis.host}"/>
+        <property name="port" value="${redis.port}"/>
+        <property name="timeout" value="${redis.timeout}"/>
+        <property name="password" value="${redis.pass}"/>
+    </bean>
+
+    <!-- Redis Template模板配置 -->
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="jedisConnectionFactory"/>
+        <!-- 对key和value指定序列化的方法  -->
+        <property name="keySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+        </property>
+    </bean>
+
+    <!-- redis缓存管理器 -->
+    <bean id="redisCacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+        <constructor-arg name="template" ref="redisTemplate"/>
+    </bean>
+
+    <!-- 启用缓存注解功能 -->
+    <cache:annotation-driven cache-manager="redisCacheManager"/>
+
+</beans>
