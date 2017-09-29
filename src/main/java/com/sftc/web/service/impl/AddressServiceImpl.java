@@ -1,13 +1,11 @@
 package com.sftc.web.service.impl;
 
 
-import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
-import com.sftc.web.mapper.AddressMapper;
-import com.sftc.web.mapper.AddressResolutionMapper;
+import com.sftc.web.dao.mybatis.AddressMapper;
+import com.sftc.web.dao.mybatis.AddressResolutionMapper;
 import com.sftc.web.model.Address;
 import com.sftc.web.model.AddressResolution;
-import com.sftc.web.model.sfmodel.SFServiceAddress;
 import com.sftc.web.service.AddressService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -21,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.ThirdPartyConstant.MAP_ADDRESS_DISTANCE_URL;
