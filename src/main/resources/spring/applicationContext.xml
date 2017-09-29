@@ -80,6 +80,7 @@
         <property name="dataSource" ref="dataSource" />
         <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
         <property name="typeHandlersPackage" value="com.sftc.tools.typeHandler"/>
+        <property name="mapperLocations" value="classpath*:mybatis/mapper/*Mapper.xml" />
     </bean>
     <!-- 自动加载mapper文件夹下的文件，然后进行一系列操作 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">

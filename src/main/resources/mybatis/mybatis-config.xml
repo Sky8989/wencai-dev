@@ -6,16 +6,12 @@
 
     <settings>
         <!-- 开启驼峰命名法 -->
-        <setting name="mapUnderscoreToCamelCase" value="false" />
+        <setting name="mapUnderscoreToCamelCase" value="false"/>
         <!-- 获取数据库自增主键值 -->
-        <setting name="useGeneratedKeys" value="true" />
+        <setting name="useGeneratedKeys" value="true"/>
         <!-- 使用别名替换列名 -->
-        <setting name="useColumnLabel" value="false" />
+        <setting name="useColumnLabel" value="false"/>
     </settings>
-
-    <typeAliases>
-        <package name="com.sftc.ssm.model"/>
-    </typeAliases>
 
     <typeHandlers>
         <typeHandler javaType="String" jdbcType="VARCHAR" handler="com.sftc.tools.typeHandler.NullStringHandler"/>

@@ -26,7 +26,7 @@ public class TaskForPublicToken {
 
     private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass());
     @Resource
-    TokenMapper tokenMapper;
+    private TokenMapper tokenMapper;
 
     private final int fixedRate = 24 * 3600 * 1000;
 
