@@ -24,18 +24,6 @@ public class GiftCardServiceImpl implements GiftCardService {
     @Resource
     private GiftCardMapper giftCardMapper;
 
-    /*
-    * 订单详情接口
-    * */
-    public APIResponse getGiftCard(APIRequest request) {
-        String orderSn = (String) request.getParameter("orderSn");
-        Order order = giftCardMapper.giftCardDetail(orderSn);
-        if (order == null)
-            return APIUtil.selectErrorResponse("没有该礼卡", null);
-
-        return APIUtil.getResponse(SUCCESS, order);
-    }
-
     public APIResponse getGiftCardList(APIRequest request) {
 
         List<GiftCard> giftCards = giftCardMapper.giftCardList();

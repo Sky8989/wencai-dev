@@ -15,19 +15,19 @@ public interface UserMapper {
 
     User selectUserByUserId(int user_id);
 
-    int insertOpenid(User user);
+    void insertOpenid(User user);
 
     void addMerchant(User merchant);
 
     User getUuidAndtoken(int order_id);
 
-    int insertWithAvatarAndName(User user);
+    void insertWithAvatarAndName(User user);
 
     void updateUserOfAvatar(User user);
 
     // 动态插入
     void updateUser(User user);
 
-    //     <!--下面是cms系统用到的mapper-->
+    /// 下面是cms系统用到的mapper
     List<User> selectByPage(User user);
 }

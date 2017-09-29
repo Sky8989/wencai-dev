@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Update;
 
 public interface OrderExpressTransformMapper {
 
-    final String sftc_order_express_transform = "sftc_order_express_transform";
+    String sftc_order_express_transform = "sftc_order_express_transform";
 
     @Insert("INSERT INTO " + sftc_order_express_transform + "(express_id, same_uuid, nation_uuid, is_read, create_time) " +
             "VALUES (#{express_id}, #{same_uuid}, #{nation_uuid}, #{is_read}, #{create_time})")

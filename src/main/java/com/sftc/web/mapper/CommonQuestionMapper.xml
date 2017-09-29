@@ -6,8 +6,12 @@
 
     <!-- 常见问题列表  -->
     <select id="getCommonQuestion" resultType="com.sftc.web.model.CommonQuestion">
-                SELECT id,title,content from sftc_common_question
-        </select>
+        SELECT
+            id,
+            title,
+            content
+        FROM sftc_common_question
+    </select>
 
     <select id="selectByPage" parameterType="com.sftc.web.model.CommonQuestion"
             resultType="com.sftc.web.model.CommonQuestion">
@@ -21,13 +25,15 @@
 
     <select id="selectListById" parameterType="int"
             resultType="com.sftc.web.model.CommonQuestion">
-        SELECT * FROM sftc_common_question WHERE id = #{id}
+        SELECT *
+        FROM sftc_common_question
+        WHERE id = #{id}
     </select>
 
     <insert id="insertCommonQuestion" parameterType="com.sftc.web.model.CommonQuestion" useGeneratedKeys="true">
-                INSERT INTO sftc_common_question (title,content,create_time)
-                VALUES (#{title},#{content},#{create_time})
-        </insert>
+        INSERT INTO sftc_common_question (title, content, create_time)
+        VALUES (#{title}, #{content}, #{create_time})
+    </insert>
 
     <update id="updateCommonQuestion" parameterType="com.sftc.web.model.CommonQuestion">
         UPDATE sftc_common_question
@@ -39,6 +45,7 @@
     </update>
 
     <delete id="deleteCommonQuestion" parameterType="int">
-                DELETE FROM sftc_common_question WHERE id = #{id}
-        </delete>
+        DELETE FROM sftc_common_question
+        WHERE id = #{id}
+    </delete>
 </mapper>

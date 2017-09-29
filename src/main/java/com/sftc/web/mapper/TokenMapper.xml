@@ -18,18 +18,23 @@
 
     <insert id="addToken" parameterType="com.sftc.web.model.Token">
         INSERT INTO sftc_token
-        (create_time, is_logout, gmt_modified, gmt_expiry,local_token, user_id)
+        (create_time, is_logout, gmt_modified, gmt_expiry, local_token, user_id)
         VALUES
-        (#{create_time},#{is_logout},#{gmt_modified},#{gmt_expiry},#{local_token},#{user_id})
+            (#{create_time}, #{is_logout}, #{gmt_modified}, #{gmt_expiry}, #{local_token}, #{user_id})
     </insert>
 
     <select id="getToken" parameterType="int" resultType="com.sftc.web.model.Token" resultMap="getToken">
-        SELECT  u.name ,t.access_token from sftc_order o, sftc_user u,sftc_token t
-        WHERE u.id=o.sender_user_id and u.id=t.user_id and o.id=#{id}
+        SELECT
+            u.name,
+            t.access_token
+        FROM sftc_order o, sftc_user u, sftc_token t
+        WHERE u.id = o.sender_user_id AND u.id = t.user_id AND o.id = #{id}
     </select>
 
     <select id="getTokenById" parameterType="int" resultType="com.sftc.web.model.Token">
-        select * from sftc_token where user_id=#{user_id}
+        SELECT *
+        FROM sftc_token
+        WHERE user_id = #{user_id}
     </select>
 
     <resultMap id="getToken" type="com.sftc.web.model.Token">
@@ -37,11 +42,15 @@
     </resultMap>
 
     <select id="getTokenByMobile" parameterType="String" resultType="com.sftc.web.model.Token">
-      SELECT t.access_token from sftc_user u,sftc_token t WHERE u.id=t.user_id AND u.mobile=#{mobile}
+        SELECT t.access_token
+        FROM sftc_user u, sftc_token t
+        WHERE u.id = t.user_id AND u.mobile = #{mobile}
     </select>
 
     <select id="selectUserIdByToken" parameterType="String" resultType="com.sftc.web.model.Token">
-        select * from sftc_token where local_token=#{token}
+        SELECT *
+        FROM sftc_token
+        WHERE local_token = #{token}
     </select>
 
     <select id="getTokenList" parameterType="com.sftc.web.model.Token" resultType="com.sftc.web.model.Token">
@@ -52,17 +61,4 @@
         </where>
     </select>
 
-
 </mapper>
-
-
-        <!--<select id="getToken" parameterType="int" resultType="com.sftc.web.model.Order" resultMap="getToken">-->
-        <!--SELECT  u.name from sftc_order o, sftc_user u-->
-        <!--WHERE u.id=o.sender_user_id and o.id=#{id}-->
-
-        <!--</select>-->
-        <!--<resultMap id="getToken" type="com.sftc.web.model.Order">-->
-        <!--<association property="merchant" javaType="com.sftc.web.model.Merchant">-->
-        <!--<result property="name" column="name"/>-->
-        <!--</association>-->
-        <!--</resultMap>-->

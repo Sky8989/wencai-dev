@@ -43,13 +43,12 @@
 
     <!-- 地址表详情 -->
     <select id="addressDetail" parameterType="int" resultMap="addressList">
-        SELECT province,city,district,detail,phone,name from sftc_address WHERE user_id=#{id}
+        SELECT * from sftc_address WHERE user_id=#{id}
     </select>
 
     <!-- 地址列表 -->
     <select id="addressList" parameterType="java.util.Map" resultType="com.sftc.web.model.Address">
-        select province,city,district,detail,phone,name FROM
-        sftc_address WHERE user_id=#{user_id} limit #{pageOffset},#{pageSize};
+        select * FROM sftc_address WHERE user_id=#{user_id} limit #{pageOffset},#{pageSize};
     </select>
 
     <delete id="deleteAddress" parameterType="int">
@@ -59,7 +58,6 @@
     <select id="selectAddressByPhoneAndLongitudeAndLatitude" resultType="com.sftc.web.model.Address">
         SELECT * from sftc_address WHERE phone = #{phone} AND longitude = #{longitude} AND latitude = #{latitude}
     </select>
-
 
     <update id="updateByPrimaryKey" parameterType="com.sftc.web.model.Address">
         UPDATE sftc_address

@@ -5,11 +5,14 @@
 <mapper namespace="com.sftc.web.mapper.AddressResolutionMapper">
 
     <select id="selectAddressResolution" parameterType="String" resultType="com.sftc.web.model.AddressResolution">
-        SELECT * FROM sftc_address_resolution WHERE address = #{address}
+        SELECT *
+        FROM sftc_address_resolution
+        WHERE address = #{address}
     </select>
 
     <insert id="insertAddressResolution" parameterType="com.sftc.web.model.AddressResolution" useGeneratedKeys="true">
-        INSERT INTO sftc_address_resolution(address,longitude,latitude,create_time)
-        VALUES(#{address},#{longitude},#{latitude},#{create_time})
+        INSERT INTO sftc_address_resolution (address, longitude, latitude, create_time)
+        VALUES (#{address}, #{longitude}, #{latitude}, #{create_time})
     </insert>
+
 </mapper>

@@ -16,9 +16,9 @@ public interface OrderMapper {
     void addOrder(Order order);
 
     /**
-     * 插入订单
+     * 插入订单 多增加门牌号信息
      */
-    void addOrder2(Order order);//多增加门牌号信息
+    void addOrder2(Order order);
 
     /**
      * 更新订单区域类型
@@ -45,9 +45,6 @@ public interface OrderMapper {
 
     /**
      * 添加了行级锁和排他锁的订单详情查询
-     *
-     * @param order_id
-     * @return
      */
     Order selectOrderDetailByOrderIdForUpdate(int order_id);
 
@@ -84,6 +81,7 @@ public interface OrderMapper {
     // 取消订单，更新is_cancel字段
     void updateCancelOrderById(int id);
 
-    //     <!--下面是cms系统用到的mapper-->
+
+    //  下面是cms系统用到的mapper
     List<Order> selectOrderByPage(Order order);
 }

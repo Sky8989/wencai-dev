@@ -18,7 +18,7 @@ public interface AddressMapper {
 
     void deleteAddress(int id);
 
-    int updateByPrimaryKey(Address address);
+    void updateByPrimaryKey(Address address);
 
     /**
      * 根据手机号码和经纬度查询地址

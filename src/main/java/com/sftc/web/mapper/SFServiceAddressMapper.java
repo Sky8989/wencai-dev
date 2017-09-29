@@ -22,11 +22,4 @@ public interface SFServiceAddressMapper {
             @Param("name") String name,
             @Param("level") int level
     );
-
-    @Select("SELECT * FROM sftc_service_address WHERE name=#{name} AND level=#{level} AND parentCode=#{parentCode}")
-    SFServiceAddress selectServiceAddressByNameAndLevelAndParentCode(
-            @Param("name") String name,
-            @Param("level") int level,
-            @Param("parentCode") String parentCode
-    );
 }

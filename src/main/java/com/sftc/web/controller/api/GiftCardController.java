@@ -13,14 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("giftCard")
 public class GiftCardController extends AbstractBasicController {
-    /**
-     * 获取礼卡
-     */
-    @RequestMapping(value = "/getGiftCard", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse placeOrder(HttpServletRequest request) throws Exception {
-        return giftCardService.getGiftCard(new APIRequest(request));
-    }
 
     /**
      * 获取礼卡列表
