@@ -2,8 +2,8 @@ package com.sftc.web.model.reqeustParam;
 
 public class UserContactParam {
     private String access_token;
-    private int user_id;
-    private int friend_id;
+    private long user_id;
+    private long friend_id;
     private int pageNum;
     private int pageSize;
 
@@ -15,19 +15,19 @@ public class UserContactParam {
         this.access_token = access_token;
     }
 
-    public int getUser_id() {
+    public long getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(long user_id) {
         this.user_id = user_id;
     }
 
-    public int getFriend_id() {
+    public long getFriend_id() {
         return friend_id;
     }
 
-    public void setFriend_id(int friend_id) {
+    public void setFriend_id(long friend_id) {
         this.friend_id = friend_id;
     }
 

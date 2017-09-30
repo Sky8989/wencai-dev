@@ -23,7 +23,7 @@ public interface UserContactMapper {
 
     void updateFriend(UserContact userContact);
 
-    UserContact friendDetail(@Param("user_id") int user_id, @Param("friend_id") int friend);
+    UserContact friendDetail(@Param("user_id") long user_id, @Param("friend_id") long friend);
 
     List<ContactCallback> selectCirclesContact(UserContactParam userContactParam);
 
@@ -34,7 +34,7 @@ public interface UserContactMapper {
     /**
      * 星标好友
      */
-    void starFriend(@Param("user_id") int user_id, @Param("friend_id") int friend_id, @Param("is_tag_star") int is_star);
+    void starFriend(@Param("user_id") long user_id, @Param("friend_id") long friend_id, @Param("is_tag_star") int is_star);
 
     // 更新好友亲密度
     void updateUserContactLntimacy(UserContactNew UserContactNew);
