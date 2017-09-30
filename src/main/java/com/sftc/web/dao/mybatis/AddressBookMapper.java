@@ -2,9 +2,11 @@ package com.sftc.web.dao.mybatis;
 
 import com.sftc.web.model.AddressBook;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface AddressBookMapper {
 
     void insert(AddressBook record);

@@ -2,10 +2,11 @@ package com.sftc.web.dao.mybatis;
 
 import com.sftc.web.model.Evaluate;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
+@Repository
 public interface EvaluateMapper {
 
     // 添加 订单评价信息

@@ -1,9 +1,11 @@
 package com.sftc.web.dao.mybatis;
 
 import com.sftc.web.model.CommonQuestion;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface CommonQuestionMapper {
 
     /**

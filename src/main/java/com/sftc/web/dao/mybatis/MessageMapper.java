@@ -1,9 +1,11 @@
 package com.sftc.web.dao.mybatis;
 
 import com.sftc.web.model.Message;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface MessageMapper {
 
     //  新建 收到快递信息/收到好友地址 通知消息

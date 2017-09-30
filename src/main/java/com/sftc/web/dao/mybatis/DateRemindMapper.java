@@ -1,9 +1,11 @@
 package com.sftc.web.dao.mybatis;
 
 import com.sftc.web.model.DateRemind;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface DateRemindMapper {
 
     //添加日期提醒
