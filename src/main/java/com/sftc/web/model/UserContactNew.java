@@ -14,7 +14,7 @@ public class UserContactNew {
      */
     private int id;
     // 用户id
-    private int user_id;
+    private long user_id;
     // 好友id
     private int friend_id;
     // 是否星标好友
@@ -38,11 +38,11 @@ public class UserContactNew {
         this.id = id;
     }
 
-    public int getUser_id() {
+    public long getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(long user_id) {
         this.user_id = user_id;
     }
 

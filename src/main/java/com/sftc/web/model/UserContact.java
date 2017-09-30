@@ -5,7 +5,7 @@ import java.util.List;
 public class UserContact extends Object {
 
     private int id;
-    private int user_id;
+    private long user_id;
     private int friend_id;
     // 创建时间
     private String create_time;
@@ -35,11 +35,11 @@ public class UserContact extends Object {
         this.id = id;
     }
 
-    public int getUser_id() {
+    public long getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(long user_id) {
         this.user_id = user_id;
     }
 
