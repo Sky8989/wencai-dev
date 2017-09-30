@@ -2,6 +2,7 @@ package com.sftc.web.service.impl;
 
 
 import com.sftc.tools.api.*;
+import com.sftc.web.dao.jpa.AddressDao;
 import com.sftc.web.dao.mybatis.AddressMapper;
 import com.sftc.web.dao.mybatis.AddressResolutionMapper;
 import com.sftc.web.model.entity.Address;
@@ -32,12 +33,14 @@ public class AddressServiceImpl implements AddressService {
     private AddressMapper addressMapper;
     @Resource
     private AddressResolutionMapper addressResolutionMapper;
+    @Resource
+    private AddressDao addressDao;
 
     public APIResponse addAddress(Address address) {
         APIStatus status = SUCCESS;
         address.setCreate_time(Long.toString(System.currentTimeMillis()));
         try {
-            addressMapper.addAddress(address);
+            addressDao.save(address);
         } catch (Exception e) {
             e.printStackTrace();
             status = APIStatus.SUBMIT_FAIL;
@@ -63,7 +66,7 @@ public class AddressServiceImpl implements AddressService {
     public APIResponse editAddress(Address address) {
         APIStatus status = SUCCESS;
         try {
-            addressMapper.editeAddress(address);
+            addressDao.save(address);
         } catch (Exception e) {
             e.printStackTrace();
             status = APIStatus.SUBMIT_FAIL;
@@ -76,7 +79,7 @@ public class AddressServiceImpl implements AddressService {
         String id = request.getParameter("id").toString();
         if (id != null) {
             try {
-                addressMapper.deleteAddress(Integer.parseInt(id));
+                addressDao.delete(Long.parseLong(id));
             } catch (Exception e) {
                 e.printStackTrace();
                 status = APIStatus.SUBMIT_FAIL;

@@ -1,9 +1,16 @@
-package com.sftc.web.model;
+package com.sftc.web.model.entity;
 
+import com.sftc.web.model.Object;
 import com.sftc.web.model.entity.Address;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "sftc_address_history")
 public class AddressHistory extends Object {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     // 用户编号
     private long user_id;
@@ -15,10 +22,6 @@ public class AddressHistory extends Object {
     private int is_mystery;
     // 创建时间
     private String create_time;
-    // 好友微信名
-    private String ship_wechatname;
-    // 地址
-    private Address address;
 
     public long getId() {return id;}
 
@@ -44,11 +47,4 @@ public class AddressHistory extends Object {
 
     public void setCreate_time(String create_time) {this.create_time = create_time;}
 
-    public Address getAddress() {return address;}
-
-    public void setAddress(Address address) {this.address = address;}
-
-    public String getShip_wechatname() {return ship_wechatname;}
-
-    public void setShip_wechatname(String ship_wechatname) {this.ship_wechatname = ship_wechatname;}
 }

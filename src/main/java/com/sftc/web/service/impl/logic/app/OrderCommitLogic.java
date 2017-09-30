@@ -9,7 +9,7 @@ import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.jpa.AddressBookDao;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.dto.AddressBookDTO;
-import com.sftc.web.model.AddressHistory;
+import com.sftc.web.model.entity.AddressHistory;
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.entity.AddressBook;
