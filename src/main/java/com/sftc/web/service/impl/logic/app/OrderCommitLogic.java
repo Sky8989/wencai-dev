@@ -752,7 +752,7 @@ public class OrderCommitLogic {
     /// 插入地址簿  要去重
     // 通用地址簿插入utils
     public void insertAddressBookUtils(
-            String address_type, String address_book_type, int user_id_sender, int user_id_ship, String name, String phone,
+            String address_type, String address_book_type, long user_id_sender, long user_id_ship, String name, String phone,
             String province, String city, String area, String address, String supplementary_info,
             String create_time, double longitude, double latitude) {
 
@@ -830,7 +830,7 @@ public class OrderCommitLogic {
     }
 
     /// 普通大网下单使用的 一键添加2个地址簿 1个历史地址
-    private void nationInsertAddressBookAndAddressHistory(int user_id_sender, JSONObject orderObject, JSONObject sf, String create_time) {
+    private void nationInsertAddressBookAndAddressHistory(long user_id_sender, JSONObject orderObject, JSONObject sf, String create_time) {
         // 插入地址簿 寄件人
         insertAddressBookUtils("address_book", "sender",
                 user_id_sender,

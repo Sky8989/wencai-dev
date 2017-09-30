@@ -27,7 +27,7 @@ public interface AddressBookMapper {
 //
    // 查找重复的记录 可设置address_type address_book_type来区分各种地址映射
     List<AddressBookDTO> selectAddressForRemoveDuplicate(
-            @Param("user_id") int user_id,
+            @Param("user_id") long user_id,
             @Param("address_type") String address_type,
             @Param("address_book_type") String address_book_type,
             @Param("name") String name,

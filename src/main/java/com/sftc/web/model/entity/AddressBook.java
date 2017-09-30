@@ -62,7 +62,7 @@ public class AddressBook {
 
     public void setCreate_time(String create_time) {this.create_time = create_time;}
 
-    public AddressBook(int user_id, long address_id, int is_delete, int is_mystery, String address_type, String address_book_type, String create_time) {
+    public AddressBook(long user_id, long address_id, int is_delete, int is_mystery, String address_type, String address_book_type, String create_time) {
         this.user_id = user_id;
         this.address_id = address_id;
         this.is_delete = is_delete;

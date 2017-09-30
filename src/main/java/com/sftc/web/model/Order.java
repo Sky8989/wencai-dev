@@ -43,7 +43,7 @@ public class Order extends Object {
     // 纬度
     private double latitude;
     // 寄件人id(根据用户表id)
-    private int sender_user_id;
+    private long sender_user_id;
     // 礼卡表id
     private int gift_card_id;
     // 语音时间
@@ -74,7 +74,7 @@ public class Order extends Object {
     public Order(String create_time, String pay_method,
                  String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,String supplementary_info,
-                 double longitude, double latitude, String order_type, int sender_user_id) {
+                 double longitude, double latitude, String order_type, long sender_user_id) {
         this.create_time = create_time;
         this.pay_method = pay_method;
         this.distribution_method = distribution_method;
@@ -94,7 +94,7 @@ public class Order extends Object {
     public Order(String create_time, String pay_method,
                  String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,
-                 double longitude, double latitude, String order_type, int sender_user_id) {
+                 double longitude, double latitude, String order_type, long sender_user_id) {
         this.create_time = create_time;
         this.pay_method = pay_method;
         this.distribution_method = distribution_method;
@@ -305,11 +305,11 @@ public class Order extends Object {
         this.gift_card_id = gift_card_id;
     }
 
-    public int getSender_user_id() {
+    public long getSender_user_id() {
         return sender_user_id;
     }
 
-    public void setSender_user_id(int sender_user_id) {
+    public void setSender_user_id(long sender_user_id) {
         this.sender_user_id = sender_user_id;
     }
 

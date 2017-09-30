@@ -137,7 +137,7 @@ public class Address extends Object {
         this.supplementary_info = supplementary_info;
     }
 
-    public Address(Long id, int user_id, String name, String phone, String province, String city, String area, String address, String create_time) {
+    public Address(Long id, long user_id, String name, String phone, String province, String city, String area, String address, String create_time) {
         this.id = id;
         this.user_id = user_id;
         this.name = name;
@@ -178,7 +178,7 @@ public class Address extends Object {
         this.setCreate_time(Long.toString(System.currentTimeMillis()));
     }
 
-    public Address(int user_id, String name, String phone, String province, String city, String area, String address, String supplementary_info, double longitude, double latitude, String create_time) {
+    public Address(long user_id, String name, String phone, String province, String city, String area, String address, String supplementary_info, double longitude, double latitude, String create_time) {
         this.user_id = user_id;
         this.name = name;
         this.phone = phone;
