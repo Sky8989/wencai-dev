@@ -165,7 +165,7 @@ public class OrderDetailLogic {
     }
 
     //////////////////////消除 收到地址 的通知消息//////////////////////
-    private void remarkMessageReceiveAddress(List<OrderExpress> orderExpressList, int user_id) {
+    private void remarkMessageReceiveAddress(List<OrderExpress> orderExpressList, long user_id) {
         List<Message> messageReceiveAddress = messageMapper.selectMessageReceiveAddress(user_id);
         //如果生成了“收到地址”通知消息
         if (messageReceiveAddress.size() > 0) {

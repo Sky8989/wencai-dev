@@ -73,7 +73,7 @@ public class Message {
         this.order = order;
     }
 
-    public Message(String message_type, int is_read, int express_id, int user_id) {
+    public Message(String message_type, int is_read, int express_id, long user_id) {
         this.message_type = message_type;
         this.is_read = is_read;
         this.express_id = express_id;

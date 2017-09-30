@@ -37,7 +37,7 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
         if (userID == null || userID.equals(""))
             return APIUtil.paramErrorResponse("user_id不能为空");
 
-        int user_id = Integer.parseInt(userID);
+        long user_id = Long.parseLong(userID);
         if (user_id < 1)
             return APIUtil.paramErrorResponse("user_id无效");
 
