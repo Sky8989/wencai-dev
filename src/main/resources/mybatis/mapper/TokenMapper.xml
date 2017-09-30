@@ -31,7 +31,7 @@
         WHERE u.id = o.sender_user_id AND u.id = t.user_id AND o.id = #{id}
     </select>
 
-    <select id="getTokenById" parameterType="int" resultType="com.sftc.web.model.Token">
+    <select id="getTokenById" parameterType="long" resultType="com.sftc.web.model.Token">
         SELECT *
         FROM sftc_token
         WHERE user_id = #{user_id}

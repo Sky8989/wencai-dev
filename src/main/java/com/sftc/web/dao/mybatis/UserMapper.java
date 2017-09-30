@@ -13,7 +13,7 @@ public interface UserMapper {
 
     List<User> selectUserByOpenid(String open_id);
 
-    User selectUserByUserId(int user_id);
+    User selectUserByUserId(long user_id);
 
     void insertOpenid(User user);
 

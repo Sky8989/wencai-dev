@@ -4,7 +4,7 @@ package com.sftc.web.service.impl;
 import com.sftc.tools.api.*;
 import com.sftc.web.dao.mybatis.AddressMapper;
 import com.sftc.web.dao.mybatis.AddressResolutionMapper;
-import com.sftc.web.model.Address;
+import com.sftc.web.model.entity.Address;
 import com.sftc.web.model.AddressResolution;
 import com.sftc.web.service.AddressService;
 import net.sf.json.JSONArray;

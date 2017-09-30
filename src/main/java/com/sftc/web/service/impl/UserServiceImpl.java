@@ -209,7 +209,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // 验证access_token是否有效 通过访问merchant/me接口 但只针对有access_token的用户
-    private HashMap<String, String> checkAccessToken(int user_id, Token paramtoken) throws Exception {
+    private HashMap<String, String> checkAccessToken(long user_id, Token paramtoken) throws Exception {
         Token token = tokenMapper.getTokenById(user_id);
         //验证 access_token 如果error则用refresh_token
         String old_accesstoken = token.getAccess_token();

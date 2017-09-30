@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.dao.mybatis.AddressBookMapper">
 
-    <resultMap id="BaseResultMap" type="com.sftc.web.model.AddressBook">
+    <resultMap id="BaseResultMap" type="com.sftc.web.model.dto.AddressBookDTO">
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="user_id" property="user_id" jdbcType="INTEGER"/>
         <result column="address_id" property="address_id" jdbcType="INTEGER"/>
@@ -15,7 +15,7 @@
         <result column="create_time" property="create_time" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <resultMap id="AddressMap" type="com.sftc.web.model.AddressBook">
+    <resultMap id="AddressMap" type="com.sftc.web.model.dto.AddressBookDTO">
         <result column="id" property="id"/>
         <result column="user_id" property="user_id"/>
         <result column="address_id" property="address_id"/>
@@ -25,17 +25,17 @@
         <association property="address" column="address_id" select="selectAddress"/>
     </resultMap>
 
-    <select id="selectAddress" parameterType="int" resultType="com.sftc.web.model.Address">
+    <select id="selectAddress" parameterType="int" resultType="com.sftc.web.model.entity.Address">
         SELECT * FROM sftc_address WHERE id=#{address_id}
     </select>
 
-    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="Long">
         select id, user_id, address_id, is_delete, is_mystery, address_type, address_book_type, create_time
         from sftc_address_book
-        where id = #{id,jdbcType=INTEGER}
+        where id = #{id}
     </select>
 
-    <insert id="insert" parameterType="com.sftc.web.model.AddressBook">
+    <insert id="insert" parameterType="com.sftc.web.model.dto.AddressBookDTO">
         <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
             SELECT LAST_INSERT_ID()
         </selectKey>
@@ -47,7 +47,7 @@
         #{create_time,jdbcType=VARCHAR})
     </insert>
 
-    <insert id="insertSelective" parameterType="com.sftc.web.model.AddressBook" useGeneratedKeys="true">
+    <insert id="insertSelective" parameterType="com.sftc.web.model.dto.AddressBookDTO" useGeneratedKeys="true">
         <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
             SELECT LAST_INSERT_ID()
         </selectKey>
@@ -100,7 +100,7 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="com.sftc.web.model.AddressBook">
+    <update id="updateByPrimaryKeySelective" parameterType="com.sftc.web.model.dto.AddressBookDTO">
         update sftc_address_book
         <set>
             <if test="user_id != null and user_id != 0">
@@ -151,7 +151,7 @@
     </select>
 
     <!--地址验重-->
-    <select id="selectAddressForRemoveDuplicate" resultType="com.sftc.web.model.AddressBook">
+    <select id="selectAddressForRemoveDuplicate" resultType="com.sftc.web.model.dto.AddressBookDTO">
         SELECT ab.* FROM sftc_address_book ab, sftc_address a
         WHERE ab.address_id = a.id
         <if test="user_id != null and user_id != 0">
@@ -186,7 +186,7 @@
         </if>
     </select>
 
-    <select id="selectDuplicateAddress" resultType="com.sftc.web.model.AddressBook">
+    <select id="selectDuplicateAddress" resultType="com.sftc.web.model.dto.AddressBookDTO">
         SELECT ab.* FROM sftc_address_book ab, sftc_address a
         WHERE ab.address_id=a.id
         AND ab.is_delete = 0

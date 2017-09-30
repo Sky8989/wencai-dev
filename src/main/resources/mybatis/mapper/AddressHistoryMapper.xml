@@ -25,7 +25,7 @@
         )
     </insert>
 
-    <select id="selectAddress" parameterType="int" resultType="com.sftc.web.model.Address">
+    <select id="selectAddress" parameterType="int" resultType="com.sftc.web.model.entity.Address">
         SELECT * FROM sftc_address WHERE id=#{address_id}
     </select>
 

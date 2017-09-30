@@ -12,7 +12,7 @@ public interface TokenMapper {
 
     Token getToken(int order_id);
 
-    Token getTokenById(int user_id);
+    Token getTokenById(long user_id);
 
     Token getTokenByMobile(String mobile);
 

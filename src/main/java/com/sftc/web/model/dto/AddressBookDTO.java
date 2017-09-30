@@ -1,15 +1,18 @@
-package com.sftc.web.model;
+package com.sftc.web.model.dto;
+
+import com.sftc.web.model.entity.Address;
 
 /**
  * 地址关系总映射
  * Created by huxingyue on 2017/7/26.
  */
-public class AddressBook {
-    private int id;
+public class AddressBookDTO {
+
+    private Long id;
     // 用户编号
-    private int user_id;
+    private Long user_id;
     // 映射关系 地址编号
-    private int address_id;
+    private Long address_id;
 
     private int is_delete;
     private int is_mystery;
@@ -22,34 +25,35 @@ public class AddressBook {
     private String create_time;
 
     private Address address;
+
+    private AddressDTO addressDTO;
+
     // 好友微信名
     private String ship_wechatname;
 
-    public AddressBook() {
+    public AddressBookDTO() {
         super();
     }
 
-    public AddressBook(int user_id, int address_id, int is_delete, int is_mystery, String address_type, String address_book_type, String create_time) {
-        this.user_id = user_id;
-        this.address_id = address_id;
-        this.is_delete = is_delete;
-        this.is_mystery = is_mystery;
-        this.address_type = address_type;
-        this.address_book_type = address_book_type;
-        this.create_time = create_time;
+    public Long getId() {
+        return id;
     }
 
-    public int getId() {return id;}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public void setId(int id) {this.id = id;}
+    public Long getUser_id() {return user_id;}
 
-    public int getUser_id() {return user_id;}
+    public void setUser_id(Long user_id) {this.user_id = user_id;}
 
-    public void setUser_id(int user_id) {this.user_id = user_id;}
+    public Long getAddress_id() {return address_id;}
 
-    public int getAddress_id() {return address_id;}
+    public AddressDTO getAddressDTO() {return addressDTO;}
 
-    public void setAddress_id(int address_id) {this.address_id = address_id;}
+    public void setAddressDTO(AddressDTO addressDTO) {this.addressDTO = addressDTO;}
+
+    public void setAddress_id(Long address_id) {this.address_id = address_id;}
 
     public int getIs_delete() {return is_delete;}
 
