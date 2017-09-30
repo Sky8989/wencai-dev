@@ -62,7 +62,7 @@ public interface OrderExpressMapper {
      * @param user_id 用户id
      * @return 返回订单id的列表
      */
-    List<Integer> selectOrderIdForsyncSFExpressStatus(int user_id);
+    List<Integer> selectOrderIdForsyncSFExpressStatus(long user_id);
 
     //查询 来往记录所需的快递
     List<OrderExpress> selectExpressForContactInfo(@Param("sender_user_id") long sender_user_id, @Param("ship_user_id") long ship_user_id);

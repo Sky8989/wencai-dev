@@ -19,7 +19,7 @@
         <result column="is_use" property="is_use"/>
     </resultMap>
 
-    <select id="selectExpressForId" parameterType="int" resultType="com.sftc.web.model.OrderExpress">
+    <select id="selectExpressForId" parameterType="long" resultType="com.sftc.web.model.OrderExpress">
         SELECT *
         FROM sftc_order_express
         WHERE (sender_user_id = #{id} OR ship_user_id = #{id})
@@ -205,7 +205,7 @@
         </where>
     </select>
 
-    <select id="selectOrderIdForsyncSFExpressStatus" parameterType="int" resultType="int">
+    <select id="selectOrderIdForsyncSFExpressStatus" parameterType="long" resultType="int">
         SELECT *
         FROM sftc_order o
         WHERE id IN (
@@ -227,7 +227,7 @@
         </foreach>
     </select>
 
-    <select id="selectExpressForContactInfo" parameterType="int" resultType="com.sftc.web.model.OrderExpress">
+    <select id="selectExpressForContactInfo" parameterType="long" resultType="com.sftc.web.model.OrderExpress">
         SELECT *
         FROM sftc_order_express
         WHERE (sender_user_id = #{sender_user_id} AND ship_user_id = #{ship_user_id})

@@ -16,7 +16,7 @@ public interface UserContactMapper {
     // 好友列表
     List<UserContact> friendList(Paging paging);
 
-    int selectFriendCount(int user_id);
+    int selectFriendCount(long user_id);
 
     // 添加好友
     void addFriend(UserContactParam userContactParam);
