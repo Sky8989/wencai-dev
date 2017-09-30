@@ -1,14 +1,17 @@
-package com.sftc.web.model;
+package com.sftc.web.model.dto;
 
+import com.sftc.web.model.entity.Address;
+import com.sftc.web.model.Object;
+import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.reqeustParam.OrderParam;
 
-import java.util.List;
+public class AddressDTO extends Object {
 
-public class Address extends Object {
+    private Address addressEntity;
 
-    private int id;
+    private Long id;
     // 用户id
-    private int user_id;
+    private long user_id;
     // 用户名字
     private String name;
     // 用户电话
@@ -33,23 +36,31 @@ public class Address extends Object {
     // 头像
     private String avatar;
 
-    public Address() {
+    public Address getAddressEntity() {
+        return addressEntity;
+    }
+
+    public void setAddressEntity(Address addressEntity) {
+        this.addressEntity = addressEntity;
+    }
+
+    public AddressDTO() {
         super();
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getUser_id() {
+    public long getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(long user_id) {
         this.user_id = user_id;
     }
 
@@ -141,7 +152,7 @@ public class Address extends Object {
         this.supplementary_info = supplementary_info;
     }
 
-    public Address(int id, int user_id, String name, String phone, String province, String city, String area, String address, String create_time) {
+    public AddressDTO(Long id, int user_id, String name, String phone, String province, String city, String area, String address, String create_time) {
         this.id = id;
         this.user_id = user_id;
         this.name = name;
@@ -153,7 +164,7 @@ public class Address extends Object {
         this.create_time = create_time;
     }
 
-    public Address(OrderParam orderParam) {
+    public AddressDTO(OrderParam orderParam) {
         this.setUser_id(orderParam.getSender_user_id());
         this.setName(orderParam.getSender_name());
         this.setPhone(orderParam.getSender_mobile());
@@ -168,7 +179,7 @@ public class Address extends Object {
         this.setCreate_time(Long.toString(System.currentTimeMillis()));
     }
 
-    public Address(OrderExpress oe) {
+    public AddressDTO(OrderExpress oe) {
         this.setUser_id(oe.getShip_user_id());
         this.setName(oe.getShip_name());
         this.setPhone(oe.getShip_mobile());
@@ -182,7 +193,7 @@ public class Address extends Object {
         this.setCreate_time(Long.toString(System.currentTimeMillis()));
     }
 
-    public Address(int user_id, String name, String phone, String province, String city, String area, String address, String supplementary_info, double longitude, double latitude, String create_time) {
+    public AddressDTO(int user_id, String name, String phone, String province, String city, String area, String address, String supplementary_info, double longitude, double latitude, String create_time) {
         this.user_id = user_id;
         this.name = name;
         this.phone = phone;

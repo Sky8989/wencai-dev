@@ -85,7 +85,7 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
     }
 
     /**
-     * CMS 修改礼品卡信息
+     * CMS 修改常见问题
      */
     public APIResponse updateCommonQuestion(CommonQuestion commonQuestion) throws Exception {
         commonQuestionMapper.updateCommonQuestion(commonQuestion);
@@ -95,7 +95,7 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
     }
 
     /**
-     * CMS 删除礼品卡信息
+     * CMS 删除常见问题
      */
     public APIResponse deleteCommonQuestion(int id) throws Exception {
         commonQuestionMapper.deleteCommonQuestion(id);

@@ -86,7 +86,7 @@ public class OrderCreateLogic {
         }
 
         // 插入地址表
-        //com.sftc.web.model.Address senderAddress = new com.sftc.web.model.Address(orderParam);
+        //com.sftc.web.model.AddressDTO senderAddress = new com.sftc.web.model.AddressDTO(orderParam);
         //addressMapper.addAddress(senderAddress);
 
         return APIUtil.getResponse(SUCCESS, order.getId());

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.dao.mybatis.AddressMapper">
 
-    <resultMap id="addressList" type="com.sftc.web.model.Address">
+    <resultMap id="addressList" type="com.sftc.web.model.entity.Address">
         <id column="id" property="id"/>
         <result column="province" property="province"/>
         <result column="city" property="city"/>
@@ -18,7 +18,7 @@
     </resultMap>
 
     <!-- 添加地址  -->
-    <insert id="addAddress" useGeneratedKeys="true" keyProperty="id" parameterType="com.sftc.web.model.Address">
+    <insert id="addAddress" useGeneratedKeys="true" keyProperty="id" parameterType="com.sftc.web.model.entity.Address">
       insert into sftc_address
       (user_id,name,phone,province,city,area,address,longitude,latitude,create_time,supplementary_info)
       values
@@ -26,7 +26,7 @@
     </insert>
 
     <!--  编辑地址  -->
-    <update id="editeAddress" parameterType="com.sftc.web.model.Address">
+    <update id="editeAddress" parameterType="com.sftc.web.model.entity.Address">
         UPDATE sftc_address
         <trim prefix="set" suffixOverrides=",">
             <if test="province!=null">province=#{province},</if>
@@ -47,7 +47,7 @@
     </select>
 
     <!-- 地址列表 -->
-    <select id="addressList" parameterType="java.util.Map" resultType="com.sftc.web.model.Address">
+    <select id="addressList" parameterType="java.util.Map" resultType="com.sftc.web.model.entity.Address">
         select * FROM sftc_address WHERE user_id=#{user_id} limit #{pageOffset},#{pageSize};
     </select>
 
@@ -55,11 +55,11 @@
         delete from sftc_address where id=#{id}
     </delete>
 
-    <select id="selectAddressByPhoneAndLongitudeAndLatitude" resultType="com.sftc.web.model.Address">
+    <select id="selectAddressByPhoneAndLongitudeAndLatitude" resultType="com.sftc.web.model.entity.Address">
         SELECT * from sftc_address WHERE phone = #{phone} AND longitude = #{longitude} AND latitude = #{latitude}
     </select>
 
-    <update id="updateByPrimaryKey" parameterType="com.sftc.web.model.Address">
+    <update id="updateByPrimaryKey" parameterType="com.sftc.web.model.entity.Address">
         UPDATE sftc_address
         <set>
             <if test="name != null">

@@ -6,11 +6,13 @@ import com.sftc.tools.common.DateUtils;
 import com.sftc.tools.common.EmojiFilter;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFTokenHelper;
+import com.sftc.web.dao.jpa.AddressBookDao;
 import com.sftc.web.dao.mybatis.*;
-import com.sftc.web.model.AddressBook;
+import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.AddressHistory;
 import com.sftc.web.model.Order;
 import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.entity.AddressBook;
 import com.sftc.web.model.sfmodel.Address;
 import com.sftc.web.model.sfmodel.Coordinate;
 import com.sftc.web.model.sfmodel.Source;
@@ -46,6 +48,8 @@ public class OrderCommitLogic {
     private OrderExpressMapper orderExpressMapper;
     @Resource
     private AddressMapper addressMapper;
+    @Resource
+    private AddressBookDao addressBookDao;
     @Resource
     private AddressHistoryMapper addressHistoryMapper;
     @Resource
@@ -727,11 +731,11 @@ public class OrderCommitLogic {
     /// 插入地址
     private void setupAddress(Order order, OrderExpress oe) {
         // 插入地址表
-        com.sftc.web.model.Address address = new com.sftc.web.model.Address(oe);
+        com.sftc.web.model.entity.Address address = new com.sftc.web.model.entity.Address(oe);
         addressMapper.addAddress(address);
 
         // 插入历史地址表
-        List<com.sftc.web.model.Address> addressList = addressMapper.selectAddressByPhoneAndLongitudeAndLatitude(oe.getShip_mobile(), oe.getLongitude(), oe.getLatitude());
+        List<com.sftc.web.model.entity.Address> addressList = addressMapper.selectAddressByPhoneAndLongitudeAndLatitude(oe.getShip_mobile(), oe.getLongitude(), oe.getLatitude());
         if (addressList.size() == 1) { // 插入的时候就根据手机号和经纬度去重，相同的手机号和经纬度 只会存在一个历史地址记录
             AddressHistory addressHistory = new AddressHistory();
             addressHistory.setUser_id(order.getSender_user_id());
@@ -752,22 +756,22 @@ public class OrderCommitLogic {
             String province, String city, String area, String address, String supplementary_info,
             String create_time, double longitude, double latitude) {
 
-        com.sftc.web.model.Address addressParam = new com.sftc.web.model.Address(
+        com.sftc.web.model.entity.Address addressParam = new com.sftc.web.model.entity.Address(
                 user_id_ship, name, phone,
                 province, city, area, address, supplementary_info,
                 longitude, latitude, create_time
         );
 
         // 查找重复信息
-        List<AddressBook> addressBookList = addressBookMapper.selectAddressForRemoveDuplicate(user_id_sender,
+        List<AddressBookDTO> addressBookDTOList = addressBookMapper.selectAddressForRemoveDuplicate(user_id_sender,
                 address_type, address_book_type, name, phone,
                 province, city, area, address, supplementary_info);
 
-        if (addressBookList.size() == 0) {// 0代表无重复信息
+        if (addressBookDTOList.size() == 0) {// 0代表无重复信息
             //执行插入操作
             addressMapper.addAddress(addressParam);
             AddressBook addressBook = new AddressBook(user_id_sender, addressParam.getId(), 0, 0, address_type, address_book_type, create_time);
-            addressBookMapper.insert(addressBook);
+            addressBookDao.save(addressBook);
         }
         // addressBookList的size如果大于0 代表已经有相同地址
         // 不做插入处理
