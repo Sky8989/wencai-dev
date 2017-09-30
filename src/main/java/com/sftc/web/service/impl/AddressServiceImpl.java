@@ -54,7 +54,7 @@ public class AddressServiceImpl implements AddressService {
         List<Address> addressList = new ArrayList<Address>();
         if (id != null) {
             try {
-                addressList = addressMapper.addressDetail(Integer.parseInt(id));
+                addressList = addressMapper.addressDetail(Long.parseLong(id));
             } catch (Exception e) {
                 e.printStackTrace();
             }
