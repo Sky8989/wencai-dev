@@ -10,7 +10,7 @@ public class Message {
     // 快递编号
     private int express_id;
     // 用户编号
-    private int user_id;
+    private long user_id;
     // 创建时间
     private String create_time;
 
@@ -49,11 +49,11 @@ public class Message {
         this.express_id = express_id;
     }
 
-    public int getUser_id() {
+    public long getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(long user_id) {
         this.user_id = user_id;
     }
 

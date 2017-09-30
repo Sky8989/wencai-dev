@@ -4,9 +4,9 @@ import com.sftc.web.model.entity.Address;
 
 public class AddressHistory extends Object {
 
-    private int id;
+    private long id;
     // 用户编号
-    private int user_id;
+    private long user_id;
     // 地址编号
     private transient Long address_id;
     // 是否删除
@@ -20,13 +20,13 @@ public class AddressHistory extends Object {
     // 地址
     private Address address;
 
-    public int getId() {return id;}
+    public long getId() {return id;}
 
-    public void setId(int id) {this.id = id;}
+    public void setId(long id) {this.id = id;}
 
-    public int getUser_id() {return user_id;}
+    public long getUser_id() {return user_id;}
 
-    public void setUser_id(int user_id) {this.user_id = user_id;}
+    public void setUser_id(long user_id) {this.user_id = user_id;}
 
     public Long getAddress_id() {return address_id;}
 
