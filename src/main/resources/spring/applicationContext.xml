@@ -12,10 +12,7 @@
 
     <!-- 读取配置文件 包括数据库连接配置、redis配置等 -->
     <context:property-placeholder ignore-unresolvable="true"
-                                  location="classpath:db.properties,
-                                            classpath:redis.properties"/>
-    <!-- redis required -->
-    <import resource="classpath:cache/cache-redis.xml"/>
+                                  location="classpath:db.properties"/>
 
     <!-- 使用annotation 自动注册bean,并检查@Required,@Autowired的属性已被注入 -->
     <context:component-scan base-package="com.sftc">
@@ -32,11 +29,16 @@
         <property name="url" value="${jdbc.url}"/>
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
-        <property name="maxActive" value="30"/>
-        <property name="timeBetweenEvictionRunsMillis" value="3600000"/>
+        <!-- 连接池设置 -->
+        <property name="maxActive" value="${jdbc.pool.maxActive}"/>
+        <property name="minIdle" value="${jdbc.pool.minIdle}"/>
+        <property name="defaultAutoCommit" value="false"/>
+        <!-- 连接Idle10分钟后超时，每1分钟检查一次 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+        <property name="minEvictableIdleTimeMillis" value="600000"/>
+        <!-- 防止mysql 8小时空闲关闭 -->
         <property name="testWhileIdle" value="true"/>
-        <property name="validationQuery" value="select name from sftc_gift_card limit 1"/>
-        <property name="filters" value="stat,log4j"/>
+        <property name="validationQuery" value="select 1"/>
     </bean>
 
     <!-- Jpa Entity Manager 配置 -->
@@ -107,11 +109,11 @@
         <!-- 配置切入点 -->
         <aop:pointcut id="serviceMethods" expression="execution(* com.sftc.web.service.impl.*ServiceImpl.*(..))"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
-        <aop:advisor advice-ref="transactionadvice" pointcut-ref="serviceMethods"/>
+        <aop:advisor advice-ref="transactionAdvice" pointcut-ref="serviceMethods"/>
     </aop:config>
 
     <!-- 事物切面配置 -->
-    <tx:advice id="transactionadvice" transaction-manager="transactionManager">
+    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
         <tx:attributes>
             <tx:method name="update*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"/>
             <tx:method name="add*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"/>
