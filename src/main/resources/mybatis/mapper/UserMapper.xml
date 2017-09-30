@@ -34,7 +34,7 @@
         WHERE open_id = #{open_id}
     </select>
 
-    <select id="selectUserByUserId" parameterType="int" resultType="com.sftc.web.model.User">
+    <select id="selectUserByUserId" parameterType="long" resultType="com.sftc.web.model.User">
         SELECT *
         FROM sftc_user
         WHERE id = #{user_id}

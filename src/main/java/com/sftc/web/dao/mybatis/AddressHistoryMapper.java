@@ -1,6 +1,6 @@
 package com.sftc.web.dao.mybatis;
 
-import com.sftc.web.model.AddressHistory;
+import com.sftc.web.model.entity.AddressHistory;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

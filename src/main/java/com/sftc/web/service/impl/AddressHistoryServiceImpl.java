@@ -4,6 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.jpa.AddressBookDao;
+import com.sftc.web.dao.jpa.AddressHistoryDao;
 import com.sftc.web.dao.mybatis.AddressBookMapper;
 import com.sftc.web.dao.mybatis.AddressHistoryMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
@@ -28,6 +29,8 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
     private AddressBookMapper addressBookMapper;
     @Resource
     private AddressBookDao addressBookDao;
+    @Resource
+    private AddressHistoryDao addressHistoryDao;
 
     @Resource
     private UserMapper userMapper;

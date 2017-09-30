@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.dao.mybatis.AddressHistoryMapper">
 
-    <resultMap id="addressHistoryMap" type="com.sftc.web.model.AddressHistory">
+    <resultMap id="addressHistoryMap" type="com.sftc.web.model.entity.AddressHistory">
         <result column="id" property="id"/>
         <result column="user_id" property="user_id"/>
         <result column="address_id" property="address_id"/>
@@ -14,7 +14,7 @@
         <association property="address" column="address_id" select="selectAddress"/>
     </resultMap>
 
-    <insert id="insertAddressHistory" parameterType="com.sftc.web.model.AddressHistory">
+    <insert id="insertAddressHistory" parameterType="com.sftc.web.model.entity.AddressHistory">
         INSERT INTO sftc_address_history (user_id, address_id, is_delete, is_mystery, create_time)
         VALUES (
         #{user_id, jdbcType=INTEGER},
