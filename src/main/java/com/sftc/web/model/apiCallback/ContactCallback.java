@@ -11,14 +11,14 @@ public class ContactCallback {
     // 寄件人姓名
     private String sender_name;
     // 寄件人的用户id
-    private long sender_user_id;
+    private int sender_user_id;
     // 寄件人的头像
     private String sender_icon;
 
     // 收件人的姓名
     private String ship_name;
     // 收件人的用户id
-    private long ship_user_id;
+    private int ship_user_id;
     // 收件人的头像
     private String ship_icon;
 
@@ -76,11 +76,11 @@ public class ContactCallback {
         this.sender_name = sender_name;
     }
 
-    public long getSender_user_id() {
+    public int getSender_user_id() {
         return sender_user_id;
     }
 
-    public void setSender_user_id(long sender_user_id) {
+    public void setSender_user_id(int sender_user_id) {
         this.sender_user_id = sender_user_id;
     }
 
@@ -100,11 +100,11 @@ public class ContactCallback {
         this.ship_name = ship_name;
     }
 
-    public long getShip_user_id() {
+    public int getShip_user_id() {
         return ship_user_id;
     }
 
-    public void setShip_user_id(long ship_user_id) {
+    public void setShip_user_id(int ship_user_id) {
         this.ship_user_id = ship_user_id;
     }
 

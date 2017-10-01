@@ -22,21 +22,21 @@
         WHERE user_id = #{user_id} AND message_type = 'RECEIVE_ADDRESS'
     </update>
 
-    <select id="selectMessageReceiveExpress" parameterType="long" resultType="com.sftc.web.model.Message">
+    <select id="selectMessageReceiveExpress" parameterType="int" resultType="com.sftc.web.model.Message">
         SELECT *
         FROM sftc_message
         WHERE user_id = #{user_id} AND message_type = 'RECEIVE_EXPRESS'
         LIMIT 1
     </select>
 
-    <select id="selectMessageReceiveAddress" parameterType="long" resultType="com.sftc.web.model.Message">
+    <select id="selectMessageReceiveAddress" parameterType="int" resultType="com.sftc.web.model.Message">
         SELECT *
         FROM sftc_message
         WHERE user_id = #{user_id} AND message_type = 'RECEIVE_ADDRESS'
         LIMIT 1
     </select>
 
-    <select id="selectUnReadMessageList" parameterType="long" resultType="com.sftc.web.model.Message">
+    <select id="selectUnReadMessageList" parameterType="int" resultType="com.sftc.web.model.Message">
         SELECT *
         FROM sftc_message
         WHERE user_id = #{user_id} AND is_read = 0

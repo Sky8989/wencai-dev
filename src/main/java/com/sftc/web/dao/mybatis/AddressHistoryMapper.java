@@ -18,7 +18,7 @@ public interface AddressHistoryMapper {
      * 查询历史地址
      */
     List<AddressHistory> selectAddressHistoryListByUserId(
-            @Param("user_id") long user_id,
+            @Param("user_id") int user_id,
             @Param("startIndex") int startIndex,
             @Param("pageSize") int pageSize
     );
@@ -26,5 +26,5 @@ public interface AddressHistoryMapper {
     /**
      * 删除历史地址（软删除）
      */
-    void deleteAddressHistoryWithId(long address_history_Id);
+    void deleteAddressHistoryWithId(int address_history_Id);
 }

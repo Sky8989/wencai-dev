@@ -8,9 +8,11 @@ import com.sftc.web.dao.jpa.AddressHistoryDao;
 import com.sftc.web.dao.mybatis.AddressBookMapper;
 import com.sftc.web.dao.mybatis.AddressHistoryMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
+import com.sftc.web.model.Converter.AddressFactory;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.User;
 import com.sftc.web.model.dto.AddressDTO;
+import com.sftc.web.model.entity.Address;
 import com.sftc.web.service.AddressHistoryService;
 import org.springframework.stereotype.Service;
 
@@ -55,8 +57,9 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
         // Handle avatar
         List<AddressBookDTO> addressBookDTOList = addressBookMapper.selectAddressHistoryListByUserId(user_id, (pageNum - 1) * pageSzie, pageSzie);
         for (AddressBookDTO ab : addressBookDTOList) {
-            AddressDTO addressDTO = ab.getAddressDTO();
-            User user = userMapper.selectUserByUserId(addressDTO.getUser_id());
+            Address address = ab.getAddress();
+            User user = userMapper.selectUserByUserId(address.getUser_id());
+            AddressDTO addressDTO = AddressFactory.entityToDto(address);
             String avatar = (user == null || user.getAvatar() == null) ? DK_USER_AVATAR_DEFAULT : user.getAvatar();
             addressDTO.setAvatar(avatar);
             // handle wechatname by hxy

@@ -11,11 +11,11 @@ public class AddressHistory extends Object {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     // 用户编号
-    private long user_id;
+    private int user_id;
     // 地址编号
-    private transient Long address_id;
+    private transient int address_id;
     // 是否删除
     private transient int is_delete;
     // 是否神秘件
@@ -23,17 +23,17 @@ public class AddressHistory extends Object {
     // 创建时间
     private String create_time;
 
-    public long getId() {return id;}
+    public int getId() {return id;}
 
-    public void setId(long id) {this.id = id;}
+    public void setId(int id) {this.id = id;}
 
-    public long getUser_id() {return user_id;}
+    public int getUser_id() {return user_id;}
 
-    public void setUser_id(long user_id) {this.user_id = user_id;}
+    public void setUser_id(int user_id) {this.user_id = user_id;}
 
-    public Long getAddress_id() {return address_id;}
+    public int getAddress_id() {return address_id;}
 
-    public void setAddress_id(Long address_id) {this.address_id = address_id;}
+    public void setAddress_id(int address_id) {this.address_id = address_id;}
 
     public int getIs_delete() {return is_delete;}
 

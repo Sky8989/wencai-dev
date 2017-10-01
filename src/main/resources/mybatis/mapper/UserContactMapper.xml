@@ -93,7 +93,7 @@
     </update>
 
     <!-- 好友详情 -->
-    <select id="friendDetail" parameterType="long" resultMap="friendMap">
+    <select id="friendDetail" parameterType="int" resultMap="friendMap">
         SELECT *
         FROM sftc_user_contact
         WHERE user_id = #{user_id} AND friend_id = #{friend_id}

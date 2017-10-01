@@ -18,10 +18,10 @@ public interface MessageMapper {
     void updateMessageReceiveAddress(Message message);
 
     // 简单查找 收到快递信息 通知消息 by userid
-    List<Message> selectMessageReceiveExpress(long userId);
+    List<Message> selectMessageReceiveExpress(int userId);
 
     // 简单查找 收到好友地址 通知消息 by userid
-    List<Message> selectMessageReceiveAddress(long userId);
+    List<Message> selectMessageReceiveAddress(int userId);
 
     // 更新 消息is_read状态
     void updateIsRead(int id);
@@ -29,5 +29,5 @@ public interface MessageMapper {
     /**
      * 查询未读消息
      */
-    List<Message> selectUnReadMessageList(long user_id);
+    List<Message> selectUnReadMessageList(int user_id);
 }

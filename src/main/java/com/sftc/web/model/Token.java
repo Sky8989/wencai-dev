@@ -34,7 +34,7 @@ public class Token extends Object {
     private String refresh_token;
 
     private String uuid;
-    private long user_id;
+    private int user_id;
 
     public Token() {
 
@@ -54,7 +54,7 @@ public class Token extends Object {
         }
     }
 
-    public Token(long user_id, String token) {
+    public Token(int user_id, String token) {
         this.user_id = user_id;
         this.local_token = token;
         this.create_time = Long.toString(System.currentTimeMillis());
@@ -133,7 +133,7 @@ public class Token extends Object {
     }
 
 
-    public long getUser_id() {
+    public int getUser_id() {
         return user_id;
     }
 

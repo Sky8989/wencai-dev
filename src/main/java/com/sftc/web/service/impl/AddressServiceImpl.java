@@ -40,7 +40,7 @@ public class AddressServiceImpl implements AddressService {
         APIStatus status = SUCCESS;
         address.setCreate_time(Long.toString(System.currentTimeMillis()));
         try {
-            addressDao.save(address);
+            addressMapper.addAddress(address);
         } catch (Exception e) {
             e.printStackTrace();
             status = APIStatus.SUBMIT_FAIL;
@@ -54,7 +54,7 @@ public class AddressServiceImpl implements AddressService {
         List<Address> addressList = new ArrayList<Address>();
         if (id != null) {
             try {
-                addressList = addressMapper.addressDetail(Long.parseLong(id));
+                addressList = addressMapper.addressDetail(Integer.parseInt(id));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -66,7 +66,7 @@ public class AddressServiceImpl implements AddressService {
     public APIResponse editAddress(Address address) {
         APIStatus status = SUCCESS;
         try {
-            addressDao.save(address);
+            addressMapper.editeAddress(address);
         } catch (Exception e) {
             e.printStackTrace();
             status = APIStatus.SUBMIT_FAIL;
@@ -79,7 +79,7 @@ public class AddressServiceImpl implements AddressService {
         String id = request.getParameter("id").toString();
         if (id != null) {
             try {
-                addressDao.delete(Long.parseLong(id));
+                addressMapper.deleteAddress(Integer.parseInt(id));
             } catch (Exception e) {
                 e.printStackTrace();
                 status = APIStatus.SUBMIT_FAIL;
