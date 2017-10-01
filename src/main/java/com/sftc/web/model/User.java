@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
 
 public class User extends Object {
-    private long id;
+    private int id;
     private String uuid;
     //用户名字
     private String name;
@@ -65,11 +65,11 @@ public class User extends Object {
         this.js_code = js_code;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -14,11 +14,11 @@ public interface AddressMapper {
 
     void editeAddress(Address address);
 
-    List<Address> addressDetail(long id);
+    List<Address> addressDetail(int id);
 
     List<Address> addressList(Map<String, Integer> params);
 
-    void deleteAddress(long id);
+    void deleteAddress(int id);
 
     void updateByPrimaryKey(Address address);
 

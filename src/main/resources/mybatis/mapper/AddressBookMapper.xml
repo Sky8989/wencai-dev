@@ -25,11 +25,11 @@
         <association property="address" column="address_id" select="selectAddress"/>
     </resultMap>
 
-    <select id="selectAddress" parameterType="long" resultType="com.sftc.web.model.entity.Address">
+    <select id="selectAddress" parameterType="int" resultType="com.sftc.web.model.entity.Address">
         SELECT * FROM sftc_address WHERE id=#{address_id}
     </select>
 
-    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="Long">
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long">
         select id, user_id, address_id, is_delete, is_mystery, address_type, address_book_type, create_time
         from sftc_address_book
         where id = #{id}
@@ -142,7 +142,7 @@
     </select>
 
     <!--获取 历史地址列表-->
-    <select id="selectAddressHistoryListByUserId" parameterType="long" resultMap="AddressMap">
+    <select id="selectAddressHistoryListByUserId" parameterType="int" resultMap="AddressMap">
         SELECT *
         FROM sftc_address_book ab, sftc_address a
         WHERE ab.address_id=a.id AND ab.user_id=#{user_id} AND ab.is_delete=0 AND ab.address_type='address_history'

@@ -16,14 +16,14 @@ public interface UserContactMapper {
     // 好友列表
     List<UserContact> friendList(Paging paging);
 
-    int selectFriendCount(long user_id);
+    int selectFriendCount(int user_id);
 
     // 添加好友
     void addFriend(UserContactParam userContactParam);
 
     void updateFriend(UserContact userContact);
 
-    UserContact friendDetail(@Param("user_id") long user_id, @Param("friend_id") long friend);
+    UserContact friendDetail(@Param("user_id") int user_id, @Param("friend_id") int friend);
 
     List<ContactCallback> selectCirclesContact(UserContactParam userContactParam);
 
@@ -34,7 +34,7 @@ public interface UserContactMapper {
     /**
      * 星标好友
      */
-    void starFriend(@Param("user_id") long user_id, @Param("friend_id") long friend_id, @Param("is_tag_star") int is_star);
+    void starFriend(@Param("user_id") int user_id, @Param("friend_id") int friend_id, @Param("is_tag_star") int is_star);
 
     // 更新好友亲密度
     void updateUserContactLntimacy(UserContactNew UserContactNew);

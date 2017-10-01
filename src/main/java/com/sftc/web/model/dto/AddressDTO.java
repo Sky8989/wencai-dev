@@ -9,9 +9,9 @@ public class AddressDTO extends Object {
 
     private Address addressEntity;
 
-    private Long id;
+    private int id;
     // 用户id
-    private long user_id;
+    private int user_id;
     // 用户名字
     private String name;
     // 用户电话
@@ -48,19 +48,19 @@ public class AddressDTO extends Object {
         super();
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public long getUser_id() {
+    public int getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(long user_id) {
+    public void setUser_id(int user_id) {
         this.user_id = user_id;
     }
 
@@ -152,7 +152,7 @@ public class AddressDTO extends Object {
         this.supplementary_info = supplementary_info;
     }
 
-    public AddressDTO(Long id, int user_id, String name, String phone, String province, String city, String area, String address, String create_time) {
+    public AddressDTO(int id, int user_id, String name, String phone, String province, String city, String area, String address, String create_time) {
         this.id = id;
         this.user_id = user_id;
         this.name = name;

@@ -13,9 +13,9 @@ public class AddressBook {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     // 用户编号
-    private long user_id;
+    private int user_id;
     // 映射关系 地址编号
-    private Long address_id;
+    private int address_id;
 
     private int is_delete;
     private int is_mystery;
@@ -34,13 +34,13 @@ public class AddressBook {
     public Long getId() {return id;}
     public void setId(Long id) {this.id = id;}
 
-    public long getUser_id() {return user_id;}
+    public int getUser_id() {return user_id;}
 
-    public void setUser_id(long user_id) {this.user_id = user_id;}
+    public void setUser_id(int user_id) {this.user_id = user_id;}
 
-    public Long getAddress_id() {return address_id;}
+    public int getAddress_id() {return address_id;}
 
-    public void setAddress_id(Long address_id) {this.address_id = address_id;}
+    public void setAddress_id(int address_id) {this.address_id = address_id;}
 
     public int getIs_delete() {return is_delete;}
 
@@ -62,7 +62,7 @@ public class AddressBook {
 
     public void setCreate_time(String create_time) {this.create_time = create_time;}
 
-    public AddressBook(long user_id, long address_id, int is_delete, int is_mystery, String address_type, String address_book_type, String create_time) {
+    public AddressBook(int user_id, int address_id, int is_delete, int is_mystery, String address_type, String address_book_type, String create_time) {
         this.user_id = user_id;
         this.address_id = address_id;
         this.is_delete = is_delete;

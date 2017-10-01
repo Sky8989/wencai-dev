@@ -10,9 +10,9 @@ public class AddressBookDTO {
 
     private Long id;
     // 用户编号
-    private Long user_id;
+    private int user_id;
     // 映射关系 地址编号
-    private Long address_id;
+    private int address_id;
 
     private int is_delete;
     private int is_mystery;
@@ -43,17 +43,17 @@ public class AddressBookDTO {
         this.id = id;
     }
 
-    public Long getUser_id() {return user_id;}
+    public int getUser_id() {return user_id;}
 
-    public void setUser_id(Long user_id) {this.user_id = user_id;}
+    public void setUser_id(int user_id) {this.user_id = user_id;}
 
-    public Long getAddress_id() {return address_id;}
+    public int getAddress_id() {return address_id;}
 
     public AddressDTO getAddressDTO() {return addressDTO;}
 
     public void setAddressDTO(AddressDTO addressDTO) {this.addressDTO = addressDTO;}
 
-    public void setAddress_id(Long address_id) {this.address_id = address_id;}
+    public void setAddress_id(int address_id) {this.address_id = address_id;}
 
     public int getIs_delete() {return is_delete;}
 
