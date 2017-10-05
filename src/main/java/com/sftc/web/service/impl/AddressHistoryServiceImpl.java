@@ -65,6 +65,7 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
             // handle wechatname by hxy
             String wechatname = (user == null || user.getName() == null) ? "default_name" : user.getName();
             ab.setShip_wechatname(wechatname);
+            ab.setAddressDTO(addressDTO);
         }
 
         return APIUtil.getResponse(SUCCESS, addressBookDTOList);
