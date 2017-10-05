@@ -50,7 +50,6 @@ public class AddressBookServiceImpl implements AddressBookService {
         if (!paramObject.containsKey("address")) return APIUtil.paramErrorResponse("地址簿参数address为空");
         JSONObject address_OBJ = paramObject.getJSONObject("address");
 
-        if (address_OBJ.containsValue("")) return APIUtil.paramErrorResponse("地址簿参数不可为''");
         if (!address_OBJ.containsKey("name")) return APIUtil.paramErrorResponse("地址簿参数name为空");
         if (!address_OBJ.containsKey("phone")) return APIUtil.paramErrorResponse("地址簿参数phone为空");
         if (!address_OBJ.containsKey("province")) return APIUtil.paramErrorResponse("地址簿参数province为空");
@@ -59,6 +58,15 @@ public class AddressBookServiceImpl implements AddressBookService {
         if (!address_OBJ.containsKey("address")) return APIUtil.paramErrorResponse("地址簿参数address为空");
         if (!address_OBJ.containsKey("longitude")) return APIUtil.paramErrorResponse("地址簿参数longitude为空");
         if (!address_OBJ.containsKey("latitude")) return APIUtil.paramErrorResponse("地址簿参数latitude为空");
+
+        if(address_OBJ.getString("name").equals("")) return APIUtil.paramErrorResponse("地址簿参数name不可为''");
+        if(address_OBJ.getString("phone").equals("")) return APIUtil.paramErrorResponse("地址簿参数phone不可为''");
+        if(address_OBJ.getString("province").equals("")) return APIUtil.paramErrorResponse("地址簿参数province不可为''");
+        if(address_OBJ.getString("city").equals("")) return APIUtil.paramErrorResponse("地址簿参数city不可为''");
+        if(address_OBJ.getString("area").equals("")) return APIUtil.paramErrorResponse("地址簿参数area不可为''");
+        if(address_OBJ.getString("address").equals("")) return APIUtil.paramErrorResponse("地址簿参数address不可为''");
+        if(address_OBJ.getString("longitude").equals("")) return APIUtil.paramErrorResponse("地址簿参数longitude不可为''");
+        if(address_OBJ.getString("latitude").equals("")) return APIUtil.paramErrorResponse("地址簿参数latitude不可为''");
 
         String supplementary_info = address_OBJ.containsKey("supplementary_info") ? address_OBJ.getString("supplementary_info") : null;
         AddressBookDTO addressBookDTO;
