@@ -782,36 +782,36 @@ public class OrderCommitLogic {
             String create_time, JSONObject orderOBJ
             , JSONObject sourceAddressOBJ, JSONObject sourceOBJ
             , JSONObject targetAddressOBJ, JSONObject targetOBJ) {
-        // 插入地址簿 寄件人
-        insertAddressBookUtils("address_book", "sender",
-                orderOBJ.getInt("sender_user_id"),
-                orderOBJ.getInt("sender_user_id"),
-                sourceAddressOBJ.getString("receiver"),
-                sourceAddressOBJ.getString("mobile"),
-                sourceAddressOBJ.getString("province"),
-                sourceAddressOBJ.getString("city"),
-                sourceAddressOBJ.getString("region"),
-                sourceAddressOBJ.getString("street"),
-                sourceAddressOBJ.getString("supplementary_info"),
-                create_time,
-                (Double) sourceOBJ.getJSONObject("coordinate").get("longitude"),
-                (Double) sourceOBJ.getJSONObject("coordinate").get("latitude")
-        );
-        // 插入地址簿 收件人
-        insertAddressBookUtils("address_book", "ship",
-                orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
-                orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
-                targetAddressOBJ.getString("receiver"),
-                targetAddressOBJ.getString("mobile"),
-                targetAddressOBJ.getString("province"),
-                targetAddressOBJ.getString("city"),
-                targetAddressOBJ.getString("region"),
-                targetAddressOBJ.getString("street"),
-                targetAddressOBJ.getString("supplementary_info"),
-                create_time,
-                (Double) targetOBJ.getJSONObject("coordinate").get("longitude"),
-                (Double) targetOBJ.getJSONObject("coordinate").get("latitude")
-        );
+        // 插入地址簿 寄件人,不勾选保存地址簿，不用插入
+//        insertAddressBookUtils("address_book", "sender",
+//                orderOBJ.getInt("sender_user_id"),
+//                orderOBJ.getInt("sender_user_id"),
+//                sourceAddressOBJ.getString("receiver"),
+//                sourceAddressOBJ.getString("mobile"),
+//                sourceAddressOBJ.getString("province"),
+//                sourceAddressOBJ.getString("city"),
+//                sourceAddressOBJ.getString("region"),
+//                sourceAddressOBJ.getString("street"),
+//                sourceAddressOBJ.getString("supplementary_info"),
+//                create_time,
+//                (Double) sourceOBJ.getJSONObject("coordinate").get("longitude"),
+//                (Double) sourceOBJ.getJSONObject("coordinate").get("latitude")
+//        );
+        // 插入地址簿 收件人,不勾选保存地址簿，不用插入
+//        insertAddressBookUtils("address_book", "ship",
+//                orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
+//                orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
+//                targetAddressOBJ.getString("receiver"),
+//                targetAddressOBJ.getString("mobile"),
+//                targetAddressOBJ.getString("province"),
+//                targetAddressOBJ.getString("city"),
+//                targetAddressOBJ.getString("region"),
+//                targetAddressOBJ.getString("street"),
+//                targetAddressOBJ.getString("supplementary_info"),
+//                create_time,
+//                (Double) targetOBJ.getJSONObject("coordinate").get("longitude"),
+//                (Double) targetOBJ.getJSONObject("coordinate").get("latitude")
+//        );
         // 插入历史地址
         insertAddressBookUtils("address_history", "address_history",
                 orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
@@ -831,36 +831,36 @@ public class OrderCommitLogic {
 
     /// 普通大网下单使用的 一键添加2个地址簿 1个历史地址
     private void nationInsertAddressBookAndAddressHistory(int user_id_sender, JSONObject orderObject, JSONObject sf, String create_time) {
-        // 插入地址簿 寄件人
-        insertAddressBookUtils("address_book", "sender",
-                user_id_sender,
-                user_id_sender,
-                sf.getString("j_contact"),
-                sf.getString("j_mobile"),
-                sf.getString("j_province"),
-                sf.getString("j_city"),
-                sf.getString("j_county"),
-                sf.getString("j_address"),
-                sf.getString("j_supplementary_info"),
-                create_time,
-                orderObject.getDouble("j_longitude"),
-                orderObject.getDouble("j_latitude")
-        );
-        // 插入地址簿 收件人
-        insertAddressBookUtils("address_book", "ship",
-                user_id_sender,// 这里的地址是属于寄件人的
-                user_id_sender,// 这里的地址是属于寄件人的
-                sf.getString("d_contact"),
-                sf.getString("d_mobile"),
-                sf.getString("d_province"),
-                sf.getString("d_city"),
-                sf.getString("d_county"),
-                sf.getString("d_address"),
-                sf.getString("d_supplementary_info"),
-                create_time,
-                orderObject.getDouble("d_longitude"),
-                orderObject.getDouble("d_latitude")
-        );
+        // 插入地址簿 寄件人,不勾选保存地址簿，不用插入
+//        insertAddressBookUtils("address_book", "sender",
+//                user_id_sender,
+//                user_id_sender,
+//                sf.getString("j_contact"),
+//                sf.getString("j_mobile"),
+//                sf.getString("j_province"),
+//                sf.getString("j_city"),
+//                sf.getString("j_county"),
+//                sf.getString("j_address"),
+//                sf.getString("j_supplementary_info"),
+//                create_time,
+//                orderObject.getDouble("j_longitude"),
+//                orderObject.getDouble("j_latitude")
+//        );
+        // 插入地址簿 收件人,不勾选保存地址簿，不用插入
+//        insertAddressBookUtils("address_book", "ship",
+//                user_id_sender,// 这里的地址是属于寄件人的
+//                user_id_sender,// 这里的地址是属于寄件人的
+//                sf.getString("d_contact"),
+//                sf.getString("d_mobile"),
+//                sf.getString("d_province"),
+//                sf.getString("d_city"),
+//                sf.getString("d_county"),
+//                sf.getString("d_address"),
+//                sf.getString("d_supplementary_info"),
+//                create_time,
+//                orderObject.getDouble("d_longitude"),
+//                orderObject.getDouble("d_latitude")
+//        );
         // 插入历史地址
         insertAddressBookUtils("address_history", "address_history",
                 user_id_sender,
@@ -880,34 +880,34 @@ public class OrderCommitLogic {
 
     ///普通同城下单使用的 一键添加2个地址簿 1个历史地址
     private void setupAddress2(Order order, OrderExpress oe) {
-        // 插入地址簿 寄件人
-        insertAddressBookUtils("address_book", "sender",
-                order.getSender_user_id(),
-                order.getSender_user_id(),// 地址是收件人的
-                order.getSender_name(),
-                order.getSender_mobile(),
-                order.getSender_province(),
-                order.getSender_city(),
-                order.getSender_area(),
-                order.getSender_addr(),
-                order.getSupplementary_info(),
-                order.getCreate_time(), order.getLongitude(),
-                order.getLatitude()
-        );
-        // 插入地址簿 收件人
-        insertAddressBookUtils("address_book", "ship",
-                order.getSender_user_id(),
-                oe.getShip_user_id(),//地址是寄件人的
-                oe.getShip_name(),
-                oe.getShip_mobile(),
-                oe.getShip_province(),
-                oe.getShip_city(),
-                oe.getShip_area(),
-                oe.getShip_addr(),
-                oe.getSupplementary_info(),
-                oe.getCreate_time(),
-                oe.getLongitude(),
-                oe.getLatitude());
+        // 插入地址簿 寄件人,不勾选保存地址簿，不用插入
+//        insertAddressBookUtils("address_book", "sender",
+//                order.getSender_user_id(),
+//                order.getSender_user_id(),// 地址是收件人的
+//                order.getSender_name(),
+//                order.getSender_mobile(),
+//                order.getSender_province(),
+//                order.getSender_city(),
+//                order.getSender_area(),
+//                order.getSender_addr(),
+//                order.getSupplementary_info(),
+//                order.getCreate_time(), order.getLongitude(),
+//                order.getLatitude()
+//        );
+        // 插入地址簿 收件人,不勾选保存地址簿，不用插入
+//        insertAddressBookUtils("address_book", "ship",
+//                order.getSender_user_id(),
+//                oe.getShip_user_id(),//地址是寄件人的
+//                oe.getShip_name(),
+//                oe.getShip_mobile(),
+//                oe.getShip_province(),
+//                oe.getShip_city(),
+//                oe.getShip_area(),
+//                oe.getShip_addr(),
+//                oe.getSupplementary_info(),
+//                oe.getCreate_time(),
+//                oe.getLongitude(),
+//                oe.getLatitude());
         // 插入历史地址
         insertAddressBookUtils("address_history", "address_history",
                 oe.getSender_user_id(), //这个地址是属于某个用户的地址 但是地址内容是历史地址 保存的是寄件时产生的收件人地址
