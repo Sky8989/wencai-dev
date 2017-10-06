@@ -64,7 +64,7 @@ public class OrderCommitLogic {
      */
     public APIResponse normalOrderCommit(APIRequest request) {
         Object requestBody = request.getRequestParam();
-        // Param Verify
+        // Param Verif 订单提交的接口验参
         String paramVerifyMessage = orderCommitVerify(requestBody);
         if (paramVerifyMessage != null) { // Param Error
             return APIUtil.paramErrorResponse(paramVerifyMessage);
@@ -78,6 +78,7 @@ public class OrderCommitLogic {
             if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
         }
 
+        //通过请求的对象来判断同城还是大网，改版之后是怎么实现的？也是每个订单这样去判断吗？
         if (requestObject.containsKey("request")) { // 同城
             return normalSameOrderCommit(requestBody);
         } else { // 大网
@@ -118,6 +119,7 @@ public class OrderCommitLogic {
     public void nationOrderReserveCommit(int order_id, long currentTimeMillis) {
 
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+        //后期订单和快递改为一对一之后，请求为object对象，遍历里面的order对象来提交？
         for (OrderExpress oe : order.getOrderExpressList()) {
 
             //过滤 不在预约时间周期内的订单      当前时间>X>当前时间-1800000的订单才下单 ，处于其补集区间的订单则跳出
@@ -189,6 +191,7 @@ public class OrderCommitLogic {
     /// 订单提交接口验参
     private String orderCommitVerify(Object object) {
         JSONObject jsonObject = JSONObject.fromObject(object);
+        //同城单请求体为request对象，大网单请求体为sf对象
         boolean requestObject = jsonObject.containsKey("request");  // 同城
         boolean sfObject = jsonObject.containsKey("sf");            // 大网
 
@@ -215,6 +218,7 @@ public class OrderCommitLogic {
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         //增加对包裹数量的验证，确保是只有一个订单里只有一个同城包裹
+        //后期更新订单与包裹一对一，但是好友件同城可以多包裹，同城订单走这个逻辑？
         if (order.getOrderExpressList().size() != 1)
             return APIUtil.submitErrorResponse("Order infomation has been changed,please check again!", null);
 
@@ -340,6 +344,7 @@ public class OrderCommitLogic {
         if (requestObject.getJSONObject("order").containsKey("package_count")) {
             int package_count = requestObject.getJSONObject("order").getInt("package_count");
             int real_count = 0;
+            //遍历包裹信息，确定有多少个包裹已被填写
             for (OrderExpress oe : order.getOrderExpressList()) {
                 if (oe.getShip_province() != null && !"".equals(oe.getShip_province())) {//如果有省份信息，则表明已填写
                     real_count++;

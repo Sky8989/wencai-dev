@@ -72,6 +72,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         if (oe == null)
             return APIUtil.selectErrorResponse("快递不存在", null);
 
+        //多包裹的估算规则还不清楚
         if (order.getOrderExpressList().size() != 1) // 暂时只有单包裹才能算配送方式
             return APIUtil.selectErrorResponse("暂时只支持单包裹的订单查询运费时效", null);
 
