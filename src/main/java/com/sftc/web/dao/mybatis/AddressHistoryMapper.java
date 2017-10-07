@@ -1,5 +1,6 @@
 package com.sftc.web.dao.mybatis;
 
+import com.sftc.web.model.dto.AddressHistoryDTO;
 import com.sftc.web.model.entity.AddressHistory;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -17,7 +18,7 @@ public interface AddressHistoryMapper {
     /**
      * 查询历史地址
      */
-    List<AddressHistory> selectAddressHistoryListByUserId(
+    List<AddressHistoryDTO> selectAddressHistoryListByUserId(
             @Param("user_id") int user_id,
             @Param("startIndex") int startIndex,
             @Param("pageSize") int pageSize
