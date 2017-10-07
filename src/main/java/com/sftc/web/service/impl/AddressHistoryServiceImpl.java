@@ -13,6 +13,7 @@ import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.User;
 import com.sftc.web.model.dto.AddressDTO;
 import com.sftc.web.model.entity.Address;
+import com.sftc.web.model.entity.AddressHistory;
 import com.sftc.web.service.AddressHistoryService;
 import org.springframework.stereotype.Service;
 
@@ -84,7 +85,9 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
             return APIUtil.paramErrorResponse("address_history_id不正确");
 
 //        addressBookMapper.updateIsDeleteStatusByPrimaryKey(address_history_id, 1);
-
+        AddressHistory addressHistory = addressHistoryDao.findOne(address_history_id);
+        addressHistory.setIs_delete(1);
+        addressHistoryDao.save(addressHistory);
         return APIUtil.getResponse(SUCCESS, null);
     }
 }
