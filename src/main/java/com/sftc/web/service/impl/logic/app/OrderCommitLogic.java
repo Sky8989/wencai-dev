@@ -463,16 +463,7 @@ public class OrderCommitLogic {
             targetAddressOBJ.put("supplementary_info", "");
         }
 
-        // 预约时间处理
-        String reserve_time = (String) reqObject.getJSONObject("order").get("reserve_time");
-        if (reserve_time != null && !reserve_time.equals("")) {
-//            String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            reqObject.getJSONObject("request").put("reserve_time", reserveTime);
-        }
-
         APIStatus status = SUCCESS;
-
 
         Order order = new Order(
                 Long.toString(System.currentTimeMillis()),
@@ -542,15 +533,21 @@ public class OrderCommitLogic {
                     requestOBJ.getJSONArray("packages").getJSONObject(0).getString("weight"),
                     requestOBJ.getJSONArray("packages").getJSONObject(0).getString("type"),
                     comments, //增加快递包裹描述comments
-                    respObject.getJSONObject("request").getString("status"),
+                    "WAIT_HAND_OVER",
                     Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
                     order.getId(),
                     respObject.getJSONObject("request").getString("uuid"),
                     targetOBJ.getJSONObject("coordinate").getDouble("latitude"),
                     targetOBJ.getJSONObject("coordinate").getDouble("longitude")
             );
+            // 预约时间处理
+            String reserve_time = (String) reqObject.getJSONObject("order").get("reserve_time");
+            if (reserve_time != null && !reserve_time.equals("")) {
+//            String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+                reqObject.getJSONObject("request").put("reserve_time", reserveTime);
+            }
             orderExpress.setReserve_time(reserve_time);
-            orderExpress.setState("WAIT_HAND_OVER");
             orderExpressMapper.addOrderExpress2(orderExpress);
             // 插入地址
             //setupAddress(order, orderExpress);
