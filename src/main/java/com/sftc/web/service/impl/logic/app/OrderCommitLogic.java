@@ -550,8 +550,8 @@ public class OrderCommitLogic {
                     targetOBJ.getJSONObject("coordinate").getDouble("longitude")
             );
             orderExpress.setReserve_time(reserve_time);
+            orderExpress.setState("WAIT_HAND_OVER");
             orderExpressMapper.addOrderExpress2(orderExpress);
-
             // 插入地址
             //setupAddress(order, orderExpress);
             /**
