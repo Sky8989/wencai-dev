@@ -15,9 +15,9 @@ public class AddressHistory extends Object {
     // 用户编号
     private int user_id;
     // 地址编号
-    private transient int address_id;
-    // 是否删除
-    private transient int is_delete;
+    private int address_id;
+    // 是否删除，transient修饰无法映射
+    private int is_delete;
     // 是否神秘件
     private int is_mystery;
     // 创建时间
