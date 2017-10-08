@@ -52,6 +52,11 @@ public class OrderOtherLogic {
         if (name != null) {
             try {
                 name = URLEncoder.encode(name, "UTF-8");
+                if(name.length()>4){
+                    name = name.substring(0,4) +"...";
+                }else {
+                    name = name;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
