@@ -114,7 +114,7 @@ public class OrderListLogic {
                 express.setReserve_time(oe.getReserve_time());
                 //如果有异常信息，则添加异常信息
                 if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
-                    express.setAttributes(JSONObject.fromObject(oe.getAttributes()));
+                    express.setAttributes(oe.getAttributes());
                 expressList.add(express);
                 // 检查快递是否评价过
                 List<Evaluate> evaluateList = evaluateMapper.selectByUuid(oe.getUuid());
