@@ -23,7 +23,7 @@ public class OrderCallback {
         private String ship_addr;
         private String uuid;
         private String state;
-        private JSONObject attributes;
+        private String attributes;
         private String order_number;
         //为C端小程序的物品类型，
         private String package_type;
@@ -73,9 +73,9 @@ public class OrderCallback {
             this.order_number = order_number;
         }
 
-        public JSONObject getAttributes() {return attributes;}
+        public String getAttributes() {return attributes;}
 
-        public void setAttributes(JSONObject attributes) {this.attributes = attributes;}
+        public void setAttributes(String attributes) {this.attributes = attributes;}
 
         public String getPackage_type() {return package_type;}
 
