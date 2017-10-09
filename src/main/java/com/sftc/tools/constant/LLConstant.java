@@ -30,85 +30,6 @@ public class LLConstant {
     public static int BEGIN_HOUR = 6;
     // 每天结束时间
     public static int END_HOUR = 21;
-    public static List<Map<String, Double>> calculate(double startlat, double startlon, double maxdist, int GeneratedNumber) {
-
-        //将所有纬度和经度转换为弧度。
-        startlat = startlat * PI / 180;
-        startlon = startlon * PI / 180;
-
-        //地球的平均半径
-        double radiusEarth = 6372.796924;
-        //将最大距离转换为弧度。
-        maxdist = maxdist / radiusEarth;
-
-        List<Map<String, Double>> gpsDataList = new LinkedList<Map<String, Double>>();
-        for (int i = 0; i < GeneratedNumber; i++) {
-            // 生成两个随机数 0 到1 的double
-            double rand1 = new Random().nextDouble();
-            double rand2 = new Random().nextDouble();
-
-            // 计算从0到maxdist缩放的随机距离
-            double dist = Math.acos((rand1 * (Math.cos(maxdist) - 1) + 1));
-            double brg = 2 * PI * rand2;
-
-            double lat = asin(Math.sin(startlat) * Math.cos(dist) + Math.cos(startlat) * Math.sin(dist) * Math.cos(brg));
-//            double lon = startlon + Math.atan2(Math.sin(brg) * Math.sin(dist) * Math.cos(startlat), Math.cos(dist) * Math.sin(startlat) * Math.sin(lat));
-            //减少偏移量
-            double lon = startlon + 0.33 * Math.atan2(Math.sin(brg) * Math.sin(dist) * Math.cos(startlat), Math.cos(dist) * Math.sin(startlat) * Math.sin(lat));
-            if (lon < -PI) {
-                lon = lon + 2 * PI;
-            }
-            if (lon > PI) {
-                lon = lon - 2 * PI;
-            }
-
-            // 弧度转换成经纬度
-            Map<String, Double> map = new HashMap<String, Double>();
-            map.put("latitude", lat * 180 / PI);
-            map.put("longitude", lon * 180 / PI);
-            gpsDataList.add(map);
-        }
-        return gpsDataList;
-    }
-
-    public static List<Map<String, Double>> calculate2(double startlat, double startlon, double maxdist, int GeneratedNumber) {
-        double northlimit = startlat - 0.01;
-        double southlimit = startlat + 0.01;
-        double eastlimit = startlat + 0.05;
-        double westlimit = startlat - 0.05;
-        //将所有纬度和经度转换为弧度。
-        startlat = startlat * PI / 180;
-        startlon = startlon * PI / 180;
-        northlimit = northlimit * PI / 180;
-        southlimit = southlimit * PI / 180;
-        eastlimit = eastlimit * PI / 180;
-        westlimit = westlimit * PI / 180;
-        List<Map<String, Double>> gpsDataList = new LinkedList<Map<String, Double>>();
-
-        for (int i = 0; i < GeneratedNumber; i++) {
-            // 生成两个随机数 0 到1 的double
-            double rand1 = new Random().nextDouble();
-            double rand2 = new Random().nextDouble();
-
-            double lat = asin(rand1 * (sin(northlimit) - sin(southlimit)) + sin(southlimit));
-            // 找到矩形区域的宽度。
-            double width = eastlimit - westlimit;
-            double lon = westlimit + width * rand2;
-            if (lon < -PI) {
-                lon = lon + 2 * PI;
-            }
-            if (lon > PI) {
-                lon = lon - 2 * PI;
-            }
-
-            // 弧度转换成经纬度
-            Map<String, Double> map = new HashMap<String, Double>();
-            map.put("latitude", lat * 180 / PI);
-            map.put("longitude", lon * 180 / PI);
-            gpsDataList.add(map);
-        }
-        return gpsDataList;
-    }
 
     public static List<Map<String, Double>> calculate3(double startlat, double startlon, double maxdist, int GeneratedNumber) {
 
@@ -159,18 +80,6 @@ public class LLConstant {
         }
         return gpsDataList;
     }
-
-    private static double distance(double lat1, double lng1, double lat2, double lng2) {
-        double radLat1 = lat1 * Math.PI / 180.0;
-        double radLat2 = lat2 * Math.PI / 180.0;
-        double a = radLat1 - radLat2;
-        double b = lng1 * Math.PI / 180.0 - lng2 * Math.PI / 180.0;
-        double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
-        s = s * 6378.137;
-        s = Math.round(s * 10000) / 10000;
-        return s;
-    }
-
 
     /**
      * 转化为弧度(rad)

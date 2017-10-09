@@ -7,6 +7,7 @@ import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.service.EvaluateService;
 import com.sftc.web.service.OrderService;
+import io.swagger.annotations.Api;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @Controller
+@Api(description = "订单")
 @RequestMapping("order")
 public class OrderController extends BaseController {
 

@@ -4,6 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.Result;
+import io.swagger.annotations.Api;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@Api(description = "顺丰API，包括登录、注册、获取短信、获取token等")
 @RequestMapping("sf")
 public class MessageController extends BaseController {
 

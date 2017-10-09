@@ -7,6 +7,7 @@ import com.sftc.web.model.Paging;
 import com.sftc.web.model.UserContactLabel;
 import com.sftc.web.model.reqeustParam.UserContactParam;
 import com.sftc.web.service.UserContactLabelService;
+import io.swagger.annotations.Api;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
+@Api(description = "好友相关")
 @RequestMapping("friend")
 public class UserContactController extends BaseController {
 

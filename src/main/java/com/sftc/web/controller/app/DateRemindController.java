@@ -4,6 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.DateRemind;
 import com.sftc.web.service.DateRemindService;
+import io.swagger.annotations.Api;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
+@Api(description = "纪念日")
 @RequestMapping("date")
 public class DateRemindController {
 
