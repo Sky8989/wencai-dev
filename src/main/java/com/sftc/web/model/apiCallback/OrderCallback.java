@@ -1,7 +1,5 @@
 package com.sftc.web.model.apiCallback;
 
-import net.sf.json.JSONObject;
-
 import java.util.List;
 
 public class OrderCallback {

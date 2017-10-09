@@ -2,7 +2,6 @@ package com.sftc.web.model.apiCallback;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.sf.json.JSONObject;
 
 import java.util.List;
 
@@ -27,10 +26,10 @@ public class OrderFriendCallback {
         private int id;
         private String ship_name;
         private String ship_avatar;
-        private long ship_user_id;
+        private int ship_user_id;
         private String uuid;
         private String state;
-        private JSONObject attributes;
+        private String attributes;
         //为C端小程序的物品类型，
         private String package_type;
         // 包裹的类型
@@ -63,7 +62,7 @@ public class OrderFriendCallback {
             this.ship_avatar = ship_avatar;
         }
 
-        public long getShip_user_id() {
+        public int getShip_user_id() {
             return ship_user_id;
         }
 
@@ -87,11 +86,11 @@ public class OrderFriendCallback {
             this.state = state;
         }
 
-        public JSONObject getAttributes() {
+        public String getAttributes() {
             return attributes;
         }
 
-        public void setAttributes(JSONObject attributes) {
+        public void setAttributes(String attributes) {
             this.attributes = attributes;
         }
 
