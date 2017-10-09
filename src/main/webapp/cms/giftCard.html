@@ -75,7 +75,7 @@
                             <!-- 礼品卡类型-->
                             <div class="layui-form-item">
                                 <div class="layui-inline">
-                                    <label class="layui-form-label">礼品卡名称</label>
+                                    <label class="layui-form-label" style="width: 90px;">礼品卡名称</label>
 
                                     <div class="layui-input-inline">
                                         <input type="text" name="name" lay-verify="required" autocomplete="off"
@@ -84,15 +84,16 @@
                                 </div>
 
                                 <div class="layui-inline">
-                                    <label class="layui-form-label">搜索选择框</label>
+                                    <label class="layui-form-label" style="width: 100px;">贺卡类型</label>
 
                                     <div class="layui-input-inline">
-                                        <select name="type" lay-verify="required" lay-search="">
-                                            <option value="">直接选择或搜索选择</option>
-                                            <option value="表达心意">表达心意</option>
-                                            <option value="节目必备">节目必备</option>
-                                            <option value="其他">其他</option>
-                                        </select>
+                                        <!--<select name="type" lay-verify="required" lay-search="">-->
+                                            <!--<option value="">直接选择或搜索选择</option>-->
+                                            <!--<option value="表达心意">表达心意</option>-->
+                                            <!--<option value="节目必备">节目必备</option>-->
+                                            <!--<option value="其他">其他</option>-->
+                                        <!--</select>-->
+                                        <input type="text" name="type" required  lay-verify="required" placeholder="请自定义贺卡类型" autocomplete="off" class="layui-input">
                                     </div>
                                     <!--<button name="icon" type="button" class="layui-btn" id="test1" value="default_value"><i class="layui-icon">&#xe67c;</i>上传图片</button>-->
                                 </div>
