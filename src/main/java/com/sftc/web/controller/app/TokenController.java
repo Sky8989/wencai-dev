@@ -6,6 +6,7 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.common.ControllerHelper;
 import com.sftc.web.controller.BaseController;
 import com.sftc.web.service.TokenService;
+import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 
 @Controller
+@Api(description = "token")
 @RequestMapping("token")
 public class TokenController extends BaseController {
     @Resource

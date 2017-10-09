@@ -6,6 +6,7 @@ import com.sftc.web.model.Address;
 import com.sftc.web.service.AddressBookService;
 import com.sftc.web.service.AddressHistoryService;
 import com.sftc.web.service.AddressService;
+import io.swagger.annotations.Api;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
+@Api(description = "地址簿")
 @RequestMapping("addressBook")
 public class AddressBookController {
 

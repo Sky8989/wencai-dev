@@ -24,4 +24,8 @@
     <!-- 静态资源访问处理 -->
     <mvc:default-servlet-handler/>
 
+    <!-- swagger-springmvc -->
+    <mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html"/>
+    <mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**"/>
+
 </beans>
