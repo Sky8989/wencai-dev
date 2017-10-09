@@ -152,7 +152,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         Object weightObject = requestObject.get("weight");
         String weightStr = "1";
         if (weightObject != null) {
-            Double weight = requestObject.getDouble("weight");
+            Double weight = (Double) requestObject.getDouble("weight");
             weightStr = (weight == 0 ? 1 : weight) + "";
         }
 

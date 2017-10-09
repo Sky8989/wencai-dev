@@ -24,6 +24,16 @@ public class UserContact extends Object {
     private List<UserContactLabel> userContactLabelList;
     private List<DateRemind> dateRemindList;
 
+    private Token friend_token;
+
+    public Token getFriend_token() {
+        return friend_token;
+    }
+
+    public void setFriend_token(Token friend_token) {
+        this.friend_token = friend_token;
+    }
+
     public UserContact() {
     }
 
