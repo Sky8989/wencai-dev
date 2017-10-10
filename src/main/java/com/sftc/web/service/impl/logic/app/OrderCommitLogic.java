@@ -477,8 +477,8 @@ public class OrderCommitLogic {
                 (String) sourceAddressOBJ.get("region"),
                 (String) sourceAddressOBJ.get("street"),
                 (String) sourceAddressOBJ.get("supplementary_info"), //增加门牌号
-                (Double) sourceOBJ.getJSONObject("coordinate").get("longitude"),
-                (Double) sourceOBJ.getJSONObject("coordinate").get("latitude"),
+                sourceOBJ.getJSONObject("coordinate").getDouble("longitude"),
+                sourceOBJ.getJSONObject("coordinate").getDouble("latitude"),
                 "ORDER_BASIS",
                 Integer.parseInt((String) orderOBJ.get("sender_user_id"))
         );
