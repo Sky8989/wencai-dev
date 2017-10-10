@@ -50,8 +50,8 @@ public class OrderDetailLogic {
         String order_id = (String) request.getParameter("order_id");
         if (order_id == null || order_id.length() == 0)
             return APIUtil.paramErrorResponse("order_id不能为空");
-
-        Order order = orderMapper.selectOrderDetailByOrderId(Integer.parseInt(order_id));
+        int orderId = (int)Integer.parseInt(order_id);
+        Order order = orderMapper.selectOrderDetailByOrderId(orderId);
 
         Map<String, Object> resultMap = new HashMap<String, Object>();
         if (order == null) return APIUtil.getResponse(SUCCESS, null);
