@@ -331,7 +331,7 @@ public class OrderCommitLogic {
     /// 好友大网订单提交
     private synchronized APIResponse friendNationOrderCommit(JSONObject requestObject) {
         // handle param
-        int order_id = ((Double) requestObject.getJSONObject("order").get("order_id")).intValue();
+        int order_id = requestObject.getJSONObject("order").getInt("order_id");
         if (order_id < 0)
             return APIUtil.paramErrorResponse("order_id不能为空");
 
