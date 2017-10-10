@@ -217,7 +217,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
                 }
             });
         }
-       if(lists.get(0).getDeliverTime()!=null&&lists.get(0).getClosedTime() == null&& lists.get(0).getClosedTime().equals("")){
+       if(lists.get(0).getDeliverTime()!=null&&lists.get(0).getClosedTime() == null){
            return APIUtil.getResponse(SUCCESS, lists.get(0));
        }else {
            return APIUtil.getResponse(SUCCESS,lists.get(1));
