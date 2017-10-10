@@ -206,8 +206,10 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
                     long time1 = 0;
                     long time2 = 0;
                     try {
-                        if (o1.getDeliverTime() != null) time1 = simpleDateFormat.parse(o1.getDeliverTime()).getTime();
-                        if (o2.getDeliverTime() != null) time2 = simpleDateFormat.parse(o2.getDeliverTime()).getTime();
+                        if (o1.getDeliverTime() != null)
+                            time1 = simpleDateFormat.parse(o1.getDeliverTime()).getTime();
+                        if (o2.getDeliverTime() != null || o2.getClosedTime() == null || o2.getClosedTime().equals(""))
+                            time2 = simpleDateFormat.parse(o2.getDeliverTime()).getTime();
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }//
@@ -215,7 +217,11 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
                 }
             });
         }
-        return APIUtil.getResponse(SUCCESS, lists);
+       if(lists.get(0).getDeliverTime()!=null&&lists.get(0).getClosedTime() == null&& lists.get(0).getClosedTime().equals("")){
+           return APIUtil.getResponse(SUCCESS, lists.get(0));
+       }else {
+           return APIUtil.getResponse(SUCCESS,lists.get(1));
+       }
     }
 
     public APIResponse updateServiceAddress(APIRequest request) {

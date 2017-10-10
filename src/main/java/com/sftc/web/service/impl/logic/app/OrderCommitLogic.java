@@ -336,7 +336,7 @@ public class OrderCommitLogic {
             return APIUtil.paramErrorResponse("order_id不能为空");
 
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
-        orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
+        orderMapper.updateOrderRegionType(order_id, "REGIOzN_NATION");
 
         Order order = orderMapper.selectOrderDetailByOrderIdForUpdate(order_id);
 
@@ -350,9 +350,9 @@ public class OrderCommitLogic {
                     real_count++;
                 }
             }
-            if (real_count != package_count) //数据库的已填写包裹数和客户端的包裹数不一致
-//                return APIUtil.submitErrorResponse("包裹信息有变化，请返回列表刷新订单！Order infomation has been changed,please check again!", null);
-                return APIUtil.submitErrorResponse("包裹信息有变化，请返回列表刷新订单！", null);
+//            if (real_count != package_count) //数据库的已填写包裹数和客户端的包裹数不一致
+////                return APIUtil.submitErrorResponse("包裹信息有变化，请返回列表刷新订单！Order infomation has been changed,please check again!", null);
+//                return APIUtil.submitErrorResponse("包裹信息有变化，请返回列表刷新订单！", null);
         }
 
 
