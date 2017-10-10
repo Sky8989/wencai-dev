@@ -132,6 +132,26 @@ public class AddressBookServiceImpl implements AddressBookService {
         // 修改地址时 改变创建时间 以供查询地址簿列表时根据时间排序
         JSONObject paramObject = JSONObject.fromObject(apiRequest.getRequestParam());
         AddressBookDTO addressBookParam = (AddressBookDTO) JSONObject.toBean(paramObject, AddressBookDTO.class);
+        if (!paramObject.containsKey("id")) return APIUtil.paramErrorResponse("地址簿id为空");
+
+        //地址的参数中只有补充地址可以为空
+        JSONObject address_OBJ1 = paramObject.getJSONObject("address");
+        if (!address_OBJ1.containsKey("name")||address_OBJ1.getString("name").equals(""))
+            return APIUtil.paramErrorResponse("地址簿参数name为空");
+        if (!address_OBJ1.containsKey("phone")||address_OBJ1.getString("phone").equals(""))
+            return APIUtil.paramErrorResponse("地址簿参数phone为空");
+        if (!address_OBJ1.containsKey("province")||address_OBJ1.getString("province").equals(""))
+            return APIUtil.paramErrorResponse("地址簿参数province为空");
+        if (!address_OBJ1.containsKey("city")||address_OBJ1.getString("city").equals(""))
+            return APIUtil.paramErrorResponse("地址簿参数city为空");
+        if (!address_OBJ1.containsKey("area")||address_OBJ1.getString("area").equals(""))
+            return APIUtil.paramErrorResponse("地址簿参数area为空");
+        if (!address_OBJ1.containsKey("address")||address_OBJ1.getString("address").equals(""))
+            return APIUtil.paramErrorResponse("地址簿参数address为空");
+        if (!address_OBJ1.containsKey("longitude")||address_OBJ1.getString("longitude").equals(""))
+            return APIUtil.paramErrorResponse("地址簿参数longitude为空");
+        if (!address_OBJ1.containsKey("latitude")||address_OBJ1.getString("latitude").equals(""))
+            return APIUtil.paramErrorResponse("地址簿参数latitude为空");
 
         ///更新 地址簿记录时间 包括映射关系和地址实体的时间
         String create_time = Long.toString(System.currentTimeMillis());

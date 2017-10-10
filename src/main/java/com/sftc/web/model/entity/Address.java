@@ -3,43 +3,58 @@ package com.sftc.web.model.entity;
 import com.sftc.web.model.Object;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.reqeustParam.OrderParam;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "sftc_address")
+@ApiModel(value = "地址")
 public class Address extends Object {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty("主键")
     private int id;
-    // 用户id
+
+    @ApiModelProperty("用户id")
     private int user_id;
-    // 用户名字
+
+    @ApiModelProperty("名字")
     private String name;
-    // 用户电话
+
+    @ApiModelProperty("电话")
     private String phone;
-    // 省份
+
+    @ApiModelProperty("省份")
     private String province;
-    // 城市
+
+    @ApiModelProperty("城市")
     private String city;
-    // 区
+
+    @ApiModelProperty("区域")
     private String area;
-    // 具体地址
+
+    @ApiModelProperty("详细地址")
     private String address;
-    // 门牌号等
+
+    @ApiModelProperty("补充地址")
     private String supplementary_info;
-    // 经度
+
+    @ApiModelProperty("经度")
     private double longitude;
-    // 纬度
+
+    @ApiModelProperty("纬度")
     private double latitude;
-    // 创建时间
+
+    @ApiModelProperty("创建时间")
     private String create_time;
 
-    public Address() {
-        super();
-    }
+    public Address() {super();}
 
     public int getId() {
         return id;

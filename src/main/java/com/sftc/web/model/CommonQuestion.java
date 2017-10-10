@@ -1,20 +1,28 @@
 package com.sftc.web.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
 
 @Entity
 @Table(name = "sftc_common_question")
+@ApiModel(value = "常见问题")
 public class CommonQuestion extends Object {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty("主键")
     private int id;
-    // 创建时间
+
+    @ApiModelProperty("创建时间")
     private String create_time;
-    // 标题
+
+    @ApiModelProperty("标题")
     private String title;
-    // 内容
+
+    @ApiModelProperty("内容")
     private String content;
 
     public int getId() {
