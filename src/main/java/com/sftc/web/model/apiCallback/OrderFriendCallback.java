@@ -9,7 +9,7 @@ public class OrderFriendCallback {
     private int id;
     private String sender_avatar;
     private String sender_name;
-    private long sender_user_id;
+    private int sender_user_id;
     private String region_type;
     private String object_type; // 物品类型
     private String word_message;// 文字寄语
@@ -139,11 +139,11 @@ public class OrderFriendCallback {
         this.sender_name = sender_name;
     }
 
-    public long getSender_user_id() {
+    public int getSender_user_id() {
         return sender_user_id;
     }
 
-    public void setSender_user_id(long sender_user_id) {
+    public void setSender_user_id(int sender_user_id) {
         this.sender_user_id = sender_user_id;
     }
 

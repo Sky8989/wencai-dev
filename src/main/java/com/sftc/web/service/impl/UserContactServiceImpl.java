@@ -191,9 +191,9 @@ public class UserContactServiceImpl implements UserContactService {
         // Param
         Object param = request.getRequestParam();
         JSONObject requestObject = JSONObject.fromObject(param);
-        int user_id = ((Double) requestObject.get("user_id")).intValue();
-        int friend_id = ((Double) requestObject.get("friend_id")).intValue();
-        int is_star = ((Double) requestObject.get("is_star")).intValue();
+        int user_id = requestObject.getInt("user_id");
+        int friend_id = requestObject.getInt("friend_id");
+        int is_star = requestObject.getInt("is_star");
         if (user_id < 1)
             return APIUtil.paramErrorResponse("参数user_id无效");
         if (friend_id < 1)
