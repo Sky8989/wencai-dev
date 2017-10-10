@@ -51,15 +51,15 @@
                         <value>DisableCircularReferenceDetect</value>
                     </list>
                 </property>
-                <property name="serializerFeatures">
-                    <list>
-                        <value>WriteNullListAsEmpty</value>
-                        <value>WriteNullStringAsEmpty</value>
-                        <value>WriteNullNumberAsZero</value>
-                        <value>WriteNullBooleanAsFalse</value>
-                        <value>SortField</value>
-                    </list>
-                </property>
+                <!--<property name="serializerFeatures">-->
+                    <!--<list>-->
+                        <!--<value>WriteNullListAsEmpty</value>-->
+                        <!--<value>WriteNullStringAsEmpty</value>-->
+                        <!--<value>WriteNullNumberAsZero</value>-->
+                        <!--<value>WriteNullBooleanAsFalse</value>-->
+                        <!--<value>SortField</value>-->
+                    <!--</list>-->
+                <!--</property>-->
             </bean>
         </property>
     </bean>
