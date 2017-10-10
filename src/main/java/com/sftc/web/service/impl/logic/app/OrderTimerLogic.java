@@ -45,7 +45,7 @@ public class OrderTimerLogic {
         if (!requestObject.containsKey("on"))
             return APIUtil.paramErrorResponse("缺少必要参数");
 
-        int is_on = ((Double) requestObject.get("on")).intValue();
+        int is_on = requestObject.getInt("on");
         long period = requestObject.containsKey("period") ? requestObject.getInt("period") * 1000 : 1800000;
         long delay = requestObject.containsKey("delay") ? requestObject.getInt("delay") * 1000 : 0;
 
@@ -94,7 +94,7 @@ public class OrderTimerLogic {
         if (!requestObject.containsKey("on"))
             return APIUtil.paramErrorResponse("缺少必要参数");
 
-        int is_on = ((Double) requestObject.get("on")).intValue();
+        int is_on = requestObject.getInt("on");
         long period = requestObject.containsKey("period") ? requestObject.getInt("period") * 1000 : 21600000;
         long delay = requestObject.containsKey("delay") ? requestObject.getInt("delay") * 1000 : 0;
         timeOutInterval = requestObject.containsKey("timeOutInterval") ? requestObject.getInt("timeOutInterval") * 1000 : 43200000; // 默认超时时间12小时
@@ -147,7 +147,7 @@ public class OrderTimerLogic {
         if (!requestObject.containsKey("on"))
             return APIUtil.paramErrorResponse("缺少必要参数");
 
-        int is_on = ((Double) requestObject.get("on")).intValue();
+        int is_on = requestObject.getInt("on");
         long period = requestObject.containsKey("period") ? requestObject.getInt("period") * 1000 : 21600000;
         long delay = requestObject.containsKey("delay") ? requestObject.getInt("delay") * 1000 : 0;
         timeOutIntervalForSame = requestObject.containsKey("timeOutInterval") ? requestObject.getInt("timeOutInterval") * 1000 : 43200000; // 默认超时时间12小时
