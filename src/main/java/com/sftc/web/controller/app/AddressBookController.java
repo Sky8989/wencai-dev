@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@Api(description = "地址簿")
+@Api(description = "地址簿相关接口")
 @RequestMapping("addressBook")
 public class AddressBookController {
 
