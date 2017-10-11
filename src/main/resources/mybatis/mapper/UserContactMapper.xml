@@ -15,7 +15,6 @@
         <result column="notes" property="notes"/>
         <result column="mobile" property="mobile"/>
         <association property="friend_info" select="selectUser" column="friend_id"/>
-        <association property="friend_token" select="selectToken" column="friend_id"/>
     </resultMap>
 
     <resultMap id="contactCallbackMap" type="com.sftc.web.model.apiCallback.ContactCallback">
@@ -46,10 +45,7 @@
     </select>
 
     <select id="selectUser" parameterType="int" resultType="com.sftc.web.model.User">
-        SELECT * FROM sftc_user WHERE id = #{friend_id}
-    </select>
-    <select id="selectToken" parameterType="int" resultType="com.sftc.web.model.Token">
-        SELECT * FROM sftc_token WHERE user_id = #{friend_id}
+        SELECT id,avatar,name,create_time FROM sftc_user WHERE id = #{friend_id}
     </select>
 
     <!-- 好友列表 -->
