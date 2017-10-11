@@ -50,7 +50,7 @@ public class AddressBookController {
 
     @ApiOperation(value = "007删除地址簿",httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "addressBook_id",value = "地址簿id",required = true)
+            @ApiImplicitParam(name = "addressBook_id",value = "地址簿id",required = true,paramType = "path")
     })
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public @ResponseBody
