@@ -26,11 +26,19 @@ public class AddressBookController {
 
     @ApiOperation(value = "006添加地址簿",httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "user_id",value = "用户id",required = true),
-            @ApiImplicitParam(name = "is_delete",value = "是否删除",required = true),
-            @ApiImplicitParam(name = "address_type",value = "地址类型",required = true),
-            @ApiImplicitParam(name = "address_book_type",value = "地址簿类型",required = true),
-            @ApiImplicitParam(name = "address",value = "地址对象",required = true,dataType = "com.sftc.web.model.entity.Address"),
+            @ApiImplicitParam(name = "user_id",value = "用户id",required = true,paramType = "query",defaultValue = "10028"),
+            @ApiImplicitParam(name = "is_delete",value = "是否删除",required = true,paramType = "query",defaultValue = "0"),
+            @ApiImplicitParam(name = "address_type",value = "地址类型",required = true,paramType = "query",defaultValue = "address_book"),
+            @ApiImplicitParam(name = "address_book_type",value = "地址簿类型",required = true,paramType = "query",defaultValue = "sender"),
+            @ApiImplicitParam(name = "name",value = "姓名",required = true,paramType = "query",defaultValue = "悟空测试单"),
+            @ApiImplicitParam(name = "phone",value = "手机号",required = true,paramType = "query",defaultValue = "13066667777"),
+            @ApiImplicitParam(name = "province",value = "省份",required = true,paramType = "query",defaultValue = "广东"),
+            @ApiImplicitParam(name = "city",value = "城市",required = true,paramType = "query",defaultValue = "深圳"),
+            @ApiImplicitParam(name = "area",value = "区域",required = true,paramType = "query",defaultValue = "龙岗"),
+            @ApiImplicitParam(name = "address",value = "详细地址",required = true,paramType = "query",defaultValue = "龙城广场地铁站"),
+            @ApiImplicitParam(name = "supplementary_info",value = "门牌号",required = true,paramType = "query",defaultValue = "118号"),
+            @ApiImplicitParam(name = "longitude",value = "经度",required = true,paramType = "query",defaultValue = "114.260976"),
+            @ApiImplicitParam(name = "latitude",value = "纬度",required = true,paramType = "query",defaultValue = "22.723223"),
     })
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody
