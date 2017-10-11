@@ -1,5 +1,8 @@
 package com.sftc.web.model.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.*;
 
 /**
@@ -8,23 +11,32 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "sftc_address_book")
+@ApiModel(value = "地址簿")
 public class AddressBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty("主键")
     private Long id;
-    // 用户编号
+
+    @ApiModelProperty("用户id")
     private int user_id;
-    // 映射关系 地址编号
+
+    @ApiModelProperty("地址id")
     private int address_id;
 
+    @ApiModelProperty("是否删除")
     private int is_delete;
+
+    @ApiModelProperty("是否神秘[废弃]")
     private int is_mystery;
 
-    // 地址类型 address_history / address_book
+    @ApiModelProperty("地址类型 address_history/address_book")
     private String address_type;
-    // 地址簿类型 sender / ship
+
+    @ApiModelProperty("地址簿类型 sender/ship")
     private String address_book_type;
-    // 创建时间
+
+    @ApiModelProperty("创建时间")
     private String create_time;
 
     public AddressBook() {

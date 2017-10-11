@@ -2,25 +2,34 @@ package com.sftc.web.model.entity;
 
 import com.sftc.web.model.Object;
 import com.sftc.web.model.entity.Address;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "sftc_address_history")
+@ApiModel(value = "历史地址")
 public class AddressHistory extends Object {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty("主键")
     private int id;
-    // 用户编号
+
+    @ApiModelProperty("用户id")
     private int user_id;
-    // 地址编号
+
+    @ApiModelProperty("地址id")
     private int address_id;
-    // 是否删除，transient修饰无法映射
+
+    @ApiModelProperty("是否删除")
     private int is_delete;
-    // 是否神秘件
+
+    @ApiModelProperty("是否神秘[废弃]")
     private int is_mystery;
-    // 创建时间
+
+    @ApiModelProperty("创建时间")
     private String create_time;
 
     public int getId() {return id;}

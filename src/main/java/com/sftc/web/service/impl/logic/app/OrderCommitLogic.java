@@ -336,7 +336,7 @@ public class OrderCommitLogic {
             return APIUtil.paramErrorResponse("order_id不能为空");
 
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
-        orderMapper.updateOrderRegionType(order_id, "REGIOzN_NATION");
+        orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
 
         Order order = orderMapper.selectOrderDetailByOrderIdForUpdate(order_id);
 
