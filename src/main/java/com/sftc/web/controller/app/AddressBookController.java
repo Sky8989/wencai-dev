@@ -15,14 +15,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@Api(value="AddressBookController", description = "地址簿")
+@Api(description = "地址簿11")
 @RequestMapping("addressBook")
 public class AddressBookController {
 
     @Resource
     private AddressBookService addressBookService;
 
-    @ApiOperation(value = "添加地址簿",notes = "添加地址簿",httpMethod = "POST",produces = "application/json")
+    @ApiOperation(value = "添加地址簿",httpMethod = "POST")
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse addAddress(@RequestBody Object object) throws Exception {
