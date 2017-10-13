@@ -123,12 +123,12 @@
     </tx:advice>
 
     <!--token验证-->
-    <bean id="authTokenAOPInterceptor" class="com.sftc.web.config.AuthTokenAOPInterceptor"/>
-    <aop:config proxy-target-class="true">
-        <aop:pointcut id="authCheckPointcut" expression="execution(* com.sftc.web.service.impl.logic.app.*Logic.*(..))"/>
-        <aop:aspect ref="authTokenAOPInterceptor" order="1">
-            <aop:before method="before" pointcut-ref="authCheckPointcut"/>
-        </aop:aspect>
-    </aop:config>
+    <!--<bean id="authTokenAOPInterceptor" class="com.sftc.web.config.AuthTokenAOPInterceptor"/>-->
+    <!--<aop:config proxy-target-class="true">-->
+        <!--<aop:pointcut id="authCheckPointcut" expression="execution(* com.sftc.web.service.impl.logic.app.*Logic.*(..))"/>-->
+        <!--<aop:aspect ref="authTokenAOPInterceptor" order="1">-->
+            <!--<aop:before method="before" pointcut-ref="authCheckPointcut"/>-->
+        <!--</aop:aspect>-->
+    <!--</aop:config>-->
 
 </beans>
