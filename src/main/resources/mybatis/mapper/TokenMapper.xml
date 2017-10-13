@@ -41,13 +41,20 @@
         <result property="access_token" column="access_token"/>
     </resultMap>
 
-    <select id="getTokenByMobile" parameterType="String" resultType="com.sftc.web.model.Token">
+    <select id="tokenInterceptor" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
+        SELECT sftc_user.*
+        FROM sftc_token, sftc_user
+        WHERE
+            sftc_user.id = sftc_token.user_id AND sftc_token.local_token = #{token}
+    </select>
+
+    <select id="getTokenByMobile" parameterType="java.lang.String" resultType="com.sftc.web.model.Token">
         SELECT t.access_token
         FROM sftc_user u, sftc_token t
         WHERE u.id = t.user_id AND u.mobile = #{mobile}
     </select>
 
-    <select id="selectUserIdByToken" parameterType="String" resultType="com.sftc.web.model.Token">
+    <select id="selectUserIdByToken" parameterType="java.lang.String" resultType="com.sftc.web.model.Token">
         SELECT *
         FROM sftc_token
         WHERE local_token = #{token}
