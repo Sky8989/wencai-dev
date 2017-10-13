@@ -44,10 +44,10 @@ public class OrderPayLogic {
 
         // 预约时间处理
         String reserve_time = (String) requestObject.getString("reserve_time");
-        if(reserve_time == null || reserve_time.equals("")){
-            Date date = new Date();
-            reserve_time = String.valueOf(date.getTime());
-        }
+//        if(reserve_time == null || reserve_time.equals("")){
+//            Date date = new Date();
+//            reserve_time = String.valueOf(date.getTime());
+//        }
         requestObject.remove("reserve_time");
         if (!reserve_time.equals("")) {
             reserve_time = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
