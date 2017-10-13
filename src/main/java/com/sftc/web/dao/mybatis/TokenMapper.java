@@ -1,6 +1,7 @@
 package com.sftc.web.dao.mybatis;
 
 import com.sftc.web.model.Token;
+import com.sftc.web.model.User;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -21,4 +22,6 @@ public interface TokenMapper {
     Token selectUserIdByToken(@Param("token") String token);
 
     List<Token> getTokenList(Token token);
+
+    User tokenInterceptor(String token);
 }
