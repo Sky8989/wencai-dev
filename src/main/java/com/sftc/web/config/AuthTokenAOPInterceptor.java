@@ -46,26 +46,26 @@ public class AuthTokenAOPInterceptor {
         }
     }
 
-    private void error(HttpServletResponse response, APIResponse error) {
-        response.reset();
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json; charset=utf-8");
-        OutputStreamWriter ow = null;
-        try {
-            ServletOutputStream out = response.getOutputStream();
-            ow = new OutputStreamWriter(out, "UTF-8");
-            ow.write(new Gson().toJson(error));
-        } catch (IOException e) {
-            e.fillInStackTrace();
-        } finally {
-            try {
-                ow.flush();
-                ow.close();
-            } catch (IOException e) {
-                e.fillInStackTrace();
-            }
-        }
-    }
+//    private void error(HttpServletResponse response, APIResponse error) {
+//        response.reset();
+//        response.setCharacterEncoding("UTF-8");
+//        response.setContentType("application/json; charset=utf-8");
+//        OutputStreamWriter ow = null;
+//        try {
+//            ServletOutputStream out = response.getOutputStream();
+//            ow = new OutputStreamWriter(out, "UTF-8");
+//            ow.write(new Gson().toJson(error));
+//        } catch (IOException e) {
+//            e.fillInStackTrace();
+//        } finally {
+//            try {
+//                ow.flush();
+//                ow.close();
+//            } catch (IOException e) {
+//                e.fillInStackTrace();
+//            }
+//        }
+//    }
 
     private APIResponse authTokenCheck(String token) throws Exception {
         User user = tokenMapper.tokenInterceptor(token);
