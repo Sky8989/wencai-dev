@@ -1,8 +1,11 @@
 //import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 //
-//public class TokenAOPIntercep extends HandlerInterceptorAdapter {
+//import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletResponse;
+//import java.util.Enumeration;
 //
-//    @Override
+//public class TokenAOPInterceptor extends HandlerInterceptorAdapter {
+//
 //    public boolean preHandle(HttpServletRequest request,
 //                             HttpServletResponse response, Object handler) throws Exception {
 //        Log.info(request);
@@ -32,14 +35,12 @@
 //        return true;
 //    }
 //
-//    @Override
 //    public void postHandle(HttpServletRequest request,
 //                           HttpServletResponse response, Object handler,
 //                           ModelAndView modelAndView) throws Exception {
 //        Log.info(request);
 //    }
 //
-//    @Override
 //    public void afterCompletion(HttpServletRequest request,
 //                                HttpServletResponse response, Object handler, Exception ex)
 //            throws Exception {
