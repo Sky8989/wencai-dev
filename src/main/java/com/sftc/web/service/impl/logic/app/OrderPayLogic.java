@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
+import java.util.Date;
+
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_QUOTES_URL;
 import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
@@ -42,6 +44,10 @@ public class OrderPayLogic {
 
         // 预约时间处理
         String reserve_time = (String) requestObject.getString("reserve_time");
+        if(reserve_time == null || reserve_time.equals("")){
+            Date date = new Date();
+            reserve_time = String.valueOf(date.getTime());
+        }
         requestObject.remove("reserve_time");
         if (!reserve_time.equals("")) {
             reserve_time = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
