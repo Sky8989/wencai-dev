@@ -2,6 +2,7 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.config.AuthToken;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.service.AddressBookService;
 import io.swagger.annotations.Api;
@@ -74,6 +75,7 @@ public class AddressBookController {
         return addressBookService.updateAddressBook(apiRequest);
     }
 
+    @AuthToken
     @ApiOperation(value = "009地址簿查找",httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "user_id",value = "用户id",required = true,paramType = "query",defaultValue = "10028"),
