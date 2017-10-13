@@ -9,6 +9,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
@@ -40,6 +41,14 @@ public class AuthTokenAOPInterceptor {
                     return APIUtil.selectErrorResponse(error+"",null);
                 }
             } else {
+//                HandlerInterceptorAdapter handlerInterceptorAdapter = new HandlerInterceptorAdapter() {
+//                    @Override
+//                    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+//                        return false;
+//                    }
+//
+//                };
+//                handlerInterceptorAdapter.preHandle(request,response,proceedingJoinPoint);
                 return APIUtil.selectErrorResponse("token验证失败", null);
             }
             return null;
