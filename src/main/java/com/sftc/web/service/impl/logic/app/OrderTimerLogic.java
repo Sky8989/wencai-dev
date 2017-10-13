@@ -59,9 +59,9 @@ public class OrderTimerLogic {
                     @Override
                     public void run() {
                         logger.info("开始提交大网预约单");
-                        List<Integer> orderIds = orderMapper.selectNationReserveOrders();
+                        List<String> orderIds = orderMapper.selectNationReserveOrders();
                         long currentTimeMillis = System.currentTimeMillis();
-                        for (int order_id : orderIds) {
+                        for (String order_id : orderIds) {
                             orderCommitLogic.nationOrderReserveCommit(order_id, currentTimeMillis);
                         }
                         logger.info("大网预约单提交完毕");
@@ -109,13 +109,13 @@ public class OrderTimerLogic {
                     @Override
                     public void run() {
                         logger.info("开始取消大网超时单");
-                        List<Integer> orderIds = orderMapper.selectNationUnCommitOrders();
-                        for (int order_id : orderIds) {
+                        List<String> orderIds = orderMapper.selectNationUnCommitOrders();
+                        for (String order_id : orderIds) {
                             orderCancelLogic.cancelNationUnCommitOrder(order_id, timeOutInterval);
                         }
                         //好友多包裹的订单 超时更新为DANKAL_OVERTIME 而不是CANCELED
-                        List<Integer> orderIds2 = orderMapper.selectMutilExpressOrders();
-                        for (int order_id : orderIds2) {
+                        List<String> orderIds2 = orderMapper.selectMutilExpressOrders();
+                        for (String order_id : orderIds2) {
                             orderCancelLogic.cancelSameUnCommitOrder(order_id, timeOutInterval);
                         }
                         logger.info("大网超时订单取消完毕");
@@ -162,8 +162,8 @@ public class OrderTimerLogic {
                     @Override
                     public void run() {
                         logger.info("开始取消同城超时单");
-                        List<Integer> orderIds = orderMapper.selectSameUnCommitOrders();
-                        for (int order_id : orderIds) {
+                        List<String> orderIds = orderMapper.selectSameUnCommitOrders();
+                        for (String order_id : orderIds) {
                             orderCancelLogic.cancelSameUnCommitOrder(order_id, timeOutIntervalForSame);
                         }
                         logger.info("同城超时订单取消完毕");

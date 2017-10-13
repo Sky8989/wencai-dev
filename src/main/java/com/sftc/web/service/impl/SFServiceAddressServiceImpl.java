@@ -60,11 +60,10 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         if (orderId == null || orderId.equals(""))
             return APIUtil.paramErrorResponse("order_id不能为空");
 
-        int order_id = Integer.parseInt(orderId);
-        if (order_id < 1)
+        if (orderId == null || orderId.equals(""))
             return APIUtil.paramErrorResponse("order_id无效");
 
-        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+        Order order = orderMapper.selectOrderDetailByOrderId(orderId);
         if (order == null)
             return APIUtil.selectErrorResponse("订单不存在", null);
 

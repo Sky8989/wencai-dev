@@ -49,7 +49,7 @@ public class OrderExpress extends Object {
     private int gift_card_id;
     private Double latitude;
     private Double longitude;
-    private int order_id;
+    private String order_id;
 
     // 错误信息
     private String attributes;
@@ -81,7 +81,7 @@ public class OrderExpress extends Object {
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String supplementary_info, String package_type, String object_type,
-                        String package_comments, String state, int sender_user_id, int order_id, String uuid, Double latitude, Double longitude) {
+                        String package_comments, String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -105,7 +105,7 @@ public class OrderExpress extends Object {
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String package_type, String object_type,
-                        String state, int sender_user_id, int order_id, String uuid, Double latitude, Double longitude) {
+                        String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -125,7 +125,7 @@ public class OrderExpress extends Object {
         this.longitude = longitude;
     }
 
-    public OrderExpress(String uuid, int order_id, Double longitude, Double latitude, String state) {
+    public OrderExpress(String uuid, String order_id, Double longitude, Double latitude, String state) {
         this.state = state;
         this.order_id = order_id;
         this.uuid = uuid;
@@ -145,7 +145,7 @@ public class OrderExpress extends Object {
     }
 
     public OrderExpress(String order_number, String package_type, String object_type,
-                        int order_id, String create_time, int is_use, String state, String uuid, int sender_user_id, String reserve_time) {
+                        String order_id, String create_time, int is_use, String state, String uuid, int sender_user_id, String reserve_time) {
         this.order_number = order_number;
         this.package_type = package_type;
         this.object_type = object_type;
@@ -195,7 +195,7 @@ public class OrderExpress extends Object {
             this.ship_mobile = request.getParameter("ship_mobile");
         }
         if (request.getParameter("order_id") != null && !"".equals(request.getParameter("order_id"))) {
-            this.order_id = Integer.parseInt(request.getParameter("order_id"));
+            this.order_id = request.getParameter("order_id");
         }
     }
 
@@ -312,11 +312,11 @@ public class OrderExpress extends Object {
         this.package_type = package_type;
     }
 
-    public int getOrder_id() {
+    public String getOrder_id() {
         return order_id;
     }
 
-    public void setOrder_id(int order_id) {
+    public void setOrder_id(String order_id) {
         this.order_id = order_id;
     }
 

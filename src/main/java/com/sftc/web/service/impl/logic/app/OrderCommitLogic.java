@@ -116,7 +116,7 @@ public class OrderCommitLogic {
     /**
      * 大网预约订单提交
      */
-    public void nationOrderReserveCommit(int order_id, long currentTimeMillis) {
+    public void nationOrderReserveCommit(String order_id, long currentTimeMillis) {
 
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         //后期订单和快递改为一对一之后，请求为object对象，遍历里面的order对象来提交？
@@ -211,8 +211,8 @@ public class OrderCommitLogic {
     /// 好友同城订单提交
     private APIResponse friendSameOrderCommit(JSONObject requestObject) {
         // Param
-        int order_id = requestObject.getJSONObject("order").getInt("order_id");
-        if (order_id < 0)
+        String order_id = requestObject.getJSONObject("order").getString("order_id");
+        if (order_id == null || order_id.equals(""))
             return APIUtil.paramErrorResponse("order_id不能为空");
 
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
@@ -331,8 +331,8 @@ public class OrderCommitLogic {
     /// 好友大网订单提交
     private synchronized APIResponse friendNationOrderCommit(JSONObject requestObject) {
         // handle param
-        int order_id = requestObject.getJSONObject("order").getInt("order_id");
-        if (order_id < 0)
+        String order_id = requestObject.getJSONObject("order").getString("order_id");
+        if (order_id ==null || order_id.equals(""))
             return APIUtil.paramErrorResponse("order_id不能为空");
 
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");

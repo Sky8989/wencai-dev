@@ -40,7 +40,7 @@ public class OrderCancelLogic {
     public APIResponse cancelOrder(Object object) {
         JSONObject paramJsonObject = JSONObject.fromObject(object);
         //获取订单id，便于后续取消订单操作的取用
-        int id = paramJsonObject.getInt("order_id");
+        String id = paramJsonObject.getString("order_id");
         paramJsonObject.remove("order_id");
         String access_token = paramJsonObject.getString("access_token");
         //对重复取消订单的情况进行处理
@@ -64,7 +64,7 @@ public class OrderCancelLogic {
     /**
      * 取消大网超时订单
      */
-    public void cancelNationUnCommitOrder(int order_id, long timeOutInterval) {
+    public void cancelNationUnCommitOrder(String order_id, long timeOutInterval) {
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
             // 取消大网订单
@@ -76,7 +76,7 @@ public class OrderCancelLogic {
     /**
      * 取消同城超时订单
      */
-    public void cancelSameUnCommitOrder(int order_id, long timeOutInterval) {
+    public void cancelSameUnCommitOrder(String order_id, long timeOutInterval) {
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
             // 取消同城订单
@@ -90,7 +90,7 @@ public class OrderCancelLogic {
     //////////////////// Private Method ////////////////////
 
     // 取消大网订单
-    private APIResponse cancelNATIONOrder(int order_id) {
+    private APIResponse cancelNATIONOrder(String order_id) {
         try {
             orderMapper.updateCancelOrderById(order_id);
             orderExpressMapper.updateOrderExpressCanceled(order_id);
@@ -101,7 +101,7 @@ public class OrderCancelLogic {
     }
 
     // 取消同城订单 与 未提交单
-    private APIResponse cancelSAMEOrder(int order_id, String access_token) {
+    private APIResponse cancelSAMEOrder(String order_id, String access_token) {
 
         List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
@@ -141,7 +141,7 @@ public class OrderCancelLogic {
         return APIUtil.getResponse(APIStatus.SUCCESS, null);
     }
 
-    private void addCancelRecord(int order_id, String reason, String question_describe) {
+    private void addCancelRecord(String order_id, String reason, String question_describe) {
         OrderCancel orderCancel = new OrderCancel();
         orderCancel.setOrder_id(order_id);
         orderCancel.setReason(reason);

@@ -30,10 +30,10 @@ public class OrderStatusLogic {
     public APIResponse updateOrderStatus(APIRequest request) {
         JSONObject requestObject = JSONObject.fromObject(request.getRequestParam());
         // Param
-        int order_id = requestObject.getInt("order_id");
+        String order_id = requestObject.getString("order_id");
         String status = requestObject.getString("status");
 
-        if (order_id < 1)
+        if (order_id == null || order_id.equals(""))
             return APIUtil.paramErrorResponse("参数order_id不能为空");
         String statusError = verifyParamStatus(request);
         if (statusError != null)

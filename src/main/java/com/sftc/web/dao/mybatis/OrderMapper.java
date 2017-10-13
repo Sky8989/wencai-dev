@@ -23,7 +23,7 @@ public interface OrderMapper {
     /**
      * 更新订单区域类型
      */
-    void updateOrderRegionType(@Param("id") int id, @Param("region_type") String region_type);
+    void updateOrderRegionType(@Param("id") String id, @Param("region_type") String region_type);
 
     /**
      * 查询我的订单列表
@@ -41,12 +41,12 @@ public interface OrderMapper {
     /**
      * 根据订单id查询订单详情
      */
-    Order selectOrderDetailByOrderId(int order_id);
+    Order selectOrderDetailByOrderId(String order_id);
 
     /**
      * 添加了行级锁和排他锁的订单详情查询
      */
-    Order selectOrderDetailByOrderIdForUpdate(int order_id);
+    Order selectOrderDetailByOrderIdForUpdate(String order_id);
 
     /**
      * 根据快递id查询订单详情
@@ -56,22 +56,22 @@ public interface OrderMapper {
     /**
      * 查询大网预约订单列表
      */
-    List<Integer> selectNationReserveOrders();
+    List<String> selectNationReserveOrders();
 
     /**
      * 查询大网未提交的订单列表
      */
-    List<Integer> selectNationUnCommitOrders();
+    List<String> selectNationUnCommitOrders();
 
     /**
      * 查询好友多包裹未提交的订单列表
      */
-    List<Integer> selectMutilExpressOrders();
+    List<String> selectMutilExpressOrders();
 
     /**
      * 查询同城未提交的订单列表
      */
-    List<Integer> selectSameUnCommitOrders();
+    List<String> selectSameUnCommitOrders();
 
     /**
      * 根据uuid查询订单详情
@@ -79,7 +79,7 @@ public interface OrderMapper {
     Order selectOrderDetailByUuid(@Param("uuid") String uuid);
 
     // 取消订单，更新is_cancel字段
-    void updateCancelOrderById(int id);
+    void updateCancelOrderById(String id);
 
 
     //  下面是cms系统用到的mapper

@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.util.List;
 
 public class OrderFriendCallback {
-    private int id;
+    private String id;
     private String sender_avatar;
     private String sender_name;
     private int sender_user_id;
@@ -115,11 +115,11 @@ public class OrderFriendCallback {
         }
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

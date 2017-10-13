@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Order extends Object {
 
-    private int id;
+    private String id;
     // 创建时间
     private String create_time;
     // 支付时间
@@ -65,7 +65,7 @@ public class Order extends Object {
     public Order() {
     }
 
-    public Order(double longitude, double latitude, int id) {
+    public Order(double longitude, double latitude, String id) {
         this.id = id;
         this.longitude = longitude;
         this.latitude = latitude;
@@ -140,7 +140,7 @@ public class Order extends Object {
      */
     public Order(HttpServletRequest request) {
         if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
-            this.id = Integer.parseInt(request.getParameter("id"));
+            this.id = request.getParameter("id");
         }
         if (request.getParameter("order_type") != null && !"".equals(request.getParameter("order_type"))) {
             this.order_type = request.getParameter("order_type");
@@ -153,11 +153,11 @@ public class Order extends Object {
         }
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

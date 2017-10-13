@@ -33,15 +33,15 @@ public interface OrderExpressMapper {
     void updateOrderExpressStatusByUUID(@Param("uuid") String uuid, @Param("status") String status);
 
     // 更改 快递状态 为 取消 CANCELED
-    void updateOrderExpressCanceled(int order_id);
+    void updateOrderExpressCanceled(String order_id);
 
     // 更改 快递状态 为 超时 OVERTIME
-    void updateOrderExpressOvertime(int order_id);
+    void updateOrderExpressOvertime(String order_id);
 
     // 更新快递信息，by 快递id，用于好友填写订单时回填信息
     void updateOrderExpressByOrderExpressId(OrderExpress orderExpress);
 
-    List<OrderExpress> findAllOrderExpressByOrderId(int order_id);
+    List<OrderExpress> findAllOrderExpressByOrderId(String order_id);
 
     /**
      * 根据uuid查询快递

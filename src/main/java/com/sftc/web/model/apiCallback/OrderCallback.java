@@ -4,7 +4,7 @@ import java.util.List;
 
 public class OrderCallback {
 
-    private int id;
+    private String id;
     private String sender_name;
     private String sender_addr;
     private String order_type;
@@ -96,11 +96,11 @@ public class OrderCallback {
         }
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
