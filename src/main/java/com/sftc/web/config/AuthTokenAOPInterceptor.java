@@ -5,6 +5,8 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.model.User;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -20,18 +22,27 @@ public class AuthTokenAOPInterceptor {
     @Resource
     private TokenMapper tokenMapper;
 
-    public void before() throws Throwable {
+    public Object before(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         ServletRequestAttributes res = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = res.getRequest();
         HttpServletResponse response = res.getResponse();
         String token = request.getHeader("token");
-        if (token != null && !token.equals("")) {
-            APIResponse error = authTokenCheck(token);//校验用户
-            if (error != null) {
-                error(response, error);
+        //获取当前执行的方法
+        MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
+        //判断当前执行的方法是否存在自定义的注解
+        if (methodSignature.getMethod().isAnnotationPresent(AuthToken.class)) {
+            //只需要过滤登录就可，所以考虑在登录方法上加上注解，存在注解的就不验证token
+           return proceedingJoinPoint.proceed();
+        }else {
+            if (token != null && !token.equals("")) {
+                APIResponse error = authTokenCheck(token);//校验用户
+                if (error != null) {
+                    return APIUtil.selectErrorResponse(error+"",null);
+                }
+            } else {
+                return APIUtil.selectErrorResponse("token验证失败", null);
             }
-        } else {
-            error(response, APIUtil.selectErrorResponse("token验证失败", null));
+            return null;
         }
     }
 
