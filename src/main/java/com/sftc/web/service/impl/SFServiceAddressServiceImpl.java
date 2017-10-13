@@ -208,7 +208,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
                     try {
                         if (o1.getDeliverTime() != null)
                             time1 = simpleDateFormat.parse(o1.getDeliverTime()).getTime();
-                        if (o2.getDeliverTime() != null || o2.getClosedTime() == null || o2.getClosedTime().equals(""))
+                        if (o2.getDeliverTime() != null)
                             time2 = simpleDateFormat.parse(o2.getDeliverTime()).getTime();
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -226,6 +226,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
            list.add(lists.get(1));
            return APIUtil.getResponse(SUCCESS,list);
        }
+
     }
 
     public APIResponse updateServiceAddress(APIRequest request) {
