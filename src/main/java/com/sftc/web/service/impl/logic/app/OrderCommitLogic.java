@@ -489,8 +489,10 @@ public class OrderCommitLogic {
         order.setVoice_time(Integer.parseInt((String) orderOBJ.get("voice_time")));
         order.setRegion_type("REGION_SAME");
 
-        HttpPost post = new HttpPost(SF_REQUEST_URL);
+        HttpPost post = new HttpPost();
+        post = new HttpPost(SF_REQUEST_URL);
         post.addHeader("PushEnvelope-Device-Token", (String) requestOBJ.getJSONObject("merchant").get("access_token"));
+
 //        JSONObject tempObject = JSONObject.fromObject(object);
 //        tempObject.remove("order");
         //使用修改后的请求体
@@ -749,7 +751,6 @@ public class OrderCommitLogic {
             addressHistoryMapper.insertAddressHistory(addressHistory);
         }
     }
-
 
     /// 插入地址簿  要去重
     // 通用地址簿插入utils
