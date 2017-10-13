@@ -49,4 +49,13 @@ public class UserController extends BaseController {
         apiRequest.setRequestParam(object);
         return userService.updateMobile(apiRequest);
     }
+
+    //10-12日提出的新需求 更新个人信息
+    @RequestMapping(value = "/merchants/me", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse updatePersonMessage(@RequestBody Object object) throws Exception {
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(object);
+        return userService.updatePersonMessage(apiRequest);
+    }
 }

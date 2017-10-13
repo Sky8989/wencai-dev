@@ -114,6 +114,9 @@ public interface OrderService {
      */
     APIResponse screenShot(APIRequest request);
 
+    //面对面取件
+//    APIResponse faceOrdered(APIRequest request);
+
 
     //////////////// CMS ////////////////
 

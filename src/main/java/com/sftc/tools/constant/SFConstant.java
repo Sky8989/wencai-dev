@@ -55,7 +55,6 @@ public class SFConstant {
      */
     public static String SF_LOGIN = SF_SAME_DOMAIN + "merchants/me";
 
-
     /////////////// 同城订单相关 ///////////////
 
     /**
@@ -79,9 +78,10 @@ public class SFConstant {
      */
     public static String SF_CONSTANTS_URL = SF_SAME_DOMAIN + "constants/";
     /**
-     * 订单状态同步
+     * 订单状态同步SF_NATION_ORDER_URL
      */
     public static String SF_ORDER_SYNC_URL = SF_SAME_DOMAIN + "requests/{uuid}/status?batch=true";
+
 
 
     /////////////// 大网用户相关 ///////////////

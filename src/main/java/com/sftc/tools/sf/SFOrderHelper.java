@@ -21,6 +21,8 @@ public class SFOrderHelper {
             sb.append(RANDOM_SOURCE_STRING.charAt(number));
         }
         String result = MD5Util.MD5(sb.toString());
+//        String timeRandom = Long.toString(System.currentTimeMillis());
+//        String result = "C" + timeRandom +randomResult;
 
         if (result != null && result.length() > ORDER_LENGTH) {
             result = result.substring(0, ORDER_LENGTH);

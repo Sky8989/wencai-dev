@@ -8,6 +8,7 @@ import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.service.EvaluateService;
 import com.sftc.web.service.OrderService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @Controller
-@Api(description = "订单")
+@Api(description = "订单相关接口")
 @RequestMapping("order")
 public class OrderController extends BaseController {
 
@@ -29,9 +30,7 @@ public class OrderController extends BaseController {
     @Resource
     private EvaluateService evaluateService;
 
-    /**
-     * 普通订单提交
-     */
+    @ApiOperation(value = "普通订单提交",httpMethod = "POST")
     @RequestMapping(value = "/normalCommit", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse placeOrder(@RequestBody Object object) throws Exception {
@@ -40,9 +39,7 @@ public class OrderController extends BaseController {
         return orderService.addNormalOrderCommit(request);
     }
 
-    /**
-     * 好友订单提交
-     */
+    @ApiOperation(value = "好友订单提交",httpMethod = "POST")
     @RequestMapping(value = "/friendCommit", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse friendOrderCommit(@RequestBody Object object) throws Exception {
@@ -51,27 +48,21 @@ public class OrderController extends BaseController {
         return orderService.addFriendOrderCommit(request);
     }
 
-    /**
-     * 计价
-     */
+    @ApiOperation(value = "计价接口",httpMethod = "POST")
     @RequestMapping(value = "/countPrice", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse countPrice(@RequestBody Object object) throws Exception {
         return orderService.countPrice(object);
     }
 
-    /**
-     * 好友填写收件
-     */
+    @ApiOperation(value = "好友填写收件",httpMethod = "POST")
     @RequestMapping(value = "/fill", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse fillOrder(@RequestBody Map rowData) throws Exception {
         return orderService.friendFillOrder(rowData);
     }
 
-    /**
-     * 寄件人填写订单
-     */
+    @ApiOperation(value = "寄件人填写订单",httpMethod = "POST")
     @RequestMapping(value = "/senderplace", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse friendPlaceOrder(@RequestBody OrderParam orderParam) throws Exception {
@@ -80,18 +71,14 @@ public class OrderController extends BaseController {
         return orderService.friendPlaceOrder(request);
     }
 
-    /**
-     * 支付订单
-     */
+    @ApiOperation(value = "支付订单",httpMethod = "POST")
     @RequestMapping(value = "/pay", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse payOrder(HttpServletRequest request) throws Exception {
         return orderService.payOrder(new APIRequest(request));
     }
 
-    /**
-     * 订单详情
-     */
+    @ApiOperation(value = "订单详情",httpMethod = "GET")
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse detail(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -99,9 +86,7 @@ public class OrderController extends BaseController {
         return orderService.selectOrderDetail(new APIRequest(request));
     }
 
-    /**
-     * 我的订单列表
-     */
+    @ApiOperation(value = "我的订单列表",httpMethod = "POST")
     @RequestMapping(value = "/my", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse myOrder(@RequestBody MyOrderParam myOrderParam) throws Exception {
@@ -110,9 +95,7 @@ public class OrderController extends BaseController {
         return orderService.getMyOrderList(request);
     }
 
-    /**
-     * 我的好友订单列表
-     */
+    @ApiOperation(value = "我的好友订单列表",httpMethod = "POST")
     @RequestMapping(value = "/friendCircle", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse friendOrder(@RequestBody MyOrderParam myOrderParam) throws Exception {
@@ -121,18 +104,14 @@ public class OrderController extends BaseController {
         return orderService.getMyFriendCircleOrderList(request);
     }
 
-    /**
-     * 快递详情
-     */
+    @ApiOperation(value = "快递详情",httpMethod = "GET")
     @RequestMapping(value = "/expressDetail", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse placeOrderDetail(HttpServletRequest request) throws Exception {
         return orderService.selectExpressDetail(new APIRequest(request));
     }
 
-    /**
-     * 更改订单状态
-     */
+    @ApiOperation(value = "更改订单状态",httpMethod = "POST")
     @RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse updateOrderStatus(@RequestBody Object object) throws Exception {
@@ -141,9 +120,7 @@ public class OrderController extends BaseController {
         return orderService.updateOrderStatus(request);
     }
 
-    /**
-     * 更改订单快递状态
-     */
+    @ApiOperation(value = "更改快递状态",httpMethod = "POST")
     @RequestMapping(value = "/updateExpressStatus", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse updateOrderExpressStatus(@RequestBody Object object) throws Exception {
@@ -152,36 +129,28 @@ public class OrderController extends BaseController {
         return orderService.updateOrderExpressStatus(request);
     }
 
-    /**
-     * 评价小哥（评价顺丰订单）
-     */
+    @ApiOperation(value = "评价小哥 评价顺丰订单",httpMethod = "POST")
     @RequestMapping(value = "/evaluateSingle", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse evaluate(@RequestBody Object object) throws Exception {
         return orderService.evaluateSingle(object);
     }
 
-    /**
-     * 取消订单
-     */
+    @ApiOperation(value = "取消订单",httpMethod = "POST")
     @RequestMapping(value = "/cancelOrder", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse cancelOrder(@RequestBody Object object) throws Exception {
         return orderService.cancelOrder(object);
     }
 
-    /**
-     * 时间规则
-     */
+    @ApiOperation(value = "时间规则",httpMethod = "POST")
     @RequestMapping(value = "/constants", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse constants(HttpServletRequest request) throws Exception {
         return orderService.timeConstants(new APIRequest(request));
     }
 
-    /**
-     * 给顺丰调用的，同城单转大网单
-     */
+    @ApiOperation(value = "30分钟未揽件同城单转大网单(给顺丰调用)",httpMethod = "POST")
     @RequestMapping(value = "/transform", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse transformOrder(@RequestBody Object object) throws Exception {
@@ -190,18 +159,14 @@ public class OrderController extends BaseController {
         return orderService.transformOrderFromSameToNation(request);
     }
 
-    /**
-     * 获取 大网订单的评价信息
-     */
+    @ApiOperation(value = "获取大网订购的评价信息",httpMethod = "GET")
     @RequestMapping(value = "/getEvaluate", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse getEvaluate(String uuid) throws Exception {
         return evaluateService.getEvaluate(uuid);
     }
 
-    /**
-     * 设置大网预约单定时器
-     */
+    @ApiOperation(value = "设置大网预约定时器",httpMethod = "POST")
     @RequestMapping(value = "/reserve/setup", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse setupReserveTimer(@RequestBody Object object) throws Exception {
@@ -210,9 +175,7 @@ public class OrderController extends BaseController {
         return orderService.setupReserveNationOrderCommitTimer(request);
     }
 
-    /**
-     * 设置大网超时去取消定时器
-     */
+    @ApiOperation(value = "设置大网超时取消定时器",httpMethod = "POST")
     @RequestMapping(value = "/cancel/setup", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse setupCancelNationOrderTimer(@RequestBody Object object) throws Exception {
@@ -221,9 +184,7 @@ public class OrderController extends BaseController {
         return orderService.setupCancelNationOrderTimer(request);
     }
 
-    /**
-     * 设置同城超时取消定时器
-     */
+    @ApiOperation(value = "设置同城超时取消定时器",httpMethod = "POST")
     @RequestMapping(value = "/cancel/SameSetup", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse setupCancelSameOrderTimer(@RequestBody Object object) throws Exception {
@@ -232,9 +193,7 @@ public class OrderController extends BaseController {
         return orderService.setupCancelSameOrderTimer(request);
     }
 
-    /**
-     * 设置兜底记录已读
-     */
+    @ApiOperation(value = "设置兜底记录已读",httpMethod = "POST")
     @RequestMapping(value = "/transform/read", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse readExpressTransform(@RequestBody Object object) throws Exception {
@@ -243,9 +202,7 @@ public class OrderController extends BaseController {
         return orderService.readExpressTransform(request);
     }
 
-    /**
-     * 订单分享图片
-     */
+    @ApiOperation(value = "订单分享图片",httpMethod = "POST")
     @RequestMapping(value = "/share/screenShot", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse shareOrderImage(@RequestBody Object object) throws Exception {
@@ -253,4 +210,13 @@ public class OrderController extends BaseController {
         request.setRequestParam(object);
         return orderService.screenShot(request);
     }
+
+//    @ApiOperation(value = "面对面取件",httpMethod = "POST")
+//    @RequestMapping(value = "/faceOrder",method = RequestMethod.POST)
+//    public @ResponseBody
+//    APIResponse faceOrdered(@RequestBody Object object) throws Exception{
+//        APIRequest apiRequest = new APIRequest();
+//        apiRequest.setRequestParam(object);
+//        return orderService.faceOrdered(apiRequest);
+//    }
 }

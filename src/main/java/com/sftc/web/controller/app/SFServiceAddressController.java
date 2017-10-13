@@ -4,6 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.service.SFServiceAddressService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ public class SFServiceAddressController {
     @Resource
     private SFServiceAddressService sfServiceAddressService;
 
+    @ApiOperation(value = "设置大网预约定时器",httpMethod = "POST")
     @RequestMapping(value = "address/update", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse updateSFServiceAddress(HttpServletRequest request) throws Exception {

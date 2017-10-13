@@ -13,6 +13,9 @@ import com.sftc.web.model.wechat.WechatUser;
 import com.sftc.web.service.MessageService;
 import com.sftc.web.service.UserService;
 import net.sf.json.JSONObject;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
@@ -287,6 +290,25 @@ public class UserServiceImpl implements UserService {
         }
         // 2 走注册流程
         return messageService.register(apiRequest);
+    }
+
+    //10-12日提出的新需求 更新个人信息
+    public APIResponse updatePersonMessage(APIRequest apiRequest) throws Exception {
+        Object requestParam = apiRequest.getRequestParam();
+        JSONObject jsonObject = JSONObject.fromObject(requestParam);
+        JSONObject merchants = jsonObject.getJSONObject("merchant");
+        String json = merchants.toString();
+        String access_token = jsonObject.getString("token");
+        RequestBody rb = RequestBody.create(null, json);
+        Request request = new Request.Builder().
+                url(SF_LOGIN).
+                addHeader("Content-Type", "application/json").
+                addHeader("PushEnvelope-Device-Token", access_token)
+                .put(rb).build();
+        OkHttpClient client = new OkHttpClient();
+        okhttp3.Response response = client.newCall(request).execute();
+        if (response.code() == 200) return null;//正常情况返回null
+        return APIUtil.logicErrorResponse("更新个人信息失败", response.body());
     }
 
     /**

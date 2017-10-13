@@ -9,7 +9,9 @@ import com.sftc.web.model.apiCallback.ContactCallback;
 import com.sftc.web.model.reqeustParam.UserContactParam;
 import com.sftc.web.model.sfmodel.Orders;
 import com.sftc.web.service.UserContactService;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -18,6 +20,8 @@ import java.lang.Object;
 import java.util.List;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
+import static com.sftc.tools.constant.SFConstant.SF_ORDERROUTE_URL;
 import static com.sftc.tools.constant.SFConstant.SF_ORDER_SYNC_URL;
 
 @Service("userContactService")

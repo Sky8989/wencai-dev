@@ -111,6 +111,9 @@ public class OrderServiceImpl implements OrderService {
         return orderOtherLogic.screenShot(request);
     }
 
+    //面对面下单
+//    public APIResponse faceOrdered(APIRequest request) {return orderCommitLogic.faceOrdered(request);}
+
     public APIResponse evaluateSingle(Object object) {
         return orderEvaluateLogic.evaluateSingle(object);
     }

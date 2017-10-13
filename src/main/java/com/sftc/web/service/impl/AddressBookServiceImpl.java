@@ -1,6 +1,5 @@
 package com.sftc.web.service.impl;
 
-
 import com.sftc.tools.api.*;
 import com.sftc.web.dao.jpa.AddressBookDao;
 import com.sftc.web.dao.jpa.AddressDao;
@@ -135,22 +134,22 @@ public class AddressBookServiceImpl implements AddressBookService {
         if (!paramObject.containsKey("id")) return APIUtil.paramErrorResponse("地址簿id为空");
 
         //地址的参数中只有补充地址可以为空
-        JSONObject address_OBJ1 = paramObject.getJSONObject("address");
-        if (!address_OBJ1.containsKey("name")||address_OBJ1.getString("name").equals(""))
+        JSONObject address_OBJ = paramObject.getJSONObject("address");
+        if (!address_OBJ.containsKey("name")||address_OBJ.getString("name").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数name为空");
-        if (!address_OBJ1.containsKey("phone")||address_OBJ1.getString("phone").equals(""))
+        if (!address_OBJ.containsKey("phone")||address_OBJ.getString("phone").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数phone为空");
-        if (!address_OBJ1.containsKey("province")||address_OBJ1.getString("province").equals(""))
+        if (!address_OBJ.containsKey("province")||address_OBJ.getString("province").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数province为空");
-        if (!address_OBJ1.containsKey("city")||address_OBJ1.getString("city").equals(""))
+        if (!address_OBJ.containsKey("city")||address_OBJ.getString("city").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数city为空");
-        if (!address_OBJ1.containsKey("area")||address_OBJ1.getString("area").equals(""))
+        if (!address_OBJ.containsKey("area")||address_OBJ.getString("area").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数area为空");
-        if (!address_OBJ1.containsKey("address")||address_OBJ1.getString("address").equals(""))
+        if (!address_OBJ.containsKey("address")||address_OBJ.getString("address").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数address为空");
-        if (!address_OBJ1.containsKey("longitude")||address_OBJ1.getString("longitude").equals(""))
+        if (!address_OBJ.containsKey("longitude")||address_OBJ.getString("longitude").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数longitude为空");
-        if (!address_OBJ1.containsKey("latitude")||address_OBJ1.getString("latitude").equals(""))
+        if (!address_OBJ.containsKey("latitude")||address_OBJ.getString("latitude").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数latitude为空");
 
         ///更新 地址簿记录时间 包括映射关系和地址实体的时间
@@ -160,7 +159,6 @@ public class AddressBookServiceImpl implements AddressBookService {
         addressBookParam.setCreate_time(create_time);
 
         // 查找重复信息  去重
-        JSONObject address_OBJ = paramObject.getJSONObject("address");
         String supplementary_info = address_OBJ.containsKey("supplementary_info") ? address_OBJ.getString("supplementary_info") : null;
         List<AddressBookDTO> addressBookDTOList = addressBookMapper.selectDuplicateAddress(
                 address_OBJ.getString("name"),
