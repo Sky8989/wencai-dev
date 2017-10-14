@@ -5,12 +5,15 @@ import com.sftc.tools.api.APIPostUtil;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.web.dao.jpa.OrderCancelDao;
+import com.sftc.web.dao.jpa.OrderDao;
+import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.OrderCancelMapper;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
-import com.sftc.web.model.Order;
-import com.sftc.web.model.OrderCancel;
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.entity.Order;
+import com.sftc.web.model.entity.OrderCancel;
+import com.sftc.web.model.entity.OrderExpress;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Component;
@@ -30,7 +33,12 @@ public class OrderCancelLogic {
     private OrderExpressMapper orderExpressMapper;
     @Resource
     private OrderCancelMapper orderCancelMapper;
-
+    @Resource
+    private OrderDao orderDao;
+    @Resource
+    private OrderExpressDao orderExpressDao;
+    @Resource
+    private OrderCancelDao orderCancelDao;
     //////////////////// Public Method ////////////////////
 
     /**
@@ -40,7 +48,7 @@ public class OrderCancelLogic {
     public APIResponse cancelOrder(Object object) {
         JSONObject paramJsonObject = JSONObject.fromObject(object);
         //获取订单id，便于后续取消订单操作的取用
-        int id = paramJsonObject.getInt("order_id");
+        String id = paramJsonObject.getString("order_id");
         paramJsonObject.remove("order_id");
         String access_token = paramJsonObject.getString("access_token");
         //对重复取消订单的情况进行处理
@@ -64,7 +72,7 @@ public class OrderCancelLogic {
     /**
      * 取消大网超时订单
      */
-    public void cancelNationUnCommitOrder(int order_id, long timeOutInterval) {
+    public void cancelNationUnCommitOrder(String order_id, long timeOutInterval) {
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
             // 取消大网订单
@@ -76,13 +84,19 @@ public class OrderCancelLogic {
     /**
      * 取消同城超时订单
      */
-    public void cancelSameUnCommitOrder(int order_id, long timeOutInterval) {
+    public void cancelSameUnCommitOrder(String order_id, long timeOutInterval) {
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
             // 取消同城订单
-            orderMapper.updateCancelOrderById(order_id);
+            Order order1 = orderDao.findOne(order_id);
+            order1.setIs_cancel("Cancelled");
+            orderDao.save(order1);
             // 同城 超时未填写或者支付超时 都更新为超时OVERTIME
-            orderExpressMapper.updateOrderExpressOvertime(order_id);
+            List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
+            for(OrderExpress orderExpress1 : orderExpress){
+                orderExpress1.setState("CANCELED");
+                orderExpressDao.save(orderExpress1);
+            }
             addCancelRecord(order_id, "超时软取消", "同城");
         }
     }
@@ -90,10 +104,16 @@ public class OrderCancelLogic {
     //////////////////// Private Method ////////////////////
 
     // 取消大网订单
-    private APIResponse cancelNATIONOrder(int order_id) {
+    private APIResponse cancelNATIONOrder(String order_id) {
         try {
-            orderMapper.updateCancelOrderById(order_id);
-            orderExpressMapper.updateOrderExpressCanceled(order_id);
+            Order order = orderDao.findOne(order_id);
+            order.setIs_cancel("Cancelled");
+            orderDao.save(order);
+            List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
+            for(OrderExpress orderExpress1 : orderExpress){
+                orderExpress1.setState("CANCELED");
+                orderExpressDao.save(orderExpress1);
+            }
             return APIUtil.getResponse(APIStatus.SUCCESS, "订单取消成功");
         } catch (Exception e) {
             return APIUtil.logicErrorResponse("数据库操作异常", e);
@@ -101,7 +121,7 @@ public class OrderCancelLogic {
     }
 
     // 取消同城订单 与 未提交单
-    private APIResponse cancelSAMEOrder(int order_id, String access_token) {
+    private APIResponse cancelSAMEOrder(String order_id, String access_token) {
 
         List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
@@ -133,20 +153,27 @@ public class OrderCancelLogic {
 
         // 订单还未提交给顺丰的情况，只更新order的信息即可
         // 订单已提交，仍然需要更新
-        orderMapper.updateCancelOrderById(order_id);
-        orderExpressMapper.updateOrderExpressCanceled(order_id);
+        Order order1 = orderDao.findOne(order_id);
+        order1.setIs_cancel("Cancelled");
+        orderDao.save(order1);
+        List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
+        for(OrderExpress orderExpress1 : orderExpress){
+            orderExpress1.setState("CANCELED");
+            orderExpressDao.save(orderExpress1);
+        }
+
         // 添加订单取消记录
         addCancelRecord(order_id, isDidCommitToSF ? "主动取消" : "主动软取消", "同城");
 
         return APIUtil.getResponse(APIStatus.SUCCESS, null);
     }
 
-    private void addCancelRecord(int order_id, String reason, String question_describe) {
+    private void addCancelRecord(String order_id, String reason, String question_describe) {
         OrderCancel orderCancel = new OrderCancel();
         orderCancel.setOrder_id(order_id);
         orderCancel.setReason(reason);
         orderCancel.setQuestion_describe(question_describe);
         orderCancel.setCreate_time(Long.toString(System.currentTimeMillis()));
-        orderCancelMapper.addCancelOrder(orderCancel);
+        orderCancelDao.save(orderCancel);
     }
 }

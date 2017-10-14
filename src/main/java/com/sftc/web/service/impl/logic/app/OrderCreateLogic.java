@@ -5,10 +5,12 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.common.EmojiFilter;
 import com.sftc.tools.sf.SFOrderHelper;
+import com.sftc.web.dao.jpa.OrderDao;
+import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.Message;
-import com.sftc.web.model.Order;
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.entity.Order;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.UserContactNew;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import net.sf.json.JSONObject;
@@ -40,6 +42,10 @@ public class OrderCreateLogic {
     private MessageMapper messageMapper;
     @Resource
     private OrderCommitLogic orderCommitLogic;
+    @Resource
+    private OrderDao orderDao;
+    @Resource
+    private OrderExpressDao orderExpressDao;
 
     /**
      * 寄件人填写订单
@@ -66,7 +72,7 @@ public class OrderCreateLogic {
 
         // 插入订单表
         Order order = new Order(orderParam);
-        orderMapper.addOrder2(order);
+        orderDao.save(order);
 
         // 插入快递表
         OrderExpress orderExpress = new OrderExpress();
@@ -82,7 +88,7 @@ public class OrderCreateLogic {
         for (int i = 0; i < orderParam.getPackage_count(); i++) {
             // 写入uuid 保证每个快递的uuid不同
             orderExpress.setUuid(SFOrderHelper.getOrderNumber());
-            orderExpressMapper.addOrderExpress(orderExpress);//TODO:要插入包裹补充信息
+            orderExpressDao.save(orderExpress);//TODO:要插入包裹补充信息
         }
 
         // 插入地址表
@@ -101,7 +107,7 @@ public class OrderCreateLogic {
         JSONObject paramOBJ = JSONObject.fromObject(rowData);
 //        // 修复 空格对Gson的影响
 //        String strJsonResult = orderExpressStr.replace(" ", "");
-//        OrderExpress orderExpress = new Gson().fromJson(strJsonResult, OrderExpress.class);
+//        OrderExpressDTO orderExpress = new Gson().fromJson(strJsonResult, OrderExpressDTO.class);
         OrderExpress orderExpress = (OrderExpress) JSONObject.toBean(paramOBJ, OrderExpress.class);
 
         // 判断订单是否下单
@@ -135,7 +141,7 @@ public class OrderCreateLogic {
             orderExpress.setState("ALREADY_FILL");
             orderExpress.setId(realList.get(0).getId());
             orderExpress.setReceive_time(Long.toString(System.currentTimeMillis()));
-            orderExpressMapper.updateOrderExpressByOrderExpressId(orderExpress);
+            orderExpressDao.save(orderExpress);
 
             // 添加RECEIVE_ADDRESS通知消息，此时应该是寄件人收到通知
             List<Message> messageList = messageMapper.selectMessageReceiveAddress(order.getSender_user_id());

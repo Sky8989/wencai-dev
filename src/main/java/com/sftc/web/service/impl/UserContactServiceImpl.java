@@ -3,15 +3,16 @@ package com.sftc.web.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFTokenHelper;
+import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.ContactCallback;
+import com.sftc.web.model.entity.Order;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.reqeustParam.UserContactParam;
 import com.sftc.web.model.sfmodel.Orders;
 import com.sftc.web.service.UserContactService;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,8 +21,6 @@ import java.lang.Object;
 import java.util.List;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
-import static com.sftc.tools.constant.SFConstant.SF_ORDERROUTE_URL;
 import static com.sftc.tools.constant.SFConstant.SF_ORDER_SYNC_URL;
 
 @Service("userContactService")
@@ -44,6 +43,8 @@ public class UserContactServiceImpl implements UserContactService {
 
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private OrderExpressDao orderExpressDao;
 
     /*
      * 根据id查询好友详情
@@ -152,7 +153,7 @@ public class UserContactServiceImpl implements UserContactService {
         String uuids = "";
 
 
-//        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(userContactParam.getUser_id());
+//        List<OrderExpressDTO> orderExpressList = orderExpressMapper.selectExpressForId(userContactParam.getUser_id());
         PageHelper.startPage(userContactParam.getPageNum(), userContactParam.getPageSize());
         List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForContactInfo(userContactParam.getUser_id(), userContactParam.getFriend_id());
 
@@ -182,7 +183,12 @@ public class UserContactServiceImpl implements UserContactService {
             for (Orders orders : orderses) {
                 String uuid = orders.getUuid();
                 String order_status = orders.getStatus();
-                orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
+                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
+                orderExpress.setState(order_status);
+                if(orders.getAttributes()!=null){
+                    orderExpress.setAttributes(orders.getAttributes());
+                }
+                orderExpressDao.save(orderExpress);
             }
         }
         return null;

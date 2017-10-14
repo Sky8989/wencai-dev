@@ -46,7 +46,7 @@ public class OrderOtherLogic {
         JSONObject requestObject = JSONObject.fromObject(request.getRequestParam());
         if (!requestObject.containsKey("order_id"))
             return APIUtil.paramErrorResponse("order_id不能为空");
-        int order_id = requestObject.getInt("order_id");
+        String order_id = requestObject.getString("order_id");
         String name = requestObject.containsKey("name") ? (String) requestObject.get("name") : null;
         String url = DK_PHANTOMJS_WEB_URL + order_id;
         if (name != null) {

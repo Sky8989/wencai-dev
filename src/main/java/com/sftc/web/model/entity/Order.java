@@ -1,13 +1,17 @@
-package com.sftc.web.model;
+package com.sftc.web.model.entity;
 
+import com.sftc.tools.sf.SFOrderHelper;
+import com.sftc.web.model.Object;
 import com.sftc.web.model.reqeustParam.OrderParam;
 
+import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
+@Entity
+@Table(name = "sftc_order")
 public class Order extends Object {
-
-    private int id;
+    @Id
+    private String id;
     // 创建时间
     private String create_time;
     // 支付时间
@@ -55,27 +59,21 @@ public class Order extends Object {
     //新添加 is_cancel
     private String is_cancel;
 
-    // 贺卡
-    private GiftCard giftCard;
-    // 订单评价信息
-    private Evaluate evaluate;
-    // 快递数组
-    private List<OrderExpress> orderExpressList;
-
     public Order() {
     }
 
-    public Order(double longitude, double latitude, int id) {
+    public Order(double longitude, double latitude, String id) {
         this.id = id;
         this.longitude = longitude;
         this.latitude = latitude;
     }
 
-    public Order(String create_time, String pay_method,
+    public Order(String create_time, String id,String pay_method,
                  String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,String supplementary_info,
                  double longitude, double latitude, String order_type, int sender_user_id) {
         this.create_time = create_time;
+        this.id = id;
         this.pay_method = pay_method;
         this.distribution_method = distribution_method;
         this.freight = freight;
@@ -113,6 +111,7 @@ public class Order extends Object {
 
     public Order(OrderParam orderParam) {
         this.create_time = Long.toString(System.currentTimeMillis());
+        this.id = SFOrderHelper.getOrderId();
         this.pay_method = orderParam.getPay_method();
         this.distribution_method = orderParam.getDistribution_method();
         this.sender_name = orderParam.getSender_name();
@@ -140,7 +139,7 @@ public class Order extends Object {
      */
     public Order(HttpServletRequest request) {
         if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
-            this.id = Integer.parseInt(request.getParameter("id"));
+            this.id = request.getParameter("id");
         }
         if (request.getParameter("order_type") != null && !"".equals(request.getParameter("order_type"))) {
             this.order_type = request.getParameter("order_type");
@@ -153,11 +152,11 @@ public class Order extends Object {
         }
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -289,14 +288,6 @@ public class Order extends Object {
         this.latitude = latitude;
     }
 
-    public GiftCard getGiftCard() {
-        return giftCard;
-    }
-
-    public void setGiftCard(GiftCard giftCard) {
-        this.giftCard = giftCard;
-    }
-
     public int getGift_card_id() {
         return gift_card_id;
     }
@@ -311,14 +302,6 @@ public class Order extends Object {
 
     public void setSender_user_id(int sender_user_id) {
         this.sender_user_id = sender_user_id;
-    }
-
-    public List<OrderExpress> getOrderExpressList() {
-        return orderExpressList;
-    }
-
-    public void setOrderExpressList(List<OrderExpress> orderExpressList) {
-        this.orderExpressList = orderExpressList;
     }
 
     public String getOrder_type() {
@@ -351,14 +334,6 @@ public class Order extends Object {
 
     public void setIs_cancel(String is_cancel) {
         this.is_cancel = is_cancel;
-    }
-
-    public Evaluate getEvaluate() {
-        return evaluate;
-    }
-
-    public void setEvaluate(Evaluate evaluate) {
-        this.evaluate = evaluate;
     }
 
     public String getSupplementary_info() {return supplementary_info;}

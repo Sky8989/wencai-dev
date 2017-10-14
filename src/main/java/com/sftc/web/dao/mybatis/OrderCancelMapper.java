@@ -1,6 +1,6 @@
 package com.sftc.web.dao.mybatis;
 
-import com.sftc.web.model.OrderCancel;
+import com.sftc.web.model.entity.OrderCancel;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public interface OrderCancelMapper {
      *
      * @param order 参数是取消的订单的id等重要信息
      */
-    void addCancelOrder(OrderCancel order);
+//    void addCancelOrder(OrderCancel order);
 
     /**
      * 获取取消订单的列表

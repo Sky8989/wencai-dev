@@ -6,13 +6,15 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFOrderHelper;
+import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.EvaluateMapper;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Evaluate;
-import com.sftc.web.model.Order;
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.dto.OrderDTO;
+import com.sftc.web.model.entity.Order;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.User;
 import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.apiCallback.OrderFriendCallback;
@@ -41,6 +43,8 @@ public class OrderListLogic {
     private OrderExpressMapper orderExpressMapper;
     @Resource
     private EvaluateMapper evaluateMapper;
+    @Resource
+    private OrderExpressDao orderExpressDao;
 
     //////////////////// Public Method ////////////////////
 
@@ -82,26 +86,26 @@ public class OrderListLogic {
         // pageNum -> startIndex
         myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());
         // select
-//        List<Order> orderList = orderMapper.selectMyOrderList(myOrderParam);
-        List<Order> orderList = orderMapper.selectMyOrderList2(myOrderParam);
+//        List<OrderDTO> orderList = orderMapper.selectMyOrderList(myOrderParam);
+        List<OrderDTO> orderDTOList = orderMapper.selectMyOrderList2(myOrderParam);
         List<OrderCallback> orderCallbacks = new ArrayList<OrderCallback>();
-        for (Order order : orderList) {
+        for (OrderDTO orderDTO : orderDTOList) {
             OrderCallback callback = new OrderCallback();
             // order
-            callback.setId(order.getId());
-            callback.setSender_name(order.getSender_name());
-            callback.setSender_addr(order.getSender_addr());
-            callback.setOrder_type(order.getOrder_type());
-            callback.setRegion_type(order.getRegion_type());
-            callback.setIs_gift(order.getGift_card_id() > 0);
-            callback.setPay_method(order.getPay_method());
-            if (order.getOrderExpressList().size() == 1) // 单包裹
-                callback.setOrder_number(order.getOrderExpressList().get(0).getOrder_number());
+            callback.setId(orderDTO.getId());
+            callback.setSender_name(orderDTO.getSender_name());
+            callback.setSender_addr(orderDTO.getSender_addr());
+            callback.setOrder_type(orderDTO.getOrder_type());
+            callback.setRegion_type(orderDTO.getRegion_type());
+            callback.setIs_gift(orderDTO.getGift_card_id() > 0);
+            callback.setPay_method(orderDTO.getPay_method());
+            if (orderDTO.getOrderExpressList().size() == 1) // 单包裹
+                callback.setOrder_number(orderDTO.getOrderExpressList().get(0).getOrder_number());
 
             // expressList
             List<OrderCallback.OrderCallbackExpress> expressList = new ArrayList<OrderCallback.OrderCallbackExpress>();
             HashSet flagSetIsEvaluated = new HashSet();
-            for (OrderExpress oe : order.getOrderExpressList()) {
+            for (OrderExpress oe : orderDTO.getOrderExpressList()) {
                 OrderCallback.OrderCallbackExpress express = new OrderCallback().new OrderCallbackExpress();
                 express.setUuid(oe.getUuid());
                 express.setState(oe.getState());
@@ -142,32 +146,32 @@ public class OrderListLogic {
         // pageNum -> startIndex
         myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());
         // select
-        List<Order> orderList = orderMapper.selectMyFriendOrderList(myOrderParam);
+        List<OrderDTO> orderDTOList = orderMapper.selectMyFriendOrderList(myOrderParam);
         List<OrderFriendCallback> orderCallbacks = new ArrayList<OrderFriendCallback>();
-        for (Order order : orderList) {
+        for (OrderDTO orderDTO : orderDTOList) {
             OrderFriendCallback callback = new OrderFriendCallback();
-            User sender = userMapper.selectUserByUserId(order.getSender_user_id());
+            User sender = userMapper.selectUserByUserId(orderDTO.getSender_user_id());
             // order
-            callback.setId(order.getId());
-            callback.setSender_user_id(order.getSender_user_id());
-            callback.setSender_name(order.getSender_name());
+            callback.setId(orderDTO.getId());
+            callback.setSender_user_id(orderDTO.getSender_user_id());
+            callback.setSender_name(orderDTO.getSender_name());
             if (sender != null && sender.getAvatar() != null) {
                 callback.setSender_avatar(sender.getAvatar());
             }
-            if (order.getOrderExpressList() != null && order.getOrderExpressList().size() > 0 && order.getOrderExpressList().get(0).getObject_type().length() > 0) { // powerful verify
-                callback.setObject_type(order.getOrderExpressList().get(0).getObject_type());
+            if (orderDTO.getOrderExpressList() != null && orderDTO.getOrderExpressList().size() > 0 && orderDTO.getOrderExpressList().get(0).getObject_type().length() > 0) { // powerful verify
+                callback.setObject_type(orderDTO.getOrderExpressList().get(0).getObject_type());
             }
-            callback.setWord_message(order.getWord_message());
-            callback.setImage(order.getImage());
-            callback.setCreate_time(order.getCreate_time());
-            callback.setRegion_type(order.getRegion_type());
-            callback.setIs_gift(order.getGift_card_id() > 0);
+            callback.setWord_message(orderDTO.getWord_message());
+            callback.setImage(orderDTO.getImage());
+            callback.setCreate_time(orderDTO.getCreate_time());
+            callback.setRegion_type(orderDTO.getRegion_type());
+            callback.setIs_gift(orderDTO.getGift_card_id() > 0);
             //增加支付类型
-            callback.setPay_method(order.getPay_method());
+            callback.setPay_method(orderDTO.getPay_method());
             // expressList
             List<OrderFriendCallback.OrderFriendCallbackExpress> expressList = new ArrayList<OrderFriendCallback.OrderFriendCallbackExpress>();
             HashSet flagSetIsEvaluated = new HashSet();
-            for (OrderExpress oe : order.getOrderExpressList()) {
+            for (OrderExpress oe : orderDTO.getOrderExpressList()) {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
                 OrderFriendCallback.OrderFriendCallbackExpress express = new OrderFriendCallback().new OrderFriendCallbackExpress();
                 express.setId(oe.getId());
@@ -269,7 +273,12 @@ public class OrderListLogic {
             Order order = orderMapper.selectOrderDetailByUuid(orders.getUuid());
             if (order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) {
                 String status = (orders.isPayed() && orders.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orders.getStatus();
-                orderExpressMapper.updateOrderExpressForSF(new OrderExpress(status, orders.getUuid(), orders.getAttributes()));
+                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(orders.getUuid());
+                orderExpress.setState(status);
+                if( orders.getAttributes()!=null){
+                    orderExpress.setAttributes(orders.getAttributes());
+                }
+                orderExpressDao.save(orderExpress);
             }
         }
 

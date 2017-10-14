@@ -1,6 +1,6 @@
 package com.sftc.web.model.apiCallback;
 
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.entity.OrderExpress;
 
 import java.util.List;
 

@@ -1,11 +1,16 @@
-package com.sftc.web.model;
+package com.sftc.web.model.entity;
 
 import com.sftc.tools.api.APIRequest;
+import com.sftc.web.model.Evaluate;
+import com.sftc.web.model.Object;
 
+import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
-
+@Entity
+@Table(name = "sftc_order_express")
 public class OrderExpress extends Object {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     // 创建时间
     private String create_time;
@@ -25,6 +30,18 @@ public class OrderExpress extends Object {
     private String ship_addr;
     // 门牌号
     private String supplementary_info;
+    //取件码
+    private String directed_code;
+    private String attributes;
+
+    public String getAttributes() {return attributes;}
+
+    public void setAttributes(String attributes) {this.attributes = attributes;}
+
+    public String getDirected_code() {return directed_code;}
+
+    public void setDirected_code(String directed_code) {this.directed_code = directed_code;}
+
     // 包裹类型
     private String package_type;
     // 物品类型
@@ -45,20 +62,9 @@ public class OrderExpress extends Object {
     private String order_time;
     // 收件人id(根据用户表id)
     private int ship_user_id;
-    // 礼卡表id
-    private int gift_card_id;
     private Double latitude;
     private Double longitude;
-    private int order_id;
-
-    // 错误信息
-    private String attributes;
-
-    // extension 收件人头像
-    private String ship_avatar;
-
-    // 评价信息
-    private Evaluate evaluate;
+    private String order_id;
 
     public int getSender_user_id() {
         return sender_user_id;
@@ -81,7 +87,32 @@ public class OrderExpress extends Object {
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String supplementary_info, String package_type, String object_type,
-                        String package_comments, String state, int sender_user_id, int order_id, String uuid, Double latitude, Double longitude) {
+                        String package_comments, String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,String directed_code) {
+        this.order_time = order_time;
+        this.create_time = create_time;
+        this.order_number = order_number;
+        this.ship_name = ship_name;
+        this.ship_mobile = ship_mobile;
+        this.ship_province = ship_province;
+        this.ship_city = ship_city;
+        this.ship_area = ship_area;
+        this.ship_addr = ship_addr;
+        this.supplementary_info = supplementary_info;
+        this.package_type = package_type;
+        this.object_type = object_type;
+        this.package_comments = package_comments;//增加快递描述
+        this.state = state;
+        this.sender_user_id = sender_user_id;
+        this.order_id = order_id;
+        this.uuid = uuid;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.directed_code = directed_code;
+    }
+
+    public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
+                        String ship_city, String ship_area, String ship_addr, String supplementary_info, String package_type, String object_type,
+                        String package_comments, String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -105,7 +136,7 @@ public class OrderExpress extends Object {
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String package_type, String object_type,
-                        String state, int sender_user_id, int order_id, String uuid, Double latitude, Double longitude) {
+                        String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -125,7 +156,7 @@ public class OrderExpress extends Object {
         this.longitude = longitude;
     }
 
-    public OrderExpress(String uuid, int order_id, Double longitude, Double latitude, String state) {
+    public OrderExpress(String uuid, String order_id, Double longitude, Double latitude, String state) {
         this.state = state;
         this.order_id = order_id;
         this.uuid = uuid;
@@ -145,7 +176,7 @@ public class OrderExpress extends Object {
     }
 
     public OrderExpress(String order_number, String package_type, String object_type,
-                        int order_id, String create_time, int is_use, String state, String uuid, int sender_user_id, String reserve_time) {
+                        String order_id, String create_time, int is_use, String state, String uuid, int sender_user_id, String reserve_time) {
         this.order_number = order_number;
         this.package_type = package_type;
         this.object_type = object_type;
@@ -195,7 +226,7 @@ public class OrderExpress extends Object {
             this.ship_mobile = request.getParameter("ship_mobile");
         }
         if (request.getParameter("order_id") != null && !"".equals(request.getParameter("order_id"))) {
-            this.order_id = Integer.parseInt(request.getParameter("order_id"));
+            this.order_id = request.getParameter("order_id");
         }
     }
 
@@ -295,14 +326,6 @@ public class OrderExpress extends Object {
         this.ship_user_id = ship_user_id;
     }
 
-    public int getGift_card_id() {
-        return gift_card_id;
-    }
-
-    public void setGift_card_id(int gift_card_id) {
-        this.gift_card_id = gift_card_id;
-
-    }
 
     public String getPackage_type() {
         return package_type;
@@ -312,11 +335,11 @@ public class OrderExpress extends Object {
         this.package_type = package_type;
     }
 
-    public int getOrder_id() {
+    public String getOrder_id() {
         return order_id;
     }
 
-    public void setOrder_id(int order_id) {
+    public void setOrder_id(String order_id) {
         this.order_id = order_id;
     }
 
@@ -360,14 +383,6 @@ public class OrderExpress extends Object {
         this.reserve_time = reserve_time;
     }
 
-    public String getShip_avatar() {
-        return ship_avatar;
-    }
-
-    public void setShip_avatar(String ship_avatar) {
-        this.ship_avatar = ship_avatar;
-    }
-
     public String getReceive_time() {
         return receive_time;
     }
@@ -384,28 +399,12 @@ public class OrderExpress extends Object {
         this.order_time = order_time;
     }
 
-    public Evaluate getEvaluate() {
-        return evaluate;
-    }
-
-    public void setEvaluate(Evaluate evaluate) {
-        this.evaluate = evaluate;
-    }
-
     public String getSupplementary_info() {
         return supplementary_info;
     }
 
     public void setSupplementary_info(String supplementary_info) {
         this.supplementary_info = supplementary_info;
-    }
-
-    public String getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(String attributes) {
-        this.attributes = attributes;
     }
 
     public String getPackage_comments() {

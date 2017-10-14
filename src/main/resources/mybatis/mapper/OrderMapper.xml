@@ -4,12 +4,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.dao.mybatis.OrderMapper">
 
-    <resultMap id="orderMap" type="com.sftc.web.model.Order">
+    <resultMap id="orderMap" type="com.sftc.web.model.dto.OrderDTO">
         <id property="id" column="id"/>
         <result property="order_type" column="order_type"/>
         <result property="region_type" column="region_type"/>
-        <result property="longitude" column="longitude"/>
         <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
         <result property="sender_user_id" column="sender_user_id"/>
         <result property="sender_mobile" column="sender_mobile"/>
         <result property="sender_name" column="sender_name"/>
@@ -28,18 +28,18 @@
         <result property="create_time" column="create_time"/>
         <association property="giftCard" select="selectGiftCard" column="gift_card_id">
         </association>
-        <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress" select="selectExpressList"
+        <collection property="orderExpressList" ofType="com.sftc.web.model.entity.OrderExpress" select="selectExpressList"
                     column="id">
         </collection>
     </resultMap>
 
-    <select id="selectExpressList" parameterType="java.lang.String" resultType="com.sftc.web.model.OrderExpress">
+    <select id="selectExpressList" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.OrderExpress">
         SELECT *
         FROM sftc_order_express
         WHERE order_id = #{id}
     </select>
 
-    <select id="selectGiftCard" parameterType="java.lang.String" resultType="com.sftc.web.model.GiftCard">
+    <select id="selectGiftCard" parameterType="int" resultType="com.sftc.web.model.GiftCard">
         SELECT *
         FROM sftc_gift_card
         WHERE id = #{gift_card_id}
@@ -87,14 +87,14 @@
               )
     </select>
 
-    <select id="selectOrderDetailByOrderId" resultMap="orderMap" parameterType="int">
+    <select id="selectOrderDetailByOrderId" resultMap="orderMap" parameterType="java.lang.String">
         SELECT *
         FROM sftc_order
         WHERE id = #{order_id}
     </select>
 
     <!--添加了行级锁和排他锁的订单详情查询-->
-    <select id="selectOrderDetailByOrderIdForUpdate" resultMap="orderMap" parameterType="int">
+    <select id="selectOrderDetailByOrderIdForUpdate" resultMap="orderMap" parameterType="java.lang.String">
         SELECT *
         FROM sftc_order
         WHERE id = #{order_id} FOR UPDATE
@@ -107,7 +107,7 @@
     </select>
 
     <!-- 添加订单 -->
-    <insert id="addOrder" parameterType="com.sftc.web.model.Order" useGeneratedKeys="true" keyProperty="id">
+    <insert id="addOrder" parameterType="com.sftc.web.model.entity.Order" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_order
         (freight,
          create_time, sender_province, sender_name, sender_mobile, sender_city,
@@ -139,7 +139,7 @@
     </insert>
 
     <!-- 添加订单 -->
-    <insert id="addOrder2" parameterType="com.sftc.web.model.Order" useGeneratedKeys="true" keyProperty="id">
+    <insert id="addOrder2" parameterType="com.sftc.web.model.entity.Order" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_order
         (freight,
          create_time, sender_province, sender_name, sender_mobile, sender_city,
@@ -253,7 +253,7 @@
         LIMIT #{pageNum}, #{pageSize}
     </select>
 
-    <select id="myOrderLists" parameterType="com.sftc.web.model.OrderExpress" resultMap="orderMap">
+    <select id="myOrderLists" parameterType="com.sftc.web.model.entity.OrderExpress" resultMap="orderMap">
         select
         sftc_order_express.id,
         sftc_order_express.order_number,
@@ -316,14 +316,14 @@
     </delete>
 
     <!-- 取消订单，更新order的is_cancel-->
-    <update id="updateCancelOrderById" parameterType="int">
+    <update id="updateCancelOrderById" parameterType="java.lang.String">
         UPDATE sftc_order
         SET is_cancel = 'Cancelled'
         WHERE id = #{id}
     </update>
 
     <!--下面是cms系统用到的mapper-->
-    <select id="selectOrderByPage" resultMap="orderMap" parameterType="com.sftc.web.model.Order">
+    <select id="selectOrderByPage" resultMap="orderMap" parameterType="com.sftc.web.model.entity.Order">
         SELECT * FROM sftc_order
         <where>
             <if test="id != 0">and id = #{id}</if>
