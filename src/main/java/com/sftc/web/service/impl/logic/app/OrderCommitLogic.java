@@ -413,10 +413,11 @@ public class OrderCommitLogic {
 
             if (!oe.getState().equals("WAIT_FILL")) {
                 if (reserve_time != null && !reserve_time.equals("")) { // 预约件处理
-                    oe.setReserve_time(reserve_time);
-                    oe.setUuid(oe.getUuid());
-                    oe.setState("WAIT_HAND_OVER");
-                    orderExpressDao.save(oe);
+                    OrderExpress express = orderExpressMapper.selectExpressByUuid(oe.getUuid());
+                    express.setReserve_time(reserve_time);
+                    express.setUuid(oe.getUuid());
+                    express.setState("WAIT_HAND_OVER");
+                    orderExpressDao.save(express);
                 } else {
                     // 处理street 和 门牌号的拼接
                     Object j_address = sf.remove("j_address");
