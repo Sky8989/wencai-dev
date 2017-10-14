@@ -50,7 +50,7 @@ public class SFOrderHelper {
         map.put("待揽件", "'WAIT_HAND_OVER'");
         map.put("揽件", "'WAIT_HAND_OVER'");
         //退款
-        map.put("退款", "'WAIT_REFUND|REFUNDING|WAIT_REFUND'");
+        map.put("退款", "'WAIT_REFUND|REFUNDING|REFUNDED'");
         map.put("已退款", "'REFUNDED'");
         map.put("退款中", "'REFUNDING'");
         map.put("待退款", "'WAIT_REFUND'");
