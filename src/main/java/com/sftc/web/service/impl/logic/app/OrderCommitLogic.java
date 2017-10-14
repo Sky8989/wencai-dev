@@ -229,16 +229,22 @@ public class OrderCommitLogic {
     /// 好友同城订单提交
     private APIResponse friendSameOrderCommit(JSONObject requestObject) {
         // Param
+        if (!requestObject.containsKey("order"))
+            return APIUtil.paramErrorResponse("订单信息不完整");
         String order_id = requestObject.getJSONObject("order").getString("order_id");
         if (order_id == null || order_id.equals(""))
             return APIUtil.paramErrorResponse("order_id不能为空");
-
-        String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
+        String reserve_time = "";
+        if (requestObject.getJSONObject("order").containsKey("reserve_time")) {
+            reserve_time = requestObject.getJSONObject("order").getString("reserve_time");
+        }
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
+        if (orderDTO == null) return APIUtil.submitErrorResponse("订单不存在", null);
+
         //增加对包裹数量的验证，确保是只有一个订单里只有一个同城包裹
         //后期更新订单与包裹一对一，但是好友件同城可以多包裹，同城订单走这个逻辑？
         if (orderDTO.getOrderExpressList().size() != 1)
-            return APIUtil.submitErrorResponse("Order infomation has been changed,please check again!", null);
+            return APIUtil.submitErrorResponse("Order infomation has been changed, please check again!", null);
 
         for (OrderExpress oe : orderDTO.getOrderExpressList()) {
             // 拼接同城订单参数中的 source 和 target
@@ -285,7 +291,6 @@ public class OrderCommitLogic {
             String newStreet2 = removeStreet2.toString() + oe.getSupplementary_info();
             requestObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").put("street", newStreet2);
 
-
             /// Request
             Object tempObj = JSONObject.toBean(requestObject);
             // tempJsonObj 是为了保证对顺丰接口的请求体的完整，不能包含其它的键值对，例如接口的请求参数"order"
@@ -315,7 +320,7 @@ public class OrderCommitLogic {
                 // 快递表更新uuid和预约时间
                 oe.setUuid(uuid);
                 oe.setReserve_time(reserve_time);
-                orderExpressDao.save(oe);
+//                orderExpressDao.save(oe);
                 String order_tiem = Long.toString(System.currentTimeMillis());
                 oe.setOrder_time(order_tiem);
                 oe.setOrder_number(request_num);
@@ -329,15 +334,15 @@ public class OrderCommitLogic {
                 //setupAddress2(order, oe);
 
             } else { // error
-                String message = "";
+                String message;
                 try {
                     if (responseObject.containsKey("error")) {
-                        message = responseObject.getString("error");
+                        message = responseObject.getJSONObject("error").getString("message");
                     } else {
                         message = responseObject.getJSONArray("errors").getJSONObject(0).getString("message");
                     }
                     //手动操作事务回滚
-                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 } catch (Exception e) {
                     message = "下单失败";
                 }
