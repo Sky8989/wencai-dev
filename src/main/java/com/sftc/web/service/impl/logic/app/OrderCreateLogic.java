@@ -75,18 +75,18 @@ public class OrderCreateLogic {
         orderDao.save(order);
 
         // 插入快递表
-        OrderExpress orderExpress = new OrderExpress();
-        orderExpress.setPackage_type(orderParam.getPackage_type());
-        orderExpress.setObject_type(orderParam.getObject_type());
-        orderExpress.setOrder_id(order.getId());
-        orderExpress.setCreate_time(order.getCreate_time());
-        orderExpress.setState("WAIT_FILL");
-        orderExpress.setSender_user_id(orderParam.getSender_user_id());
-        orderExpress.setReserve_time("");
-        orderExpress.setOrder_id(order.getId());
-        orderExpress.setPackage_comments(package_comments);
         for (int i = 0; i < orderParam.getPackage_count(); i++) {
             // 写入uuid 保证每个快递的uuid不同
+            OrderExpress orderExpress = new OrderExpress();
+            orderExpress.setPackage_type(orderParam.getPackage_type());
+            orderExpress.setObject_type(orderParam.getObject_type());
+            orderExpress.setOrder_id(order.getId());
+            orderExpress.setCreate_time(order.getCreate_time());
+            orderExpress.setState("WAIT_FILL");
+            orderExpress.setSender_user_id(orderParam.getSender_user_id());
+            orderExpress.setReserve_time("");
+            orderExpress.setOrder_id(order.getId());
+            orderExpress.setPackage_comments(package_comments);
             orderExpress.setUuid(SFOrderHelper.getOrderNumber());
             orderExpressDao.save(orderExpress);//TODO:要插入包裹补充信息
         }
