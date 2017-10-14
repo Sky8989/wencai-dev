@@ -180,9 +180,9 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
 
         String pattern = "yyyy-MM-dd'T'HH:mm:ssZZ";
         Date date = new Date();
-        if(dateTime == null || dateTime.equals("")){
+        if (dateTime == null || dateTime.equals("")) {
             date = new Date();
-        }else {
+        } else {
             date = new Date(Long.parseLong(dateTime));
         }
 
@@ -203,15 +203,11 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         String rateUrl = SF_SERVICE_RATE.replace("{origin}", origin).replace("{dest}", dest).replace("{time}", time).replace("{weight}", weight);
         HttpGet get = new HttpGet(rateUrl);
         String result = APIGetUtil.get(get);
-//      Object resultObj = gson.fromJson(result, Object.class);
-
         Type type = new TypeToken<ArrayList<Express>>() {
         }.getType();
-
         List<Express> lists = gson.fromJson(result, type);
 
-        if (lists !=null && lists.size()!=0 && lists.size() >= 2) {
-
+        if (lists != null && lists.size() >= 2) {
             Collections.sort(lists, new Comparator<Express>() {
                 @Override
                 public int compare(Express o1, Express o2) {
@@ -225,21 +221,25 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
                             time2 = simpleDateFormat.parse(o2.getDeliverTime()).getTime();
                     } catch (ParseException e) {
                         e.printStackTrace();
-                    }//
+                    }
                     return Long.compare(time1, time2);
                 }
             });
         }
-       if(lists.get(0).getDeliverTime()!=null&&lists.get(0).getClosedTime() == null){
-            List<Object> list = new ArrayList<>();
-            list.add(lists.get(0));
-           return APIUtil.getResponse(SUCCESS, list);
-       }else {
-           List<Object> list = new ArrayList<>();
-           list.add(lists.get(1));
-           return APIUtil.getResponse(SUCCESS,list);
-       }
-
+        List<Express> resultList = new ArrayList<>();
+        if (lists != null && lists.size() > 0) {
+            for (Express e : lists) {
+                if (e.getDeliverTime() != null && e.getClosedTime() != null) {
+                    if (e.getLimitTypeCode().equals("T801") ||
+                            e.getLimitTypeCode().equals("T4") ||
+                            e.getLimitTypeCode().equals("T6")) {
+                        resultList.add(e);
+                        break;
+                    }
+                }
+            }
+        }
+        return APIUtil.getResponse(SUCCESS, resultList);
     }
 
     public APIResponse updateServiceAddress(APIRequest request) {
