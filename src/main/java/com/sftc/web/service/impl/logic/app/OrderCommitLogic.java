@@ -548,6 +548,7 @@ public class OrderCommitLogic {
 //            String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
                 reqObject.getJSONObject("request").put("reserve_time", reserveTime);
+                orderExpress.setState("PAYING");
             }
             orderExpress.setReserve_time(reserve_time);
             orderExpressMapper.addOrderExpress2(orderExpress);
