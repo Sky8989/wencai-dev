@@ -6,6 +6,7 @@ import com.sftc.web.model.Object;
 import com.sftc.web.model.entity.OrderExpress;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 public class OrderExpressDTO extends OrderExpress {
 
@@ -17,6 +18,16 @@ public class OrderExpressDTO extends OrderExpress {
 
     // 评价信息
     private Evaluate evaluate;
+
+    private List<OrderExpress> orderExpressList;
+
+    public List<OrderExpress> getOrderExpressList() {
+        return orderExpressList;
+    }
+
+    public void setOrderExpressList(List<OrderExpress> orderExpresses) {
+        this.orderExpressList = orderExpresses;
+    }
 
     public OrderExpressDTO() {
     }
