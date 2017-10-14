@@ -158,7 +158,7 @@ public class OrderListLogic {
             if (sender != null && sender.getAvatar() != null) {
                 callback.setSender_avatar(sender.getAvatar());
             }
-            if (orderDTO.getOrderExpressList() != null && orderDTO.getOrderExpressList().size() > 0 && orderDTO.getOrderExpressList().get(0).getObject_type().length() > 0) { // powerful verify
+            if (orderDTO.getOrderExpressList() != null && orderDTO.getOrderExpressList().size() > 0 && orderDTO.getOrderExpressList().get(0).getObject_type() != null && orderDTO.getOrderExpressList().get(0).getObject_type().length() > 0) { // powerful verify
                 callback.setObject_type(orderDTO.getOrderExpressList().get(0).getObject_type());
             }
             callback.setWord_message(orderDTO.getWord_message());
