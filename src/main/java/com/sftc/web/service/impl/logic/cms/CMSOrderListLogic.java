@@ -8,7 +8,7 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.OrderCancelMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.OrderCancel;
+import com.sftc.web.model.entity.OrderCancel;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;

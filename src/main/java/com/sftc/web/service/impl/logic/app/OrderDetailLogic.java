@@ -9,11 +9,15 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.tools.sf.SFTokenHelper;
+import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.*;
+import com.sftc.web.model.Converter.OrderExpressFactory;
 import com.sftc.web.model.dto.OrderDTO;
+import com.sftc.web.model.dto.OrderExpressDTO;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
+import com.sftc.web.model.entity.OrderExpressTransform;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -21,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.lang.Object;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +49,8 @@ public class OrderDetailLogic {
     private OrderExpressTransformMapper orderExpressTransformMapper;
     @Resource
     private MessageMapper messageMapper;
+    @Resource
+    private OrderExpressDao orderExpressDao;
 
     /**
      * 订单详情接口
@@ -56,9 +63,14 @@ public class OrderDetailLogic {
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
 
         Map<String, Object> resultMap = new HashMap<String, Object>();
+        List<OrderExpressDTO> dtoList = new ArrayList<OrderExpressDTO>();
         if (orderDTO == null) return APIUtil.getResponse(SUCCESS, null);
-
-        for (OrderExpress oe : orderDTO.getOrderExpressDTOList()) {
+        List<OrderExpress> orderExpress = orderDTO.getOrderExpressList();
+        for(OrderExpress orderExpress2 : orderExpress){
+            OrderExpressDTO orderExpressDTO = OrderExpressFactory.entityToDTO(orderExpress2);
+            dtoList.add(orderExpressDTO);
+        }
+        for (OrderExpressDTO oe : dtoList) {
             User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
             if (receiver != null && receiver.getAvatar() != null) {
                 // 扩展收件人头像
@@ -150,13 +162,17 @@ public class OrderDetailLogic {
             String order_status = respObject.getJSONObject("request").getString("status");
 
             if (order_status.equals("WAIT_HAND_OVER")) { // 当同城查询出来的状态是待揽件  我方库中也要存为待揽件
-                orderExpressMapper.updateOrderExpressStatusByUUID(uuid, "WAIT_HAND_OVER");
+                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
+                orderExpress.setState("WAIT_HAND_OVER");
+                orderExpressDao.save(orderExpress);
             }
 
             boolean payed = respObject.getJSONObject("request").getBoolean("payed");
             if (payed && order_status.equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) {
                 respObject.getJSONObject("request").put("status", "WAIT_HAND_OVER");
-                orderExpressMapper.updateOrderExpressStatusByUUID(uuid, "WAIT_HAND_OVER");
+                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
+                orderExpress.setState("WAIT_HAND_OVER");
+                orderExpressDao.save(orderExpress);
                 order = orderMapper.selectOrderDetailByUuid(uuid);
             }
         }

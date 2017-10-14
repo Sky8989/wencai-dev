@@ -1,6 +1,5 @@
 package com.sftc.web.config;
 
-import com.google.gson.Gson;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.TokenMapper;
@@ -12,11 +11,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 
 //全局token验证
 public class AuthTokenAOPInterceptor {
@@ -32,7 +28,7 @@ public class AuthTokenAOPInterceptor {
         //获取当前执行的方法
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
         //判断当前执行的方法是否存在自定义的注解
-        if (methodSignature.getMethod().isAnnotationPresent(AuthToken.class)) {
+        if (methodSignature.getMethod().isAnnotationPresent(IgnoreToken.class)) {
             //只需要过滤登录即可，所以考虑在登录方法上加上注解，存在注解的就不验证token，不存在注解的需要验证
            return proceedingJoinPoint.proceed();
         }else {

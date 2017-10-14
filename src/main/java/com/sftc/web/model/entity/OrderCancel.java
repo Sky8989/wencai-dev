@@ -1,7 +1,9 @@
-package com.sftc.web.model;
+package com.sftc.web.model.entity;
 
+import com.sftc.web.model.Object;
 import com.sftc.web.model.entity.Order;
 
+import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -13,8 +15,11 @@ import javax.servlet.http.HttpServletRequest;
  * @date 17/4/1
  * @Time 下午9:00
  */
+@Entity
+@Table(name = "sftc_order_cancel")
 public class OrderCancel extends Object {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     // 创建时间
     private String create_time;
@@ -22,8 +27,7 @@ public class OrderCancel extends Object {
     private String reason;
     // 问题描述
     private String question_describe;
-    // 取消的订单id
-    private Order order;
+
     private String order_id;
 
     public int getId() {
@@ -58,14 +62,6 @@ public class OrderCancel extends Object {
         this.question_describe = question_describe;
     }
 
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
     public String getOrder_id() {
         return order_id;
     }
@@ -81,6 +77,5 @@ public class OrderCancel extends Object {
         if (request.getParameter("order_id") != null && !"".equals(request.getParameter("order_id")))
         {this.order_id = request.getParameter("order_id");}
     }
-
 
 }

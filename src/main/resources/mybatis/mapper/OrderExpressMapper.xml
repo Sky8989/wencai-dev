@@ -26,7 +26,7 @@
     </select>
 
     <!-- 根据order_id-->
-    <select id="findAllOrderExpressByOrderId" resultType="com.sftc.web.model.entity.OrderExpress" parameterType="int">
+    <select id="findAllOrderExpressByOrderId" resultType="com.sftc.web.model.entity.OrderExpress" parameterType="java.lang.String">
         SELECT *
         FROM sftc_order_express
         WHERE order_id = #{order_id}
@@ -122,13 +122,13 @@
         WHERE uuid = #{uuid}
     </update>
 
-    <update id="updateOrderExpressCanceled" parameterType="int">
+    <update id="updateOrderExpressCanceled" parameterType="java.lang.String">
         UPDATE sftc_order_express
         SET state = 'CANCELED'
         WHERE order_id = #{order_id}
     </update>
 
-    <update id="updateOrderExpressOvertime" parameterType="int">
+    <update id="updateOrderExpressOvertime" parameterType="java.lang.String">
         UPDATE sftc_order_express
         SET state = 'OVERTIME'
         WHERE order_id = #{order_id}
@@ -195,8 +195,8 @@
     </select>
 
 
-    <select id="selectOrderExpressTransformList" resultType="com.sftc.web.model.OrderExpressTransform"
-            parameterType="com.sftc.web.model.OrderExpressTransform">
+    <select id="selectOrderExpressTransformList" resultType="com.sftc.web.model.entity.OrderExpressTransform"
+            parameterType="com.sftc.web.model.entity.OrderExpressTransform">
         SELECT * FROM sftc_order_express_transform
         <where>
             <if test="express_id != null and express_id != 0">and express_id = #{express_id}</if>

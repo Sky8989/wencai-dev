@@ -8,6 +8,7 @@ import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.MessageMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
+import com.sftc.web.model.Converter.OrderExpressFactory;
 import com.sftc.web.model.Message;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
@@ -17,6 +18,7 @@ import com.sftc.web.service.NotificationMessageService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
@@ -55,8 +57,14 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
             int express_id = message.getExpress_id();
 
             OrderDTO orderDTO = orderMapper.selectOrderDetailByExpressId(express_id);
+            List<OrderExpress> orderExpresses = orderDTO.getOrderExpressList();
+            List<OrderExpressDTO> orderExpressDTOList = new ArrayList<>();
+            for(OrderExpress orderExpress : orderExpresses){
+                OrderExpressDTO orderExpressDTO = OrderExpressFactory.entityToDTO(orderExpress);
+                orderExpressDTOList.add(orderExpressDTO);
+            }
 
-            for (OrderExpressDTO oe : orderDTO.getOrderExpressDTOList()List()) {
+            for (OrderExpressDTO oe : orderExpressDTOList) {
                 User user = userMapper.selectUserByUserId(oe.getShip_user_id());
                 if (user == null) {
                     oe.setShip_avatar(DK_USER_AVATAR_DEFAULT);
@@ -67,7 +75,7 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
 
             if (message.getMessage_type().equals("RECEIVE_ADDRESS")) {
                 // 只有"收到地址"的消息才需要订单数据
-                message.setOrder(order);
+                message.setOrder(orderDTO);
             }
         }
 

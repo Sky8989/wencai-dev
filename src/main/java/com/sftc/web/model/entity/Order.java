@@ -1,5 +1,6 @@
 package com.sftc.web.model.entity;
 
+import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.model.Object;
 import com.sftc.web.model.reqeustParam.OrderParam;
 
@@ -110,6 +111,7 @@ public class Order extends Object {
 
     public Order(OrderParam orderParam) {
         this.create_time = Long.toString(System.currentTimeMillis());
+        this.id = SFOrderHelper.getOrderId();
         this.pay_method = orderParam.getPay_method();
         this.distribution_method = orderParam.getDistribution_method();
         this.sender_name = orderParam.getSender_name();

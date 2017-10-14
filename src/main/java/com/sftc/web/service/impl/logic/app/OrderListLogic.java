@@ -6,6 +6,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFOrderHelper;
+import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.EvaluateMapper;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
@@ -42,6 +43,8 @@ public class OrderListLogic {
     private OrderExpressMapper orderExpressMapper;
     @Resource
     private EvaluateMapper evaluateMapper;
+    @Resource
+    private OrderExpressDao orderExpressDao;
 
     //////////////////// Public Method ////////////////////
 
@@ -96,13 +99,13 @@ public class OrderListLogic {
             callback.setRegion_type(orderDTO.getRegion_type());
             callback.setIs_gift(orderDTO.getGift_card_id() > 0);
             callback.setPay_method(orderDTO.getPay_method());
-            if (orderDTO.getOrderExpressDTOList().size() == 1) // 单包裹
-                callback.setOrder_number(orderDTO.getOrderExpressDTOList().get(0).getOrder_number());
+            if (orderDTO.getOrderExpressList().size() == 1) // 单包裹
+                callback.setOrder_number(orderDTO.getOrderExpressList().get(0).getOrder_number());
 
             // expressList
             List<OrderCallback.OrderCallbackExpress> expressList = new ArrayList<OrderCallback.OrderCallbackExpress>();
             HashSet flagSetIsEvaluated = new HashSet();
-            for (OrderExpress oe : orderDTO.getOrderExpressDTOList()) {
+            for (OrderExpress oe : orderDTO.getOrderExpressList()) {
                 OrderCallback.OrderCallbackExpress express = new OrderCallback().new OrderCallbackExpress();
                 express.setUuid(oe.getUuid());
                 express.setState(oe.getState());
@@ -155,8 +158,8 @@ public class OrderListLogic {
             if (sender != null && sender.getAvatar() != null) {
                 callback.setSender_avatar(sender.getAvatar());
             }
-            if (orderDTO.getOrderExpressDTOList() != null && orderDTO.getOrderExpressDTOList().size() > 0 && orderDTO.getOrderExpressDTOList().get(0).getObject_type().length() > 0) { // powerful verify
-                callback.setObject_type(orderDTO.getOrderExpressDTOList().get(0).getObject_type());
+            if (orderDTO.getOrderExpressList() != null && orderDTO.getOrderExpressList().size() > 0 && orderDTO.getOrderExpressList().get(0).getObject_type().length() > 0) { // powerful verify
+                callback.setObject_type(orderDTO.getOrderExpressList().get(0).getObject_type());
             }
             callback.setWord_message(orderDTO.getWord_message());
             callback.setImage(orderDTO.getImage());
@@ -168,7 +171,7 @@ public class OrderListLogic {
             // expressList
             List<OrderFriendCallback.OrderFriendCallbackExpress> expressList = new ArrayList<OrderFriendCallback.OrderFriendCallbackExpress>();
             HashSet flagSetIsEvaluated = new HashSet();
-            for (OrderExpress oe : orderDTO.getOrderExpressDTOList()) {
+            for (OrderExpress oe : orderDTO.getOrderExpressList()) {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
                 OrderFriendCallback.OrderFriendCallbackExpress express = new OrderFriendCallback().new OrderFriendCallbackExpress();
                 express.setId(oe.getId());
@@ -270,7 +273,12 @@ public class OrderListLogic {
             Order order = orderMapper.selectOrderDetailByUuid(orders.getUuid());
             if (order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) {
                 String status = (orders.isPayed() && orders.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orders.getStatus();
-                orderExpressMapper.updateOrderExpressForSF(new OrderExpress(status, orders.getUuid(), orders.getAttributes()));
+                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(orders.getUuid());
+                orderExpress.setState(status);
+                if( orders.getAttributes()!=null){
+                    orderExpress.setAttributes(orders.getAttributes());
+                }
+                orderExpressDao.save(orderExpress);
             }
         }
 

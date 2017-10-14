@@ -41,14 +41,9 @@ public class SFOrderHelper {
             int number = random.nextInt(RANDOMID_SOURCE_STRING.length());
             sb.append(RANDOMID_SOURCE_STRING.charAt(number));
         }
-        String randomResult = MD5Util.MD5(sb.toString());
+        String randomResult =sb.toString();
         String timeRandom = Long.toString(new Date().getTime());
         String result = "C" + timeRandom + randomResult;
-
-        if (result != null && result.length() > ORDERID_LENGTH) {
-            result = result.substring(0, ORDERID_LENGTH);
-        }
-
         return result;
     }
 

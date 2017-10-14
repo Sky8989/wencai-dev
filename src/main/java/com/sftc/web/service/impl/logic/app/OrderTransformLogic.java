@@ -8,12 +8,14 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.jpa.OrderDao;
+import com.sftc.web.dao.jpa.OrderExpressDao;
+import com.sftc.web.dao.jpa.OrderExpressTransformDao;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderExpressTransformMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
-import com.sftc.web.model.OrderExpressTransform;
+import com.sftc.web.model.entity.OrderExpressTransform;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Component;
@@ -36,6 +38,10 @@ public class OrderTransformLogic {
     private OrderExpressTransformMapper orderExpressTransformMapper;
     @Resource
     private OrderDao orderDao;
+    @Resource
+    private OrderExpressDao orderExpressDao;
+    @Resource
+    private OrderExpressTransformDao orderExpressTransformDao;
 
     /**
      * 根据同城订单的uuid，把原本同城的单下到大网
@@ -114,7 +120,7 @@ public class OrderTransformLogic {
                 oet.setNation_uuid(orderid);
                 oet.setIs_read(0);
                 oet.setCreate_time(System.currentTimeMillis() + "");
-                orderExpressTransformMapper.insertExpressTransform(oet);
+                orderExpressTransformDao.save(oet);
 
                 // 更新order表
                 Order order1 = orderDao.findOne(order.getId());
@@ -122,9 +128,12 @@ public class OrderTransformLogic {
                 orderDao.save(order1);         // 更改订单区域类型为大网
 
                 // 更新express表
-                orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), orderid, ""); // 更新uuid
-                orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");      // 更新快递状态
-                orderExpressMapper.updateOrderNumber(oe.getId(), nation_uuid);                          // express order_number
+                oe.setState("WAIT_HAND_OVER");
+                oe.setUuid(orderid);
+                oe.setReserve_time("");
+                oe.setOrder_number(nation_uuid);
+                oe.setState("WAIT_HAND_OVER");
+                orderExpressDao.save(oe);                     // express order_number
             }
             return APIUtil.getResponse(SUCCESS, resultObject);
         } else {
@@ -142,12 +151,14 @@ public class OrderTransformLogic {
             return APIUtil.paramErrorResponse("express_transform_id不能为空");
 
         int express_transform_id = requestObject.getInt("express_transform_id");
-        orderExpressTransformMapper.updateExpressTransformReadStatusById(express_transform_id);
+        OrderExpressTransform orderExpressTransform = orderExpressTransformDao.findOne(express_transform_id);
+        orderExpressTransform.setIs_read(1);
+        orderExpressTransformDao.save(orderExpressTransform);
 
-        OrderExpressTransform orderExpressTransform = orderExpressTransformMapper.selectExpressTransformByID(express_transform_id);
-        if (orderExpressTransform == null)
+        OrderExpressTransform orderExpressTransform2 = orderExpressTransformMapper.selectExpressTransformByID(express_transform_id);
+        if (orderExpressTransform2 == null)
             return APIUtil.submitErrorResponse("兜底记录不存在", null);
 
-        return APIUtil.getResponse(SUCCESS, orderExpressTransform);
+        return APIUtil.getResponse(SUCCESS, orderExpressTransform2);
     }
 }

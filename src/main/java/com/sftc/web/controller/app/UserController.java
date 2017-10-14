@@ -2,6 +2,7 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.reqeustParam.UserParam;
 import com.sftc.web.service.UserService;
@@ -23,18 +24,21 @@ public class UserController extends BaseController {
     @Resource
     private UserService userService;
 
+    @IgnoreToken
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse login(@RequestBody UserParam userParam) throws Exception {
         return userService.login(userParam);
     }
 
+    @IgnoreToken
     @RequestMapping(value = "/superLogin", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse superLogin(@RequestBody UserParam userParam) throws Exception {
         return userService.superLogin(userParam);
     }
 
+    @IgnoreToken
     @RequestMapping(value = "/unbind/common", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse commonUnbind(@RequestBody Object object) throws Exception {
@@ -42,6 +46,7 @@ public class UserController extends BaseController {
         return userService.deleteMobile(user_id);
     }
 
+    @IgnoreToken
     @RequestMapping(value = "/unbind/newMobile", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse bindNewMobile(@RequestBody Object object) throws Exception {

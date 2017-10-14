@@ -3,6 +3,7 @@ package com.sftc.web.service.impl.logic.app;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.model.dto.OrderDTO;
@@ -21,6 +22,8 @@ public class OrderStatusLogic {
     private OrderMapper orderMapper;
     @Resource
     private OrderExpressMapper orderExpressMapper;
+    @Resource
+    private OrderExpressDao orderExpressDao;
 
     //////////////////// Public Method ////////////////////
 
@@ -44,8 +47,9 @@ public class OrderStatusLogic {
             return APIUtil.submitErrorResponse("订单不存在", null);
 
         // update
-        for (OrderExpress oe : orderDTO.getOrderExpressDTOList()) {
-            orderExpressMapper.updateOrderExpressStatus(oe.getId(), status);
+        for (OrderExpress oe : orderDTO.getOrderExpressList()) {
+            oe.setState(status);
+            orderExpressDao.save(oe);
         }
         orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
         return APIUtil.getResponse(SUCCESS, orderDTO);
@@ -71,7 +75,8 @@ public class OrderStatusLogic {
             return APIUtil.submitErrorResponse("订单快递不存在", null);
 
         // update
-        orderExpressMapper.updateOrderExpressStatus(orderExpress.getId(), status);
+        orderExpress.setState(status);
+        orderExpressDao.save(orderExpress);
         orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
         return APIUtil.getResponse(SUCCESS, orderExpress);
     }

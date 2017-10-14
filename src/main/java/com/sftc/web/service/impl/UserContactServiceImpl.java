@@ -3,6 +3,7 @@ package com.sftc.web.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFTokenHelper;
+import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.ContactCallback;
@@ -42,6 +43,8 @@ public class UserContactServiceImpl implements UserContactService {
 
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private OrderExpressDao orderExpressDao;
 
     /*
      * 根据id查询好友详情
@@ -180,7 +183,12 @@ public class UserContactServiceImpl implements UserContactService {
             for (Orders orders : orderses) {
                 String uuid = orders.getUuid();
                 String order_status = orders.getStatus();
-                orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
+                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
+                orderExpress.setState(order_status);
+                if(orders.getAttributes()!=null){
+                    orderExpress.setAttributes(orders.getAttributes());
+                }
+                orderExpressDao.save(orderExpress);
             }
         }
         return null;

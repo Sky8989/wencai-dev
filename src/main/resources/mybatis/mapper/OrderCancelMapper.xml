@@ -8,8 +8,8 @@
         VALUES (#{order_id}, #{reason}, #{question_describe}, #{create_time})
     </insert>
 
-    <select id="selectCanceledOrderList" parameterType="com.sftc.web.model.OrderCancel"
-            resultType="com.sftc.web.model.OrderCancel">
+    <select id="selectCanceledOrderList" parameterType="com.sftc.web.model.entity.OrderCancel"
+            resultType="com.sftc.web.model.entity.OrderCancel">
         SELECT * FROM sftc_order_cancel
         <where>
             <if test="order_id != null and order_id != 0">and order_id = #{order_id}</if>

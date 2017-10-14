@@ -12,9 +12,6 @@ public class OrderExpressDTO extends OrderExpress {
     // 礼卡表id
     private int gift_card_id;
 
-    // 错误信息
-    private String attributes;
-
     // extension 收件人头像
     private String ship_avatar;
 
@@ -45,20 +42,5 @@ public class OrderExpressDTO extends OrderExpress {
     public void setEvaluate(Evaluate evaluate) {
         this.evaluate = evaluate;
     }
-
-    public String getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(String attributes) {
-        this.attributes = attributes;
-    }
-
-    public OrderExpressDTO(String state, String uuid, String attributes) {
-        this.setState(state);
-        this.setUuid(uuid);
-        this.attributes = attributes;
-    }
-
 
 }

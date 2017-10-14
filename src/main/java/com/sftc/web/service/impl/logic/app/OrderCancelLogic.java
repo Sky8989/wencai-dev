@@ -5,12 +5,14 @@ import com.sftc.tools.api.APIPostUtil;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.web.dao.jpa.OrderCancelDao;
 import com.sftc.web.dao.jpa.OrderDao;
+import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.OrderCancelMapper;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.OrderCancel;
+import com.sftc.web.model.entity.OrderCancel;
 import com.sftc.web.model.entity.OrderExpress;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
@@ -33,7 +35,10 @@ public class OrderCancelLogic {
     private OrderCancelMapper orderCancelMapper;
     @Resource
     private OrderDao orderDao;
-
+    @Resource
+    private OrderExpressDao orderExpressDao;
+    @Resource
+    private OrderCancelDao orderCancelDao;
     //////////////////// Public Method ////////////////////
 
     /**
@@ -87,7 +92,11 @@ public class OrderCancelLogic {
             order1.setIs_cancel("Cancelled");
             orderDao.save(order1);
             // 同城 超时未填写或者支付超时 都更新为超时OVERTIME
-            orderExpressMapper.updateOrderExpressOvertime(order_id);
+            List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
+            for(OrderExpress orderExpress1 : orderExpress){
+                orderExpress1.setState("CANCELED");
+                orderExpressDao.save(orderExpress1);
+            }
             addCancelRecord(order_id, "超时软取消", "同城");
         }
     }
@@ -100,7 +109,11 @@ public class OrderCancelLogic {
             Order order = orderDao.findOne(order_id);
             order.setIs_cancel("Cancelled");
             orderDao.save(order);
-            orderExpressMapper.updateOrderExpressCanceled(order_id);
+            List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
+            for(OrderExpress orderExpress1 : orderExpress){
+                orderExpress1.setState("CANCELED");
+                orderExpressDao.save(orderExpress1);
+            }
             return APIUtil.getResponse(APIStatus.SUCCESS, "订单取消成功");
         } catch (Exception e) {
             return APIUtil.logicErrorResponse("数据库操作异常", e);
@@ -143,7 +156,12 @@ public class OrderCancelLogic {
         Order order1 = orderDao.findOne(order_id);
         order1.setIs_cancel("Cancelled");
         orderDao.save(order1);
-        orderExpressMapper.updateOrderExpressCanceled(order_id);
+        List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
+        for(OrderExpress orderExpress1 : orderExpress){
+            orderExpress1.setState("CANCELED");
+            orderExpressDao.save(orderExpress1);
+        }
+
         // 添加订单取消记录
         addCancelRecord(order_id, isDidCommitToSF ? "主动取消" : "主动软取消", "同城");
 
@@ -156,6 +174,6 @@ public class OrderCancelLogic {
         orderCancel.setReason(reason);
         orderCancel.setQuestion_describe(question_describe);
         orderCancel.setCreate_time(Long.toString(System.currentTimeMillis()));
-        orderCancelMapper.addCancelOrder(orderCancel);
+        orderCancelDao.save(orderCancel);
     }
 }
