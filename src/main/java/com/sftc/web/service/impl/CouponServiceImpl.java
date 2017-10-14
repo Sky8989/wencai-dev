@@ -52,9 +52,7 @@ public class CouponServiceImpl implements CouponService {
         if (status_temp.equals("valid")) {
             status_final = status_valid;
         } else if (status_temp.equals("invalid")) {
-//            status_final = status_invalid;
-            //统一查询已激活的
-            status_final = status_valid;
+            status_final = status_invalid;
         } else {
             status_final = status_all;
         }
