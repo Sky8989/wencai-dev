@@ -58,13 +58,7 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
 
             OrderDTO orderDTO = orderMapper.selectOrderDetailByExpressId(express_id);
             List<OrderExpressDTO> orderExpresses = orderDTO.getOrderExpressList();
-            List<OrderExpressDTO> orderExpressDTOList = new ArrayList<>();
-            for(OrderExpress orderExpress : orderExpresses){
-                OrderExpressDTO orderExpressDTO = OrderExpressFactory.entityToDTO(orderExpress);
-                orderExpressDTOList.add(orderExpressDTO);
-            }
-
-            for (OrderExpressDTO oe : orderExpressDTOList) {
+            for(OrderExpressDTO oe : orderExpresses){
                 User user = userMapper.selectUserByUserId(oe.getShip_user_id());
                 if (user == null) {
                     oe.setShip_avatar(DK_USER_AVATAR_DEFAULT);
