@@ -227,6 +227,7 @@ public class OrderCommitLogic {
     }
 
     /// 好友同城订单提交
+    @Transactional
     private APIResponse friendSameOrderCommit(JSONObject requestObject) {
         // Param
         if (!requestObject.containsKey("order"))
@@ -310,7 +311,6 @@ public class OrderCommitLogic {
 //            if (!responseObject.containsKey("error")) {
             if (!(responseObject.containsKey("error") || responseObject.containsKey("errors"))) {
                 String uuid = (String) responseObject.getJSONObject("request").get("uuid");
-                // 获取sf返回的编号
                 String request_num = responseObject.getJSONObject("request").getString("request_num");
 
                 /// 数据库操作
@@ -322,8 +322,8 @@ public class OrderCommitLogic {
                 oe.setUuid(uuid);
                 oe.setReserve_time(reserve_time);
 //                orderExpressDao.save(oe);
-                String order_tiem = Long.toString(System.currentTimeMillis());
-                oe.setOrder_time(order_tiem);
+                String order_time = Long.toString(System.currentTimeMillis());
+                oe.setOrder_time(order_time);
                 oe.setOrder_number(request_num);
                 oe.setState(responseObject.getJSONObject("request").getString("status"));
                 //更新订单状态
