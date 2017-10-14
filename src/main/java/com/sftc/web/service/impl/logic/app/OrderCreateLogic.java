@@ -9,6 +9,7 @@ import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.Message;
+import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.UserContactNew;
@@ -109,14 +110,13 @@ public class OrderCreateLogic {
 //        String strJsonResult = orderExpressStr.replace(" ", "");
 //        OrderExpressDTO orderExpress = new Gson().fromJson(strJsonResult, OrderExpressDTO.class);
         OrderExpress orderExpress = (OrderExpress) JSONObject.toBean(paramOBJ, OrderExpress.class);
-
         // 判断订单是否下单
-        Order order = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
-        if (order.getRegion_type() != null && !"".equals(order.getRegion_type()) && order.getRegion_type().length() != 0) {
+        OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
+        if (orderDTO.getRegion_type() != null && !"".equals(orderDTO.getRegion_type()) && orderDTO.getRegion_type().length() != 0) {
             return APIUtil.submitErrorResponse("订单已经下单，现在您无法再填写信息", orderExpress.getOrder_id());
         }
 
-        if (order.getIs_cancel() != null && "Cancelled".equals(order.getIs_cancel())) {
+        if (orderDTO.getIs_cancel() != null && "Cancelled".equals(orderDTO.getIs_cancel())) {
             return APIUtil.submitErrorResponse("订单已取消，现在您无法再填写信息", null);
         }
 
@@ -135,24 +135,36 @@ public class OrderCreateLogic {
             return APIUtil.submitErrorResponse("包裹已经分发完", null);
         } else {
             //增加对supplementary_info的处理 保证有值
-            if (orderExpress.getSupplementary_info() == null || "".equals(orderExpress.getSupplementary_info())) {
-                orderExpress.setSupplementary_info(" ");
+            OrderExpress orderExpress1 = orderExpressDao.findOne(realList.get(0).getId());
+            if (orderExpress1.getSupplementary_info() == null || "".equals(orderExpress.getSupplementary_info())) {
+                orderExpress1.setSupplementary_info(" ");
             }
-            orderExpress.setState("ALREADY_FILL");
-            orderExpress.setId(realList.get(0).getId());
-            orderExpress.setReceive_time(Long.toString(System.currentTimeMillis()));
-            orderExpressDao.save(orderExpress);
+            orderExpress1.setShip_user_id(orderExpress.getShip_user_id());
+            orderExpress1.setShip_name(orderExpress.getShip_name());
+            orderExpress1.setShip_mobile(orderExpress.getShip_mobile());
+            orderExpress1.setShip_province(orderExpress.getShip_province());
+            orderExpress1.setShip_city(orderExpress.getShip_city());
+            orderExpress1.setShip_area(orderExpress.getShip_area());
+            orderExpress1.setShip_addr(orderExpress.getShip_addr());
+            orderExpress1.setSupplementary_info(orderExpress.getSupplementary_info());
+            orderExpress1.setLatitude(orderExpress.getLatitude());
+            orderExpress1.setLongitude(orderExpress.getLongitude());
+            orderExpress1.setOrder_id(orderExpress.getOrder_id());
+            orderExpress1.setState("ALREADY_FILL");
+            orderExpress1.setId(realList.get(0).getId());
+            orderExpress1.setReceive_time(Long.toString(System.currentTimeMillis()));
+            orderExpressDao.save(orderExpress1);
 
             // 添加RECEIVE_ADDRESS通知消息，此时应该是寄件人收到通知
-            List<Message> messageList = messageMapper.selectMessageReceiveAddress(order.getSender_user_id());
+            List<Message> messageList = messageMapper.selectMessageReceiveAddress(orderDTO.getSender_user_id());
             if (messageList.isEmpty() && messageList.size() == 0) {
-                Message message = new Message("RECEIVE_ADDRESS", 0, orderExpress.getId(), order.getSender_user_id());
+                Message message = new Message("RECEIVE_ADDRESS", 0, orderExpress.getId(), orderDTO.getSender_user_id());
                 messageMapper.insertMessage(message);
             } else {
                 Message message = messageList.get(0);
                 message.setIs_read(0);
                 message.setExpress_id(orderExpress.getId());
-                message.setUser_id(order.getSender_user_id());
+                message.setUser_id(orderDTO.getSender_user_id());
                 message.setCreate_time(Long.toString(System.currentTimeMillis()));
                 messageMapper.updateMessageReceiveAddress(message);
             }
@@ -170,12 +182,12 @@ public class OrderCreateLogic {
             }
             // 存储好友关系 寄件人对填写人的好友关系
             UserContactNew userContactNewParam = new UserContactNew();
-            userContactNewParam.setUser_id(order.getSender_user_id());             // 寄件人
+            userContactNewParam.setUser_id(orderDTO.getSender_user_id());             // 寄件人
             userContactNewParam.setFriend_id(orderExpress.getShip_user_id());      // 填写人
             UserContactNew userContactNew = userContactMapper.selectByUserIdAndShipId(userContactNewParam);
             if (userContactNew == null) { // null即 还不是好友关系
                 userContactNew = new UserContactNew();
-                userContactNew.setUser_id(order.getSender_user_id());
+                userContactNew.setUser_id(orderDTO.getSender_user_id());
                 userContactNew.setFriend_id(orderExpress.getShip_user_id());
                 userContactNew.setIs_tag_star(0);
                 userContactNew.setLntimacy(1);
@@ -187,12 +199,12 @@ public class OrderCreateLogic {
 
             // 存储好友关系   填写人对寄件人的好友关系
             userContactNewParam.setUser_id(orderExpress.getShip_user_id()); // 填写人
-            userContactNewParam.setFriend_id(order.getSender_user_id());    // 寄件人
+            userContactNewParam.setFriend_id(orderDTO.getSender_user_id());    // 寄件人
             UserContactNew userContactNew2 = userContactMapper.selectByUserIdAndShipId(userContactNewParam);
             if (userContactNew2 == null) {
                 userContactNew2 = new UserContactNew();
                 userContactNew2.setUser_id(orderExpress.getShip_user_id());
-                userContactNew2.setFriend_id(order.getSender_user_id());
+                userContactNew2.setFriend_id(orderDTO.getSender_user_id());
                 userContactNew2.setIs_tag_star(0);
                 userContactNew2.setLntimacy(1);
                 userContactNew2.setCreate_time(Long.toString(System.currentTimeMillis()));
@@ -214,7 +226,7 @@ public class OrderCreateLogic {
 
             //提交地址同时（去重处理）保存到[寄件人]最近联系人
             orderCommitLogic.insertAddressBookUtils("address_history", "address_history",
-                    order.getSender_user_id(),// 给寄件人存
+                    orderDTO.getSender_user_id(),// 给寄件人存
                     orderExpress.getShip_user_id(),// id是收件人的 查历史地址时才能取到
                     orderExpress.getShip_name(), orderExpress.getShip_mobile(), orderExpress.getShip_province(),
                     orderExpress.getShip_city(), orderExpress.getShip_area(), orderExpress.getShip_addr(), orderExpress.getSupplementary_info(),

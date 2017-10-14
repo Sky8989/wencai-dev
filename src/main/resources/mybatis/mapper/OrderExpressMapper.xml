@@ -181,7 +181,6 @@
         WHERE id = #{id}
     </update>
 
-
     <!--下面是cms系统用到的mapper-->
     <select id="selectOrderExpressByPage" resultType="com.sftc.web.model.entity.OrderExpress"
             parameterType="com.sftc.web.model.entity.OrderExpress">
