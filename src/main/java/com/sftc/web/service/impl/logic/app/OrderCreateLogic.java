@@ -5,6 +5,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.common.EmojiFilter;
 import com.sftc.tools.sf.SFOrderHelper;
+import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.Message;
 import com.sftc.web.model.entity.Order;
@@ -40,6 +41,8 @@ public class OrderCreateLogic {
     private MessageMapper messageMapper;
     @Resource
     private OrderCommitLogic orderCommitLogic;
+    @Resource
+    private OrderDao orderDao;
 
     /**
      * 寄件人填写订单
@@ -66,7 +69,7 @@ public class OrderCreateLogic {
 
         // 插入订单表
         Order order = new Order(orderParam);
-        orderMapper.addOrder2(order);
+        orderDao.save(order);
 
         // 插入快递表
         OrderExpress orderExpress = new OrderExpress();

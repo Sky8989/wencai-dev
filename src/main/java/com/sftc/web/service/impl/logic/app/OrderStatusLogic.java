@@ -5,6 +5,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
+import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.OrderExpress;
 import net.sf.json.JSONObject;
@@ -39,16 +40,16 @@ public class OrderStatusLogic {
         if (statusError != null)
             return APIUtil.paramErrorResponse(statusError);
 
-        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
-        if (order == null)
+        OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
+        if (orderDTO == null)
             return APIUtil.submitErrorResponse("订单不存在", null);
 
         // update
-        for (OrderExpress oe : order.getOrderExpressList()) {
+        for (OrderExpress oe : orderDTO.getOrderExpressList()) {
             orderExpressMapper.updateOrderExpressStatus(oe.getId(), status);
         }
-        order = orderMapper.selectOrderDetailByOrderId(order_id);
-        return APIUtil.getResponse(SUCCESS, order);
+        orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
+        return APIUtil.getResponse(SUCCESS, orderDTO);
     }
 
     /**

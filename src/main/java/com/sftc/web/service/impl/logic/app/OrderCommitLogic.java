@@ -10,6 +10,7 @@ import com.sftc.web.dao.jpa.AddressBookDao;
 import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.dto.AddressBookDTO;
+import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.AddressHistory;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.OrderExpress;
@@ -121,9 +122,9 @@ public class OrderCommitLogic {
      */
     public void nationOrderReserveCommit(String order_id, long currentTimeMillis) {
 
-        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+        OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
         //后期订单和快递改为一对一之后，请求为object对象，遍历里面的order对象来提交？
-        for (OrderExpress oe : order.getOrderExpressList()) {
+        for (OrderExpress oe : orderDTO.getOrderExpressList()) {
 
             //过滤 不在预约时间周期内的订单      当前时间>X>当前时间-1800000的订单才下单 ，处于其补集区间的订单则跳出
 //            if (Long.parseLong(oe.getReserve_time()) >= System.currentTimeMillis()
@@ -138,14 +139,14 @@ public class OrderCommitLogic {
             // 大网订单提交参数
             JSONObject sf = new JSONObject();
             sf.put("orderid", oe.getUuid());
-            sf.put("j_contact", order.getSender_name());
-            sf.put("j_mobile", order.getSender_mobile());
-            sf.put("j_tel", order.getSender_mobile());
+            sf.put("j_contact", orderDTO.getSender_name());
+            sf.put("j_mobile", orderDTO.getSender_mobile());
+            sf.put("j_tel", orderDTO.getSender_mobile());
             sf.put("j_country", "中国");
-            sf.put("j_province", order.getSender_province());
-            sf.put("j_city", order.getSender_city());
-            sf.put("j_county", order.getSender_area());
-            sf.put("j_address", order.getSender_addr());
+            sf.put("j_province", orderDTO.getSender_province());
+            sf.put("j_city", orderDTO.getSender_city());
+            sf.put("j_county", orderDTO.getSender_area());
+            sf.put("j_address", orderDTO.getSender_addr());
             sf.put("d_contact", oe.getShip_name());
             sf.put("d_mobile", oe.getShip_mobile());
             sf.put("d_tel", oe.getShip_mobile());
@@ -154,8 +155,8 @@ public class OrderCommitLogic {
             sf.put("d_city", oe.getShip_city());
             sf.put("d_county", oe.getShip_area());
             sf.put("d_address", oe.getShip_addr());
-            sf.put("pay_method", order.getPay_method());
-            sf.put("express_type", order.getDistribution_method());
+            sf.put("pay_method", orderDTO.getPay_method());
+            sf.put("express_type", orderDTO.getDistribution_method());
             // handle pay_method
             String pay_method = (String) sf.get("pay_method");
             if (pay_method != null && !pay_method.equals("")) {
@@ -181,7 +182,7 @@ public class OrderCommitLogic {
                     logger.error("大网预约单提交失败: " + resultObject);
                 } else {
                     // 存储快递信息
-                    Order order1 = orderDao.findOne(order.getId());
+                    Order order1 = orderDao.findOne(orderDTO.getId());
                     order1.setRegion_type("REGION_NATION");
                     orderDao.save(order1);
                     String ordernum = resultObject.getString("ordernum");
@@ -221,25 +222,25 @@ public class OrderCommitLogic {
             return APIUtil.paramErrorResponse("order_id不能为空");
 
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
-        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+        OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
         //增加对包裹数量的验证，确保是只有一个订单里只有一个同城包裹
         //后期更新订单与包裹一对一，但是好友件同城可以多包裹，同城订单走这个逻辑？
-        if (order.getOrderExpressList().size() != 1)
+        if (orderDTO.getOrderExpressList().size() != 1)
             return APIUtil.submitErrorResponse("OrderDTO infomation has been changed,please check again!", null);
 
-        for (OrderExpress oe : order.getOrderExpressList()) {
+        for (OrderExpress oe : orderDTO.getOrderExpressList()) {
             // 拼接同城订单参数中的 source 和 target
             Source source = new Source();
             Address address = new Address();
-            address.setProvince(order.getSender_province());
-            address.setCity(order.getSender_city());
-            address.setRegion(order.getSender_area());
-            address.setStreet(order.getSender_addr());
-            address.setReceiver(order.getSender_name());
-            address.setMobile(order.getSender_mobile());
+            address.setProvince(orderDTO.getSender_province());
+            address.setCity(orderDTO.getSender_city());
+            address.setRegion(orderDTO.getSender_area());
+            address.setStreet(orderDTO.getSender_addr());
+            address.setReceiver(orderDTO.getSender_name());
+            address.setMobile(orderDTO.getSender_mobile());
             Coordinate coordinate = new Coordinate();
-            coordinate.setLongitude(order.getLongitude());
-            coordinate.setLatitude(order.getLatitude());
+            coordinate.setLongitude(orderDTO.getLongitude());
+            coordinate.setLatitude(orderDTO.getLatitude());
             source.setAddress(address);
             source.setCoordinate(coordinate);
 
@@ -266,7 +267,7 @@ public class OrderCommitLogic {
 
             // TODO 把门牌号加到下单的参数json中
             Object removeStreet = requestObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").remove("street");
-            String newStreet = removeStreet.toString() + order.getSupplementary_info();
+            String newStreet = removeStreet.toString() + orderDTO.getSupplementary_info();
             requestObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").put("street", newStreet);
             Object removeStreet2 = requestObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").remove("street");
             String newStreet2 = removeStreet2.toString() + oe.getSupplementary_info();
@@ -330,9 +331,9 @@ public class OrderCommitLogic {
             }
         }
 
-        order = orderMapper.selectOrderDetailByOrderId(order_id);
+        orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
 
-        return APIUtil.getResponse(SUCCESS, order);
+        return APIUtil.getResponse(SUCCESS, orderDTO);
     }
 
     /// 好友大网订单提交
@@ -347,14 +348,14 @@ public class OrderCommitLogic {
         order1.setRegion_type("REGION_NATION");
         orderDao.save(order1);
 
-        Order order = orderMapper.selectOrderDetailByOrderIdForUpdate(order_id);
+        OrderDTO orderDto = orderMapper.selectOrderDetailByOrderIdForUpdate(order_id);
 
         //增加对包裹数量的验证，确保是只有一个订单里只有一个同城包裹
         if (requestObject.getJSONObject("order").containsKey("package_count")) {
             int package_count = requestObject.getJSONObject("order").getInt("package_count");
             int real_count = 0;
             //遍历包裹信息，确定有多少个包裹已被填写
-            for (OrderExpress oe : order.getOrderExpressList()) {
+            for (OrderExpress oe : orderDto.getOrderExpressList()) {
                 if (oe.getShip_province() != null && !"".equals(oe.getShip_province())) {//如果有省份信息，则表明已填写
                     real_count++;
                 }
@@ -365,18 +366,18 @@ public class OrderCommitLogic {
         }
 
 
-        for (OrderExpress oe : order.getOrderExpressList()) {
+        for (OrderExpress oe : orderDto.getOrderExpressList()) {
             // 拼接大网订单地址参数
             JSONObject sf = requestObject.getJSONObject("sf");
             sf.put("orderid", oe.getUuid());
-            sf.put("j_contact", order.getSender_name());
-            sf.put("j_mobile", order.getSender_mobile());
-            sf.put("j_tel", order.getSender_mobile());
+            sf.put("j_contact", orderDto.getSender_name());
+            sf.put("j_mobile", orderDto.getSender_mobile());
+            sf.put("j_tel", orderDto.getSender_mobile());
             sf.put("j_country", "中国");
-            sf.put("j_province", order.getSender_province());
-            sf.put("j_city", order.getSender_city());
-            sf.put("j_county", order.getSender_area());
-            sf.put("j_address", order.getSender_addr());
+            sf.put("j_province", orderDto.getSender_province());
+            sf.put("j_city", orderDto.getSender_city());
+            sf.put("j_county", orderDto.getSender_area());
+            sf.put("j_address", orderDto.getSender_addr());
             sf.put("d_contact", oe.getShip_name());
             sf.put("d_mobile", oe.getShip_mobile());
             sf.put("d_tel", oe.getShip_mobile());
@@ -405,7 +406,7 @@ public class OrderCommitLogic {
                     // 处理street 和 门牌号的拼接
                     Object j_address = sf.remove("j_address");
                     Object d_address = sf.remove("d_address");
-                    sf.put("j_address", j_address + order.getSupplementary_info());
+                    sf.put("j_address", j_address + orderDto.getSupplementary_info());
                     sf.put("d_address", d_address + oe.getSupplementary_info());
 
                     // 立即提交订单
@@ -449,8 +450,8 @@ public class OrderCommitLogic {
                 }
             }
         }
-        order = orderMapper.selectOrderDetailByOrderId(order_id);
-        return APIUtil.getResponse(SUCCESS, order);
+        orderDto = orderMapper.selectOrderDetailByOrderId(order_id);
+        return APIUtil.getResponse(SUCCESS, orderDto);
     }
 
     /// 普通同城订单提交

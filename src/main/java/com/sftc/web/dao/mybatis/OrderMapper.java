@@ -1,5 +1,6 @@
 package com.sftc.web.dao.mybatis;
 
+import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import org.apache.ibatis.annotations.Param;
@@ -30,23 +31,23 @@ public interface OrderMapper {
      */
     List<Order> selectMyOrderList(MyOrderParam param);
 
-    List<Order> selectMyOrderList2(MyOrderParam param);
+    List<OrderDTO> selectMyOrderList2(MyOrderParam param);
 
 
     /**
      * 查询我的好友订单列表
      */
-    List<Order> selectMyFriendOrderList(MyOrderParam param);
+    List<OrderDTO> selectMyFriendOrderList(MyOrderParam param);
 
     /**
      * 根据订单id查询订单详情
      */
-    Order selectOrderDetailByOrderId(String order_id);
+    OrderDTO selectOrderDetailByOrderId(String order_id);
 
     /**
      * 添加了行级锁和排他锁的订单详情查询
      */
-    Order selectOrderDetailByOrderIdForUpdate(String order_id);
+    OrderDTO selectOrderDetailByOrderIdForUpdate(String order_id);
 
     /**
      * 根据快递id查询订单详情

@@ -11,6 +11,7 @@ import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.*;
+import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -51,12 +52,12 @@ public class OrderDetailLogic {
         String order_id = (String) request.getParameter("order_id");
         if (order_id == null || order_id.length() == 0)
             return APIUtil.paramErrorResponse("order_id不能为空");
-        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+        OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
 
         Map<String, Object> resultMap = new HashMap<String, Object>();
-        if (order == null) return APIUtil.getResponse(SUCCESS, null);
+        if (orderDTO == null) return APIUtil.getResponse(SUCCESS, null);
 
-        for (OrderExpress oe : order.getOrderExpressList()) {
+        for (OrderExpress oe : orderDTO.getOrderExpressList()) {
             User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
             if (receiver != null && receiver.getAvatar() != null) {
                 // 扩展收件人头像
@@ -67,14 +68,14 @@ public class OrderDetailLogic {
         // order
         GsonBuilder gb = new GsonBuilder();
         Gson g = gb.create();
-        String resultJson = new Gson().toJson(order);
+        String resultJson = new Gson().toJson(orderDTO);
         Map<String, Object> orderMap = g.fromJson(resultJson, new TypeToken<Map<String, Object>>() {
         }.getType());
-        User sender = userMapper.selectUserByUserId(order.getSender_user_id());
+        User sender = userMapper.selectUserByUserId(orderDTO.getSender_user_id());
         orderMap.put("sender_avatar", sender.getAvatar());
 
         // giftCard
-        GiftCard giftCard = giftCardMapper.selectGiftCardById(order.getGift_card_id());
+        GiftCard giftCard = giftCardMapper.selectGiftCardById(orderDTO.getGift_card_id());
 
         resultMap.put("order", orderMap);
         resultMap.put("giftCard", giftCard);

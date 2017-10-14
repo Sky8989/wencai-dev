@@ -7,6 +7,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFTokenHelper;
+import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderExpressTransformMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
@@ -33,6 +34,8 @@ public class OrderTransformLogic {
     private OrderExpressMapper orderExpressMapper;
     @Resource
     private OrderExpressTransformMapper orderExpressTransformMapper;
+    @Resource
+    private OrderDao orderDao;
 
     /**
      * 根据同城订单的uuid，把原本同城的单下到大网
@@ -114,7 +117,9 @@ public class OrderTransformLogic {
                 orderExpressTransformMapper.insertExpressTransform(oet);
 
                 // 更新order表
-                orderMapper.updateOrderRegionType(order.getId(), "REGION_NATION");          // 更改订单区域类型为大网
+                Order order1 = orderDao.findOne(order.getId());
+                order1.setRegion_type("REGION_NATION");
+                orderDao.save(order1);         // 更改订单区域类型为大网
 
                 // 更新express表
                 orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), orderid, ""); // 更新uuid
