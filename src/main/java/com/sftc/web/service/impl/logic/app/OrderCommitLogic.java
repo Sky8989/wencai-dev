@@ -10,8 +10,10 @@ import com.sftc.web.dao.jpa.AddressBookDao;
 import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
+import com.sftc.web.model.Converter.OrderExpressFactory;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.dto.OrderDTO;
+import com.sftc.web.model.dto.OrderExpressDTO;
 import com.sftc.web.model.entity.AddressHistory;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
@@ -367,7 +369,7 @@ public class OrderCommitLogic {
             int package_count = requestObject.getJSONObject("order").getInt("package_count");
             int real_count = 0;
             //遍历包裹信息，确定有多少个包裹已被填写
-            for (OrderExpress oe : orderDto.getOrderExpressList()) {
+            for (OrderExpressDTO oe : orderDto.getOrderExpressList()) {
                 if (oe.getShip_province() != null && !"".equals(oe.getShip_province())) {//如果有省份信息，则表明已填写
                     real_count++;
                 }
@@ -378,7 +380,7 @@ public class OrderCommitLogic {
         }
 
 
-        for (OrderExpress oe : orderDto.getOrderExpressList()) {
+        for (OrderExpressDTO oe : orderDto.getOrderExpressList()) {
             // 拼接大网订单地址参数
             JSONObject sf = requestObject.getJSONObject("sf");
             sf.put("orderid", oe.getUuid());
@@ -414,9 +416,10 @@ public class OrderCommitLogic {
             if (!oe.getState().equals("WAIT_FILL")) {
                 if (reserve_time != null && !reserve_time.equals("")) { // 预约件处理
                     oe.setReserve_time(reserve_time);
-                    oe.setUuid(oe.getUuid());
+                   oe.setUuid(oe.getUuid());
                     oe.setState("WAIT_HAND_OVER");
-                    orderExpressDao.save(oe);
+                    OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
+                    orderExpressDao.save(orderExpress);
                 } else {
                     // 处理street 和 门牌号的拼接
                     Object j_address = sf.remove("j_address");
@@ -451,12 +454,12 @@ public class OrderCommitLogic {
                         // 存储订单信息
                         String order_time = Long.toString(System.currentTimeMillis());
                         oe.setOrder_time(order_time);
-                        orderExpressDao.save(oe);
 
                         String ordernum = jsonObject.getString("ordernum");
                         oe.setOrder_number(ordernum);
                         oe.setState("WAIT_HAND_OVER");
-                        orderExpressDao.save(oe);
+                        OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
+                        orderExpressDao.save(orderExpress);
 
                         // 插入地址
                         //setupAddress(order, oe);

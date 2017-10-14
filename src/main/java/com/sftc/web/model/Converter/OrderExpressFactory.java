@@ -39,4 +39,34 @@ public class OrderExpressFactory {
         orderExpressDTO.setAttributes(orderExpress.getAttributes());
         return  orderExpressDTO;
     }
+    public static OrderExpress dtoToEntity(OrderExpressDTO orderExpressDTO){
+        OrderExpress orderExpress = new OrderExpress();
+        orderExpress.setId(orderExpressDTO.getId());
+        orderExpress.setCreate_time(orderExpressDTO.getCreate_time());
+        orderExpress.setOrder_number(orderExpressDTO.getOrder_number());
+        orderExpress.setShip_name(orderExpressDTO.getShip_name());
+        orderExpress.setShip_mobile(orderExpressDTO.getShip_mobile());
+        orderExpress.setShip_province(orderExpressDTO.getShip_province());
+        orderExpress.setShip_city(orderExpressDTO.getShip_city());
+        orderExpress.setShip_area(orderExpressDTO.getShip_area());
+        orderExpress.setShip_addr(orderExpressDTO.getShip_addr());
+        orderExpress.setSender_user_id(orderExpressDTO.getSender_user_id());
+        orderExpress.setSupplementary_info(orderExpressDTO.getSupplementary_info());
+        orderExpress.setPackage_type(orderExpressDTO.getPackage_type());
+        orderExpress.setObject_type(orderExpressDTO.getObject_type());
+        orderExpress.setPackage_comments(orderExpressDTO.getPackage_comments());
+        orderExpress.setIs_use(orderExpressDTO.getIs_use());
+        orderExpress.setShip_user_id(orderExpressDTO.getShip_user_id());
+        orderExpress.setOrder_id(orderExpressDTO.getOrder_id());
+        orderExpress.setState(orderExpressDTO.getState());
+        orderExpress.setUuid(orderExpressDTO.getUuid());
+        orderExpress.setLatitude(orderExpressDTO.getLatitude());
+        orderExpress.setLongitude(orderExpressDTO.getLongitude());
+        orderExpress.setReceive_time(orderExpressDTO.getReceive_time());
+        orderExpress.setReserve_time(orderExpressDTO.getReserve_time());
+        orderExpress.setDirected_code(orderExpressDTO.getDirected_code());
+        orderExpress.setOrder_time(orderExpressDTO.getOrder_time());
+        orderExpress.setAttributes(orderExpressDTO.getAttributes());
+        return  orderExpress;
+    }
 }
