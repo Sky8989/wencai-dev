@@ -65,17 +65,14 @@ public class OrderDetailLogic {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         List<OrderExpressDTO> dtoList = new ArrayList<OrderExpressDTO>();
         if (orderDTO == null) return APIUtil.getResponse(SUCCESS, null);
-        List<OrderExpress> orderExpress = orderDTO.getOrderExpressList();
-        for(OrderExpress orderExpress2 : orderExpress){
-            OrderExpressDTO orderExpressDTO = OrderExpressFactory.entityToDTO(orderExpress2);
-            dtoList.add(orderExpressDTO);
-        }
-        for (OrderExpressDTO oe : dtoList) {
-            User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
+        List<OrderExpressDTO> orderExpress = orderDTO.getOrderExpressList();
+        for(OrderExpressDTO orderExpressDTO : orderExpress){
+            User receiver = userMapper.selectUserByUserId(orderExpressDTO.getShip_user_id());
             if (receiver != null && receiver.getAvatar() != null) {
                 // 扩展收件人头像
-                oe.setShip_avatar(receiver.getAvatar());
+                orderExpressDTO.setShip_avatar(receiver.getAvatar());
             }
+            dtoList.add(orderExpressDTO);
         }
 
         // order

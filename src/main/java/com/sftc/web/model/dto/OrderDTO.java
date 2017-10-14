@@ -15,15 +15,25 @@ public class OrderDTO extends Order {
     // 订单评价信息
     private Evaluate evaluate;
     // 快递数组
-    private List<OrderExpress> orderExpressList;
+//    private List<OrderExpress> orderExpressList;
+
+    public List<OrderExpressDTO> orderExpressList;
 
     public Evaluate getEvaluate() {return evaluate;}
 
     public void setEvaluate(Evaluate evaluate) {this.evaluate = evaluate;}
 
-    public List<OrderExpress> getOrderExpressList() {return orderExpressList;}
+    public List<OrderExpressDTO> getOrderExpressList() {return orderExpressList;}
 
-    public void setOrderExpressList(List<OrderExpress> orderExpressList) {this.orderExpressList = orderExpressList;}
+    public void setOrderExpressList(List<OrderExpressDTO> orderExpressList) {this.orderExpressList = orderExpressList;}
+
+//    public List<OrderExpressDTO> getOrderExpressDTOList() {
+//        return orderExpressDTOList;
+//    }
+
+//    public void setOrderExpressDTOList(List<OrderExpressDTO> orderExpressDTOList) {
+//        this.orderExpressDTOList = orderExpressDTOList;
+//    }
 
     public OrderDTO() {}
 

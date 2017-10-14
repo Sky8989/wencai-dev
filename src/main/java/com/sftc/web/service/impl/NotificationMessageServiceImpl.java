@@ -57,7 +57,7 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
             int express_id = message.getExpress_id();
 
             OrderDTO orderDTO = orderMapper.selectOrderDetailByExpressId(express_id);
-            List<OrderExpress> orderExpresses = orderDTO.getOrderExpressList();
+            List<OrderExpressDTO> orderExpresses = orderDTO.getOrderExpressList();
             List<OrderExpressDTO> orderExpressDTOList = new ArrayList<>();
             for(OrderExpress orderExpress : orderExpresses){
                 OrderExpressDTO orderExpressDTO = OrderExpressFactory.entityToDTO(orderExpress);

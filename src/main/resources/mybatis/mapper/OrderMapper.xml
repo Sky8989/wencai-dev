@@ -22,18 +22,17 @@
         <result property="word_message" column="word_message"/>
         <result property="pay_method" column="pay_method"/>
         <result property="distribution_method" column="distribution_method"/>
-        <result property="gmt_pay_create" column="gmt_pay_create"/>
         <result property="gift_card_id" column="gift_card_id"/>
         <result property="voice_time" column="voice_time"/>
         <result property="create_time" column="create_time"/>
         <association property="giftCard" select="selectGiftCard" column="gift_card_id">
         </association>
-        <collection property="orderExpressList" ofType="com.sftc.web.model.entity.OrderExpress" select="selectExpressList"
+        <collection property="orderExpressList" ofType="com.sftc.web.model.dto.OrderExpressDTO" select="selectExpressList"
                     column="id">
         </collection>
     </resultMap>
 
-    <select id="selectExpressList" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.OrderExpress">
+    <select id="selectExpressList" parameterType="java.lang.String" resultType="com.sftc.web.model.dto.OrderExpressDTO">
         SELECT *
         FROM sftc_order_express
         WHERE order_id = #{id}
