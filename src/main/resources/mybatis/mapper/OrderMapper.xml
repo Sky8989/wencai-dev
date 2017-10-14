@@ -227,7 +227,6 @@
             oe.ship_city LIKE #{keyword} OR
             oe.ship_area LIKE #{keyword} OR
             oe.ship_addr LIKE #{keyword} OR
-            oe.state LIKE #{keyword}
             )
         </if>
         )
