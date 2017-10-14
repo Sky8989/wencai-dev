@@ -13,6 +13,7 @@ import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.*;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
+import com.sftc.web.model.entity.OrderExpress;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -57,7 +58,7 @@ public class OrderDetailLogic {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         if (orderDTO == null) return APIUtil.getResponse(SUCCESS, null);
 
-        for (OrderExpress oe : orderDTO.getOrderExpressList()) {
+        for (OrderExpress oe : orderDTO.getOrderExpressDTOList()) {
             User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
             if (receiver != null && receiver.getAvatar() != null) {
                 // 扩展收件人头像
@@ -81,7 +82,7 @@ public class OrderDetailLogic {
         resultMap.put("giftCard", giftCard);
 
         //查询是否有未读收到好友地址消息 若有则消除
-        //remarkMessageReceiveAddress(order.getOrderExpressList(), order.getSender_user_id());
+        //remarkMessageReceiveAddress(order.getOrderExpressDTOList(), order.getSender_user_id());
 
         return APIUtil.getResponse(SUCCESS, resultMap);
     }

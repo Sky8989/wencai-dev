@@ -2,6 +2,7 @@ package com.sftc.web.model.dto;
 
 import com.sftc.web.model.*;
 import com.sftc.web.model.entity.Order;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.reqeustParam.OrderParam;
 
 import javax.servlet.http.HttpServletRequest;

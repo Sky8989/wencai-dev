@@ -11,7 +11,7 @@ import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.OrderCancel;
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.entity.OrderExpress;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Component;
@@ -83,7 +83,9 @@ public class OrderCancelLogic {
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
             // 取消同城订单
-            orderMapper.updateCancelOrderById(order_id);
+            Order order1 = orderDao.findOne(order_id);
+            order1.setIs_cancel("Cancelled");
+            orderDao.save(order1);
             // 同城 超时未填写或者支付超时 都更新为超时OVERTIME
             orderExpressMapper.updateOrderExpressOvertime(order_id);
             addCancelRecord(order_id, "超时软取消", "同城");

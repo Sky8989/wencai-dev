@@ -9,8 +9,9 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.dao.mybatis.SFServiceAddressMapper;
 import com.sftc.web.model.Express;
+import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.sfmodel.SFServiceAddress;
 import com.sftc.web.service.SFServiceAddressService;
 import net.sf.json.JSONObject;
@@ -63,21 +64,21 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         if (orderId == null || orderId.equals(""))
             return APIUtil.paramErrorResponse("order_id无效");
 
-        Order order = orderMapper.selectOrderDetailByOrderId(orderId);
-        if (order == null)
+        OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(orderId);
+        if (orderDTO == null)
             return APIUtil.selectErrorResponse("订单不存在", null);
 
-        OrderExpress oe = order.getOrderExpressList().get(0);
+        OrderExpress oe = orderDTO.getOrderExpressList().get(0);
         if (oe == null)
             return APIUtil.selectErrorResponse("快递不存在", null);
 
         //多包裹的估算规则还不清楚
-        if (order.getOrderExpressList().size() != 1) // 暂时只有单包裹才能算配送方式
+        if (orderDTO.getOrderExpressList().size() != 1) // 暂时只有单包裹才能算配送方式
             return APIUtil.selectErrorResponse("暂时只支持单包裹的订单查询运费时效", null);
 
-        String senderCity = order.getSender_city().replace("市", "");
+        String senderCity = orderDTO.getSender_city().replace("市", "");
         String receiverCity = oe.getShip_city().replace("市", "");
-        String senderArea = order.getSender_area();
+        String senderArea = orderDTO.getSender_area();
         String receiverArea = oe.getShip_area();
         if (!senderArea.endsWith("区")) senderArea = senderArea + "区";
         if (!receiverArea.endsWith("区")) receiverArea = receiverArea + "区";

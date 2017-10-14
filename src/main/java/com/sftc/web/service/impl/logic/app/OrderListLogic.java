@@ -13,7 +13,7 @@ import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Evaluate;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.User;
 import com.sftc.web.model.apiCallback.OrderCallback;
 import com.sftc.web.model.apiCallback.OrderFriendCallback;
@@ -96,13 +96,13 @@ public class OrderListLogic {
             callback.setRegion_type(orderDTO.getRegion_type());
             callback.setIs_gift(orderDTO.getGift_card_id() > 0);
             callback.setPay_method(orderDTO.getPay_method());
-            if (orderDTO.getOrderExpressList().size() == 1) // 单包裹
-                callback.setOrder_number(orderDTO.getOrderExpressList().get(0).getOrder_number());
+            if (orderDTO.getOrderExpressDTOList().size() == 1) // 单包裹
+                callback.setOrder_number(orderDTO.getOrderExpressDTOList().get(0).getOrder_number());
 
             // expressList
             List<OrderCallback.OrderCallbackExpress> expressList = new ArrayList<OrderCallback.OrderCallbackExpress>();
             HashSet flagSetIsEvaluated = new HashSet();
-            for (OrderExpress oe : orderDTO.getOrderExpressList()) {
+            for (OrderExpress oe : orderDTO.getOrderExpressDTOList()) {
                 OrderCallback.OrderCallbackExpress express = new OrderCallback().new OrderCallbackExpress();
                 express.setUuid(oe.getUuid());
                 express.setState(oe.getState());
@@ -155,8 +155,8 @@ public class OrderListLogic {
             if (sender != null && sender.getAvatar() != null) {
                 callback.setSender_avatar(sender.getAvatar());
             }
-            if (orderDTO.getOrderExpressList() != null && orderDTO.getOrderExpressList().size() > 0 && orderDTO.getOrderExpressList().get(0).getObject_type().length() > 0) { // powerful verify
-                callback.setObject_type(orderDTO.getOrderExpressList().get(0).getObject_type());
+            if (orderDTO.getOrderExpressDTOList() != null && orderDTO.getOrderExpressDTOList().size() > 0 && orderDTO.getOrderExpressDTOList().get(0).getObject_type().length() > 0) { // powerful verify
+                callback.setObject_type(orderDTO.getOrderExpressDTOList().get(0).getObject_type());
             }
             callback.setWord_message(orderDTO.getWord_message());
             callback.setImage(orderDTO.getImage());
@@ -168,7 +168,7 @@ public class OrderListLogic {
             // expressList
             List<OrderFriendCallback.OrderFriendCallbackExpress> expressList = new ArrayList<OrderFriendCallback.OrderFriendCallbackExpress>();
             HashSet flagSetIsEvaluated = new HashSet();
-            for (OrderExpress oe : orderDTO.getOrderExpressList()) {
+            for (OrderExpress oe : orderDTO.getOrderExpressDTOList()) {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
                 OrderFriendCallback.OrderFriendCallbackExpress express = new OrderFriendCallback().new OrderFriendCallbackExpress();
                 express.setId(oe.getId());

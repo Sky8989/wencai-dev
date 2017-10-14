@@ -3,12 +3,15 @@ package com.sftc.web.service.impl;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.web.dao.jpa.OrderDao;
+import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.MessageMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Message;
-import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.dto.OrderDTO;
+import com.sftc.web.model.dto.OrderExpressDTO;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.User;
 import com.sftc.web.service.NotificationMessageService;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,11 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
     @Resource
     private UserMapper userMapper;
 
+    @Resource
+    private OrderDao orderDao;
+    @Resource
+    private OrderExpressDao orderExpressDao;
+
     public APIResponse getMessage(APIRequest request) {
 
         // Param
@@ -45,9 +53,10 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
         List<Message> messageList = messageMapper.selectUnReadMessageList(user_id);
         for (Message message : messageList) {
             int express_id = message.getExpress_id();
-            Order order = orderMapper.selectOrderDetailByExpressId(express_id);
 
-            for (OrderExpress oe : order.getOrderExpressList()) {
+            OrderDTO orderDTO = orderMapper.selectOrderDetailByExpressId(express_id);
+
+            for (OrderExpressDTO oe : orderDTO.getOrderExpressDTOList()List()) {
                 User user = userMapper.selectUserByUserId(oe.getShip_user_id());
                 if (user == null) {
                     oe.setShip_avatar(DK_USER_AVATAR_DEFAULT);

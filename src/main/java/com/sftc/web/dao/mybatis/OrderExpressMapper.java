@@ -1,6 +1,6 @@
 package com.sftc.web.dao.mybatis;
 
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.OrderExpressTransform;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

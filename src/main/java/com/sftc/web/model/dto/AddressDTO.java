@@ -2,7 +2,7 @@ package com.sftc.web.model.dto;
 
 import com.sftc.web.model.entity.Address;
 import com.sftc.web.model.Object;
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.reqeustParam.OrderParam;
 
 public class AddressDTO extends Object {

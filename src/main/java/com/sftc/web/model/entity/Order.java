@@ -1,14 +1,11 @@
 package com.sftc.web.model.entity;
 
-import com.sftc.web.model.Evaluate;
-import com.sftc.web.model.GiftCard;
 import com.sftc.web.model.Object;
-import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.reqeustParam.OrderParam;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+
 @Entity
 @Table(name = "sftc_order")
 public class Order extends Object {
@@ -70,11 +67,12 @@ public class Order extends Object {
         this.latitude = latitude;
     }
 
-    public Order(String create_time, String pay_method,
+    public Order(String create_time, String id,String pay_method,
                  String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,String supplementary_info,
                  double longitude, double latitude, String order_type, int sender_user_id) {
         this.create_time = create_time;
+        this.id = id;
         this.pay_method = pay_method;
         this.distribution_method = distribution_method;
         this.freight = freight;

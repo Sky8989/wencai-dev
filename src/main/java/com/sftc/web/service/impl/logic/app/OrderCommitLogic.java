@@ -13,7 +13,7 @@ import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.AddressHistory;
 import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.entity.AddressBook;
 import com.sftc.web.model.sfmodel.Address;
 import com.sftc.web.model.sfmodel.Coordinate;
@@ -124,7 +124,7 @@ public class OrderCommitLogic {
 
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
         //后期订单和快递改为一对一之后，请求为object对象，遍历里面的order对象来提交？
-        for (OrderExpress oe : orderDTO.getOrderExpressList()) {
+        for (OrderExpress oe : orderDTO.getOrderExpressDTOList()) {
 
             //过滤 不在预约时间周期内的订单      当前时间>X>当前时间-1800000的订单才下单 ，处于其补集区间的订单则跳出
 //            if (Long.parseLong(oe.getReserve_time()) >= System.currentTimeMillis()
@@ -225,10 +225,10 @@ public class OrderCommitLogic {
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
         //增加对包裹数量的验证，确保是只有一个订单里只有一个同城包裹
         //后期更新订单与包裹一对一，但是好友件同城可以多包裹，同城订单走这个逻辑？
-        if (orderDTO.getOrderExpressList().size() != 1)
+        if (orderDTO.getOrderExpressDTOList().size() != 1)
             return APIUtil.submitErrorResponse("OrderDTO infomation has been changed,please check again!", null);
 
-        for (OrderExpress oe : orderDTO.getOrderExpressList()) {
+        for (OrderExpress oe : orderDTO.getOrderExpressDTOList()) {
             // 拼接同城订单参数中的 source 和 target
             Source source = new Source();
             Address address = new Address();
@@ -355,7 +355,7 @@ public class OrderCommitLogic {
             int package_count = requestObject.getJSONObject("order").getInt("package_count");
             int real_count = 0;
             //遍历包裹信息，确定有多少个包裹已被填写
-            for (OrderExpress oe : orderDto.getOrderExpressList()) {
+            for (OrderExpress oe : orderDto.getOrderExpressDTOList()) {
                 if (oe.getShip_province() != null && !"".equals(oe.getShip_province())) {//如果有省份信息，则表明已填写
                     real_count++;
                 }
@@ -366,7 +366,7 @@ public class OrderCommitLogic {
         }
 
 
-        for (OrderExpress oe : orderDto.getOrderExpressList()) {
+        for (OrderExpress oe : orderDto.getOrderExpressDTOList()) {
             // 拼接大网订单地址参数
             JSONObject sf = requestObject.getJSONObject("sf");
             sf.put("orderid", oe.getUuid());
@@ -479,6 +479,7 @@ public class OrderCommitLogic {
 
         Order order = new Order(
                 Long.toString(System.currentTimeMillis()),
+                SFOrderHelper.getOrderId(),
                 (String) requestOBJ.get("pay_type"),
                 (String) requestOBJ.get("product_type"),
                 0.0,
@@ -634,6 +635,7 @@ public class OrderCommitLogic {
         // 插入订单表
         Order order = new Order(
                 Long.toString(System.currentTimeMillis()),
+                SFOrderHelper.getOrderId(),
                 (String) sf.get("pay_method"),
                 "",
                 0,

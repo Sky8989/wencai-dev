@@ -12,7 +12,7 @@ import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderExpressTransformMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.OrderExpressTransform;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;

@@ -2,6 +2,7 @@ package com.sftc.web.model.sfmodel;
 
 import com.sftc.web.model.*;
 import com.sftc.web.model.entity.Order;
+import com.sftc.web.model.entity.OrderExpress;
 
 import java.util.List;
 

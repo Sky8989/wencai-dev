@@ -7,6 +7,7 @@ import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.ContactCallback;
 import com.sftc.web.model.entity.Order;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.reqeustParam.UserContactParam;
 import com.sftc.web.model.sfmodel.Orders;
 import com.sftc.web.service.UserContactService;
@@ -149,7 +150,7 @@ public class UserContactServiceImpl implements UserContactService {
         String uuids = "";
 
 
-//        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(userContactParam.getUser_id());
+//        List<OrderExpressDTO> orderExpressList = orderExpressMapper.selectExpressForId(userContactParam.getUser_id());
         PageHelper.startPage(userContactParam.getPageNum(), userContactParam.getPageSize());
         List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForContactInfo(userContactParam.getUser_id(), userContactParam.getFriend_id());
 

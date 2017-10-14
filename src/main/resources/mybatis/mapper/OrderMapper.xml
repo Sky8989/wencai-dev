@@ -8,8 +8,8 @@
         <id property="id" column="id"/>
         <result property="order_type" column="order_type"/>
         <result property="region_type" column="region_type"/>
-        <result property="longitude" column="longitude"/>
         <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
         <result property="sender_user_id" column="sender_user_id"/>
         <result property="sender_mobile" column="sender_mobile"/>
         <result property="sender_name" column="sender_name"/>
@@ -28,18 +28,18 @@
         <result property="create_time" column="create_time"/>
         <association property="giftCard" select="selectGiftCard" column="gift_card_id">
         </association>
-        <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress" select="selectExpressList"
+        <collection property="orderExpressDTOList" ofType="com.sftc.web.model.entity.OrderExpress" select="selectExpressList"
                     column="id">
         </collection>
     </resultMap>
 
-    <select id="selectExpressList" parameterType="java.lang.String" resultType="com.sftc.web.model.OrderExpress">
+    <select id="selectExpressList" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.OrderExpress">
         SELECT *
         FROM sftc_order_express
         WHERE order_id = #{id}
     </select>
 
-    <select id="selectGiftCard" parameterType="java.lang.String" resultType="com.sftc.web.model.GiftCard">
+    <select id="selectGiftCard" parameterType="int" resultType="com.sftc.web.model.GiftCard">
         SELECT *
         FROM sftc_gift_card
         WHERE id = #{gift_card_id}
@@ -254,7 +254,7 @@
         LIMIT #{pageNum}, #{pageSize}
     </select>
 
-    <select id="myOrderLists" parameterType="com.sftc.web.model.OrderExpress" resultMap="orderMap">
+    <select id="myOrderLists" parameterType="com.sftc.web.model.entity.OrderExpress" resultMap="orderMap">
         select
         sftc_order_express.id,
         sftc_order_express.order_number,

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.dao.mybatis.OrderExpressMapper">
 
-    <resultMap id="orderExpressMap" type="com.sftc.web.model.OrderExpress">
+    <resultMap id="orderExpressMap" type="com.sftc.web.model.entity.OrderExpress">
         <id column="id" property="id"/>
         <result column="order_number" property="order_number"/>
         <result column="ship_name" property="ship_name"/>
@@ -19,21 +19,21 @@
         <result column="is_use" property="is_use"/>
     </resultMap>
 
-    <select id="selectExpressForId" parameterType="int" resultType="com.sftc.web.model.OrderExpress">
+    <select id="selectExpressForId" parameterType="int" resultType="com.sftc.web.model.entity.OrderExpress">
         SELECT *
         FROM sftc_order_express
         WHERE (sender_user_id = #{id} OR ship_user_id = #{id})
     </select>
 
     <!-- 根据order_id-->
-    <select id="findAllOrderExpressByOrderId" resultType="com.sftc.web.model.OrderExpress" parameterType="int">
+    <select id="findAllOrderExpressByOrderId" resultType="com.sftc.web.model.entity.OrderExpress" parameterType="int">
         SELECT *
         FROM sftc_order_express
         WHERE order_id = #{order_id}
     </select>
 
     <!-- 普通下单 -->
-    <insert id="addOrderExpress" parameterType="com.sftc.web.model.OrderExpress" useGeneratedKeys="true"
+    <insert id="addOrderExpress" parameterType="com.sftc.web.model.entity.OrderExpress" useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO sftc_order_express
         (ship_name, ship_mobile, ship_province, ship_city, ship_area,
@@ -61,7 +61,7 @@
         )
     </insert>
 
-    <insert id="addOrderExpress2" parameterType="com.sftc.web.model.OrderExpress" useGeneratedKeys="true"
+    <insert id="addOrderExpress2" parameterType="com.sftc.web.model.entity.OrderExpress" useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO sftc_order_express
         (ship_name, ship_mobile, ship_province, ship_city, ship_area,
@@ -91,7 +91,7 @@
     </insert>
 
     <!--更新快递信息，by 快递id，用于好友填写订单时回填信息-->
-    <update id="updateOrderExpressByOrderExpressId" parameterType="com.sftc.web.model.OrderExpress">
+    <update id="updateOrderExpressByOrderExpressId" parameterType="com.sftc.web.model.entity.OrderExpress">
         UPDATE sftc_order_express
         SET
             ship_name          = #{ship_name, jdbcType=VARCHAR},
@@ -134,7 +134,7 @@
         WHERE order_id = #{order_id}
     </update>
 
-    <update id="updateOrderExpressForSF" parameterType="com.sftc.web.model.OrderExpress">
+    <update id="updateOrderExpressForSF" parameterType="com.sftc.web.model.entity.OrderExpress">
         update sftc_order_express
         set
         state=#{state, jdbcType=VARCHAR}
@@ -161,7 +161,7 @@
     </update>
 
     <!-- 根据uuid查询快递 -->
-    <select id="selectExpressByUuid" resultType="com.sftc.web.model.OrderExpress" parameterType="String">
+    <select id="selectExpressByUuid" resultType="com.sftc.web.model.entity.OrderExpress" parameterType="String">
         SELECT *
         FROM sftc_order_express
         WHERE uuid = #{uuid}
@@ -183,8 +183,8 @@
 
 
     <!--下面是cms系统用到的mapper-->
-    <select id="selectOrderExpressByPage" resultType="com.sftc.web.model.OrderExpress"
-            parameterType="com.sftc.web.model.OrderExpress">
+    <select id="selectOrderExpressByPage" resultType="com.sftc.web.model.entity.OrderExpress"
+            parameterType="com.sftc.web.model.entity.OrderExpress">
         SELECT * FROM sftc_order_express
         <where>
             <if test="id != 0">and id = #{id}</if>
@@ -219,7 +219,7 @@
         ORDER BY o.create_time DESC
     </select>
 
-    <select id="selectExpressForsyncSFExpressStatus" resultType="com.sftc.web.model.OrderExpress">
+    <select id="selectExpressForsyncSFExpressStatus" resultType="com.sftc.web.model.entity.OrderExpress">
         SELECT * FROM sftc_order_express oe WHERE oe.order_id
         IN
         <foreach collection="list" item="order_id" open="(" close=")" separator=",">
@@ -227,7 +227,7 @@
         </foreach>
     </select>
 
-    <select id="selectExpressForContactInfo" parameterType="int" resultType="com.sftc.web.model.OrderExpress">
+    <select id="selectExpressForContactInfo" parameterType="int" resultType="com.sftc.web.model.entity.OrderExpress">
         SELECT *
         FROM sftc_order_express
         WHERE (sender_user_id = #{sender_user_id} AND ship_user_id = #{ship_user_id})

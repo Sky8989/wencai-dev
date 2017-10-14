@@ -1,6 +1,8 @@
-package com.sftc.web.model;
+package com.sftc.web.model.entity;
 
 import com.sftc.tools.api.APIRequest;
+import com.sftc.web.model.Evaluate;
+import com.sftc.web.model.Object;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,20 +47,9 @@ public class OrderExpress extends Object {
     private String order_time;
     // 收件人id(根据用户表id)
     private int ship_user_id;
-    // 礼卡表id
-    private int gift_card_id;
     private Double latitude;
     private Double longitude;
     private String order_id;
-
-    // 错误信息
-    private String attributes;
-
-    // extension 收件人头像
-    private String ship_avatar;
-
-    // 评价信息
-    private Evaluate evaluate;
 
     public int getSender_user_id() {
         return sender_user_id;
@@ -138,11 +129,7 @@ public class OrderExpress extends Object {
         this.uuid = uuid;
     }
 
-    public OrderExpress(String state, String uuid, String attributes) {
-        this.state = state;
-        this.uuid = uuid;
-        this.attributes = attributes;
-    }
+
 
     public OrderExpress(String order_number, String package_type, String object_type,
                         String order_id, String create_time, int is_use, String state, String uuid, int sender_user_id, String reserve_time) {
@@ -295,14 +282,6 @@ public class OrderExpress extends Object {
         this.ship_user_id = ship_user_id;
     }
 
-    public int getGift_card_id() {
-        return gift_card_id;
-    }
-
-    public void setGift_card_id(int gift_card_id) {
-        this.gift_card_id = gift_card_id;
-
-    }
 
     public String getPackage_type() {
         return package_type;
@@ -360,14 +339,6 @@ public class OrderExpress extends Object {
         this.reserve_time = reserve_time;
     }
 
-    public String getShip_avatar() {
-        return ship_avatar;
-    }
-
-    public void setShip_avatar(String ship_avatar) {
-        this.ship_avatar = ship_avatar;
-    }
-
     public String getReceive_time() {
         return receive_time;
     }
@@ -384,28 +355,12 @@ public class OrderExpress extends Object {
         this.order_time = order_time;
     }
 
-    public Evaluate getEvaluate() {
-        return evaluate;
-    }
-
-    public void setEvaluate(Evaluate evaluate) {
-        this.evaluate = evaluate;
-    }
-
     public String getSupplementary_info() {
         return supplementary_info;
     }
 
     public void setSupplementary_info(String supplementary_info) {
         this.supplementary_info = supplementary_info;
-    }
-
-    public String getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(String attributes) {
-        this.attributes = attributes;
     }
 
     public String getPackage_comments() {

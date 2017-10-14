@@ -9,7 +9,7 @@ import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.Message;
 import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.UserContactNew;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import net.sf.json.JSONObject;
@@ -104,7 +104,7 @@ public class OrderCreateLogic {
         JSONObject paramOBJ = JSONObject.fromObject(rowData);
 //        // 修复 空格对Gson的影响
 //        String strJsonResult = orderExpressStr.replace(" ", "");
-//        OrderExpress orderExpress = new Gson().fromJson(strJsonResult, OrderExpress.class);
+//        OrderExpressDTO orderExpress = new Gson().fromJson(strJsonResult, OrderExpressDTO.class);
         OrderExpress orderExpress = (OrderExpress) JSONObject.toBean(paramOBJ, OrderExpress.class);
 
         // 判断订单是否下单

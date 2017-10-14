@@ -52,7 +52,7 @@ public interface OrderMapper {
     /**
      * 根据快递id查询订单详情
      */
-    Order selectOrderDetailByExpressId(int express_id);
+    OrderDTO selectOrderDetailByExpressId(int express_id);
 
     /**
      * 查询大网预约订单列表

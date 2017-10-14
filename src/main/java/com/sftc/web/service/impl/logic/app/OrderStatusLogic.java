@@ -6,8 +6,7 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.model.dto.OrderDTO;
-import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.entity.OrderExpress;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +44,7 @@ public class OrderStatusLogic {
             return APIUtil.submitErrorResponse("订单不存在", null);
 
         // update
-        for (OrderExpress oe : orderDTO.getOrderExpressList()) {
+        for (OrderExpress oe : orderDTO.getOrderExpressDTOList()) {
             orderExpressMapper.updateOrderExpressStatus(oe.getId(), status);
         }
         orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
