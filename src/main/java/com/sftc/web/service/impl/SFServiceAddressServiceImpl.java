@@ -149,12 +149,8 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         if (receiverAreaCode == null)
             return APIUtil.selectErrorResponse("顺丰不支持收件人城市", null);
 
-        Object weightObject = requestObject.get("weight");
-        String weightStr = "1";
-        if (weightObject != null) {
-            Double weight = (Double) requestObject.getDouble("weight");
-            weightStr = (weight == 0 ? 1 : weight) + "";
-        }
+        int weight = requestObject.getInt("weight");
+        String weightStr = (weight == 0 ? 1 : weight) + "";
 
         return getServiceRate(senderAreaCode, receiverAreaCode, weightStr, dateTime);
     }
