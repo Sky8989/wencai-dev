@@ -95,7 +95,9 @@ public class OrderCancelLogic {
     // 取消大网订单
     private APIResponse cancelNATIONOrder(String order_id) {
         try {
-            orderMapper.updateCancelOrderById(order_id);
+            Order order = orderDao.findOne(order_id);
+            order.setIs_cancel("Cancelled");
+            orderDao.save(order);
             orderExpressMapper.updateOrderExpressCanceled(order_id);
             return APIUtil.getResponse(APIStatus.SUCCESS, "订单取消成功");
         } catch (Exception e) {
@@ -138,7 +140,7 @@ public class OrderCancelLogic {
         // 订单已提交，仍然需要更新
         Order order1 = orderDao.findOne(order_id);
         order1.setIs_cancel("Cancelled");
-        orderMapper.updateCancelOrderById(order_id);
+        orderDao.save(order1);
         orderExpressMapper.updateOrderExpressCanceled(order_id);
         // 添加订单取消记录
         addCancelRecord(order_id, isDidCommitToSF ? "主动取消" : "主动软取消", "同城");
