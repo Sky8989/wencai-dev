@@ -11,6 +11,7 @@ import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.*;
+import com.sftc.web.model.entity.Order;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;

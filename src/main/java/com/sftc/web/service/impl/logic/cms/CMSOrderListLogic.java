@@ -7,7 +7,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.OrderCancelMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
-import com.sftc.web.model.Order;
+import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.OrderCancel;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +32,7 @@ public class CMSOrderListLogic {
         int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
         PageHelper.startPage(pageNumKey, pageSizeKey);
         Order order = new Order(httpServletRequest);
-//        List<Order> orderList = orderMapper.selectOrderByPage(order);
+//        List<OrderDTO> orderList = orderMapper.selectOrderByPage(order);
         //  使用lambab表达式 配合pageHelper实现对用户列表和查询相关信息的统一查询
         PageInfo<Object> pageInfo = PageHelper.startPage(pageNumKey, pageSizeKey).doSelectPageInfo(() -> orderMapper.selectOrderByPage(order));
 
@@ -50,7 +50,7 @@ public class CMSOrderListLogic {
         int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
         PageHelper.startPage(pageNumKey, pageSizeKey);
         OrderCancel orderCancel = new OrderCancel(httpServletRequest);
-//        List<Order> orderList = orderMapper.selectOrderByPage(order);
+//        List<OrderDTO> orderList = orderMapper.selectOrderByPage(order);
         //  使用lambab表达式 配合pageHelper实现对用户列表和查询相关信息的统一查询
         PageInfo<Object> pageInfo = PageHelper.startPage(pageNumKey, pageSizeKey).doSelectPageInfo(() -> orderCancelMapper.selectCanceledOrderList(orderCancel));
 

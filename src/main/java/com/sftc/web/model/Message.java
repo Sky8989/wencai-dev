@@ -1,5 +1,7 @@
 package com.sftc.web.model;
 
+import com.sftc.web.model.entity.Order;
+
 public class Message {
 
     private int id;

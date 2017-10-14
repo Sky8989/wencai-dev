@@ -9,7 +9,7 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.dao.mybatis.SFServiceAddressMapper;
 import com.sftc.web.model.Express;
-import com.sftc.web.model.Order;
+import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.sfmodel.SFServiceAddress;
 import com.sftc.web.service.SFServiceAddressService;
@@ -178,14 +178,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
     private APIResponse getServiceRate(String origin, String dest, String weight, String dateTime) {
 
         String pattern = "yyyy-MM-dd'T'HH:mm:ssZZ";
-//        Date date = dateTime == null ? new Date() : new Date(Long.parseLong(dateTime));
-        Date date = new Date();
-        if(dateTime == null || dateTime.equals("")){
-            String  str = "1507942800000";
-            date = new Date(Long.parseLong(str));
-        }else {
-            date = new Date(Long.parseLong(dateTime));
-        }
+        Date date = dateTime == null ? new Date() : new Date(Long.parseLong(dateTime));
         String time = DateFormatUtils.format(date, pattern);
         try {
             time = URLEncoder.encode(time, "UTF-8");

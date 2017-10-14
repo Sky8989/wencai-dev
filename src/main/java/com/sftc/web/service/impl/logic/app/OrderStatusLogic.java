@@ -5,7 +5,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
-import com.sftc.web.model.Order;
+import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.OrderExpress;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Component;

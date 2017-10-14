@@ -11,7 +11,7 @@ import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Evaluate;
-import com.sftc.web.model.Order;
+import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.User;
 import com.sftc.web.model.apiCallback.OrderCallback;
@@ -82,7 +82,7 @@ public class OrderListLogic {
         // pageNum -> startIndex
         myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());
         // select
-//        List<Order> orderList = orderMapper.selectMyOrderList(myOrderParam);
+//        List<OrderDTO> orderList = orderMapper.selectMyOrderList(myOrderParam);
         List<Order> orderList = orderMapper.selectMyOrderList2(myOrderParam);
         List<OrderCallback> orderCallbacks = new ArrayList<OrderCallback>();
         for (Order order : orderList) {

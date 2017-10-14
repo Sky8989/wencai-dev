@@ -5,10 +5,11 @@ import com.sftc.tools.api.APIPostUtil;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.mybatis.OrderCancelMapper;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
-import com.sftc.web.model.Order;
+import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.OrderCancel;
 import com.sftc.web.model.OrderExpress;
 import net.sf.json.JSONObject;
@@ -30,6 +31,8 @@ public class OrderCancelLogic {
     private OrderExpressMapper orderExpressMapper;
     @Resource
     private OrderCancelMapper orderCancelMapper;
+    @Resource
+    private OrderDao orderDao;
 
     //////////////////// Public Method ////////////////////
 
@@ -133,6 +136,8 @@ public class OrderCancelLogic {
 
         // 订单还未提交给顺丰的情况，只更新order的信息即可
         // 订单已提交，仍然需要更新
+        Order order1 = orderDao.findOne(order_id);
+        order1.setIs_cancel("Cancelled");
         orderMapper.updateCancelOrderById(order_id);
         orderExpressMapper.updateOrderExpressCanceled(order_id);
         // 添加订单取消记录

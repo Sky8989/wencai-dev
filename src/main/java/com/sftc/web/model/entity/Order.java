@@ -1,12 +1,18 @@
-package com.sftc.web.model;
+package com.sftc.web.model.entity;
 
+import com.sftc.web.model.Evaluate;
+import com.sftc.web.model.GiftCard;
+import com.sftc.web.model.Object;
+import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.reqeustParam.OrderParam;
 
+import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-
+@Entity
+@Table(name = "sftc_order")
 public class Order extends Object {
-
+    @Id
     private String id;
     // 创建时间
     private String create_time;
@@ -54,13 +60,6 @@ public class Order extends Object {
     private String region_type;
     //新添加 is_cancel
     private String is_cancel;
-
-    // 贺卡
-    private GiftCard giftCard;
-    // 订单评价信息
-    private Evaluate evaluate;
-    // 快递数组
-    private List<OrderExpress> orderExpressList;
 
     public Order() {
     }
@@ -289,14 +288,6 @@ public class Order extends Object {
         this.latitude = latitude;
     }
 
-    public GiftCard getGiftCard() {
-        return giftCard;
-    }
-
-    public void setGiftCard(GiftCard giftCard) {
-        this.giftCard = giftCard;
-    }
-
     public int getGift_card_id() {
         return gift_card_id;
     }
@@ -311,14 +302,6 @@ public class Order extends Object {
 
     public void setSender_user_id(int sender_user_id) {
         this.sender_user_id = sender_user_id;
-    }
-
-    public List<OrderExpress> getOrderExpressList() {
-        return orderExpressList;
-    }
-
-    public void setOrderExpressList(List<OrderExpress> orderExpressList) {
-        this.orderExpressList = orderExpressList;
     }
 
     public String getOrder_type() {
@@ -351,14 +334,6 @@ public class Order extends Object {
 
     public void setIs_cancel(String is_cancel) {
         this.is_cancel = is_cancel;
-    }
-
-    public Evaluate getEvaluate() {
-        return evaluate;
-    }
-
-    public void setEvaluate(Evaluate evaluate) {
-        this.evaluate = evaluate;
     }
 
     public String getSupplementary_info() {return supplementary_info;}

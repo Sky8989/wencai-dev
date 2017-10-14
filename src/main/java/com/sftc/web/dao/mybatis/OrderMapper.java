@@ -1,6 +1,6 @@
 package com.sftc.web.dao.mybatis;
 
-import com.sftc.web.model.Order;
+import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -13,17 +13,17 @@ public interface OrderMapper {
     /**
      * 插入订单
      */
-    void addOrder(Order order);
+//    void addOrder(Order order);
 
     /**
      * 插入订单 多增加门牌号信息
      */
-    void addOrder2(Order order);
+//    void addOrder2(Order order);
 
     /**
      * 更新订单区域类型
      */
-    void updateOrderRegionType(@Param("id") String id, @Param("region_type") String region_type);
+//    void updateOrderRegionType(@Param("id") String id, @Param("region_type") String region_type);
 
     /**
      * 查询我的订单列表
@@ -79,7 +79,7 @@ public interface OrderMapper {
     Order selectOrderDetailByUuid(@Param("uuid") String uuid);
 
     // 取消订单，更新is_cancel字段
-    void updateCancelOrderById(String id);
+//    void updateCancelOrderById(String id);
 
 
     //  下面是cms系统用到的mapper

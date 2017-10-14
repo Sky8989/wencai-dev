@@ -7,7 +7,7 @@ import com.sftc.tools.common.EmojiFilter;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.Message;
-import com.sftc.web.model.Order;
+import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.UserContactNew;
 import com.sftc.web.model.reqeustParam.OrderParam;

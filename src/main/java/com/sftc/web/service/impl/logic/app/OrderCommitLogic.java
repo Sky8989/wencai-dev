@@ -7,10 +7,11 @@ import com.sftc.tools.common.EmojiFilter;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.jpa.AddressBookDao;
+import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.entity.AddressHistory;
-import com.sftc.web.model.Order;
+import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.entity.AddressBook;
 import com.sftc.web.model.sfmodel.Address;
@@ -56,6 +57,8 @@ public class OrderCommitLogic {
     private MessageService messageService;
     @Resource
     private AddressBookMapper addressBookMapper;
+    @Resource
+    private OrderDao orderDao;
 
     //////////////////// Public Method ////////////////////
 
@@ -178,7 +181,9 @@ public class OrderCommitLogic {
                     logger.error("大网预约单提交失败: " + resultObject);
                 } else {
                     // 存储快递信息
-                    orderMapper.updateOrderRegionType(order.getId(), "REGION_NATION");
+                    Order order1 = orderDao.findOne(order.getId());
+                    order1.setRegion_type("REGION_NATION");
+                    orderDao.save(order1);
                     String ordernum = resultObject.getString("ordernum");
                     orderExpressMapper.updateOrderExpressUuidAndOrderNumberWithId(oe.getId(), oe.getUuid(), ordernum);
                 }
@@ -220,7 +225,7 @@ public class OrderCommitLogic {
         //增加对包裹数量的验证，确保是只有一个订单里只有一个同城包裹
         //后期更新订单与包裹一对一，但是好友件同城可以多包裹，同城订单走这个逻辑？
         if (order.getOrderExpressList().size() != 1)
-            return APIUtil.submitErrorResponse("Order infomation has been changed,please check again!", null);
+            return APIUtil.submitErrorResponse("OrderDTO infomation has been changed,please check again!", null);
 
         for (OrderExpress oe : order.getOrderExpressList()) {
             // 拼接同城订单参数中的 source 和 target
@@ -291,7 +296,9 @@ public class OrderCommitLogic {
 
                 /// 数据库操作
                 // 订单表更新订单区域类型
-                orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
+                Order order1 = orderDao.findOne(order_id);
+                order1.setRegion_type("REGION_SAME");
+                orderDao.save(order1);
                 // 快递表更新uuid和预约时间
                 orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
                 String order_tiem = Long.toString(System.currentTimeMillis());
@@ -336,7 +343,9 @@ public class OrderCommitLogic {
             return APIUtil.paramErrorResponse("order_id不能为空");
 
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
-        orderMapper.updateOrderRegionType(order_id, "REGION_NATION");
+        Order order1 = orderDao.findOne(order_id);
+        order1.setRegion_type("REGION_NATION");
+        orderDao.save(order1);
 
         Order order = orderMapper.selectOrderDetailByOrderIdForUpdate(order_id);
 
@@ -351,7 +360,7 @@ public class OrderCommitLogic {
                 }
             }
 //            if (real_count != package_count) //数据库的已填写包裹数和客户端的包裹数不一致
-////                return APIUtil.submitErrorResponse("包裹信息有变化，请返回列表刷新订单！Order infomation has been changed,please check again!", null);
+////                return APIUtil.submitErrorResponse("包裹信息有变化，请返回列表刷新订单！OrderDTO infomation has been changed,please check again!", null);
 //                return APIUtil.submitErrorResponse("包裹信息有变化，请返回列表刷新订单！", null);
         }
 
@@ -412,7 +421,9 @@ public class OrderCommitLogic {
                         // TODO: 回滚了哪个事务？为什么要回滚？为什么会抛异常？不回滚会怎么样？
 //                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                         // TODO: 直接手动把`region_type`置空，有没有其他问题？
-                        orderMapper.updateOrderRegionType(order_id, null);
+                        Order order2 = orderDao.findOne(order_id);
+                        order2.setRegion_type(null);
+                        orderDao.save(order2);
                         String message = "下单失败";
                         if (jsonObject.containsKey("Message")) {
                             message = jsonObject.getString("Message");
@@ -518,7 +529,7 @@ public class OrderCommitLogic {
 
         if (!(respObject.containsKey("error") || respObject.containsKey("errors"))) {
             // 插入订单表
-            orderMapper.addOrder2(order);
+            orderDao.save(order);
 
             // 插入快递表
             OrderExpress orderExpress = new OrderExpress(
@@ -643,7 +654,7 @@ public class OrderCommitLogic {
         order.setGift_card_id(Integer.parseInt((String) orderObject.get("gift_card_id")));
         order.setVoice_time(Integer.parseInt((String) orderObject.get("voice_time")));
         order.setRegion_type("REGION_NATION");
-        orderMapper.addOrder2(order);
+        orderDao.save(order);
 
         // 插入快递表
         OrderExpress orderExpress = new OrderExpress(

@@ -7,7 +7,7 @@ import com.sftc.web.dao.mybatis.MessageMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Message;
-import com.sftc.web.model.Order;
+import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.OrderExpress;
 import com.sftc.web.model.User;
 import com.sftc.web.service.NotificationMessageService;

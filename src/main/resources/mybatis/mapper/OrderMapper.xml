@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.dao.mybatis.OrderMapper">
 
-    <resultMap id="orderMap" type="com.sftc.web.model.Order">
+    <resultMap id="orderMap" type="com.sftc.web.model.entity.Order">
         <id property="id" column="id"/>
         <result property="order_type" column="order_type"/>
         <result property="region_type" column="region_type"/>
@@ -107,7 +107,7 @@
     </select>
 
     <!-- 添加订单 -->
-    <insert id="addOrder" parameterType="com.sftc.web.model.Order" useGeneratedKeys="true" keyProperty="id">
+    <insert id="addOrder" parameterType="com.sftc.web.model.entity.Order" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_order
         (freight,
          create_time, sender_province, sender_name, sender_mobile, sender_city,
@@ -139,7 +139,7 @@
     </insert>
 
     <!-- 添加订单 -->
-    <insert id="addOrder2" parameterType="com.sftc.web.model.Order" useGeneratedKeys="true" keyProperty="id">
+    <insert id="addOrder2" parameterType="com.sftc.web.model.entity.Order" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_order
         (freight,
          create_time, sender_province, sender_name, sender_mobile, sender_city,
@@ -324,7 +324,7 @@
     </update>
 
     <!--下面是cms系统用到的mapper-->
-    <select id="selectOrderByPage" resultMap="orderMap" parameterType="com.sftc.web.model.Order">
+    <select id="selectOrderByPage" resultMap="orderMap" parameterType="com.sftc.web.model.entity.Order">
         SELECT * FROM sftc_order
         <where>
             <if test="id != 0">and id = #{id}</if>
