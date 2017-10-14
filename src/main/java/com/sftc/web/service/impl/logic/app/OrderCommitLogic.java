@@ -547,6 +547,10 @@ public class OrderCommitLogic {
         String requestSFParamStr = gson.toJson(tempObject);
         JSONObject respObject = JSONObject.fromObject(APIPostUtil.post(requestSFParamStr, post));
 
+        if (respObject.containsKey("error")) {
+            return APIUtil.submitErrorResponse(respObject.getJSONObject("error").getString("message"), respObject.getJSONObject("error"));
+        }
+
         //面对面下单
         String directed_code = null;
         JSONObject attributuOBJ = respObject.getJSONObject("request").getJSONObject("attributes");
