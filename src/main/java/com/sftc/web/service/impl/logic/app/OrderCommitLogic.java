@@ -553,10 +553,16 @@ public class OrderCommitLogic {
 
         //面对面下单
         String directed_code = null;
-        JSONObject attributuOBJ = respObject.getJSONObject("request").getJSONObject("attributes");
-        if (attributuOBJ.containsKey("directed_code")) {
-            directed_code = attributuOBJ.getString("directed_code");
+        if (respObject.containsKey("request")) {
+            JSONObject req = respObject.getJSONObject("request");
+            if (req != null && req.containsKey("attributes")) {
+                JSONObject attributuOBJ = respObject.getJSONObject("request").getJSONObject("attributes");
+                if (attributuOBJ.containsKey("directed_code")) {
+                    directed_code = attributuOBJ.getString("directed_code");
+                }
+            }
         }
+
 
         if (!(respObject.containsKey("error") || respObject.containsKey("errors"))) {
             // 插入订单表
