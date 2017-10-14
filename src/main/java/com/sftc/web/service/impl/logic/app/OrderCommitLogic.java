@@ -246,7 +246,8 @@ public class OrderCommitLogic {
         if (orderDTO.getOrderExpressList().size() != 1)
             return APIUtil.submitErrorResponse("Order infomation has been changed, please check again!", null);
 
-        for (OrderExpress oe : orderDTO.getOrderExpressList()) {
+        for (OrderExpressDTO oeDto : orderDTO.getOrderExpressList()) {
+            OrderExpress oe = OrderExpressFactory.dtoToEntity(oeDto);
             // 拼接同城订单参数中的 source 和 target
             Source source = new Source();
             Address address = new Address();
