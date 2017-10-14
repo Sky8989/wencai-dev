@@ -189,9 +189,10 @@ public class OrderCommitLogic {
                     order1.setRegion_type("REGION_NATION");
                     orderDao.save(order1);
                     String ordernum = resultObject.getString("ordernum");
-                    if(oe.getUuid()!=null){
+                    if (oe.getUuid() != null) {
                         oe.setUuid(oe.getUuid());
-                    }if(oe.getOrder_number()!=null){
+                    }
+                    if (oe.getOrder_number() != null) {
                         oe.setOrder_number(oe.getOrder_number());
                     }
                     oe.setState("WAIT_HAND_OVER");
@@ -351,7 +352,7 @@ public class OrderCommitLogic {
     private synchronized APIResponse friendNationOrderCommit(JSONObject requestObject) {
         // handle param
         String order_id = requestObject.getJSONObject("order").getString("order_id");
-        if (order_id ==null || order_id.equals(""))
+        if (order_id == null || order_id.equals(""))
             return APIUtil.paramErrorResponse("order_id不能为空");
 
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
@@ -547,12 +548,10 @@ public class OrderCommitLogic {
         JSONObject respObject = JSONObject.fromObject(APIPostUtil.post(requestSFParamStr, post));
 
         //面对面下单
-        String directed_code;
-        String attributuOBJ = requestOBJ.getJSONObject("attributes").getString("source");
-        if(attributuOBJ !=null || !attributuOBJ.equals("")){
-            directed_code = respObject.getJSONObject("request").getJSONObject("attributes").getString("directed_code");
-        }else {
-            directed_code = null;
+        String directed_code = null;
+        JSONObject attributuOBJ = respObject.getJSONObject("request").getJSONObject("attributes");
+        if (attributuOBJ.containsKey("directed_code")) {
+            directed_code = attributuOBJ.getString("directed_code");
         }
 
         if (!(respObject.containsKey("error") || respObject.containsKey("errors"))) {

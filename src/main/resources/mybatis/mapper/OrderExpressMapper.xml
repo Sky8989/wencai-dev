@@ -205,7 +205,7 @@
         </where>
     </select>
 
-    <select id="selectOrderIdForsyncSFExpressStatus" parameterType="int" resultType="int">
+    <select id="selectOrderIdForsyncSFExpressStatus" parameterType="int" resultType="java.lang.String">
         SELECT *
         FROM sftc_order o
         WHERE id IN (
