@@ -8,7 +8,7 @@ import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
-import com.sftc.web.model.Message;
+import com.sftc.web.model.entity.Message;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;

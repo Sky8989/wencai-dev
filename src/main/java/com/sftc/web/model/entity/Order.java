@@ -160,6 +160,7 @@ public class Order extends Object {
         this.id = id;
     }
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public String getCreate_time() {
         return create_time;
     }

@@ -1,30 +1,27 @@
-package com.sftc.web.model;
+package com.sftc.web.model.entity;
 
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "sftc_message")
 public class Message {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     // 消息类型 RECEIVE_EXPRESS / RECEIVE_ADDRESS，收到快递 / 收到好友地址
     private String message_type;
     // 是否已读
-    private transient int is_read;
+    private  int is_read;
     // 快递编号
     private int express_id;
     // 用户编号
     private int user_id;
     // 创建时间
     private String create_time;
-
-    // 订单
-//    private Order order;
-
-    private OrderDTO order;
-
-    public OrderDTO getOrderDTO() {return order;}
-
-    public void setOrderDTO(OrderDTO orderDTO) {this.order = orderDTO;}
 
     public int getId() {
         return id;
