@@ -2,6 +2,7 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
@@ -104,6 +105,7 @@ public class OrderController extends BaseController {
         return orderService.getMyFriendCircleOrderList(request);
     }
 
+    @IgnoreToken
     @ApiOperation(value = "快递详情",httpMethod = "GET")
     @RequestMapping(value = "/expressDetail", method = RequestMethod.GET)
     public @ResponseBody

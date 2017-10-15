@@ -53,10 +53,10 @@ public class OrderCancelLogic {
         String access_token = paramJsonObject.getString("access_token");
         //对重复取消订单的情况进行处理
         Order order = orderMapper.selectOrderDetailByOrderId(id);
-        if (order.getIs_cancel() != null && ("Cancelled".equals(order.getIs_cancel()) || !"".equals(order.getIs_cancel()))) {//is_cancel字段默认是空字符串
-            //return APIUtil.getResponse(APIStatus.CANCEL_ORDER_FALT, null);
-            return APIUtil.submitErrorResponse("订单已经取消，请勿重复取消操作", null);
-        }
+//        if (order.getIs_cancel() != null && ("Cancelled".equals(order.getIs_cancel()) || !"".equals(order.getIs_cancel()))) {//is_cancel字段默认是空字符串
+//            //return APIUtil.getResponse(APIStatus.CANCEL_ORDER_FALT, null);
+//            return APIUtil.submitErrorResponse("订单已经取消，请勿重复取消操作", null);
+//        }
         // 不同地域类型的订单 进行不同的取消方式 大网是软取消 同城是硬取消
         if ("REGION_NATION".equals(order.getRegion_type())) {// true 大网单
             APIResponse cancelResult = cancelNATIONOrder(id);

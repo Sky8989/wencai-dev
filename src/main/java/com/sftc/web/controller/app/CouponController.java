@@ -47,4 +47,5 @@ public class CouponController {
         apiRequest.setRequestParam(promo);
         return couponService.exchangeCoupon(apiRequest);
     }
+
 }

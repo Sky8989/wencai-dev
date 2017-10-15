@@ -66,6 +66,7 @@ public class AddressBookServiceImpl implements AddressBookService {
         if (!address_OBJ.containsKey("latitude")||address_OBJ.getString("latitude").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数latitude为空");
 
+
         String supplementary_info = address_OBJ.containsKey("supplementary_info") ? address_OBJ.getString("supplementary_info") : null;
         AddressBookDTO addressBookDTO;
         Address address;

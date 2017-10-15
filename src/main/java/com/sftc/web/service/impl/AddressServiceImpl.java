@@ -153,10 +153,10 @@ public class AddressServiceImpl implements AddressService {
 
         JSONObject sourceObject = requestObject.getJSONObject("source");
         JSONObject targetObject = requestObject.getJSONObject("target");
-        double senderLong = (Double) sourceObject.get("longitude");
-        double senderLat = (Double) sourceObject.get("latitude");
-        double receiverLong = (Double) targetObject.get("longitude");
-        double receiverLat = (Double) targetObject.get("latitude");
+        double senderLong = sourceObject.getDouble("longitude");
+        double senderLat = sourceObject.getDouble("latitude");
+        double receiverLong = targetObject.getDouble("longitude");
+        double receiverLat = targetObject.getDouble("latitude");
 
         if (senderLong == 0 || receiverLong == 0 || senderLat == 0 || receiverLat == 0)
             return APIUtil.paramErrorResponse("请求体不完整");
@@ -187,10 +187,10 @@ public class AddressServiceImpl implements AddressService {
 
         JSONObject sourceObject = requestObject.getJSONObject("source");
         JSONObject targetObject = requestObject.getJSONObject("target");
-        double senderLong = (Double) sourceObject.get("longitude");
-        double senderLat = (Double) sourceObject.get("latitude");
-        double receiverLong = (Double) targetObject.get("longitude");
-        double receiverLat = (Double) targetObject.get("latitude");
+        double senderLong = sourceObject.getDouble("longitude");
+        double senderLat = sourceObject.getDouble("latitude");
+        double receiverLong =  targetObject.getDouble("longitude");
+        double receiverLat =targetObject.getDouble("latitude");
 
         if (senderLong == 0 || receiverLong == 0 || senderLat == 0 || receiverLat == 0)
             return APIUtil.paramErrorResponse("请求体不完整");
