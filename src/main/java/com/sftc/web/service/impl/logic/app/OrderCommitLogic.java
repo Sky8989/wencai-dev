@@ -560,6 +560,7 @@ public class OrderCommitLogic {
             return APIUtil.submitErrorResponse(respObject.getJSONObject("error").getString("message"), respObject.getJSONObject("error"));
         }
 
+        logger.info("准备面对面下单");
         //面对面下单
         String directed_code = null;
         if (respObject.containsKey("request")) {
