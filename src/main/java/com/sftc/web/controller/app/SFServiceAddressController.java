@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @Api(description = "时效计价")
 @RequestMapping("sf/service/")
-public class SFServiceAddressController {
+public class    SFServiceAddressController {
 
     @Resource
     private SFServiceAddressService sfServiceAddressService;
