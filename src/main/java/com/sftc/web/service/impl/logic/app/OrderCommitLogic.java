@@ -360,12 +360,24 @@ public class OrderCommitLogic {
     private synchronized APIResponse friendNationOrderCommit(JSONObject requestObject) {
         // handle param
         String order_id = requestObject.getJSONObject("order").getString("order_id");
+        JSONObject orderOBJ = requestObject.getJSONObject("order");
         if (order_id == null || order_id.equals(""))
             return APIUtil.paramErrorResponse("order_id不能为空");
+
+        double j_longitude = 0;
+        double j_latitude = 0;
+        if(orderOBJ.containsKey("j_longitude") && orderOBJ.getDouble("j_longitude")!=-1){
+            j_longitude = orderOBJ.getDouble("j_longitude");
+        }
+        if(orderOBJ.containsKey("j_longitude") && orderOBJ.getDouble("j_longitude")!=-1){
+            j_latitude = orderOBJ.getDouble("j_latitude");
+        }
 
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
         Order order1 = orderDao.findOne(order_id);
         order1.setRegion_type("REGION_NATION");
+        order1.setLatitude(j_longitude);
+        order1.setLongitude(j_latitude);
         orderDao.save(order1);
 
         OrderDTO orderDto = orderMapper.selectOrderDetailByOrderIdForUpdate(order_id);
@@ -420,8 +432,20 @@ public class OrderCommitLogic {
             }
 
             if (!oe.getState().equals("WAIT_FILL")) {
+                double d_longitude = 0;
+                double d_latitude = 0;
+                if(orderOBJ.containsKey("d_longitude") && orderOBJ.getDouble("d_longitude")!=-1){
+                    d_longitude = orderOBJ.getDouble("d_longitude");
+                }
+                if(orderOBJ.containsKey("d_latitude") && orderOBJ.getDouble("d_latitude")!=-1){
+                    d_latitude = orderOBJ.getDouble("d_latitude");
+                }
+
                 if (reserve_time != null && !reserve_time.equals("")) { // 预约件处理
                     oe.setReserve_time(reserve_time);
+                    oe.setUuid(oe.getUuid());
+                    oe.setLongitude(d_longitude);
+                    oe.setLatitude(d_latitude);
                     oe.setUuid(oe.getUuid());
                     oe.setState("WAIT_HAND_OVER");
                     OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
@@ -666,6 +690,7 @@ public class OrderCommitLogic {
         JSONObject sf = requestObject.getJSONObject("sf");
         JSONObject packagesOBJ = requestObject.getJSONArray("packages").getJSONObject(0);
 
+
         // handle pay_method
         String pay_method = (String) sf.get("pay_method");
         if (pay_method != null && !pay_method.equals("")) {
@@ -689,6 +714,15 @@ public class OrderCommitLogic {
             sf.put("d_supplementary_info", "");
         }
 
+        double j_longitude = 0;
+        double j_latitude = 0;
+        if(orderObject.containsKey("j_longitude") && orderObject.getDouble("j_longitude")!=-1){
+            j_longitude = orderObject.getDouble("j_longitude");
+        }
+        if(orderObject.containsKey("j_longitude") && orderObject.getDouble("j_longitude")!=-1){
+            j_latitude = orderObject.getDouble("j_latitude");
+        }
+
 
         // 插入订单表
         Order order = new Order(
@@ -704,8 +738,8 @@ public class OrderCommitLogic {
                 (String) sf.get("j_county"),
                 (String) sf.get("j_address"),
                 sf.getString("j_supplementary_info"),//增加门牌号
-                0,
-                0,
+                j_longitude,
+                j_latitude,
                 "ORDER_BASIS",
                 Integer.parseInt((String) orderObject.get("sender_user_id"))
         );
@@ -716,6 +750,15 @@ public class OrderCommitLogic {
         order.setVoice_time(Integer.parseInt((String) orderObject.get("voice_time")));
         order.setRegion_type("REGION_NATION");
         orderDao.save(order);
+
+        double d_longitude = 0;
+        double d_latitude = 0;
+        if(orderObject.containsKey("d_longitude") && orderObject.getDouble("d_longitude")!=-1){
+            d_longitude = orderObject.getDouble("d_longitude");
+        }
+        if(orderObject.containsKey("d_latitude") && orderObject.getDouble("d_latitude")!=-1){
+            d_latitude = orderObject.getDouble("d_latitude");
+        }
 
         // 插入快递表
         OrderExpress orderExpress = new OrderExpress(
@@ -736,8 +779,8 @@ public class OrderCommitLogic {
                 Integer.parseInt((String) orderObject.get("sender_user_id")),
                 order.getId(),
                 orderId,
-                0.0,
-                0.0
+                d_longitude,
+                d_latitude
         );
 
         orderExpress.setReserve_time((String) requestObject.getJSONObject("order").get("reserve_time"));
