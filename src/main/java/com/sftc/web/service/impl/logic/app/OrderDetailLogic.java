@@ -156,6 +156,7 @@ public class OrderDetailLogic {
             }
 
             // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
+            OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
             String order_status = respObject.getJSONObject("request").getString("status");
             String directed_code = null;
             if (respObject.containsKey("request")) {
@@ -164,24 +165,23 @@ public class OrderDetailLogic {
                     JSONObject attributuOBJ = respObject.getJSONObject("request").getJSONObject("attributes");
                     if (attributuOBJ.containsKey("directed_code")) {
                         directed_code = attributuOBJ.getString("directed_code");
+                        orderExpress.setDirected_code(directed_code);
                     }
                 }
             }
 
-            if (order_status.equals("WAIT_HAND_OVER")) { // 当同城查询出来的状态是待揽件  我方库中也要存为待揽件
-                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
+            if (order_status.equals("WAIT_HAND_OVER")) { // 当同城查询出来的状态是待揽件 我方库中也要存为待揽件
                 orderExpress.setState("WAIT_HAND_OVER");
-                orderExpress.setDirected_code(directed_code);
-                orderExpressDao.save(orderExpress);
             }
+            orderExpressDao.save(orderExpress);
 
             boolean payed = respObject.getJSONObject("request").getBoolean("payed");
             if (payed && order_status.equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) {
                 respObject.getJSONObject("request").put("status", "WAIT_HAND_OVER");
-                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
-                orderExpress.setState("WAIT_HAND_OVER");
-                orderExpress.setDirected_code(directed_code);
-                orderExpressDao.save(orderExpress);
+                OrderExpress oe = orderExpressMapper.selectExpressByUuid(uuid);
+                oe.setState("WAIT_HAND_OVER");
+                oe.setDirected_code(directed_code);
+                orderExpressDao.save(oe);
                 order = orderMapper.selectOrderDetailByUuid(uuid);
             }
         }
