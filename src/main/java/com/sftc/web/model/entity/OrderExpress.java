@@ -87,7 +87,8 @@ public class OrderExpress extends Object {
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String supplementary_info, String package_type, String object_type,
-                        String package_comments, String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,String directed_code) {
+                        String package_comments, String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,String directed_code,
+                        String attributes ) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -108,6 +109,7 @@ public class OrderExpress extends Object {
         this.latitude = latitude;
         this.longitude = longitude;
         this.directed_code = directed_code;
+        this.attributes = attributes;
     }
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
