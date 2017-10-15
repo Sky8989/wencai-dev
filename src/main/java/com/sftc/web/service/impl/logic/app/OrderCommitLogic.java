@@ -564,16 +564,20 @@ public class OrderCommitLogic {
         //面对面下单
         String directed_code = null;
         if (respObject.containsKey("request")) {
+            logger.info("包含request");
             JSONObject req = respObject.getJSONObject("request");
             if (req != null && req.containsKey("attributes")) {
-                JSONObject attributuOBJ = respObject.getJSONObject("request").getJSONObject("attributes");
+                logger.info("包含attributes");
+                JSONObject attributuOBJ = req.getJSONObject("attributes");
                 if (attributuOBJ.containsKey("directed_code")) {
+                    logger.info("包含directed_code");
                     directed_code = attributuOBJ.getString("directed_code");
+                    logger.info(directed_code);
                 }
             }
         }
-        logger.info("respObject", new Gson().toJson(respObject));
-        logger.info("面对面取件码", directed_code);
+        logger.info("respObject" + new Gson().toJson(respObject));
+        logger.info("面对面取件码:" + directed_code);
 
         if (!(respObject.containsKey("error") || respObject.containsKey("errors"))) {
             // 插入订单表
