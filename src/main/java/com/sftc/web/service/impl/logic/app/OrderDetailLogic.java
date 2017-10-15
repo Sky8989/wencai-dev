@@ -157,10 +157,21 @@ public class OrderDetailLogic {
 
             // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
             String order_status = respObject.getJSONObject("request").getString("status");
+            String directed_code = null;
+            if (respObject.containsKey("request")) {
+                JSONObject req = respObject.getJSONObject("request");
+                if (req != null && req.containsKey("attributes")) {
+                    JSONObject attributuOBJ = respObject.getJSONObject("request").getJSONObject("attributes");
+                    if (attributuOBJ.containsKey("directed_code")) {
+                        directed_code = attributuOBJ.getString("directed_code");
+                    }
+                }
+            }
 
             if (order_status.equals("WAIT_HAND_OVER")) { // 当同城查询出来的状态是待揽件  我方库中也要存为待揽件
                 OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
                 orderExpress.setState("WAIT_HAND_OVER");
+                orderExpress.setDirected_code(directed_code);
                 orderExpressDao.save(orderExpress);
             }
 
@@ -169,6 +180,7 @@ public class OrderDetailLogic {
                 respObject.getJSONObject("request").put("status", "WAIT_HAND_OVER");
                 OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
                 orderExpress.setState("WAIT_HAND_OVER");
+                orderExpress.setDirected_code(directed_code);
                 orderExpressDao.save(orderExpress);
                 order = orderMapper.selectOrderDetailByUuid(uuid);
             }
