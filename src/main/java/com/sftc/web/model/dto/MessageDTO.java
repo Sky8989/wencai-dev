@@ -6,17 +6,13 @@ public class MessageDTO extends Message {
 
     private OrderDTO order;
 
-    public OrderDTO getOrderDTO() {return order;}
+    public OrderDTO getOrder() {
+        return order;
+    }
 
-    public void setOrderDTO(OrderDTO orderDTO) {this.order = orderDTO;}
-
-//    public Order getOrder() {
-//        return order;
-//    }
-//
-//    public void setOrder(Order order) {
-//        this.order = order;
-//    }
+    public void setOrder(OrderDTO order) {
+        this.order = order;
+    }
 
     public MessageDTO() {
         super();
