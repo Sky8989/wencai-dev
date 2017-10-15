@@ -314,21 +314,32 @@ public class OrderCommitLogic {
                 String uuid = (String) responseObject.getJSONObject("request").get("uuid");
                 String request_num = responseObject.getJSONObject("request").getString("request_num");
 
+//                /// 数据库操作
+//                // 订单表更新订单区域类型
+//                Order order1 = orderDao.findOne(order_id);
+//                order1.setRegion_type("REGION_SAME");
+//                orderDao.save(order1);
+//                // 快递表更新uuid和预约时间
+//                oe.setUuid(uuid);
+//                oe.setReserve_time(reserve_time);
+////                orderExpressDao.save(oe);
+//                String order_time = Long.toString(System.currentTimeMillis());
+//                oe.setOrder_time(order_time);
+//                oe.setOrder_number(request_num);
+//                oe.setState(responseObject.getJSONObject("request").getString("status"));
+//                //更新订单状态
+//                orderExpressDao.save(oe);
+
                 /// 数据库操作
                 // 订单表更新订单区域类型
-                Order order1 = orderDao.findOne(order_id);
-                order1.setRegion_type("REGION_SAME");
-                orderDao.save(order1);
+                orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
                 // 快递表更新uuid和预约时间
-                oe.setUuid(uuid);
-                oe.setReserve_time(reserve_time);
-//                orderExpressDao.save(oe);
-                String order_time = Long.toString(System.currentTimeMillis());
-                oe.setOrder_time(order_time);
-                oe.setOrder_number(request_num);
-                oe.setState(responseObject.getJSONObject("request").getString("status"));
+                orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
+                String order_tiem = Long.toString(System.currentTimeMillis());
+                orderExpressMapper.updateOrderTime(uuid, order_tiem);
+                orderExpressMapper.updateOrderNumber(oe.getId(), request_num);
                 //更新订单状态
-                orderExpressDao.save(oe);
+                orderExpressMapper.updateOrderExpressStatus(oe.getId(), responseObject.getJSONObject("request").getString("status"));
 
                 // 插入地址
                 //setupAddress(order, oe);
