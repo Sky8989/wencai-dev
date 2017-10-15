@@ -116,6 +116,7 @@ public class OrderListLogic {
                 express.setObject_type(oe.getObject_type());
                 express.setPackage_comments(oe.getPackage_comments());
                 express.setReserve_time(oe.getReserve_time());
+                express.setDirected_code(oe.getDirected_code());
                 //如果有异常信息，则添加异常信息
                 if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
                     express.setAttributes((oe.getAttributes()));
