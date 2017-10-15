@@ -192,7 +192,8 @@ public class OrderCommitLogic {
                     orderDao.save(order1);
                     String ordernum = resultObject.getString("ordernum");
                     if (oe.getUuid() != null) {
-                        oe.setUuid(oe.getUuid());
+                        String uuid =  resultObject.getJSONObject("request").getString("uuid");
+                        oe.setUuid(uuid);
                     }
                     if (oe.getOrder_number() != null) {
                         oe.setOrder_number(oe.getOrder_number());
@@ -442,14 +443,7 @@ public class OrderCommitLogic {
                 }
 
                 if (reserve_time != null && !reserve_time.equals("")) { // 预约件处理
-                    oe.setReserve_time(reserve_time);
-                    oe.setUuid(oe.getUuid());
-                    oe.setLongitude(d_longitude);
-                    oe.setLatitude(d_latitude);
-                    oe.setUuid(oe.getUuid());
-                    oe.setState("WAIT_HAND_OVER");
-                    OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
-                    orderExpressDao.save(orderExpress);
+
                 } else {
                     // 处理street 和 门牌号的拼接
                     Object j_address = sf.remove("j_address");
@@ -463,6 +457,17 @@ public class OrderCommitLogic {
                     post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
                     String resultStr = APIPostUtil.post(paramStr, post);
                     JSONObject jsonObject = JSONObject.fromObject(resultStr);
+                    String uuid = jsonObject.getJSONObject("request").getString("uuid");
+                    if(jsonObject.getJSONObject("request").containsKey("uuid")
+                            &&!uuid.equals("")){
+                        oe.setReserve_time(reserve_time);
+                        oe.setUuid(uuid);
+                        oe.setLongitude(d_longitude);
+                        oe.setLatitude(d_latitude);
+                        oe.setState("WAIT_HAND_OVER");
+                        OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
+                        orderExpressDao.save(orderExpress);
+                    }
 
                     // 增加对下单结果的判断  含有error Message 或者 没有ordernum 都算是提交失败
                     if (jsonObject.containsKey("error") || jsonObject.containsKey("Message") || !jsonObject.containsKey("ordernum")) {
