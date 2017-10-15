@@ -69,7 +69,7 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
 
             if (message.getMessage_type().equals("RECEIVE_ADDRESS")) {
                 // 只有"收到地址"的消息才需要订单数据
-                message.setOrder(orderDTO);
+                message.setOrderDTO(orderDTO);
             }
         }
 

@@ -1,5 +1,6 @@
 package com.sftc.web.model;
 
+import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
 
 public class Message {
@@ -17,7 +18,13 @@ public class Message {
     private String create_time;
 
     // 订单
-    private Order order;
+//    private Order order;
+
+    private OrderDTO order;
+
+    public OrderDTO getOrderDTO() {return order;}
+
+    public void setOrderDTO(OrderDTO orderDTO) {this.order = orderDTO;}
 
     public int getId() {
         return id;
@@ -67,13 +74,13 @@ public class Message {
         this.create_time = create_time;
     }
 
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
+//    public Order getOrder() {
+//        return order;
+//    }
+//
+//    public void setOrder(Order order) {
+//        this.order = order;
+//    }
 
     public Message(String message_type, int is_read, int express_id, int user_id) {
         this.message_type = message_type;
