@@ -837,9 +837,11 @@ public class OrderCommitLogic {
                     }
                 }
                 // 返回结果添加订单编号
+               String uuid =  responseObject.getJSONObject("request").getString("uuid");
                 String ordernum = responseObject.getString("ordernum");
                 orderExpress.setOrder_number(ordernum);
                 orderExpress.setAttributes(attrStr);
+                orderExpress.setUuid(uuid);
                 orderExpressDao.save(orderExpress);
             }
         } else { // 预约件
