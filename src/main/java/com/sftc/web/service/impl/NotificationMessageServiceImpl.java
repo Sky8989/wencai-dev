@@ -15,6 +15,7 @@ import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
 import com.sftc.web.model.User;
 import com.sftc.web.service.NotificationMessageService;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -56,7 +57,7 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
         List<MessageDTO> messageList = new ArrayList<>();
         for (Message message : messageDTOList) {
             int express_id = message.getExpress_id();
-
+            if (express_id == 0) continue;;
             OrderDTO orderDTO = orderMapper.selectOrderDetailByExpressId(express_id);
             List<OrderExpressDTO> orderExpresses = orderDTO.getOrderExpressList();
             for(OrderExpressDTO oe : orderExpresses){
@@ -71,7 +72,7 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
             if (message.getMessage_type().equals("RECEIVE_ADDRESS")) {
                 // 只有"收到地址"的消息才需要订单数据
                 MessageDTO messageDTO = MessageFactory.entityToDTO(message);
-                messageDTO.setOrderDTO(orderDTO);
+                messageDTO.setOrder(orderDTO);
                 messageList.add(messageDTO);
             }
         }
