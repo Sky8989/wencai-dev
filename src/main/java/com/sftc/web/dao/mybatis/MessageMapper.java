@@ -1,6 +1,6 @@
 package com.sftc.web.dao.mybatis;
 
-import com.sftc.web.model.Message;
+import com.sftc.web.model.entity.Message;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

@@ -8,11 +8,11 @@ import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.MessageMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
-import com.sftc.web.model.Converter.OrderExpressFactory;
-import com.sftc.web.model.Message;
+import com.sftc.web.model.Converter.MessageFactory;
+import com.sftc.web.model.dto.MessageDTO;
+import com.sftc.web.model.entity.Message;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
-import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.User;
 import com.sftc.web.service.NotificationMessageService;
 import org.springframework.stereotype.Service;
@@ -52,8 +52,9 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
             return APIUtil.paramErrorResponse("user_id无效");
 
         // Result
-        List<Message> messageList = messageMapper.selectUnReadMessageList(user_id);
-        for (Message message : messageList) {
+        List<Message> messageDTOList = messageMapper.selectUnReadMessageList(user_id);
+        List<MessageDTO> messageList = new ArrayList<>();
+        for (Message message : messageDTOList) {
             int express_id = message.getExpress_id();
 
             OrderDTO orderDTO = orderMapper.selectOrderDetailByExpressId(express_id);
@@ -69,7 +70,9 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
 
             if (message.getMessage_type().equals("RECEIVE_ADDRESS")) {
                 // 只有"收到地址"的消息才需要订单数据
-                message.setOrderDTO(orderDTO);
+                MessageDTO messageDTO = MessageFactory.entityToDTO(message);
+                messageDTO.setOrderDTO(orderDTO);
+                messageList.add(messageDTO);
             }
         }
 

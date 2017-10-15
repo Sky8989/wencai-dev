@@ -35,9 +35,6 @@ public class AddressBookServiceImpl implements AddressBookService {
     @Resource
     private AddressDao addressDao;
 
-    private AddressBookFactoty addressBookFactoty;
-
-
     public APIResponse addAddressBook(APIRequest apiRequest) {
         ///验参
         JSONObject paramObject = JSONObject.fromObject(apiRequest.getRequestParam());
@@ -101,7 +98,7 @@ public class AddressBookServiceImpl implements AddressBookService {
         // 插入地址簿记录
         addressBookDTO.setCreate_time(create_time);
         addressBookDTO.setAddress_id(address.getId());
-        AddressBook addressBook = addressBookFactoty.dtoToEntity(addressBookDTO);
+        AddressBook addressBook = AddressBookFactoty.dtoToEntity(addressBookDTO);
 
         addressBookDao.save(addressBook);
 
@@ -156,7 +153,7 @@ public class AddressBookServiceImpl implements AddressBookService {
         //TODO 修改地址映射的时间
         addressBookParam.setCreate_time(create_time);
 
-        // 查找重复信息  去重
+        // 查找重复信息去重
         String supplementary_info = address_OBJ.containsKey("supplementary_info") ? address_OBJ.getString("supplementary_info") : null;
         List<AddressBookDTO> addressBookDTOList = addressBookMapper.selectDuplicateAddress(
                 address_OBJ.getString("name"),
@@ -170,11 +167,11 @@ public class AddressBookServiceImpl implements AddressBookService {
 
         if (addressBookDTOList.size() != 0){
             AddressBookDTO addressBookDTO = addressBookMapper.selectByPrimaryKey(addressBookParam.getId());
-            AddressBook addressBook = addressBookFactoty.dtoToEntity(addressBookDTO);
+            AddressBook addressBook = AddressBookFactoty.dtoToEntity(addressBookDTO);
             addressBookDao.save(addressBook);
         } else {
             AddressBookDTO addressBookDTO = addressBookMapper.selectByPrimaryKey(addressBookParam.getId());
-            AddressBook addressBook = addressBookFactoty.dtoToEntity(addressBookDTO);
+            AddressBook addressBook = AddressBookFactoty.dtoToEntity(addressBookDTO);
             addressBookDao.save(addressBook);
 
 
