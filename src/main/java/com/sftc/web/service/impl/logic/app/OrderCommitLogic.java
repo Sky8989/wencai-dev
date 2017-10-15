@@ -534,7 +534,7 @@ public class OrderCommitLogic {
         post.addHeader("PushEnvelope-Device-Token", (String) requestOBJ.getJSONObject("merchant").get("access_token"));
 
         // 预约时间处理
-        String reserve_time = (String) reqObject.getJSONObject("order").get("reserve_time");
+        String reserve_time = orderOBJ.containsKey("reserve_time") ? orderOBJ.getString("reserve_time") : null;
         if (reserve_time != null && !reserve_time.equals("")) {
             String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             requestOBJ.put("reserve_time", reserveTime);
