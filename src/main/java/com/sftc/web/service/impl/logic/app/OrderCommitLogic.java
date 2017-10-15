@@ -609,8 +609,8 @@ public class OrderCommitLogic {
             // 预约时间处理
             String reserve_time = (String) reqObject.getJSONObject("order").get("reserve_time");
             if (reserve_time != null && !reserve_time.equals("")) {
-//             String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+                String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+//                String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
                 reqObject.getJSONObject("request").put("reserve_time", reserveTime);
                 orderExpress.setState("PAYING");
             }
