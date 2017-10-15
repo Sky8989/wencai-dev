@@ -579,9 +579,17 @@ public class OrderCommitLogic {
         logger.info("respObject" + new Gson().toJson(respObject));
         logger.info("面对面取件码:" + directed_code);
 
+        String attrStr = null;
         if (!(respObject.containsKey("error") || respObject.containsKey("errors"))) {
             // 插入订单表
             orderDao.save(order);
+            if(respObject.containsKey("request")){
+                JSONObject req = respObject.getJSONObject("request");
+                if(req!=null && req.containsKey("attributes")){
+                    JSONObject attrObj = req.getJSONObject("attributes");
+                    attrStr = attrObj.toString();
+                }
+            }
 
             // 插入快递表
             OrderExpress orderExpress = new OrderExpress(
@@ -604,7 +612,7 @@ public class OrderCommitLogic {
                     respObject.getJSONObject("request").getString("uuid"),
                     targetOBJ.getJSONObject("coordinate").getDouble("latitude"),
                     targetOBJ.getJSONObject("coordinate").getDouble("longitude"),
-                    directed_code
+                    directed_code,attrStr
             );
             // 预约时间处理
             String reserve_time = (String) reqObject.getJSONObject("order").get("reserve_time");
@@ -733,6 +741,7 @@ public class OrderCommitLogic {
                 0.0,
                 0.0
         );
+
         orderExpress.setReserve_time((String) requestObject.getJSONObject("order").get("reserve_time"));
         orderExpressDao.save(orderExpress);
 
@@ -773,9 +782,18 @@ public class OrderCommitLogic {
                 }
                 return APIUtil.submitErrorResponse(message, responseObject);
             } else {
+                String attrStr = null;
+                    if(responseObject.containsKey("request")){
+                        JSONObject req = responseObject.getJSONObject("request");
+                        if(req!=null && req.containsKey("attributes")){
+                            JSONObject attrObj = req.getJSONObject("attributes");
+                            attrStr = attrObj.toString();
+                        }
+                    }
                 // 返回结果添加订单编号
                 String ordernum = responseObject.getString("ordernum");
                 orderExpress.setOrder_number(ordernum);
+                orderExpress.setAttributes(attrStr);
                 orderExpressDao.save(orderExpress);
             }
         } else { // 预约件
