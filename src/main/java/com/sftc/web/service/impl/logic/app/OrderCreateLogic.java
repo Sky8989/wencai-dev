@@ -158,7 +158,7 @@ public class OrderCreateLogic {
             // 添加RECEIVE_ADDRESS通知消息，此时应该是寄件人收到通知
             List<Message> messageList = messageMapper.selectMessageReceiveAddress(orderDTO.getSender_user_id());
             if (messageList.isEmpty() && messageList.size() == 0) {
-                Message message = new Message("RECEIVE_ADDRESS", 0, orderExpress.getId(), orderDTO.getSender_user_id());
+                Message message = new Message("RECEIVE_ADDRESS", 0, realList.get(0).getId(), orderDTO.getSender_user_id());
                 messageMapper.insertMessage(message);
             } else {
                 Message message = messageList.get(0);
@@ -171,7 +171,7 @@ public class OrderCreateLogic {
             // 消息通知表插入或者更新消息
             List<Message> messageListRE = messageMapper.selectMessageReceiveExpress(orderExpress.getShip_user_id());
             if (messageListRE.isEmpty()) {
-                Message message = new Message("RECEIVE_EXPRESS", 0, orderExpress.getId(), orderExpress.getShip_user_id());
+                Message message = new Message("RECEIVE_EXPRESS", 0, realList.get(0).getId(), orderExpress.getShip_user_id());
                 messageMapper.insertMessage(message);
             } else {
                 Message message = messageListRE.get(0);
