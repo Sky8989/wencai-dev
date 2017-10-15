@@ -14,10 +14,10 @@ import com.sftc.web.model.Converter.OrderExpressFactory;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
+import com.sftc.web.model.entity.AddressBook;
 import com.sftc.web.model.entity.AddressHistory;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
-import com.sftc.web.model.entity.AddressBook;
 import com.sftc.web.model.sfmodel.Address;
 import com.sftc.web.model.sfmodel.Coordinate;
 import com.sftc.web.model.sfmodel.Source;
@@ -422,7 +422,7 @@ public class OrderCommitLogic {
             if (!oe.getState().equals("WAIT_FILL")) {
                 if (reserve_time != null && !reserve_time.equals("")) { // 预约件处理
                     oe.setReserve_time(reserve_time);
-                   oe.setUuid(oe.getUuid());
+                    oe.setUuid(oe.getUuid());
                     oe.setState("WAIT_HAND_OVER");
                     OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
                     orderExpressDao.save(orderExpress);
@@ -533,9 +533,12 @@ public class OrderCommitLogic {
         post = new HttpPost(SF_REQUEST_URL);
         post.addHeader("PushEnvelope-Device-Token", (String) requestOBJ.getJSONObject("merchant").get("access_token"));
 
-//        JSONObject tempObject = JSONObject.fromObject(object);
-//        tempObject.remove("order");
-        //使用修改后的请求体
+        // 预约时间处理
+        String reserve_time = (String) reqObject.getJSONObject("order").get("reserve_time");
+        if (reserve_time != null && !reserve_time.equals("")) {
+            String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            requestOBJ.put("reserve_time", reserveTime);
+        }
 
         JSONObject tempObject = JSONObject.fromObject(reqObject);
         tempObject.remove("order");
@@ -551,8 +554,7 @@ public class OrderCommitLogic {
         String newStreet2 = removeStreet2.toString() + tempObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").getString("supplementary_info");
         tempObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").put("street", newStreet2);
 
-
-        //向sf下单
+        // 向sf下单
         String requestSFParamStr = gson.toJson(tempObject);
         JSONObject respObject = JSONObject.fromObject(APIPostUtil.post(requestSFParamStr, post));
 
@@ -583,9 +585,9 @@ public class OrderCommitLogic {
         if (!(respObject.containsKey("error") || respObject.containsKey("errors"))) {
             // 插入订单表
             orderDao.save(order);
-            if(respObject.containsKey("request")){
+            if (respObject.containsKey("request")) {
                 JSONObject req = respObject.getJSONObject("request");
-                if(req!=null && req.containsKey("attributes")){
+                if (req != null && req.containsKey("attributes")) {
                     JSONObject attrObj = req.getJSONObject("attributes");
                     attrStr = attrObj.toString();
                 }
@@ -612,14 +614,10 @@ public class OrderCommitLogic {
                     respObject.getJSONObject("request").getString("uuid"),
                     targetOBJ.getJSONObject("coordinate").getDouble("latitude"),
                     targetOBJ.getJSONObject("coordinate").getDouble("longitude"),
-                    directed_code,attrStr
+                    directed_code, attrStr
             );
-            // 预约时间处理
-            String reserve_time = (String) reqObject.getJSONObject("order").get("reserve_time");
+
             if (reserve_time != null && !reserve_time.equals("")) {
-                String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-//                String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-                reqObject.getJSONObject("request").put("reserve_time", reserveTime);
                 orderExpress.setState("PAYING");
             }
             orderExpress.setReserve_time(reserve_time);
@@ -783,13 +781,13 @@ public class OrderCommitLogic {
                 return APIUtil.submitErrorResponse(message, responseObject);
             } else {
                 String attrStr = null;
-                    if(responseObject.containsKey("request")){
-                        JSONObject req = responseObject.getJSONObject("request");
-                        if(req!=null && req.containsKey("attributes")){
-                            JSONObject attrObj = req.getJSONObject("attributes");
-                            attrStr = attrObj.toString();
-                        }
+                if (responseObject.containsKey("request")) {
+                    JSONObject req = responseObject.getJSONObject("request");
+                    if (req != null && req.containsKey("attributes")) {
+                        JSONObject attrObj = req.getJSONObject("attributes");
+                        attrStr = attrObj.toString();
                     }
+                }
                 // 返回结果添加订单编号
                 String ordernum = responseObject.getString("ordernum");
                 orderExpress.setOrder_number(ordernum);
