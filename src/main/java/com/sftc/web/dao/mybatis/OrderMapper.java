@@ -24,7 +24,7 @@ public interface OrderMapper {
     /**
      * 更新订单区域类型
      */
-//    void updateOrderRegionType(@Param("id") String id, @Param("region_type") String region_type);
+    void updateOrderRegionType(@Param("id") String id, @Param("region_type") String region_type);
 
     /**
      * 查询我的订单列表

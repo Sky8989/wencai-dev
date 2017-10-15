@@ -16,21 +16,21 @@ public interface OrderExpressMapper {
 
 //    void addOrderExpress2(OrderExpress orderExpress);//多增加门牌号信息
 
-//    void updateOrderExpressForSF(OrderExpress orderExpress);
-//
-//    void updateOrderExpressUuidAndReserveTimeById(@Param("id") int id, @Param("uuid") String uuid, @Param("reserve_time") String reserve_time);
-//
-//    void updateOrderExpressUuidAndOrderNumberWithId(@Param("id") int id, @Param("uuid") String uuid, @Param("order_number") String order_number);
+    void updateOrderExpressForSF(OrderExpress orderExpress);
+
+    void updateOrderExpressUuidAndReserveTimeById(@Param("id") int id, @Param("uuid") String uuid, @Param("reserve_time") String reserve_time);
+
+    void updateOrderExpressUuidAndOrderNumberWithId(@Param("id") int id, @Param("uuid") String uuid, @Param("order_number") String order_number);
 
     /**
      * 根据id更改快递状态
      */
-//    void updateOrderExpressStatus(@Param("express_id") int express_id, @Param("status") String status);
+    void updateOrderExpressStatus(@Param("express_id") int express_id, @Param("status") String status);
 
     /**
      * 根据uuid更改订单状态
      */
-//    void updateOrderExpressStatusByUUID(@Param("uuid") String uuid, @Param("status") String status);
+    void updateOrderExpressStatusByUUID(@Param("uuid") String uuid, @Param("status") String status);
 
     // 更改 快递状态 为 取消 CANCELED
 //    void updateOrderExpressCanceled(String order_id);
@@ -49,10 +49,10 @@ public interface OrderExpressMapper {
     OrderExpress selectExpressByUuid(@Param("uuid") String uuid);
 
     // 下单时，更新order_time,用于记录下单时间
-//    void updateOrderTime(@Param("uuid") String uuid, @Param("order_time") String order_time);
+    void updateOrderTime(@Param("uuid") String uuid, @Param("order_time") String order_time);
 
     // 更新订单的order_number为sf好友同城下单接口返回值 此id是快递信息的id
-//    void updateOrderNumber(@Param("id") int id, @Param("order_number") String order_number);
+    void updateOrderNumber(@Param("id") int id, @Param("order_number") String order_number);
 
 
     /**
@@ -68,7 +68,7 @@ public interface OrderExpressMapper {
     List<OrderExpress> selectExpressForContactInfo(@Param("sender_user_id") int sender_user_id, @Param("ship_user_id") int ship_user_id);
 
     //获取快递信息
-    OrderExpress selectOrderExpress(String orderId);
+//    OrderExpress selectOrderExpress(String orderId);
 
     /**
      * 批量查询快递信息
