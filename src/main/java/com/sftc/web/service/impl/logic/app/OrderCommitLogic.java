@@ -571,7 +571,8 @@ public class OrderCommitLogic {
                 }
             }
         }
-
+        logger.info("respObject", new Gson().toJson(respObject));
+        logger.info("面对面取件码", directed_code);
 
         if (!(respObject.containsKey("error") || respObject.containsKey("errors"))) {
             // 插入订单表
