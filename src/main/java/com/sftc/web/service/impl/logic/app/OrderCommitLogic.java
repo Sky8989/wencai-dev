@@ -192,8 +192,7 @@ public class OrderCommitLogic {
                     orderDao.save(order1);
                     String ordernum = resultObject.getString("ordernum");
                     if (oe.getUuid() != null) {
-                        String uuid = resultObject.getJSONObject("request").getString("uuid");
-                        oe.setUuid(uuid);
+                        oe.setUuid(oe.getUuid());
                     }
                     if (oe.getOrder_number() != null) {
                         oe.setOrder_number(oe.getOrder_number());
@@ -454,7 +453,13 @@ public class OrderCommitLogic {
                 }
 
                 if (reserve_time != null && !reserve_time.equals("")) { // 预约件处理
-
+                    oe.setReserve_time(reserve_time);
+                    oe.setUuid(oe.getUuid());
+                    oe.setLongitude(d_longitude);
+                    oe.setLatitude(d_latitude);
+                    oe.setState("WAIT_HAND_OVER");
+                    OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
+                    orderExpressDao.save(orderExpress);
                 } else {
                     // 处理street 和 门牌号的拼接
                     Object j_address = sf.remove("j_address");
@@ -468,17 +473,6 @@ public class OrderCommitLogic {
                     post.addHeader("Authorization", "bearer " + SFTokenHelper.getToken());
                     String resultStr = APIPostUtil.post(paramStr, post);
                     JSONObject jsonObject = JSONObject.fromObject(resultStr);
-                    String uuid = jsonObject.getJSONObject("request").getString("uuid");
-                    if (jsonObject.getJSONObject("request").containsKey("uuid")
-                            && !uuid.equals("")) {
-                        oe.setReserve_time(reserve_time);
-                        oe.setUuid(uuid);
-                        oe.setLongitude(d_longitude);
-                        oe.setLatitude(d_latitude);
-                        oe.setState("WAIT_HAND_OVER");
-                        OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
-                        orderExpressDao.save(orderExpress);
-                    }
 
                     // 增加对下单结果的判断  含有error Message 或者 没有ordernum 都算是提交失败
                     if (jsonObject.containsKey("error") || jsonObject.containsKey("Message") || !jsonObject.containsKey("ordernum")) {
@@ -742,13 +736,12 @@ public class OrderCommitLogic {
 
         double j_longitude = 0;
         double j_latitude = 0;
-        if (orderObject.containsKey("j_longitude") && orderObject.getDouble("j_longitude") != -1) {
+        if(orderObject.containsKey("j_longitude") ){
             j_longitude = orderObject.getDouble("j_longitude");
         }
-        if (orderObject.containsKey("j_longitude") && orderObject.getDouble("j_longitude") != -1) {
+        if(orderObject.containsKey("j_latitude")){
             j_latitude = orderObject.getDouble("j_latitude");
         }
-
 
         // 插入订单表
         Order order = new Order(
@@ -779,10 +772,10 @@ public class OrderCommitLogic {
 
         double d_longitude = 0;
         double d_latitude = 0;
-        if (orderObject.containsKey("d_longitude") && orderObject.getDouble("d_longitude") != -1) {
+        if(orderObject.containsKey("d_longitude")){
             d_longitude = orderObject.getDouble("d_longitude");
         }
-        if (orderObject.containsKey("d_latitude") && orderObject.getDouble("d_latitude") != -1) {
+        if(orderObject.containsKey("d_latitude")){
             d_latitude = orderObject.getDouble("d_latitude");
         }
 

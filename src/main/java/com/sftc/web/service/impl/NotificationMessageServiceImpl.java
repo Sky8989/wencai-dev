@@ -74,6 +74,9 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
                 MessageDTO messageDTO = MessageFactory.entityToDTO(message);
                 messageDTO.setOrder(orderDTO);
                 messageList.add(messageDTO);
+            }else{
+                MessageDTO messageDTO = MessageFactory.entityToDTO(message);
+                messageList.add(messageDTO);
             }
         }
 
