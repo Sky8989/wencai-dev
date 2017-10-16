@@ -6,6 +6,7 @@ import com.sftc.web.model.Object;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
+
 @Entity
 @Table(name = "sftc_order_express")
 public class OrderExpress extends Object {
@@ -32,15 +33,34 @@ public class OrderExpress extends Object {
     private String supplementary_info;
     //取件码
     private String directed_code;
+    // 是否面对面下单
+    private int is_directed;
+
     private String attributes;
 
-    public String getAttributes() {return attributes;}
+    public String getAttributes() {
+        return attributes;
+    }
 
-    public void setAttributes(String attributes) {this.attributes = attributes;}
+    public void setAttributes(String attributes) {
+        this.attributes = attributes;
+    }
 
-    public String getDirected_code() {return directed_code;}
+    public String getDirected_code() {
+        return directed_code;
+    }
 
-    public void setDirected_code(String directed_code) {this.directed_code = directed_code;}
+    public void setDirected_code(String directed_code) {
+        this.directed_code = directed_code;
+    }
+
+    public int getIs_directed() {
+        return is_directed;
+    }
+
+    public void setIs_directed(int is_directed) {
+        this.is_directed = is_directed;
+    }
 
     // 包裹类型
     private String package_type;
@@ -87,8 +107,8 @@ public class OrderExpress extends Object {
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String supplementary_info, String package_type, String object_type,
-                        String package_comments, String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,String directed_code,
-                        String attributes ) {
+                        String package_comments, String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude, String directed_code,
+                        String attributes, int is_directed) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -110,6 +130,7 @@ public class OrderExpress extends Object {
         this.longitude = longitude;
         this.directed_code = directed_code;
         this.attributes = attributes;
+        this.is_directed = is_directed;
     }
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
