@@ -725,10 +725,10 @@ public class OrderCommitLogic {
 
         double j_longitude = 0;
         double j_latitude = 0;
-        if(orderObject.containsKey("j_longitude") && orderObject.getDouble("j_longitude")!=-1){
+        if(orderObject.containsKey("j_longitude") ){
             j_longitude = orderObject.getDouble("j_longitude");
         }
-        if(orderObject.containsKey("j_longitude") && orderObject.getDouble("j_longitude")!=-1){
+        if(orderObject.containsKey("j_latitude")){
             j_latitude = orderObject.getDouble("j_latitude");
         }
 
@@ -762,10 +762,10 @@ public class OrderCommitLogic {
 
         double d_longitude = 0;
         double d_latitude = 0;
-        if(orderObject.containsKey("d_longitude") && orderObject.getDouble("d_longitude")!=-1){
+        if(orderObject.containsKey("d_longitude")){
             d_longitude = orderObject.getDouble("d_longitude");
         }
-        if(orderObject.containsKey("d_latitude") && orderObject.getDouble("d_latitude")!=-1){
+        if(orderObject.containsKey("d_latitude")){
             d_latitude = orderObject.getDouble("d_latitude");
         }
 

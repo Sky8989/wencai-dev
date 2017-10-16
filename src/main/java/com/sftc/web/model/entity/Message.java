@@ -84,7 +84,6 @@ public class Message {
         this.is_read = is_read;
         this.express_id = express_id;
         this.user_id = user_id;
-        this.create_time = Long.toString(System.currentTimeMillis());
     }
 
     public Message() {
