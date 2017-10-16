@@ -192,7 +192,7 @@ public class OrderCommitLogic {
                     orderDao.save(order1);
                     String ordernum = resultObject.getString("ordernum");
                     if (oe.getUuid() != null) {
-                        String uuid =  resultObject.getJSONObject("request").getString("uuid");
+                        String uuid = resultObject.getJSONObject("request").getString("uuid");
                         oe.setUuid(uuid);
                     }
                     if (oe.getOrder_number() != null) {
@@ -378,10 +378,10 @@ public class OrderCommitLogic {
 
         double j_longitude = 0;
         double j_latitude = 0;
-        if(orderOBJ.containsKey("j_longitude") && orderOBJ.getDouble("j_longitude")!=-1){
+        if (orderOBJ.containsKey("j_longitude") && orderOBJ.getDouble("j_longitude") != -1) {
             j_longitude = orderOBJ.getDouble("j_longitude");
         }
-        if(orderOBJ.containsKey("j_longitude") && orderOBJ.getDouble("j_longitude")!=-1){
+        if (orderOBJ.containsKey("j_longitude") && orderOBJ.getDouble("j_longitude") != -1) {
             j_latitude = orderOBJ.getDouble("j_latitude");
         }
 
@@ -446,10 +446,10 @@ public class OrderCommitLogic {
             if (!oe.getState().equals("WAIT_FILL")) {
                 double d_longitude = 0;
                 double d_latitude = 0;
-                if(orderOBJ.containsKey("d_longitude") && orderOBJ.getDouble("d_longitude")!=-1){
+                if (orderOBJ.containsKey("d_longitude") && orderOBJ.getDouble("d_longitude") != -1) {
                     d_longitude = orderOBJ.getDouble("d_longitude");
                 }
-                if(orderOBJ.containsKey("d_latitude") && orderOBJ.getDouble("d_latitude")!=-1){
+                if (orderOBJ.containsKey("d_latitude") && orderOBJ.getDouble("d_latitude") != -1) {
                     d_latitude = orderOBJ.getDouble("d_latitude");
                 }
 
@@ -469,8 +469,8 @@ public class OrderCommitLogic {
                     String resultStr = APIPostUtil.post(paramStr, post);
                     JSONObject jsonObject = JSONObject.fromObject(resultStr);
                     String uuid = jsonObject.getJSONObject("request").getString("uuid");
-                    if(jsonObject.getJSONObject("request").containsKey("uuid")
-                            &&!uuid.equals("")){
+                    if (jsonObject.getJSONObject("request").containsKey("uuid")
+                            && !uuid.equals("")) {
                         oe.setReserve_time(reserve_time);
                         oe.setUuid(uuid);
                         oe.setLongitude(d_longitude);
@@ -605,12 +605,19 @@ public class OrderCommitLogic {
         logger.info("准备面对面下单");
         //面对面下单
         String directed_code = null;
+        int is_directed = 0;
         if (respObject.containsKey("request")) {
             logger.info("包含request");
             JSONObject req = respObject.getJSONObject("request");
             if (req != null && req.containsKey("attributes")) {
                 logger.info("包含attributes");
                 JSONObject attributuOBJ = req.getJSONObject("attributes");
+                if (attributuOBJ.containsKey("source")) {
+                    if (attributuOBJ.getString("source").equals("DIRECTED")) {
+                        is_directed = 1;
+                        logger.info("面对面下单，设置`is_directed`为1");
+                    }
+                }
                 if (attributuOBJ.containsKey("directed_code")) {
                     logger.info("包含directed_code");
                     directed_code = attributuOBJ.getString("directed_code");
@@ -654,7 +661,9 @@ public class OrderCommitLogic {
                     respObject.getJSONObject("request").getString("uuid"),
                     targetOBJ.getJSONObject("coordinate").getDouble("latitude"),
                     targetOBJ.getJSONObject("coordinate").getDouble("longitude"),
-                    directed_code, attrStr
+                    directed_code,
+                    attrStr,
+                    is_directed
             );
 
             if (reserve_time != null && !reserve_time.equals("")) {
@@ -672,6 +681,8 @@ public class OrderCommitLogic {
 
             // 返回结果添加订单编号
             respObject.put("order_id", order.getId());
+            // 添加是否面对面下单
+            respObject.put("is_directed", is_directed);
 
             /// 发送微信模板消息
             if (reqObject.getJSONObject("order").containsKey("form_id")
@@ -686,7 +697,6 @@ public class OrderCommitLogic {
             }
 
         } else {
-            status = SUBMIT_FAIL;
             //手动操作事务回滚
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return APIUtil.submitErrorResponse("提交失败", respObject);
@@ -732,10 +742,10 @@ public class OrderCommitLogic {
 
         double j_longitude = 0;
         double j_latitude = 0;
-        if(orderObject.containsKey("j_longitude") && orderObject.getDouble("j_longitude")!=-1){
+        if (orderObject.containsKey("j_longitude") && orderObject.getDouble("j_longitude") != -1) {
             j_longitude = orderObject.getDouble("j_longitude");
         }
-        if(orderObject.containsKey("j_longitude") && orderObject.getDouble("j_longitude")!=-1){
+        if (orderObject.containsKey("j_longitude") && orderObject.getDouble("j_longitude") != -1) {
             j_latitude = orderObject.getDouble("j_latitude");
         }
 
@@ -769,10 +779,10 @@ public class OrderCommitLogic {
 
         double d_longitude = 0;
         double d_latitude = 0;
-        if(orderObject.containsKey("d_longitude") && orderObject.getDouble("d_longitude")!=-1){
+        if (orderObject.containsKey("d_longitude") && orderObject.getDouble("d_longitude") != -1) {
             d_longitude = orderObject.getDouble("d_longitude");
         }
-        if(orderObject.containsKey("d_latitude") && orderObject.getDouble("d_latitude")!=-1){
+        if (orderObject.containsKey("d_latitude") && orderObject.getDouble("d_latitude") != -1) {
             d_latitude = orderObject.getDouble("d_latitude");
         }
 
