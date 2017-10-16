@@ -181,6 +181,7 @@ public class OrderDetailLogic {
                 OrderExpress oe = orderExpressMapper.selectExpressByUuid(uuid);
                 oe.setState("WAIT_HAND_OVER");
                 oe.setDirected_code(directed_code);
+                oe.setIs_directed(1);
                 orderExpressDao.save(oe);
                 order = orderMapper.selectOrderDetailByUuid(uuid);
             }
