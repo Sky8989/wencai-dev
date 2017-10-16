@@ -169,9 +169,9 @@ public class OrderCreateLogic {
                 messageMapper.updateMessageReceiveAddress(message);
             }
             // 消息通知表插入或者更新消息
-            List<Message> messageListRE = messageMapper.selectMessageReceiveExpress(orderExpress.getShip_user_id());
+            List<Message> messageListRE = messageMapper.selectMessageReceiveExpress(orderExpress1.getShip_user_id());
             if (messageListRE.isEmpty()) {
-                Message message = new Message("RECEIVE_EXPRESS", 0, realList.get(0).getId(), orderExpress.getShip_user_id());
+                Message message = new Message("RECEIVE_EXPRESS", 0, realList.get(0).getId(), orderExpress1.getShip_user_id());
                 messageMapper.insertMessage(message);
             } else {
                 Message message = messageListRE.get(0);
