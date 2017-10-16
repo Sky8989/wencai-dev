@@ -163,7 +163,7 @@ public class OrderCreateLogic {
             } else {
                 Message message = messageList.get(0);
                 message.setIs_read(0);
-                message.setExpress_id(orderExpress.getId());
+                message.setExpress_id(realList.get(0).getId());
                 message.setUser_id(orderDTO.getSender_user_id());
                 message.setCreate_time(Long.toString(System.currentTimeMillis()));
                 messageMapper.updateMessageReceiveAddress(message);
@@ -176,7 +176,7 @@ public class OrderCreateLogic {
             } else {
                 Message message = messageListRE.get(0);
                 message.setIs_read(0);
-                message.setExpress_id(orderExpress.getId());
+                message.setExpress_id(realList.get(0).getId());
                 message.setCreate_time(Long.toString(System.currentTimeMillis()));
                 messageMapper.updateMessageReceiveExpress(message);
             }
