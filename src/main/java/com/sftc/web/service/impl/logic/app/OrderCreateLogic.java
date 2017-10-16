@@ -184,12 +184,12 @@ public class OrderCreateLogic {
             // 存储好友关系 寄件人对填写人的好友关系
             UserContactNew userContactNewParam = new UserContactNew();
             userContactNewParam.setUser_id(orderDTO.getSender_user_id());             // 寄件人
-            userContactNewParam.setFriend_id(orderExpress.getShip_user_id());      // 填写人
+            userContactNewParam.setFriend_id(orderExpress1.getShip_user_id());      // 填写人
             UserContactNew userContactNew = userContactMapper.selectByUserIdAndShipId(userContactNewParam);
             if (userContactNew == null) { // null即 还不是好友关系
                 userContactNew = new UserContactNew();
                 userContactNew.setUser_id(orderDTO.getSender_user_id());
-                userContactNew.setFriend_id(orderExpress.getShip_user_id());
+                userContactNew.setFriend_id(orderExpress1.getShip_user_id());
                 userContactNew.setIs_tag_star(0);
                 userContactNew.setLntimacy(1);
                 userContactNew.setCreate_time(Long.toString(System.currentTimeMillis()));
@@ -199,12 +199,12 @@ public class OrderCreateLogic {
             }
 
             // 存储好友关系   填写人对寄件人的好友关系
-            userContactNewParam.setUser_id(orderExpress.getShip_user_id()); // 填写人
+            userContactNewParam.setUser_id(orderExpress1.getShip_user_id()); // 填写人
             userContactNewParam.setFriend_id(orderDTO.getSender_user_id());    // 寄件人
             UserContactNew userContactNew2 = userContactMapper.selectByUserIdAndShipId(userContactNewParam);
             if (userContactNew2 == null) {
                 userContactNew2 = new UserContactNew();
-                userContactNew2.setUser_id(orderExpress.getShip_user_id());
+                userContactNew2.setUser_id(orderExpress1.getShip_user_id());
                 userContactNew2.setFriend_id(orderDTO.getSender_user_id());
                 userContactNew2.setIs_tag_star(0);
                 userContactNew2.setLntimacy(1);
@@ -218,20 +218,20 @@ public class OrderCreateLogic {
             ///插入地址映射关系 1 地址簿 1 历史地址
             // 生成 收件人的寄件人地址簿
             orderCommitLogic.insertAddressBookUtils("address_book", "sender",
-                    orderExpress.getShip_user_id(),//给收件人存
-                    orderExpress.getShip_user_id(),//给收件人存
-                    orderExpress.getShip_name(), orderExpress.getShip_mobile(), orderExpress.getShip_province(),
-                    orderExpress.getShip_city(), orderExpress.getShip_area(), orderExpress.getShip_addr(), orderExpress.getSupplementary_info(),
-                    current_create_time, orderExpress.getLongitude(), orderExpress.getLatitude()
+                    orderExpress1.getShip_user_id(),//给收件人存
+                    orderExpress1.getShip_user_id(),//给收件人存
+                    orderExpress1.getShip_name(), orderExpress1.getShip_mobile(), orderExpress1.getShip_province(),
+                    orderExpress1.getShip_city(), orderExpress1.getShip_area(), orderExpress1.getShip_addr(), orderExpress1.getSupplementary_info(),
+                    current_create_time, orderExpress1.getLongitude(), orderExpress1.getLatitude()
             );
 
             //提交地址同时（去重处理）保存到[寄件人]最近联系人
             orderCommitLogic.insertAddressBookUtils("address_history", "address_history",
                     orderDTO.getSender_user_id(),// 给寄件人存
-                    orderExpress.getShip_user_id(),// id是收件人的 查历史地址时才能取到
-                    orderExpress.getShip_name(), orderExpress.getShip_mobile(), orderExpress.getShip_province(),
-                    orderExpress.getShip_city(), orderExpress.getShip_area(), orderExpress.getShip_addr(), orderExpress.getSupplementary_info(),
-                    current_create_time, orderExpress.getLongitude(), orderExpress.getLatitude()
+                    orderExpress1.getShip_user_id(),// id是收件人的 查历史地址时才能取到
+                    orderExpress1.getShip_name(), orderExpress1.getShip_mobile(), orderExpress1.getShip_province(),
+                    orderExpress1.getShip_city(), orderExpress1.getShip_area(), orderExpress1.getShip_addr(), orderExpress1.getSupplementary_info(),
+                    current_create_time, orderExpress1.getLongitude(), orderExpress1.getLatitude()
             );
         }
 
