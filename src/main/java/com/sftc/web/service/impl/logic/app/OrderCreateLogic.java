@@ -170,7 +170,7 @@ public class OrderCreateLogic {
             }
             // 消息通知表插入或者更新消息
             List<Message> messageListRE = messageMapper.selectMessageReceiveExpress(orderExpress1.getShip_user_id());
-            if (messageListRE.isEmpty()) {
+            if (messageListRE.isEmpty()&& messageListRE.size() == 0) {
                 Message message = new Message("RECEIVE_EXPRESS", 0, realList.get(0).getId(), orderExpress1.getShip_user_id());
                 messageMapper.insertMessage(message);
             } else {
