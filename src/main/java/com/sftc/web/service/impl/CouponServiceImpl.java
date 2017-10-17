@@ -31,8 +31,6 @@ public class CouponServiceImpl implements CouponService {
      */
     public APIResponse getUserCouponList(APIRequest apiRequest) throws Exception {
 
-
-        APIStatus status = APIStatus.SUCCESS;
         JSONObject paramOBJ = JSONObject.fromObject(apiRequest.getRequestParam());
         if (!paramOBJ.containsKey("uuid")) return APIUtil.paramErrorResponse("Parameter missing uuid");
         if (!paramOBJ.containsKey("token")) return APIUtil.paramErrorResponse("Parameter missing token");
@@ -47,15 +45,16 @@ public class CouponServiceImpl implements CouponService {
         String offset = paramOBJ.containsKey("offset") ? String.valueOf(paramOBJ.getInt("offset") - 1) : String.valueOf(0);
 
         //处理范围：有效/无效
-        String status_temp = paramOBJ.getString("status");
-        String status_final;
-        if (status_temp.equals("valid")) {
-            status_final = status_valid;
-        } else if (status_temp.equals("invalid")) {
-            status_final = status_invalid;
-        } else {
-            status_final = status_all;
-        }
+        String status = paramOBJ.getString("status");
+//        String status_final;
+//        if (status_temp.equals("valid")) {
+//            status_final = status_valid;
+//        } else if (status_temp.equals("invalid")) {
+//            status_final = status_invalid;
+//        } else {
+//            status_final = status_all;
+//        }
+        String status_final = status_all;
 
         String coupon_list_url = SF_COUPON_LIST_URL.
                 replace("{user_uuid}", uuid).
@@ -74,11 +73,8 @@ public class CouponServiceImpl implements CouponService {
             return APIUtil.submitErrorResponse("查询失败", resJSONObject);
         }
 
-        // TODO: 为什么顺丰API支持条件筛选，我们还要自己处理？
-        // TODO: Ask by bingo.
-//        JSONObject final_res = resolveCouponResult(status_temp, resJSONObject);
-//        return APIUtil.getResponse(status, final_res);
-        return APIUtil.getResponse(status, resJSONObject);
+        JSONObject final_res = resolveCouponResult(status, resJSONObject);
+        return APIUtil.getResponse(APIStatus.SUCCESS, final_res);
     }
 
     /**
@@ -112,8 +108,6 @@ public class CouponServiceImpl implements CouponService {
 
     }
 
-    ////////////////////处理用户无初试住址值的问题////////////////////
-    ////////////////////暂时放在兑换优惠券的逻辑中，后期应将此逻辑放到注册或者登陆的逻辑中////////////////////
     private APIResponse updateMerchantAddress(String access_token) throws Exception {
         String json = "{\"merchant\":{\"name\":\"new_name\",\"attributes\":{},\"summary\":{},\"email\":\"123@gmail.com\",\"address\":{\"type\":\"LIVE\",\"country\":\"中国\",\"province\":\"广东\",\"city\":\"深圳\",\"region\":\"南山区\",\"street\":\"深圳市南山区文心五路海岸城五楼周大福\",\"zipcode\":\"518000\",\"receiver\":\"兑换优惠券\",\"mobile\":\"13632383955\",\"marks\":{},\"longitude\":113.942215,\"latitude\":22.52261}}}";
 
@@ -129,7 +123,6 @@ public class CouponServiceImpl implements CouponService {
         return APIUtil.logicErrorResponse("更新商户信息失败", response.body());
     }
 
-    //优惠券解析器  便于扩展
     private JSONObject resolveCouponResult(String status_temp, JSONObject resJSONObject) throws ParseException {
 
         if (status_temp.equals("valid")) return filterOvertimeCoupon(resJSONObject);
@@ -138,54 +131,64 @@ public class CouponServiceImpl implements CouponService {
         return resJSONObject;
     }
 
+    // 获取可用的优惠券
     private JSONObject filterOvertimeCoupon(JSONObject resJSONObject) throws ParseException {
+
         JSONArray oldcoupons = resJSONObject.getJSONArray("coupons");
-        //若无优惠券 原样返回
+        if (oldcoupons == null) return resJSONObject;
         if (oldcoupons.size() == 0) return resJSONObject;
 
         JSONArray newcoupons = new JSONArray();
         for (int i = 0; i < oldcoupons.size(); i++) {
             JSONObject singleCoupon = oldcoupons.getJSONObject(i);
-            String expire_time = singleCoupon.getString("expire_time");
-            // 过期时间小于当前时间  代表已过去
-            if (dateToStamp(expire_time) < System.currentTimeMillis()) {
-//                System.out.println("有过期的券");
-                continue;
+            if (singleCoupon.containsKey("status")) {
+                if (singleCoupon.getString("status").equals("INIT") || singleCoupon.getString("status").equals("ACTIVE")) { // 可用
+                    // 需要排除过期的优惠券
+                    String expire_time = singleCoupon.getString("expire_time");
+                    // 过期时间小于当前时间  代表已过去
+                    if (dateToStamp(expire_time) > System.currentTimeMillis()) {
+                        newcoupons.add(oldcoupons.get(i));
+                    }
+                }
             }
-            newcoupons.add(oldcoupons.get(i));
         }
-        //除旧迎新
+
         resJSONObject.remove("coupons");
         resJSONObject.put("coupons", newcoupons);
         return resJSONObject;
     }
 
-    // 获取 过期的优惠券
+    // 获取不可用的优惠券
     private JSONObject getOvertimeCoupon(JSONObject resJSONObject) throws ParseException {
 
         JSONArray oldcoupons = resJSONObject.getJSONArray("coupons");
-        //若无优惠券 原样返回
+        if (oldcoupons == null) return resJSONObject;
         if (oldcoupons.size() == 0) return resJSONObject;
 
         JSONArray newcoupons = new JSONArray();
         for (int i = 0; i < oldcoupons.size(); i++) {
             JSONObject singleCoupon = oldcoupons.getJSONObject(i);
-            String expire_time = singleCoupon.getString("expire_time");
-            // 过期时间小于当前时间  代表已过去
-            if (dateToStamp(expire_time) < System.currentTimeMillis()) {
-                System.out.println("有过期的券");
-                newcoupons.add(oldcoupons.get(i));
+            if (singleCoupon.containsKey("status")) { // 不可用
+                if (singleCoupon.getString("status").equals("DISABLED") || singleCoupon.getString("status").equals("USED")) {
+                    newcoupons.add(oldcoupons.get(i));
+                } else { // 可用，但已过期
+                    String expire_time = singleCoupon.getString("expire_time");
+                    // 过期时间小于当前时间  代表已过去
+                    if (dateToStamp(expire_time) < System.currentTimeMillis()) {
+                        newcoupons.add(oldcoupons.get(i));
+                    }
+                }
             }
         }
-        //除旧迎新
+
         resJSONObject.remove("coupons");
         resJSONObject.put("coupons", newcoupons);
         return resJSONObject;
     }
 
-    /*
-  * 将时间转换为时间戳
-  */
+    /**
+     * 将时间转换为时间戳
+     */
     private long dateToStamp(String waitFormatPram) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ");
         Date date = simpleDateFormat.parse(waitFormatPram);
