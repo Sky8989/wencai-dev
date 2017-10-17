@@ -4,6 +4,7 @@ import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "sftc_message")
@@ -84,6 +85,7 @@ public class Message {
         this.is_read = is_read;
         this.express_id = express_id;
         this.user_id = user_id;
+        this.create_time = Long.toString(new Date().getTime());
     }
 
     public Message() {
