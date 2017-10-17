@@ -3,10 +3,7 @@ package com.sftc.web.controller.app;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.service.AddressBookService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,17 +22,18 @@ public class AddressBookController {
     private AddressBookService addressBookService;
 
     @ApiOperation(value = "006添加地址簿",httpMethod = "POST")
+
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "user_id",value = "用户编号",required = true,paramType = "query"),
-            @ApiImplicitParam(name = "is_delete",value = "是否删除",required = true,paramType = "query"),
-            @ApiImplicitParam(name = "is_mystery",value = "是否神秘",required = true,paramType = "query"),
+            @ApiImplicitParam(name = "user_id",value = "用户编号",required = true,paramType = "header"),
+            @ApiImplicitParam(name = "is_delete",value = "是否删除",required = true,paramType = "header"),
+            @ApiImplicitParam(name = "is_mystery",value = "是否神秘",required = true,paramType = "header"),
             @ApiImplicitParam(name = "address_type",value = "地址类型address_history / address_book",required = true,paramType = "query"),
             @ApiImplicitParam(name = "address_book_type",value = "地址簿类型sender / ship",required = true,paramType = "query"),
-            @ApiImplicitParam(name = "name",value = "姓名",required = true,paramType = "query"),
-            @ApiImplicitParam(name = "phone",value = "手机号",required = true,paramType = "query"),
-            @ApiImplicitParam(name = "province",value = "省份",required = true,paramType = "query"),
-            @ApiImplicitParam(name = "city",value = "城市",required = true,paramType = "query"),
-            @ApiImplicitParam(name = "area",value = "地区",required = true,paramType = "query"),
+            @ApiImplicitParam(name = "name",value = "姓名",required = true,paramType = "header"),
+            @ApiImplicitParam(name = "phone",value = "手机号",required = true,paramType = "header"),
+            @ApiImplicitParam(name = "province",value = "省份",required = true,paramType = "header"),
+            @ApiImplicitParam(name = "city",value = "城市",required = true,paramType = "header"),
+            @ApiImplicitParam(name = "area",value = "地区",required = true,paramType = "header"),
             @ApiImplicitParam(name = "address",value = "详细",required = true,paramType = "query"),
             @ApiImplicitParam(name = "supplementary_info",value = "补充门牌号",required = true,paramType = "query"),
             @ApiImplicitParam(name = "longitude",value = "经度",required = true,paramType = "query"),

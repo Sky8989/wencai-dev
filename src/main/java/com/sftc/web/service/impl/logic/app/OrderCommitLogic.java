@@ -375,20 +375,9 @@ public class OrderCommitLogic {
         if (order_id == null || order_id.equals(""))
             return APIUtil.paramErrorResponse("order_id不能为空");
 
-        double j_longitude = 0;
-        double j_latitude = 0;
-        if (orderOBJ.containsKey("j_longitude") && orderOBJ.getDouble("j_longitude") != -1) {
-            j_longitude = orderOBJ.getDouble("j_longitude");
-        }
-        if (orderOBJ.containsKey("j_longitude") && orderOBJ.getDouble("j_longitude") != -1) {
-            j_latitude = orderOBJ.getDouble("j_latitude");
-        }
-
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
         Order order1 = orderDao.findOne(order_id);
         order1.setRegion_type("REGION_NATION");
-        order1.setLatitude(j_longitude);
-        order1.setLongitude(j_latitude);
         orderDao.save(order1);
 
         OrderDTO orderDto = orderMapper.selectOrderDetailByOrderIdForUpdate(order_id);
@@ -443,20 +432,9 @@ public class OrderCommitLogic {
             }
 
             if (!oe.getState().equals("WAIT_FILL")) {
-                double d_longitude = 0;
-                double d_latitude = 0;
-                if (orderOBJ.containsKey("d_longitude") && orderOBJ.getDouble("d_longitude") != -1) {
-                    d_longitude = orderOBJ.getDouble("d_longitude");
-                }
-                if (orderOBJ.containsKey("d_latitude") && orderOBJ.getDouble("d_latitude") != -1) {
-                    d_latitude = orderOBJ.getDouble("d_latitude");
-                }
-
                 if (reserve_time != null && !reserve_time.equals("")) { // 预约件处理
                     oe.setReserve_time(reserve_time);
                     oe.setUuid(oe.getUuid());
-                    oe.setLongitude(d_longitude);
-                    oe.setLatitude(d_latitude);
                     oe.setState("WAIT_HAND_OVER");
                     OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
                     orderExpressDao.save(orderExpress);
@@ -798,8 +776,8 @@ public class OrderCommitLogic {
                 Integer.parseInt((String) orderObject.get("sender_user_id")),
                 order.getId(),
                 orderId,
-                d_longitude,
-                d_latitude
+                d_latitude,
+                d_longitude
         );
 
         orderExpress.setReserve_time((String) requestObject.getJSONObject("order").get("reserve_time"));
