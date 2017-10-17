@@ -66,7 +66,7 @@ public class OrderDetailLogic {
         List<OrderExpressDTO> dtoList = new ArrayList<OrderExpressDTO>();
         if (orderDTO == null) return APIUtil.getResponse(SUCCESS, null);
         List<OrderExpressDTO> orderExpress = orderDTO.getOrderExpressList();
-        for(OrderExpressDTO orderExpressDTO : orderExpress){
+        for (OrderExpressDTO orderExpressDTO : orderExpress) {
             User receiver = userMapper.selectUserByUserId(orderExpressDTO.getShip_user_id());
             if (receiver != null && receiver.getAvatar() != null) {
                 // 扩展收件人头像
@@ -159,13 +159,21 @@ public class OrderDetailLogic {
             OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
             String order_status = respObject.getJSONObject("request").getString("status");
             String directed_code = null;
+            int is_directed = 0;
             if (respObject.containsKey("request")) {
                 JSONObject req = respObject.getJSONObject("request");
                 if (req != null && req.containsKey("attributes")) {
                     JSONObject attributuOBJ = respObject.getJSONObject("request").getJSONObject("attributes");
-                    if (attributuOBJ.containsKey("directed_code")) {
-                        directed_code = attributuOBJ.getString("directed_code");
-                        orderExpress.setDirected_code(directed_code);
+                    if (attributuOBJ != null) {
+                        if (attributuOBJ.containsKey("source") && attributuOBJ.getString("source") != null) {
+                            if (attributuOBJ.getString("source").equals("DIRECTED")) {
+                                is_directed = 1;
+                            }
+                        }
+                        if (attributuOBJ.containsKey("directed_code")) {
+                            directed_code = attributuOBJ.getString("directed_code");
+                            orderExpress.setDirected_code(directed_code);
+                        }
                     }
                 }
             }
@@ -181,7 +189,7 @@ public class OrderDetailLogic {
                 OrderExpress oe = orderExpressMapper.selectExpressByUuid(uuid);
                 oe.setState("WAIT_HAND_OVER");
                 oe.setDirected_code(directed_code);
-                oe.setIs_directed(1);
+                oe.setIs_directed(is_directed);
                 orderExpressDao.save(oe);
                 order = orderMapper.selectOrderDetailByUuid(uuid);
             }
