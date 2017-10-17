@@ -39,8 +39,7 @@ public class OrderController extends BaseController {
         request.setRequestParam(object);
         return orderService.addNormalOrderCommit(request);
     }
-
-    @IgnoreToken
+    
     @ApiOperation(value = "好友订单提交",httpMethod = "POST")
     @RequestMapping(value = "/friendCommit", method = RequestMethod.POST)
     public @ResponseBody
@@ -57,6 +56,7 @@ public class OrderController extends BaseController {
         return orderService.countPrice(object);
     }
 
+    @IgnoreToken
     @ApiOperation(value = "好友填写收件",httpMethod = "POST")
     @RequestMapping(value = "/fill", method = RequestMethod.POST)
     public @ResponseBody
