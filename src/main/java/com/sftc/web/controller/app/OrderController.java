@@ -40,6 +40,7 @@ public class OrderController extends BaseController {
         return orderService.addNormalOrderCommit(request);
     }
 
+    @IgnoreToken
     @ApiOperation(value = "好友订单提交",httpMethod = "POST")
     @RequestMapping(value = "/friendCommit", method = RequestMethod.POST)
     public @ResponseBody
