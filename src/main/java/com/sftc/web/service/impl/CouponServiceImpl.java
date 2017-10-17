@@ -74,8 +74,11 @@ public class CouponServiceImpl implements CouponService {
             return APIUtil.submitErrorResponse("查询失败", resJSONObject);
         }
 
-        JSONObject final_res = resolveCouponResult(status_temp, resJSONObject);
-        return APIUtil.getResponse(status, final_res);
+        // TODO: 为什么顺丰API支持条件筛选，我们还要自己处理？
+        // TODO: Ask by bingo.
+//        JSONObject final_res = resolveCouponResult(status_temp, resJSONObject);
+//        return APIUtil.getResponse(status, final_res);
+        return APIUtil.getResponse(status, resJSONObject);
     }
 
     /**
