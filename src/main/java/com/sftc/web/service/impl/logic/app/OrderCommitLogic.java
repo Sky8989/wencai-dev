@@ -84,7 +84,7 @@ public class OrderCommitLogic {
         // 增加对emoji的过滤
         if (requestObject.containsKey("request")) { // 同城
             boolean containsEmoji = EmojiFilter.containsEmoji(requestObject.getJSONObject("request").getString("packages"));
-            boolean containsEmoji2 = EmojiFilter.containsEmoji(requestObject.getJSONObject("request").getJSONObject("order").getString("word_message"));
+            boolean containsEmoji2 = EmojiFilter.containsEmoji(requestObject.getJSONObject("order").getString("word_message"));
             if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
             if (containsEmoji2) return APIUtil.paramErrorResponse("Don't input emoji");
         }
@@ -114,7 +114,7 @@ public class OrderCommitLogic {
         // 增加对emoji的过滤
         if (requestObject.containsKey("request")) { // 同城
             boolean containsEmoji = EmojiFilter.containsEmoji(requestObject.getJSONObject("request").getString("packages"));
-            boolean containsEmoji2 = EmojiFilter.containsEmoji(requestObject.getJSONObject("request").getJSONObject("order").getString("word_message"));
+            boolean containsEmoji2 = EmojiFilter.containsEmoji(requestObject.getJSONObject("order").getString("word_message"));
             if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
             if (containsEmoji2) return APIUtil.paramErrorResponse("Don't input emoji");
         }
