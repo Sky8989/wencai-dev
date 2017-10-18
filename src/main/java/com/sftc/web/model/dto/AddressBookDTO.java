@@ -1,6 +1,7 @@
 package com.sftc.web.model.dto;
 
 import com.sftc.web.model.entity.Address;
+import io.swagger.annotations.ApiModel;
 
 /**
  * 地址关系总映射
