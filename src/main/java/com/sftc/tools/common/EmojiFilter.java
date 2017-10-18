@@ -112,5 +112,14 @@ public class EmojiFilter {
         matcher.appendTail(sb);
         return sb.toString();
     }
+
+    public static String replaceEmoji(String source) {
+        if(StringUtils.isNotBlank(source)){
+            return source.replaceAll("[\\ud800\\udc00-\\udbff\\udfff\\ud800-\\udfff]", "*");
+        }else{
+            return source;
+        }
+    }
+
 }
 
