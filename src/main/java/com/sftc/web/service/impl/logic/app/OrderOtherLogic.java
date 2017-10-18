@@ -6,12 +6,17 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.screenshot.HtmlScreenShotUtil;
 import com.sftc.web.service.QiniuService;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.net.URLEncoder;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_WEB_URL;
@@ -35,6 +40,34 @@ public class OrderOtherLogic {
         if (jsonObject.get("errors") != null || jsonObject.get("error") != null)
             return APIUtil.submitErrorResponse("获取常量失败", jsonObject);
 
+        try {
+            if (jsonObject.containsKey("constant")) {
+                if (jsonObject.getJSONObject("constant").containsKey("value")) {
+                    if (jsonObject.getJSONObject("constant").getJSONObject("value").containsKey("TIME_LIMIT")) {
+                        JSONArray timeLimitArr = jsonObject.getJSONObject("constant").getJSONObject("value").getJSONArray("TIME_LIMIT");
+                        for (int i = 0; i < timeLimitArr.size(); i++) {
+                            JSONObject timeLimitObj = timeLimitArr.getJSONObject(i);
+                            if (timeLimitObj.containsKey("code") && (timeLimitObj.getString("code").equals("START_TIME") || timeLimitObj.getString("code").equals("END_TIME"))) {
+                                if (timeLimitObj.containsKey("name") && timeLimitObj.getString("name") != null) {
+                                    String tmpTimeLimit = timeLimitObj.getString("name");
+                                    if (!tmpTimeLimit.contains("+")) continue;
+
+                                    String tmpPattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+                                    SimpleDateFormat sdf = new SimpleDateFormat(tmpPattern);
+                                    Date limitDate = sdf.parse(tmpTimeLimit, new ParsePosition(0));
+                                    String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                                    String resTimeLimit = DateFormatUtils.format(limitDate, pattern);
+                                    timeLimitObj.put("name", resTimeLimit);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return APIUtil.getResponse(SUCCESS, jsonObject);
     }
 
@@ -52,9 +85,9 @@ public class OrderOtherLogic {
         if (name != null) {
             try {
                 name = URLEncoder.encode(name, "UTF-8");
-                if(name.length()>4){
-                    name = name.substring(0,4) +"...";
-                }else {
+                if (name.length() > 4) {
+                    name = name.substring(0, 4) + "...";
+                } else {
                     name = name;
                 }
             } catch (Exception e) {

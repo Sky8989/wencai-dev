@@ -2,6 +2,7 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.Result;
 import io.swagger.annotations.Api;
@@ -17,7 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("sf")
 public class MessageController extends BaseController {
 
-    @ApiOperation(value = "获取短信接口",httpMethod = "POST")
+    @IgnoreToken
+    @ApiOperation(value = "获取短信接口", httpMethod = "POST")
     @RequestMapping(value = "/message", method = RequestMethod.POST)
     @ResponseBody
     APIResponse message(@RequestBody Object obj) throws Exception {
@@ -26,7 +28,7 @@ public class MessageController extends BaseController {
         return messageService.getMessage(apiRequest);
     }
 
-    @ApiOperation(value = "注册接口",httpMethod = "POST")
+    @ApiOperation(value = "注册接口", httpMethod = "POST")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
     APIResponse register(@RequestBody Object obj) throws Exception {
@@ -35,7 +37,7 @@ public class MessageController extends BaseController {
         return messageService.register(apiRequest);
     }
 
-    @ApiOperation(value = "获取token接口",httpMethod = "POST")
+    @ApiOperation(value = "获取token接口", httpMethod = "POST")
     @RequestMapping(value = "/getToken", method = RequestMethod.POST)
     @ResponseBody
     APIResponse getToken(@RequestBody Object obj) throws Exception {
@@ -44,7 +46,7 @@ public class MessageController extends BaseController {
         return messageService.getToken(apiRequest);
     }
 
-    @ApiOperation(value = "登录接口",httpMethod = "POST")
+    @ApiOperation(value = "登录接口", httpMethod = "POST")
     @RequestMapping(value = "/sfLogin", method = RequestMethod.POST)
     @ResponseBody
     APIResponse login(@RequestBody Object obj) throws Exception {
@@ -58,7 +60,7 @@ public class MessageController extends BaseController {
         System.out.println(r.getRequest().getPackages().get(0).getType() + r.getRequest().getPackages().get(1).getType());
     }
 
-    @ApiOperation(value = "获取图片验证码",httpMethod = "GET")
+    @ApiOperation(value = "获取图片验证码", httpMethod = "GET")
     @RequestMapping(value = "/message/captchas", method = RequestMethod.GET)
     @ResponseBody
     APIResponse messagCeaptchas() throws Exception {
