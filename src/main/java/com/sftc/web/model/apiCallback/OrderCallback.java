@@ -1,12 +1,10 @@
 package com.sftc.web.model.apiCallback;
 
-import net.sf.json.JSONObject;
-
 import java.util.List;
 
 public class OrderCallback {
 
-    private int id;
+    private String id;
     private String sender_name;
     private String sender_addr;
     private String order_type;
@@ -23,7 +21,7 @@ public class OrderCallback {
         private String ship_addr;
         private String uuid;
         private String state;
-        private JSONObject attributes;
+        private String attributes;
         private String order_number;
         //为C端小程序的物品类型，
         private String package_type;
@@ -32,6 +30,8 @@ public class OrderCallback {
         //当物品类型在packageType罗列的类型之外时填写
         private String package_comments;
         private String reserve_time;
+        // 取件码
+        private String directed_code;
 
         public String getShip_name() {
             return ship_name;
@@ -73,21 +73,37 @@ public class OrderCallback {
             this.order_number = order_number;
         }
 
-        public JSONObject getAttributes() {return attributes;}
+        public String getAttributes() {
+            return attributes;
+        }
 
-        public void setAttributes(JSONObject attributes) {this.attributes = attributes;}
+        public void setAttributes(String attributes) {
+            this.attributes = attributes;
+        }
 
-        public String getPackage_type() {return package_type;}
+        public String getPackage_type() {
+            return package_type;
+        }
 
-        public void setPackage_type(String package_type) {this.package_type = package_type;}
+        public void setPackage_type(String package_type) {
+            this.package_type = package_type;
+        }
 
-        public String getObject_type() {return object_type;}
+        public String getObject_type() {
+            return object_type;
+        }
 
-        public void setObject_type(String object_type) {this.object_type = object_type;}
+        public void setObject_type(String object_type) {
+            this.object_type = object_type;
+        }
 
-        public String getPackage_comments() {return package_comments;}
+        public String getPackage_comments() {
+            return package_comments;
+        }
 
-        public void setPackage_comments(String package_comments) {this.package_comments = package_comments;}
+        public void setPackage_comments(String package_comments) {
+            this.package_comments = package_comments;
+        }
 
         public String getReserve_time() {
             return reserve_time;
@@ -96,13 +112,21 @@ public class OrderCallback {
         public void setReserve_time(String reserve_time) {
             this.reserve_time = reserve_time;
         }
+
+        public String getDirected_code() {
+            return directed_code;
+        }
+
+        public void setDirected_code(String directed_code) {
+            this.directed_code = directed_code;
+        }
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

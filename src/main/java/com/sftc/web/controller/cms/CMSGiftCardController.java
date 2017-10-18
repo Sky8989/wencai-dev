@@ -65,4 +65,6 @@ public class CMSGiftCardController {
         int id = JSONObject.fromObject(object).containsKey("id") ? JSONObject.fromObject(object).getInt("id") : 0;
         return giftCardService.deleteGiftCard(id);
     }
+
+    //添加礼品卡
 }

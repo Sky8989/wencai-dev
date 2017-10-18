@@ -4,17 +4,15 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
-import com.sftc.web.mapper.OrderExpressMapper;
-import com.sftc.web.model.OrderExpress;
-import com.sftc.web.model.OrderExpressTransform;
+import com.sftc.web.dao.mybatis.OrderExpressMapper;
+import com.sftc.web.model.entity.OrderExpress;
+import com.sftc.web.model.entity.OrderExpressTransform;
 import com.sftc.web.service.OrderExpressService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 
@@ -32,7 +30,7 @@ public class OrderExpressServiceImpl implements OrderExpressService {
         int pageNumKey = Integer.parseInt(httpServletRequest.getParameter("pageNumKey"));
         int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
         PageHelper.startPage(pageNumKey, pageSizeKey);
-//        List<OrderExpress> orderExpressList = orderExpressMapper.selectOrderExpressByPage(orderExpress);
+//        List<OrderExpressDTO> orderExpressList = orderExpressMapper.selectOrderExpressByPage(orderExpress);
 
         //  使用lambab表达式 配合pageHelper实现对用户列表和查询相关信息的统一查询
         PageInfo<Object> pageInfo = PageHelper.startPage(pageNumKey, pageSizeKey).doSelectPageInfo(() -> orderExpressMapper.selectOrderExpressByPage(orderExpress));

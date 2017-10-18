@@ -9,21 +9,18 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
 
-/**
- * Created by Administrator on 2017/4/19.
- */
 public class Util {
     public static void main(String[] args) {
         Configuration cfg = new Configuration(Zone.zone2());
-//...其他参数参考类注释
+        //...其他参数参考类注释
         UploadManager uploadManager = new UploadManager(cfg);
-//...生成上传凭证，然后准备上传
+        //...生成上传凭证，然后准备上传
         String accessKey = "Ttx4nnIRz_RVvKr5Ms7xNcg6LxzbDG7fnrtA_Idj";
         String secretKey = "zPQ8FLdtItlxWHflUTXWgUvrKA9DFpgBVYxPsa4W";
         String bucket = "fileupload";
-//如果是Windows情况下，格式是 D:\\qiniu\\test.png
+        // 如果是Windows情况下，格式是 D:\\qiniu\\test.png
         String localFilePath = "E:\\20161202012558.jpg";
-//默认不指定key的情况下，以文件内容的hash值作为文件名
+        // 默认不指定key的情况下，以文件内容的hash值作为文件名
         String key = null;
         Auth auth = Auth.create(accessKey, secretKey);
         String upToken = auth.uploadToken(bucket);
@@ -42,4 +39,5 @@ public class Util {
                 //ignore
             }
         }
-    }}
+    }
+}

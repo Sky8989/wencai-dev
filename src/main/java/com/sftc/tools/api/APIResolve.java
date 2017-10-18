@@ -1,5 +1,6 @@
 package com.sftc.tools.api;
 
+import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.sftc.web.model.sfmodel.Coupon;
 import com.sftc.web.model.sfmodel.Orders;
@@ -37,7 +38,8 @@ public class APIResolve {
         JSONObject jasonObject = JSONObject.fromObject(old_json);
         Map map = (Map) jasonObject;
         String new_json = map.get("requests").toString();
-        orderses = (List<Orders>) JSONArray.toList(JSONArray.fromObject(new_json), Orders.class);
+//      orderses = (List<Orders>) JSONArray.toList(JSONArray.fromObject(new_json), Orders.class);
+        orderses = (List<Orders>) JSON.parseArray(new_json,Orders.class);
         return orderses;
     }
 
@@ -66,7 +68,8 @@ public class APIResolve {
         JSONObject jasonObject = JSONObject.fromObject(old_json);
         Map map = (Map) jasonObject;
         String new_json = map.get("coupons").toString();
-        couponList = (List<Coupon>) JSONArray.toList(JSONArray.fromObject(new_json), Orders.class);
+//        couponList = (List<Coupon>) JSONArray.toList(JSONArray.fromObject(new_json), Orders.class);
+        couponList = (List<Coupon>) JSON.parseArray(new_json,Coupon.class);
 //        couponList = (List<Coupon>) JSONArray.toList(JSONArray.fromObject(new_json), Coupon.class);
         return couponList;
     }

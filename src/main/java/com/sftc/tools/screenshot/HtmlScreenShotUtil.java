@@ -2,9 +2,9 @@ package com.sftc.tools.screenshot;
 
 import java.io.*;
 
-import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_JSPATH;
-import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_OUTPUTPATH;
-import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_SHELLPATH;
+import static com.sftc.web.config.PhantomJSConfig.JS_PATH;
+import static com.sftc.web.config.PhantomJSConfig.OUTPUT_PATH;
+import static com.sftc.web.config.PhantomJSConfig.SHELL_PATH;
 
 /**
  * HTML页面截屏工具类
@@ -19,12 +19,12 @@ public class HtmlScreenShotUtil {
      */
     public static String screenShot(String url, String output) {
 
-        String outPutPath = DK_PHANTOMJS_OUTPUTPATH + output;
+        String outPutPath = OUTPUT_PATH + output;
 
         Runtime rt = Runtime.getRuntime();
         StringBuilder sb = new StringBuilder();
         try {
-            String cmd = DK_PHANTOMJS_SHELLPATH + " " + DK_PHANTOMJS_JSPATH + " " + url + " " + outPutPath;
+            String cmd = SHELL_PATH + " " + JS_PATH + " " + url + " " + outPutPath;
             Process process = rt.exec(cmd);
             InputStream is = process.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -42,12 +42,4 @@ public class HtmlScreenShotUtil {
 
         return sb.toString();
     }
-
-//    public static void main(String[] args) {
-//        long start = System.currentTimeMillis();
-//        String result = screenShot("https://sftc.dankal.cn/web/index.html?order_id=2622", "test");
-//        System.out.println(result);
-//        long end = System.currentTimeMillis();
-//        System.out.println("===============耗时：" + (end - start) + "===============");
-//    }
 }

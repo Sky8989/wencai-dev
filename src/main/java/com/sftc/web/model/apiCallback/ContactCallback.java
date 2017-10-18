@@ -1,6 +1,6 @@
 package com.sftc.web.model.apiCallback;
 
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.entity.OrderExpress;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class ContactCallback {
     // 物品类型
     private String object_type;
     // 订单编号
-    private int order_id;
+    private String order_id;
     // 快递状态
     private String state;
     // 礼物卡id
@@ -124,11 +124,11 @@ public class ContactCallback {
         this.object_type = object_type;
     }
 
-    public int getOrder_id() {
+    public String getOrder_id() {
         return order_id;
     }
 
-    public void setOrder_id(int order_id) {
+    public void setOrder_id(String order_id) {
         this.order_id = order_id;
     }
 
