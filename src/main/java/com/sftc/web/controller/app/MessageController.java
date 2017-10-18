@@ -28,6 +28,7 @@ public class MessageController extends BaseController {
         return messageService.getMessage(apiRequest);
     }
 
+    @IgnoreToken
     @ApiOperation(value = "注册接口", httpMethod = "POST")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
@@ -37,6 +38,7 @@ public class MessageController extends BaseController {
         return messageService.register(apiRequest);
     }
 
+    @IgnoreToken
     @ApiOperation(value = "获取token接口", httpMethod = "POST")
     @RequestMapping(value = "/getToken", method = RequestMethod.POST)
     @ResponseBody
@@ -46,6 +48,7 @@ public class MessageController extends BaseController {
         return messageService.getToken(apiRequest);
     }
 
+    @IgnoreToken
     @ApiOperation(value = "登录接口", httpMethod = "POST")
     @RequestMapping(value = "/sfLogin", method = RequestMethod.POST)
     @ResponseBody
@@ -64,7 +67,6 @@ public class MessageController extends BaseController {
     @RequestMapping(value = "/message/captchas", method = RequestMethod.GET)
     @ResponseBody
     APIResponse messagCeaptchas() throws Exception {
-
         return messageService.captchas();
     }
 
