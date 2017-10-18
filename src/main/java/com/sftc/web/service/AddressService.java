@@ -2,11 +2,9 @@ package com.sftc.web.service;
 
 
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.sfmodel.Requests;
 
 import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.Address;
+import com.sftc.web.model.entity.Address;
 
 
 public interface AddressService {

@@ -4,8 +4,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
-import com.sftc.web.mapper.TokenMapper;
-import com.sftc.web.mapper.UserMapper;
+import com.sftc.web.dao.mybatis.TokenMapper;
+import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
 import com.sftc.web.service.TokenService;
@@ -17,13 +17,11 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.security.SecureRandom;
 import java.util.HashMap;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_GET_TOKEN;
 import static com.sftc.tools.constant.SFConstant.SF_LOGIN;
-import static com.sftc.tools.constant.SFConstant.SF_REGISTER_URL;
 
 @Service("tokenService")
 public class TokenServiceImpl implements TokenService {

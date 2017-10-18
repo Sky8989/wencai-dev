@@ -44,7 +44,7 @@ public class ThirdPartyConstant {
     /**
      * App Key
      */
-    public static final String MAP_GEOCODER_KEY = "ZZABZ-SLCWG-HV4Q4-IJYLH-LLBD6-V3FPR";
+    private static final String MAP_GEOCODER_KEY = "ZZABZ-SLCWG-HV4Q4-IJYLH-LLBD6-V3FPR";
     /**
      * 地址解析接口地址
      */
@@ -52,10 +52,10 @@ public class ThirdPartyConstant {
     /**
      * 逆地址解析接口地址
      */
-    public static final String MAP_REGEOCODER_URL = "http://apis.map.qq.com/ws/geocoder/v1/?key=" + MAP_GEOCODER_KEY + "&location={location}"+"&get_poi=1"+"&poi_options={poi_options}";
+    public static final String MAP_REGEOCODER_URL = "http://apis.map.qq.com/ws/geocoder/v1/?key=" + MAP_GEOCODER_KEY + "&location={location}&get_poi=1&poi_options={poi_options}";
     /**
      * 距离计算
      */
     public static final String MAP_ADDRESS_DISTANCE_URL = "http://apis.map.qq.com/ws/distance/v1/?key=" + MAP_GEOCODER_KEY + "&from={from}&to={to}";
-    public static final String MAP_ADDRESS_DISTANCE_URL_2 = "http://apis.map.qq.com/ws/direction/v1/driving/?key=" + MAP_GEOCODER_KEY + "&policy=REAL_TRAFFIC"+"&from={from}&to={to}";
+    public static final String MAP_ADDRESS_DISTANCE_URL_2 = "http://apis.map.qq.com/ws/direction/v1/driving/?key=" + MAP_GEOCODER_KEY + "&policy=REAL_TRAFFIC&from={from}&to={to}";
 }

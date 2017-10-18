@@ -19,7 +19,7 @@ public class Evaluate extends Object {
     // 订单id
     private int order_id;
     // 评价人的用户id
-    private int user_id;
+    private long user_id;
     // 快递的id orderExpress_id
     private int orderExpress_id;
     // 快递的uuid
@@ -71,7 +71,7 @@ public class Evaluate extends Object {
         this.order_id = order_id;
     }
 
-    public int getUser_id() {
+    public long getUser_id() {
         return user_id;
     }
 

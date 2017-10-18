@@ -1,17 +1,17 @@
 package com.sftc.web.service.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.APIGetUtil;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
-import com.sftc.web.mapper.OrderMapper;
-import com.sftc.web.mapper.SFServiceAddressMapper;
+import com.sftc.web.dao.mybatis.OrderMapper;
+import com.sftc.web.dao.mybatis.SFServiceAddressMapper;
 import com.sftc.web.model.Express;
-import com.sftc.web.model.Order;
-import com.sftc.web.model.OrderExpress;
+import com.sftc.web.model.dto.OrderDTO;
+import com.sftc.web.model.entity.Order;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.sfmodel.SFServiceAddress;
 import com.sftc.web.service.SFServiceAddressService;
 import net.sf.json.JSONObject;
@@ -61,24 +61,24 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         if (orderId == null || orderId.equals(""))
             return APIUtil.paramErrorResponse("order_id不能为空");
 
-        int order_id = Integer.parseInt(orderId);
-        if (order_id < 1)
+        if (orderId == null || orderId.equals(""))
             return APIUtil.paramErrorResponse("order_id无效");
 
-        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
-        if (order == null)
+        OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(orderId);
+        if (orderDTO == null)
             return APIUtil.selectErrorResponse("订单不存在", null);
 
-        OrderExpress oe = order.getOrderExpressList().get(0);
+        OrderExpress oe = orderDTO.getOrderExpressList().get(0);
         if (oe == null)
             return APIUtil.selectErrorResponse("快递不存在", null);
 
-        if (order.getOrderExpressList().size() != 1) // 暂时只有单包裹才能算配送方式
+        //多包裹的估算规则还不清楚
+        if (orderDTO.getOrderExpressList().size() != 1) // 暂时只有单包裹才能算配送方式
             return APIUtil.selectErrorResponse("暂时只支持单包裹的订单查询运费时效", null);
 
-        String senderCity = order.getSender_city().replace("市", "");
+        String senderCity = orderDTO.getSender_city().replace("市", "");
         String receiverCity = oe.getShip_city().replace("市", "");
-        String senderArea = order.getSender_area();
+        String senderArea = orderDTO.getSender_area();
         String receiverArea = oe.getShip_area();
         if (!senderArea.endsWith("区")) senderArea = senderArea + "区";
         if (!receiverArea.endsWith("区")) receiverArea = receiverArea + "区";
@@ -149,12 +149,13 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         if (receiverAreaCode == null)
             return APIUtil.selectErrorResponse("顺丰不支持收件人城市", null);
 
-        Object weightObject = requestObject.get("weight");
-        String weightStr = "1";
-        if (weightObject != null) {
-            double weight = (Double) requestObject.get("weight");
-            weightStr = (weight == 0 ? 1 : weight) + "";
+        int weight = 1;
+        try {
+            weight = requestObject.getInt("weight");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        String weightStr = (weight == 0 ? 1 : weight) + "";
 
         return getServiceRate(senderAreaCode, receiverAreaCode, weightStr, dateTime);
     }
@@ -190,15 +191,11 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         String rateUrl = SF_SERVICE_RATE.replace("{origin}", origin).replace("{dest}", dest).replace("{time}", time).replace("{weight}", weight);
         HttpGet get = new HttpGet(rateUrl);
         String result = APIGetUtil.get(get);
-//      Object resultObj = gson.fromJson(result, Object.class);
-
         Type type = new TypeToken<ArrayList<Express>>() {
         }.getType();
-
         List<Express> lists = gson.fromJson(result, type);
 
-        if (lists !=null && lists.size()!=0 && lists.size() >= 2) {
-
+        if (lists != null && lists.size() >= 2) {
             Collections.sort(lists, new Comparator<Express>() {
                 @Override
                 public int compare(Express o1, Express o2) {
@@ -206,16 +203,31 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
                     long time1 = 0;
                     long time2 = 0;
                     try {
-                        if (o1.getDeliverTime() != null) time1 = simpleDateFormat.parse(o1.getDeliverTime()).getTime();
-                        if (o2.getDeliverTime() != null) time2 = simpleDateFormat.parse(o2.getDeliverTime()).getTime();
+                        if (o1.getDeliverTime() != null)
+                            time1 = simpleDateFormat.parse(o1.getDeliverTime()).getTime();
+                        if (o2.getDeliverTime() != null)
+                            time2 = simpleDateFormat.parse(o2.getDeliverTime()).getTime();
                     } catch (ParseException e) {
                         e.printStackTrace();
-                    }//
+                    }
                     return Long.compare(time1, time2);
                 }
             });
         }
-        return APIUtil.getResponse(SUCCESS, lists);
+        List<Express> resultList = new ArrayList<>();
+        if (lists != null && lists.size() > 0) {
+            for (Express e : lists) {
+                if (e.getDeliverTime() != null && e.getClosedTime() != null) {
+                    if (e.getLimitTypeCode().equals("T801") ||
+                            e.getLimitTypeCode().equals("T4") ||
+                            e.getLimitTypeCode().equals("T6")) {
+                        resultList.add(e);
+                        break;
+                    }
+                }
+            }
+        }
+        return APIUtil.getResponse(SUCCESS, resultList);
     }
 
     public APIResponse updateServiceAddress(APIRequest request) {

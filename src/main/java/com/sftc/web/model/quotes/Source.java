@@ -1,6 +1,6 @@
 package com.sftc.web.model.quotes;
 
-import com.sftc.web.model.Order;
+import com.sftc.web.model.entity.Order;
 
 public class Source {
     private Order address;

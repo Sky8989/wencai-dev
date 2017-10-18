@@ -1,5 +1,8 @@
 package com.sftc.web.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -10,16 +13,17 @@ package com.sftc.web.model;
  * @date 2017/4/25
  * @Time 上午10:39
  */
+@ApiModel(value = "日期提醒类")
 public class DateRemind extends Object {
 
     private int id;
-    // 创建时间
+
     private String create_time;
-    // 描述
+
     private String describe;
-    // 日期
+
     private String date;
-    // 所属的联系人id
+
     private UserContact userContact;
 
     private int user_contact_id;

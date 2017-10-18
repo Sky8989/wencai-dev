@@ -3,7 +3,7 @@ package com.sftc.web.service.impl;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.service.OrderService;
-import com.sftc.web.service.impl.logic.api.*;
+import com.sftc.web.service.impl.logic.app.*;
 import com.sftc.web.service.impl.logic.cms.CMSOrderListLogic;
 import org.springframework.stereotype.Service;
 
@@ -110,6 +110,9 @@ public class OrderServiceImpl implements OrderService {
     public APIResponse screenShot(APIRequest request) {
         return orderOtherLogic.screenShot(request);
     }
+
+    //面对面下单
+//    public APIResponse faceOrdered(APIRequest request) {return orderCommitLogic.faceOrdered(request);}
 
     public APIResponse evaluateSingle(Object object) {
         return orderEvaluateLogic.evaluateSingle(object);

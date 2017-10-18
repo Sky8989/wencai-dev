@@ -2,9 +2,6 @@ package com.sftc.web.service;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.Order;
-import com.sftc.web.model.OrderExpress;
-import com.sftc.web.model.Token;
 
 import java.util.Map;
 
@@ -117,6 +114,9 @@ public interface OrderService {
      */
     APIResponse screenShot(APIRequest request);
 
+    //面对面取件
+//    APIResponse faceOrdered(APIRequest request);
+
 
     //////////////// CMS ////////////////
 
@@ -131,6 +131,6 @@ public interface OrderService {
      * @param request 通用请求参数
      * @return 返回APIResponse
      */
-    public APIResponse selectCanceledOrderList(APIRequest request);
+     APIResponse selectCanceledOrderList(APIRequest request);
 }
 

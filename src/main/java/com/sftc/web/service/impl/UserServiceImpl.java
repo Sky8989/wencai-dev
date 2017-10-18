@@ -2,11 +2,10 @@ package com.sftc.web.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.google.gson.Gson;
 import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
-import com.sftc.web.mapper.TokenMapper;
-import com.sftc.web.mapper.UserMapper;
+import com.sftc.web.dao.mybatis.TokenMapper;
+import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
 import com.sftc.web.model.reqeustParam.UserParam;
@@ -14,18 +13,15 @@ import com.sftc.web.model.wechat.WechatUser;
 import com.sftc.web.service.MessageService;
 import com.sftc.web.service.UserService;
 import net.sf.json.JSONObject;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.annotation.Resource;
-import javax.jws.WebParam;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -294,6 +290,25 @@ public class UserServiceImpl implements UserService {
         }
         // 2 走注册流程
         return messageService.register(apiRequest);
+    }
+
+    //10-12日提出的新需求 更新个人信息
+    public APIResponse updatePersonMessage(APIRequest apiRequest) throws Exception {
+        Object requestParam = apiRequest.getRequestParam();
+        JSONObject jsonObject = JSONObject.fromObject(requestParam);
+        JSONObject merchants = jsonObject.getJSONObject("merchant");
+        String json = merchants.toString();
+        String access_token = jsonObject.getString("token");
+        RequestBody rb = RequestBody.create(null, json);
+        Request request = new Request.Builder().
+                url(SF_LOGIN).
+                addHeader("Content-Type", "application/json").
+                addHeader("PushEnvelope-Device-Token", access_token)
+                .put(rb).build();
+        OkHttpClient client = new OkHttpClient();
+        okhttp3.Response response = client.newCall(request).execute();
+        if (response.code() == 200) return null;//正常情况返回null
+        return APIUtil.logicErrorResponse("更新个人信息失败", response.body());
     }
 
     /**

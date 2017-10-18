@@ -1,17 +1,26 @@
 package com.sftc.web.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * Created by huxingyue on 2017/7/19.
  */
+@ApiModel(value = "地址解析")
 public class AddressResolution {
+    @ApiModelProperty("主键")
     private int id;
-    // 地址文本
+
+    @ApiModelProperty("地址文本")
     private String address;
-    // 经度
+
+    @ApiModelProperty("经度")
     private double longitude;
-    // 纬度
+
+    @ApiModelProperty("纬度")
     private double latitude;
-    // 记录创建时间
+
+    @ApiModelProperty("创建时间")
     private String create_time;
 
     public AddressResolution() {
