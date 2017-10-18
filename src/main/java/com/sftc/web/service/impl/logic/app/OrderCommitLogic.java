@@ -84,15 +84,8 @@ public class OrderCommitLogic {
         // 增加对emoji的过滤
         if (requestObject.containsKey("request")) { // 同城
             boolean containsEmoji = EmojiFilter.containsEmoji(requestObject.getJSONObject("request").getString("packages"));
-            boolean containsEmoji2 = EmojiFilter.containsEmoji(requestObject.getJSONObject("order").getString("word_message"));
-            if(containsEmoji||containsEmoji2){
-                String packages = requestObject.getJSONObject("request").getJSONArray("packages").getString(2);
-                String source = requestObject.getJSONObject("order").getString("word_message");
-                String emojiStr = EmojiFilter.replaceEmoji(source);
-                String emojiStr2 = EmojiFilter.replaceEmoji(packages);
-                if(emojiStr.length()>20 || emojiStr2.length()>20){
-                    return APIUtil.paramErrorResponse("请勿输入过多表情");
-                }
+            if(containsEmoji){
+                return APIUtil.paramErrorResponse("Don't input emoji");
             }
         }
 
@@ -121,15 +114,8 @@ public class OrderCommitLogic {
         // 增加对emoji的过滤
         if (requestObject.containsKey("request")) { // 同城
             boolean containsEmoji = EmojiFilter.containsEmoji(requestObject.getJSONObject("request").getString("packages"));
-            boolean containsEmoji2 = EmojiFilter.containsEmoji(requestObject.getJSONObject("order").getString("word_message"));
-            if(containsEmoji||containsEmoji2){
-                String packages = requestObject.getJSONObject("request").getJSONArray("packages").getString(2);
-                String source = requestObject.getJSONObject("order").getString("word_message");
-                String emojiStr = EmojiFilter.replaceEmoji(source);
-                String emojiStr2 = EmojiFilter.replaceEmoji(packages);
-                if(emojiStr.length()>20 || emojiStr2.length()>20){
-                    return APIUtil.paramErrorResponse("请勿输入过多表情");
-                }
+            if(containsEmoji){
+                    return APIUtil.paramErrorResponse("Don't input emoji");
             }
         }
 
