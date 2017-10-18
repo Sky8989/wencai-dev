@@ -2,6 +2,11 @@ package com.sftc.tools.common;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Emoji过滤器
  * Created by huxingyue on 2017/8/16.
@@ -86,6 +91,26 @@ public class EmojiFilter {
                 return buf.toString();
             }
         }
+    }
+
+    public static String emojiRecovery(String str)
+            throws UnsupportedEncodingException {
+        String patternString = "\\[\\[(.*?)\\]\\]";
+
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(str);
+
+        StringBuffer sb = new StringBuffer();
+        while(matcher.find()) {
+            try {
+                matcher.appendReplacement(sb,
+                        URLDecoder.decode(matcher.group(1), "UTF-8"));
+            } catch(UnsupportedEncodingException e) {
+                throw e;
+            }
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 }
 
