@@ -17,6 +17,7 @@ import java.net.URLEncoder;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_WEB_URL;
@@ -56,7 +57,8 @@ public class OrderOtherLogic {
                                     SimpleDateFormat sdf = new SimpleDateFormat(tmpPattern);
                                     Date limitDate = sdf.parse(tmpTimeLimit, new ParsePosition(0));
                                     String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-                                    String resTimeLimit = DateFormatUtils.format(limitDate, pattern);
+                                    TimeZone timeZone = TimeZone.getTimeZone("ETC/GMT-8");
+                                    String resTimeLimit = DateFormatUtils.format(limitDate, pattern, timeZone);
                                     timeLimitObj.put("name", resTimeLimit);
                                 }
                             }
