@@ -21,8 +21,8 @@ public class AddressBookRequestVO {
     private String address_type;
     @ApiModelProperty(value = "地址簿类型",example = "sender")
     private String address_book_type;
-    @ApiModelProperty(value = "地址包装类")
-    private AddressRequestVO addressRequestVO;
+    @ApiModelProperty(value = "地址类")
+    private Address address;
 
     public int getUser_id() {
         return user_id;
@@ -64,11 +64,7 @@ public class AddressBookRequestVO {
         this.address_book_type = address_book_type;
     }
 
-    public AddressRequestVO getAddressRequestVO() {
-        return addressRequestVO;
-    }
+    public Address getAddress() {return address;}
 
-    public void setAddressRequestVO(AddressRequestVO addressRequestVO) {
-        this.addressRequestVO = addressRequestVO;
-    }
+    public void setAddress(Address address) {this.address = address;}
 }
