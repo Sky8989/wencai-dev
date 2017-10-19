@@ -140,8 +140,7 @@ public class OrderCommitLogic {
                 // 改为提前半小时下单，并且不下预约时间为一小时以前的单，这是为了排除服务器更新上线把定时器关了导致的时间间隔误差
                 if (oe.getReserve_time().equals("") || oe.getReserve_time() == null) continue;
                 final long reserve_time = Long.parseLong(oe.getReserve_time());
-//                if (reserve_time < currentTimeMillis - 3600000L || reserve_time >= currentTimeMillis + 1800000L)
-                if (reserve_time >= currentTimeMillis + 1800000L)
+                if (reserve_time < currentTimeMillis - 3600000L || reserve_time >= currentTimeMillis + 1800000L)
                     return;
 
                 // 大网订单提交参数
