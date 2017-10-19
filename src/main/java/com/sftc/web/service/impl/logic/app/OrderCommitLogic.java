@@ -176,6 +176,11 @@ public class OrderCommitLogic {
                     sf.put("pay_method", pay_method);
                 }
 
+                // 订单状态为其它的，不需要再次下单
+                if (!oe.getState().equals("WAIT_HAND_OVER")) continue;
+                // 订单编号不为空，说明已下单
+                if (oe.getOrder_number() != null && !oe.getOrder_number().equals("")) continue;
+
                 // 订单提交
                 String paramStr = gson.toJson(JSONObject.fromObject(sf));
                 HttpPost post = new HttpPost(SF_CREATEORDER_URL);
