@@ -141,7 +141,7 @@ public class OrderCommitLogic {
 //                return; // 1未到预约时间,则不下单 2 预约时间超出上一个下单时间周期，属于过期订单 也不下单
             ///改为提前半小时下单
             final long Reserve_time = Long.parseLong(oe.getReserve_time());
-            if (Reserve_time < currentTimeMillis || Reserve_time >= currentTimeMillis + 1800000L)
+            if (Reserve_time >= currentTimeMillis + 1800000L)
                 return;
 
 
