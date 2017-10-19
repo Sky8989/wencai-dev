@@ -84,7 +84,7 @@ public class OrderCommitLogic {
         // 增加对emoji的过滤
         if (requestObject.containsKey("request")) { // 同城
             boolean containsEmoji = EmojiFilter.containsEmoji(requestObject.getJSONObject("request").getString("packages"));
-            if(containsEmoji){
+            if (containsEmoji) {
                 return APIUtil.paramErrorResponse("Don't input emoji");
             }
         }
@@ -114,8 +114,8 @@ public class OrderCommitLogic {
         // 增加对emoji的过滤
         if (requestObject.containsKey("request")) { // 同城
             boolean containsEmoji = EmojiFilter.containsEmoji(requestObject.getJSONObject("request").getString("packages"));
-            if(containsEmoji){
-                    return APIUtil.paramErrorResponse("Don't input emoji");
+            if (containsEmoji) {
+                return APIUtil.paramErrorResponse("Don't input emoji");
             }
         }
 
@@ -131,54 +131,51 @@ public class OrderCommitLogic {
      */
     public void nationOrderReserveCommit(String order_id, long currentTimeMillis) {
 
-        OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
-        //后期订单和快递改为一对一之后，请求为object对象，遍历里面的order对象来提交？
-        for (OrderExpress oe : orderDTO.getOrderExpressList()) {
+        try {
+            OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
+            //后期订单和快递改为一对一之后，请求为object对象，遍历里面的order对象来提交？
+            for (OrderExpressDTO orderExpressDTO : orderDTO.getOrderExpressList()) {
+                OrderExpress oe = OrderExpressFactory.dtoToEntity(orderExpressDTO);
 
-            //过滤 不在预约时间周期内的订单      当前时间>X>当前时间-1800000的订单才下单 ，处于其补集区间的订单则跳出
-//            if (Long.parseLong(oe.getReserve_time()) >= System.currentTimeMillis()
-//                    || Long.parseLong(oe.getReserve_time()) <= System.currentTimeMillis() - 1800000)
-//                return; // 1未到预约时间,则不下单 2 预约时间超出上一个下单时间周期，属于过期订单 也不下单
-            ///改为提前半小时下单
-            final long Reserve_time = Long.parseLong(oe.getReserve_time());
-            if (Reserve_time < currentTimeMillis || Reserve_time >= currentTimeMillis + 1800000L)
-                return;
+                // 改为提前半小时下单，并且不下预约时间为一小时以前的单，这是为了排除服务器更新上线把定时器关了导致的时间间隔误差
+                if (oe.getReserve_time().equals("") || oe.getReserve_time() == null) continue;
+                final long reserve_time = Long.parseLong(oe.getReserve_time());
+                if (reserve_time < currentTimeMillis - 3600000L || reserve_time >= currentTimeMillis + 1800000L)
+                    return;
 
-
-            // 大网订单提交参数
-            JSONObject sf = new JSONObject();
-            sf.put("orderid", oe.getUuid());
-            sf.put("j_contact", orderDTO.getSender_name());
-            sf.put("j_mobile", orderDTO.getSender_mobile());
-            sf.put("j_tel", orderDTO.getSender_mobile());
-            sf.put("j_country", "中国");
-            sf.put("j_province", orderDTO.getSender_province());
-            sf.put("j_city", orderDTO.getSender_city());
-            sf.put("j_county", orderDTO.getSender_area());
-            sf.put("j_address", orderDTO.getSender_addr());
-            sf.put("d_contact", oe.getShip_name());
-            sf.put("d_mobile", oe.getShip_mobile());
-            sf.put("d_tel", oe.getShip_mobile());
-            sf.put("d_country", "中国");
-            sf.put("d_province", oe.getShip_province());
-            sf.put("d_city", oe.getShip_city());
-            sf.put("d_county", oe.getShip_area());
-            sf.put("d_address", oe.getShip_addr());
-            sf.put("pay_method", orderDTO.getPay_method());
-            sf.put("express_type", orderDTO.getDistribution_method());
-            // handle pay_method
-            String pay_method = (String) sf.get("pay_method");
-            if (pay_method != null && !pay_method.equals("")) {
-                if (pay_method.equals("FREIGHT_PREPAID")) { // FREIGHT_PREPAID 寄付 1
-                    pay_method = "1";
-                } else if (pay_method.equals("FREIGHT_COLLECT")) { // FREIGHT_COLLECT 到付 2
-                    pay_method = "2";
+                // 大网订单提交参数
+                JSONObject sf = new JSONObject();
+                sf.put("orderid", oe.getUuid());
+                sf.put("j_contact", orderDTO.getSender_name());
+                sf.put("j_mobile", orderDTO.getSender_mobile());
+                sf.put("j_tel", orderDTO.getSender_mobile());
+                sf.put("j_country", "中国");
+                sf.put("j_province", orderDTO.getSender_province());
+                sf.put("j_city", orderDTO.getSender_city());
+                sf.put("j_county", orderDTO.getSender_area());
+                sf.put("j_address", orderDTO.getSender_addr());
+                sf.put("d_contact", oe.getShip_name());
+                sf.put("d_mobile", oe.getShip_mobile());
+                sf.put("d_tel", oe.getShip_mobile());
+                sf.put("d_country", "中国");
+                sf.put("d_province", oe.getShip_province());
+                sf.put("d_city", oe.getShip_city());
+                sf.put("d_county", oe.getShip_area());
+                sf.put("d_address", oe.getShip_addr());
+                sf.put("pay_method", orderDTO.getPay_method());
+                sf.put("express_type", orderDTO.getDistribution_method());
+                // handle pay_method
+                String pay_method = (String) sf.get("pay_method");
+                if (pay_method != null && !pay_method.equals("")) {
+                    if (pay_method.equals("FREIGHT_PREPAID")) { // FREIGHT_PREPAID 寄付 1
+                        pay_method = "1";
+                    } else if (pay_method.equals("FREIGHT_COLLECT")) { // FREIGHT_COLLECT 到付 2
+                        pay_method = "2";
+                    }
+                    sf.remove("pay_method");
+                    sf.put("pay_method", pay_method);
                 }
-                sf.remove("pay_method");
-                sf.put("pay_method", pay_method);
-            }
 
-            if (!oe.getState().equals("WAIT_FILL")) {
                 // 订单提交
                 String paramStr = gson.toJson(JSONObject.fromObject(sf));
                 HttpPost post = new HttpPost(SF_CREATEORDER_URL);
@@ -195,17 +192,15 @@ public class OrderCommitLogic {
                     order1.setRegion_type("REGION_NATION");
                     orderDao.save(order1);
                     String ordernum = resultObject.getString("ordernum");
-                    if (oe.getUuid() != null) {
-                        oe.setUuid(oe.getUuid());
-                    }
-                    if (oe.getOrder_number() != null) {
-                        oe.setOrder_number(oe.getOrder_number());
-                    }
+                    oe.setOrder_number(ordernum);
                     oe.setState("WAIT_HAND_OVER");
                     orderExpressDao.save(oe);
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     //////////////////// Private Method ////////////////////
@@ -684,15 +679,11 @@ public class OrderCommitLogic {
     /// 普通大网订单提交
     public APIResponse normalNationOrderCommit(Object object) {
 
-        String orderId = SFOrderHelper.getOrderNumber();
-        APIStatus status = SUCCESS;
-
         JSONObject requestObject = JSONObject.fromObject(object);
         JSONObject orderObject = requestObject.getJSONObject("order");
         JSONObject sf = requestObject.getJSONObject("sf");
         JSONObject packagesOBJ = requestObject.getJSONArray("packages").getJSONObject(0);
-
-
+        String orderId = SFOrderHelper.getOrderNumber();
         // handle pay_method
         String pay_method = (String) sf.get("pay_method");
         if (pay_method != null && !pay_method.equals("")) {
@@ -704,10 +695,8 @@ public class OrderCommitLogic {
             sf.remove("pay_method");
             sf.put("pay_method", pay_method);
         }
-
         sf.put("orderid", orderId);
 
-//        String str = gson.toJson(requestObject.getJSONObject("sf"));
         //处理supplementary_info非必填项的问题
         if (!sf.containsKey("j_supplementary_info")) {
             sf.put("j_supplementary_info", "");
@@ -716,14 +705,8 @@ public class OrderCommitLogic {
             sf.put("d_supplementary_info", "");
         }
 
-        double j_longitude = 0;
-        double j_latitude = 0;
-        if(orderObject.containsKey("j_longitude") ){
-            j_longitude = orderObject.getDouble("j_longitude");
-        }
-        if(orderObject.containsKey("j_latitude")){
-            j_latitude = orderObject.getDouble("j_latitude");
-        }
+        double j_longitude = orderObject.containsKey("j_longitude") ? orderObject.getDouble("j_longitude") : 0;
+        double j_latitude = orderObject.containsKey("j_latitude") ? orderObject.getDouble("j_latitude") : 0;
 
         // 插入订单表
         Order order = new Order(
@@ -754,10 +737,10 @@ public class OrderCommitLogic {
 
         double d_longitude = 0;
         double d_latitude = 0;
-        if(orderObject.containsKey("d_longitude")){
+        if (orderObject.containsKey("d_longitude")) {
             d_longitude = orderObject.getDouble("d_longitude");
         }
-        if(orderObject.containsKey("d_latitude")){
+        if (orderObject.containsKey("d_latitude")) {
             d_latitude = orderObject.getDouble("d_latitude");
         }
 
@@ -783,7 +766,6 @@ public class OrderCommitLogic {
                 d_latitude,
                 d_longitude
         );
-
         orderExpress.setReserve_time((String) requestObject.getJSONObject("order").get("reserve_time"));
         orderExpressDao.save(orderExpress);
 
@@ -824,18 +806,9 @@ public class OrderCommitLogic {
                 }
                 return APIUtil.submitErrorResponse(message, responseObject);
             } else {
-                String attrStr = null;
-                if (responseObject.containsKey("request")) {
-                    JSONObject req = responseObject.getJSONObject("request");
-                    if (req != null && req.containsKey("attributes")) {
-                        JSONObject attrObj = req.getJSONObject("attributes");
-                        attrStr = attrObj.toString();
-                    }
-                }
                 // 返回结果添加订单编号
                 String ordernum = responseObject.getString("ordernum");
                 orderExpress.setOrder_number(ordernum);
-                orderExpress.setAttributes(attrStr);
                 orderExpressDao.save(orderExpress);
             }
         } else { // 预约件
@@ -855,7 +828,7 @@ public class OrderCommitLogic {
         Order orderData = orderMapper.selectOrderDetailByOrderId(order.getId());
         responseObject.put("order", orderData);
 
-        return APIUtil.getResponse(status, responseObject);
+        return APIUtil.getResponse(SUCCESS, responseObject);
     }
 
     /// 插入地址
