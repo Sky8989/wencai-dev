@@ -47,8 +47,11 @@
     <select id="selectNationReserveOrders" resultType="java.lang.String">
         SELECT DISTINCT oe.order_id
         FROM sftc_order o, sftc_order_express oe
-        WHERE o.id = oe.order_id AND o.region_type = 'REGION_NATION' AND oe.reserve_time IS NOT NULL AND
-              oe.reserve_time != ''
+        WHERE o.id = oe.order_id
+              AND o.region_type = 'REGION_NATION'
+              AND oe.reserve_time IS NOT NULL
+              AND oe.reserve_time != ''
+              AND oe.state = 'WAIT_HAND_OVER'
     </select>
 
     <!--抓取大网单-->
