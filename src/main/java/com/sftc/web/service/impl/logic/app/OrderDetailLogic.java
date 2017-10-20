@@ -61,6 +61,14 @@ public class OrderDetailLogic {
         String order_id = (String) request.getParameter("order_id");
         if (order_id == null || order_id.length() == 0)
             return APIUtil.paramErrorResponse("order_id不能为空");
+
+        OrderDTO orderDTO1 = orderMapper.selectOrderDetailByOrderId(order_id);
+
+        if(orderDTO1.getRegion_type().equals("REGION_SAME")){
+            APIResponse apiResponse = syncOrderExpress(order_id);
+            if (apiResponse != null) return apiResponse;
+        }
+
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
 
         Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -87,11 +95,6 @@ public class OrderDetailLogic {
 
         // giftCard
         GiftCard giftCard = giftCardMapper.selectGiftCardById(orderDTO.getGift_card_id());
-
-        if(orderDTO.getRegion_type().equals("REGION_SAME")){
-             APIResponse apiResponse = syncOrderExpress(order_id);
-             if (apiResponse != null) return apiResponse;
-        }
 
         resultMap.put("order", orderMap);
         resultMap.put("giftCard", giftCard);
@@ -201,6 +204,7 @@ public class OrderDetailLogic {
             }
             APIResponse apiResponse = syncOrderExpress(order.getId());
             if (apiResponse != null) return apiResponse;
+            order = orderMapper.selectOrderDetailByUuid(uuid);
         }
 
         respObject.put("order", order);
