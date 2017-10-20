@@ -65,7 +65,7 @@ public class OrderDetailLogic {
         OrderDTO orderDTO1 = orderMapper.selectOrderDetailByOrderId(order_id);
 
         if (orderDTO1.getRegion_type() != null && orderDTO1.getRegion_type().equals("REGION_SAME")) {
-           
+
                 APIResponse apiResponse = syncOrderExpress(order_id);
                 if (apiResponse != null) return apiResponse;
         }
