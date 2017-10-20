@@ -88,7 +88,19 @@ public class AddressBookServiceImpl implements AddressBookService {
                 supplementary_info
         );
 
-        if (addressBookDTOList.size() != 0) return APIUtil.submitErrorResponse("地址簿已有该地址", null);
+        if (addressBookDTOList.size() != 0) {
+            AddressBookDTO addressBookDTO1 = addressBookDTOList.get(0);
+            if(addressBookDTO1.getIs_delete()==0){
+                return APIUtil.submitErrorResponse("地址簿已有该地址", null);
+            }else {
+                //地址簿删除后可添加相同地址，但是地址没有去重，后期处理
+                AddressBook addressBook = AddressBookFactoty.dtoToEntity(addressBookDTO1);
+                addressBook.setIs_delete(0);
+                addressBookDao.save(addressBook);
+            }
+        }
+
+
 
         String create_time = Long.toString(System.currentTimeMillis());
         // 插入地址记录

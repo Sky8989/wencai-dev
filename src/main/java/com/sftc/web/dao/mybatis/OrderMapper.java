@@ -77,7 +77,7 @@ public interface OrderMapper {
     /**
      * 根据uuid查询订单详情
      */
-    Order selectOrderDetailByUuid(@Param("uuid") String uuid);
+    OrderDTO selectOrderDetailByUuid(@Param("uuid") String uuid);
 
     // 取消订单，更新is_cancel字段
 //    void updateCancelOrderById(String id);

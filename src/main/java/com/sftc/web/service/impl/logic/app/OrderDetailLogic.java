@@ -1,12 +1,10 @@
 package com.sftc.web.service.impl.logic.app;
 
+import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.sftc.tools.api.APIGetUtil;
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.jpa.OrderExpressDao;
@@ -18,6 +16,8 @@ import com.sftc.web.model.entity.Message;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.entity.OrderExpressTransform;
+import com.sftc.web.model.reqeustParam.UserContactParam;
+import com.sftc.web.model.sfmodel.Orders;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -32,6 +32,7 @@ import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_ORDERROUTE_URL;
+import static com.sftc.tools.constant.SFConstant.SF_ORDER_SYNC_URL;
 import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
 
 @Component
@@ -87,6 +88,11 @@ public class OrderDetailLogic {
         // giftCard
         GiftCard giftCard = giftCardMapper.selectGiftCardById(orderDTO.getGift_card_id());
 
+        if(orderDTO.getRegion_type().equals("REGION_SAME")){
+             APIResponse apiResponse = syncOrderExpress(order_id);
+             if (apiResponse != null) return apiResponse;
+        }
+
         resultMap.put("order", orderMap);
         resultMap.put("giftCard", giftCard);
 
@@ -106,7 +112,7 @@ public class OrderDetailLogic {
         if (uuid == null || uuid.equals(""))
             return APIUtil.paramErrorResponse("uuid不能为空");
         // order
-        Order order = orderMapper.selectOrderDetailByUuid(uuid);
+        OrderDTO order = orderMapper.selectOrderDetailByUuid(uuid);
         if (order == null)
             return APIUtil.selectErrorResponse("订单不存在", null);
 
@@ -193,11 +199,59 @@ public class OrderDetailLogic {
                 orderExpressDao.save(oe);
                 order = orderMapper.selectOrderDetailByUuid(uuid);
             }
+            APIResponse apiResponse = syncOrderExpress(order.getId());
+            if (apiResponse != null) return apiResponse;
         }
 
         respObject.put("order", order);
 
         return APIUtil.getResponse(SUCCESS, respObject);
+    }
+
+    //同步同城的订单信息
+    private APIResponse syncOrderExpress(String orderid) {
+        // handle url
+        String ORDERS_URL = SF_ORDER_SYNC_URL;
+        String uuids = "";
+
+        List<OrderExpress> orderExpressList = orderExpressMapper.findAllOrderExpressByOrderId(orderid);
+
+        for (OrderExpress oe : orderExpressList) { //此处订单若过多 url过长 sf接口会报414
+            Order order = orderMapper.selectOrderDetailByOrderId(oe.getOrder_id());
+            if (order != null && order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) {
+                // 只有同城的订单能同步快递状态
+                uuids = uuids + oe.getUuid() + ",";
+            }
+        }
+
+        User user = userMapper.getUuidAndtoken(orderid);
+
+        if (uuids.equals("")) return null; //无需同步的订单 直接返回
+        uuids = uuids.substring(0, uuids.length() - 1);
+        ORDERS_URL = ORDERS_URL.replace("{uuid}", uuids);
+
+        // POST
+        List<Orders> orderses = null;
+        try {
+            orderses = APIResolve.getOrdersJson(ORDERS_URL, user.getToken().getAccess_token());
+        } catch (Exception e) {
+            return APIUtil.submitErrorResponse("正在同步订单状态，稍后重试", e);
+        }
+
+        // update express status
+        if (orderses != null) {
+            for (Orders orders : orderses) {
+                String uuid = orders.getUuid();
+                String order_status = orders.getStatus();
+                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
+                orderExpress.setState(order_status);
+                if(orders.getAttributes()!=null){
+                    orderExpress.setAttributes(orders.getAttributes());
+                }
+                orderExpressDao.save(orderExpress);
+            }
+        }
+        return null;
     }
 
     //////////////////////消除 收到地址 的通知消息//////////////////////

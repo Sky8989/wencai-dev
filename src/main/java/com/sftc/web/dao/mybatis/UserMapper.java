@@ -18,7 +18,7 @@ public interface UserMapper {
 
     void addMerchant(User merchant);
 
-    User getUuidAndtoken(int order_id);
+    User getUuidAndtoken(String order_id);
 
     void insertWithAvatarAndName(User user);
 
