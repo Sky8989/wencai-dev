@@ -64,11 +64,10 @@ public class OrderDetailLogic {
 
         OrderDTO orderDTO1 = orderMapper.selectOrderDetailByOrderId(order_id);
 
-        if (!orderDTO1.getRegion_type().equals("") || orderDTO1.getRegion_type() != null) {
-            if (orderDTO1.getRegion_type().equals("REGION_SAME")) {
+        if (orderDTO1.getRegion_type() != null && orderDTO1.getRegion_type().equals("REGION_SAME")) {
+
                 APIResponse apiResponse = syncOrderExpress(order_id);
                 if (apiResponse != null) return apiResponse;
-            }
         }
 
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
