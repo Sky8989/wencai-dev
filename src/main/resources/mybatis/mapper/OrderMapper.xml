@@ -59,7 +59,7 @@
         SELECT DISTINCT oe.order_id
         FROM sftc_order o, sftc_order_express oe
         WHERE o.id = oe.order_id AND o.region_type = 'REGION_NATION' AND o.is_cancel = ''
-              AND (oe.state = 'WAIT_FILL' OR oe.state = 'ALREADY_FILL' OR oe.state = 'PAYING') AND receive_time IS NOT NULL 
+              AND (oe.state = 'WAIT_FILL' OR oe.state = 'ALREADY_FILL' OR oe.state = 'PAYING') AND receive_time IS NOT NULL
     </select>
 
     <!--抓取未提交的好友多包裹-->
