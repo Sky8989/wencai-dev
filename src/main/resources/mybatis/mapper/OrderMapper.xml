@@ -320,7 +320,7 @@
     <!-- 取消订单，更新order的is_cancel-->
     <update id="updateCancelOrderById" parameterType="java.lang.String">
         UPDATE sftc_order
-        SET is_cancel = 'Cancelled'
+        SET is_cancel = 1
         WHERE id = #{id}
     </update>
 

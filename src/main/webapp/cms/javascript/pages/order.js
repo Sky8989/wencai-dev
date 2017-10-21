@@ -171,7 +171,7 @@ function data_rendering(data) {
             dataD.pay_method = "寄付"
         }if(dataD.pay_method == undefined){
             dataD.pay_method = "无"
-        }if(dataD.is_cancel == "Cancelled"){
+        }if(dataD.is_cancel == 1){
             dataD.is_cancel = "已取消"
         }
         $('#order_list').append(
