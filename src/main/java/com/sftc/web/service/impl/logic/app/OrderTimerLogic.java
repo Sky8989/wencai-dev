@@ -3,6 +3,7 @@ package com.sftc.web.service.impl.logic.app;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.web.config.InitTimeListener;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.service.OrderTimeService;
 import net.sf.json.JSONObject;
@@ -39,11 +40,15 @@ public class OrderTimerLogic implements OrderTimeService {
      * 开启大网预约单定时器
      */
     public  void setupReserveNationOrderCommitTimer() {
-
-        int is_on = 1;
+        int is_on = InitTimeListener.is_on;
         long period = 1800000;
         long delay = 0;
 
+        if(is_on==1){
+            if (reserveScheduledExecutorService != null) {
+                System.out.println("已开启");
+                return;
+            }
             try{
                 final TimerTask task = new TimerTask() {
                     @Override
@@ -61,6 +66,12 @@ public class OrderTimerLogic implements OrderTimeService {
             }catch (Exception e){
                 e.printStackTrace();
             }
+        }else { // 关
+            if (reserveScheduledExecutorService != null) {
+                reserveScheduledExecutorService.shutdown();
+                reserveScheduledExecutorService = null;
+            }
+        }
 
     }
 
@@ -68,15 +79,15 @@ public class OrderTimerLogic implements OrderTimeService {
      * 设置大网取消超时订单定时器开关
      */
     public void setupCancelNationOrderTimer() {
-
-
-        int is_on = 1;
+        int is_on = InitTimeListener.is_on;
         long period = 21600000;
         long delay = 0;
         timeOutInterval = 43200000; // 默认超时时间12小时
 
         if (is_on == 1) { // 开
-
+            if (cancelScheduledExecutorService != null) {
+                return;
+            }
                 final TimerTask task = new TimerTask() {
                     @Override
                     public void run() {
@@ -110,14 +121,15 @@ public class OrderTimerLogic implements OrderTimeService {
      * 设置同城取消超时订单定时器开关
      */
     public void setupCancelSameOrderTimer() {
-
-
-        int is_on = 1;
+        int is_on = InitTimeListener.is_on;
         long period = 21600000;
         long delay = 0;
         timeOutIntervalForSame = 43200000; // 默认超时时间12小时
 
         if (is_on == 1) { // 开
+            if (cancelSAMEScheduledExecutorService != null) {
+                return;
+            }
                 final TimerTask task = new TimerTask() {
                     @Override
                     public void run() {
