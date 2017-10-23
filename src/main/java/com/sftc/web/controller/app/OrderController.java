@@ -154,6 +154,7 @@ public class OrderController extends BaseController {
         return orderService.timeConstants(new APIRequest(request));
     }
 
+    @IgnoreToken
     @ApiOperation(value = "30分钟未揽件同城单转大网单(给顺丰调用)", httpMethod = "POST")
     @RequestMapping(value = "/transform", method = RequestMethod.POST)
     public @ResponseBody
@@ -170,33 +171,34 @@ public class OrderController extends BaseController {
         return evaluateService.getEvaluate(uuid);
     }
 
-    @ApiOperation(value = "设置大网预约定时器", httpMethod = "POST")
-    @RequestMapping(value = "/reserve/setup", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse setupReserveTimer(@RequestBody Object object) throws Exception {
-        APIRequest request = new APIRequest();
-        request.setRequestParam(object);
-        return orderService.setupReserveNationOrderCommitTimer(request);
-    }
+//    @ApiOperation(value = "设置大网预约定时器", httpMethod = "POST")
+//    @RequestMapping(value = "/reserve/setup", method = RequestMethod.POST)
+//    public @ResponseBody
+//    APIResponse setupReserveTimer(@RequestBody Object object) throws Exception {
+//        APIRequest request = new APIRequest();
+//        request.setRequestParam(object);
+//        return orderService.setupReserveNationOrderCommitTimer(request);
+//    }
 
-    @ApiOperation(value = "设置大网超时取消定时器", httpMethod = "POST")
-    @RequestMapping(value = "/cancel/setup", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse setupCancelNationOrderTimer(@RequestBody Object object) throws Exception {
-        APIRequest request = new APIRequest();
-        request.setRequestParam(object);
-        return orderService.setupCancelNationOrderTimer(request);
-    }
+//    @ApiOperation(value = "设置大网超时取消定时器", httpMethod = "POST")
+//    @RequestMapping(value = "/cancel/setup", method = RequestMethod.POST)
+//    public @ResponseBody
+//    APIResponse setupCancelNationOrderTimer(@RequestBody Object object) throws Exception {
+//        APIRequest request = new APIRequest();
+//        request.setRequestParam(object);
+//        return orderService.setupCancelNationOrderTimer(request);
+//    }
+//
+//    @ApiOperation(value = "设置同城超时取消定时器", httpMethod = "POST")
+//    @RequestMapping(value = "/cancel/SameSetup", method = RequestMethod.POST)
+//    public @ResponseBody
+//    APIResponse setupCancelSameOrderTimer(@RequestBody Object object) throws Exception {
+//        APIRequest request = new APIRequest();
+//        request.setRequestParam(object);
+//        return orderService.setupCancelSameOrderTimer(request);
+//    }
 
-    @ApiOperation(value = "设置同城超时取消定时器", httpMethod = "POST")
-    @RequestMapping(value = "/cancel/SameSetup", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse setupCancelSameOrderTimer(@RequestBody Object object) throws Exception {
-        APIRequest request = new APIRequest();
-        request.setRequestParam(object);
-        return orderService.setupCancelSameOrderTimer(request);
-    }
-
+    @IgnoreToken
     @ApiOperation(value = "设置兜底记录已读", httpMethod = "POST")
     @RequestMapping(value = "/transform/read", method = RequestMethod.POST)
     public @ResponseBody

@@ -23,6 +23,7 @@ import com.sftc.web.model.sfmodel.Coordinate;
 import com.sftc.web.model.sfmodel.Source;
 import com.sftc.web.model.sfmodel.Target;
 import com.sftc.web.service.MessageService;
+import com.sftc.web.service.OrderTimeService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
 import org.slf4j.Logger;
@@ -65,13 +66,18 @@ public class OrderCommitLogic {
     private OrderDao orderDao;
     @Resource
     private OrderExpressDao orderExpressDao;
-
+    @Resource
+    private OrderTimeService orderTimeService;
     //////////////////// Public Method ////////////////////
 
     /**
      * 普通订单提交
      */
     public APIResponse normalOrderCommit(APIRequest request) {
+        //开启定时器
+        orderTimeService.setupReserveNationOrderCommitTimer();
+        orderTimeService.setupCancelNationOrderTimer();
+        orderTimeService.setupCancelSameOrderTimer();
         Object requestBody = request.getRequestParam();
         // Param Verif 订单提交的接口验参
         String paramVerifyMessage = orderCommitVerify(requestBody);
@@ -102,6 +108,10 @@ public class OrderCommitLogic {
      */
     @Transactional(isolation = Isolation.SERIALIZABLE)  //使用最高级别的事物防止提交过程中有好友包裹被填写
     public APIResponse friendOrderCommit(APIRequest request) {
+        //开启定时器
+        orderTimeService.setupReserveNationOrderCommitTimer();
+        orderTimeService.setupCancelNationOrderTimer();
+        orderTimeService.setupCancelSameOrderTimer();
         Object requestBody = request.getRequestParam();
         // Param Verify
         String paramVerifyMessage = orderCommitVerify(requestBody);
