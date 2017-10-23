@@ -1,14 +1,8 @@
 package com.sftc.web.service.impl.logic.app;
 
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIUtil;
 import com.sftc.web.config.InitTimeListener;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.service.OrderTimeService;
-import net.sf.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -17,8 +11,6 @@ import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static com.sftc.tools.api.APIStatus.SUCCESS;
 
 @Component
 public class OrderTimerLogic implements OrderTimeService {
@@ -143,6 +135,42 @@ public class OrderTimerLogic implements OrderTimeService {
                 };
                 cancelSAMEScheduledExecutorService = Executors.newScheduledThreadPool(1);
                 cancelSAMEScheduledExecutorService.scheduleAtFixedRate(task, delay, period, TimeUnit.MILLISECONDS);
+
+
+        } else { // 关
+            if (cancelSAMEScheduledExecutorService != null) {
+                cancelSAMEScheduledExecutorService.shutdown();
+                cancelSAMEScheduledExecutorService = null;
+
+            }
+        }
+    }
+    /**
+     * 设置临时Token的定时器开关
+     */
+    public void setupTemporaryToken() {
+        int is_on = InitTimeListener.is_on;
+        long period = 300000;
+        long delay = 0;
+        timeOutIntervalForSame = 300000; // 临时Token失效时间5分钟
+
+        if (is_on == 1) { // 开
+            if (cancelSAMEScheduledExecutorService != null) {
+                return;
+            }
+            final TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+
+                    List<String> orderIds = orderMapper.selectSameUnCommitOrders();
+                    for (String order_id : orderIds) {
+                        orderCancelLogic.cancelSameUnCommitOrder(order_id, timeOutIntervalForSame);
+                    }
+
+                }
+            };
+            cancelSAMEScheduledExecutorService = Executors.newScheduledThreadPool(1);
+            cancelSAMEScheduledExecutorService.scheduleAtFixedRate(task, delay, period, TimeUnit.MILLISECONDS);
 
 
         } else { // 关
