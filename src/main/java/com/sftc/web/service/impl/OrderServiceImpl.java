@@ -18,8 +18,8 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private OrderCommitLogic orderCommitLogic;
     @Resource
-//    private OrderTimerLogic orderTimerLogic;
-//    @Resource
+    private OrderTimerLogic orderTimerLogic;
+    @Resource
     private OrderCancelLogic orderCancelLogic;
     @Resource
     private OrderDetailLogic orderDetailLogic;
@@ -47,17 +47,17 @@ public class OrderServiceImpl implements OrderService {
         return orderCommitLogic.friendOrderCommit(request);
     }
 
-//    public APIResponse setupReserveNationOrderCommitTimer(APIRequest request) {
-//        return orderTimerLogic.setupReserveNationOrderCommitTimer(request);
-//    }
+    public APIResponse setupReserveNationOrderCommitTimer(APIRequest request) {
+        return orderTimerLogic.setupReserveNationOrderCommitTimer(request);
+    }
 
-//    public APIResponse setupCancelNationOrderTimer(APIRequest request) {
-//        return orderTimerLogic.setupCancelNationOrderTimer(request);
-//    }
+    public APIResponse setupCancelNationOrderTimer(APIRequest request) {
+        return orderTimerLogic.setupCancelNationOrderTimer(request);
+    }
 
-//    public APIResponse setupCancelSameOrderTimer(APIRequest request) {
-//        return orderTimerLogic.setupCancelSameOrderTimer(request);
-//    }
+    public APIResponse setupCancelSameOrderTimer(APIRequest request) {
+        return orderTimerLogic.setupCancelSameOrderTimer(request);
+    }
 
     public APIResponse transformOrderFromSameToNation(APIRequest request) {
         return orderTransformLogic.transformOrderFromSameToNation(request);
