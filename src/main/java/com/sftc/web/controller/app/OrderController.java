@@ -154,6 +154,7 @@ public class OrderController extends BaseController {
         return orderService.timeConstants(new APIRequest(request));
     }
 
+    @IgnoreToken
     @ApiOperation(value = "30分钟未揽件同城单转大网单(给顺丰调用)", httpMethod = "POST")
     @RequestMapping(value = "/transform", method = RequestMethod.POST)
     public @ResponseBody
@@ -214,13 +215,4 @@ public class OrderController extends BaseController {
         request.setRequestParam(object);
         return orderService.screenShot(request);
     }
-
-//    @ApiOperation(value = "面对面取件",httpMethod = "POST")
-//    @RequestMapping(value = "/faceOrder",method = RequestMethod.POST)
-//    public @ResponseBody
-//    APIResponse faceOrdered(@RequestBody Object object) throws Exception{
-//        APIRequest apiRequest = new APIRequest();
-//        apiRequest.setRequestParam(object);
-//        return orderService.faceOrdered(apiRequest);
-//    }
 }
