@@ -92,17 +92,17 @@ public interface OrderService {
     /**
      * 设置大网预约单定时器开关
      */
-    APIResponse setupReserveNationOrderCommitTimer(APIRequest request);
+//    APIResponse setupReserveNationOrderCommitTimer(APIRequest request);
 
     /**
      * 设置大网取消超时订单定时器开关
      */
-    APIResponse setupCancelNationOrderTimer(APIRequest request);
+//    APIResponse setupCancelNationOrderTimer(APIRequest request);
 
     /**
      * 设置大网取消超时订单定时器开关
      */
-    APIResponse setupCancelSameOrderTimer(APIRequest request);
+//    APIResponse setupCancelSameOrderTimer(APIRequest request);
 
     /**
      * 设置兜底记录已读
