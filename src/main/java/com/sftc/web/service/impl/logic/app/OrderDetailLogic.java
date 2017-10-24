@@ -238,7 +238,13 @@ public class OrderDetailLogic {
         // POST
         List<Orders> orderses = null;
         try {
-            orderses = APIResolve.getOrdersJson(ORDERS_URL, user.getToken().getAccess_token());
+            String token = user.getToken().getAccess_token();
+            if(!token.equals("") && token != null){
+                token = user.getToken().getAccess_token();
+            }else {
+                token = COMMON_ACCESSTOKEN;
+            }
+            orderses = APIResolve.getOrdersJson(ORDERS_URL, token);
         } catch (Exception e) {
             return APIUtil.submitErrorResponse("正在同步订单状态，稍后重试", e);
         }
