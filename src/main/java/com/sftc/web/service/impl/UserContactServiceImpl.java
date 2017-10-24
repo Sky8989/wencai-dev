@@ -22,6 +22,7 @@ import java.util.List;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_ORDER_SYNC_URL;
+import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
 
 @Service("userContactService")
 public class UserContactServiceImpl implements UserContactService {
@@ -173,7 +174,13 @@ public class UserContactServiceImpl implements UserContactService {
         // POST
         List<Orders> orderses = null;
         try {
-            orderses = APIResolve.getOrdersJson(ORDERS_URL, userContactParam.getAccess_token());
+            String token = userContactParam.getAccess_token();
+            if(!token.equals("") && token != null){
+                token = userContactParam.getAccess_token();
+            }else {
+                token = COMMON_ACCESSTOKEN;
+            }
+            orderses = APIResolve.getOrdersJson(ORDERS_URL, token);
         } catch (Exception e) {
             return APIUtil.submitErrorResponse("正在同步来往记录订单状态，稍后重试", e);
         }
