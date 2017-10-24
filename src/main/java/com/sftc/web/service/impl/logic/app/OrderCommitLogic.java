@@ -541,8 +541,10 @@ public class OrderCommitLogic {
         order.setImage((String) orderOBJ.get("image"));
         order.setVoice((String) orderOBJ.get("voice"));
         order.setWord_message((String) orderOBJ.get("word_message"));
-        if(!((String) orderOBJ.get("gift_card_id")).equals("")||((String) orderOBJ.get("gift_card_id"))!=null){
+        if(!orderOBJ.getString("gift_card_id").equals("")|| orderOBJ.getString("gift_card_id") != null){
         order.setGift_card_id(Integer.parseInt((String) orderOBJ.get("gift_card_id")));
+        }else {
+            order.setGift_card_id(0);
         }
         order.setVoice_time(Integer.parseInt((String) orderOBJ.get("voice_time")));
         order.setRegion_type("REGION_SAME");
