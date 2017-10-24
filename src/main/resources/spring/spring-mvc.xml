@@ -69,13 +69,13 @@
     <mvc:default-servlet-handler/>
 
     <!-- 启动Aspectj注解模式驱动AOP -->
-    <aop:aspectj-autoproxy proxy-target-class="true"/>
-    <bean id="tokenInterceptor" class="com.sftc.web.config.AuthTokenAOPInterceptor"/>
-    <aop:config>
-        <aop:aspect ref="tokenInterceptor">
-            <aop:around method="before" pointcut="execution(* com.sftc.web.controller.app.*Controller.*(..))"/>
-        </aop:aspect>
-    </aop:config>
+    <!--<aop:aspectj-autoproxy proxy-target-class="true"/>-->
+    <!--<bean id="tokenInterceptor" class="com.sftc.web.config.AuthTokenAOPInterceptor"/>-->
+    <!--<aop:config>-->
+        <!--<aop:aspect ref="tokenInterceptor">-->
+            <!--<aop:around method="before" pointcut="execution(* com.sftc.web.controller.app.*Controller.*(..))"/>-->
+        <!--</aop:aspect>-->
+    <!--</aop:config>-->
 
     <!-- swagger-springmvc -->
     <mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html"/>
