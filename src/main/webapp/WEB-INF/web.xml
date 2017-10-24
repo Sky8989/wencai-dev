@@ -37,7 +37,7 @@
     </listener>
     <!-- 定时器开启的监听器 -->
     <!--<listener>-->
-        <!--<listener-class>com.sftc.web.config.InitTimeListener</listener-class>-->
+        <!--<listener-class>com.sftc.web.model.Converter.TimeStartVoid</listener-class>-->
     <!--</listener>-->
 
     <!-- 加载spring mvc前端视图控制器 -->
