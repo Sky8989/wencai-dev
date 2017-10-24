@@ -297,7 +297,7 @@ public class UserServiceImpl implements UserService {
         Object requestParam = apiRequest.getRequestParam();
         JSONObject jsonObject = JSONObject.fromObject(requestParam);
         JSONObject merchants = jsonObject.getJSONObject("merchant");
-        String json = (String)jsonObject.get("merchant");
+        String json = merchants.toString();
         String access_token = jsonObject.getString("token");
         RequestBody rb = RequestBody.create(null, json);
         Request request = new Request.Builder().
