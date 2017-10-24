@@ -76,6 +76,12 @@
             <aop:around method="before" pointcut="execution(* com.sftc.web.controller.app.*Controller.*(..))"/>
         </aop:aspect>
     </aop:config>
+    <bean id="tempTokenInterceptor" class="com.sftc.web.config.OrderTransformTokenInterceptor"/>
+    <aop:config>
+        <aop:aspect ref="tempTokenInterceptor">
+            <aop:around method="before" pointcut="execution(* com.sftc.web.controller.app.*Controller.*(..))"/>
+        </aop:aspect>
+    </aop:config>
 
     <!-- swagger-springmvc -->
     <mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html"/>

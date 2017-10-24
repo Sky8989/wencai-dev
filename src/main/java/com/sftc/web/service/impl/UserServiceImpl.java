@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
+import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Token;
@@ -309,6 +310,17 @@ public class UserServiceImpl implements UserService {
         okhttp3.Response response = client.newCall(request).execute();
         if (response.code() == 200) return null;//正常情况返回null
         return APIUtil.logicErrorResponse("更新个人信息失败", response.body());
+    }
+
+    //生成临时token  2017-10-23
+    public APIResponse getTemporaryToken() throws Exception {
+        String creat_time = Long.toString(System.currentTimeMillis());
+        String tempOpenId = SFOrderHelper.getTempOpenId();
+        String tempToken = makeToken(creat_time,tempOpenId);
+        Token token = new Token(2188,tempToken);
+        token.setGmt_expiry((System.currentTimeMillis() + 300000)+"");
+        tokenMapper.updateToken(token);
+        return APIUtil.getResponse(SUCCESS, token);
     }
 
     /**

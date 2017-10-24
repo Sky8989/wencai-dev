@@ -3,6 +3,7 @@ package com.sftc.web.config;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.TokenMapper;
+import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 //全局token验证
-public class AuthTokenAOPInterceptor {
+public class OrderTransformTokenInterceptor {
     @Resource
     private TokenMapper tokenMapper;
 
@@ -28,15 +29,13 @@ public class AuthTokenAOPInterceptor {
         //获取当前执行的方法
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
         //判断当前执行的方法是否存在自定义的注解
-        if (methodSignature.getMethod().isAnnotationPresent(IgnoreToken.class)) {
-            //只需要过滤登录即可，所以考虑在登录方法上加上注解，存在注解的就不验证token，不存在注解的需要验证
-           return proceedingJoinPoint.proceed();
-        }else {
+        if (methodSignature.getMethod().isAnnotationPresent(TemporaryToken.class)) {
+            //加上注解的需要验证
             if (token != null && !token.equals("")) {
-                APIResponse error = authTokenCheck(token);//校验用户
+                APIResponse error = tempTokenCheck(token);//校验用户
                 //验证成功返回null
                 if (error != null) {
-                    return APIUtil.selectErrorResponse("token不合法", null);
+                    return APIUtil.selectErrorResponse("token已失效，请重新获取", null);
                 }
                 return proceedingJoinPoint.proceed();
             } else {
@@ -49,37 +48,26 @@ public class AuthTokenAOPInterceptor {
                     }
 
                 };
-                handlerInterceptorAdapter.preHandle(request,response,proceedingJoinPoint);
+                handlerInterceptorAdapter.preHandle(request, response, proceedingJoinPoint);
                 return APIUtil.selectErrorResponse("token验证失败", null);
             }
+
+        } else {
+            return proceedingJoinPoint.proceed();
         }
     }
 
-//    private void error(HttpServletResponse response, APIResponse error) {
-//        response.reset();
-//        response.setCharacterEncoding("UTF-8");
-//        response.setContentType("application/json; charset=utf-8");
-//        OutputStreamWriter ow = null;
-//        try {
-//            ServletOutputStream out = response.getOutputStream();
-//            ow = new OutputStreamWriter(out, "UTF-8");
-//            ow.write(new Gson().toJson(error));
-//        } catch (IOException e) {
-//            e.fillInStackTrace();
-//        } finally {
-//            try {
-//                ow.flush();
-//                ow.close();
-//            } catch (IOException e) {
-//                e.fillInStackTrace();
-//            }
-//        }
-//    }
-
-    private APIResponse authTokenCheck(String token) throws Exception {
+    private APIResponse tempTokenCheck(String token) throws Exception {
         User user = tokenMapper.tokenInterceptor(token);
         if (user != null) {
-            return null;
+            Token token1 = tokenMapper.getTokenById(user.getId());
+            long dataTime = System.currentTimeMillis();
+            long tempTime = Long.parseLong(token1.getGmt_expiry());
+            if (dataTime < tempTime || dataTime == tempTime) {
+                return null;
+            } else {
+                return APIUtil.selectErrorResponse("token已失效，请重新获取", null);
+            }
         } else {
             return APIUtil.selectErrorResponse("token验证失败", null);
         }
