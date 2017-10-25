@@ -8,7 +8,7 @@ import com.sftc.web.model.OrderNationTime;
 public class OrderTimeFactory {
     public static OrderNationTime setOrderNationTimeOn(){
         OrderNationTime orderNationTime = new OrderNationTime();
-        orderNationTime.setOn(0);
+        orderNationTime.setOn(1);
         orderNationTime.setDelay(0);
         orderNationTime.setPeriod(1800);
         return orderNationTime;
