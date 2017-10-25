@@ -314,7 +314,7 @@ public class UserServiceImpl implements UserService {
                 "email\":\""+email+"\",\"address\":{\"type\":\"LIVE\",\"country\":\"中国\",\"province\":\""+province+"\",\"" +
                 "city\":\""+city+"\",\"region\":\""+region+"\",\"street\":\""+street+"\",\"zipcode\":\""+zipcode+"\",\"receiver\":" +
                 "\""+receiver+"\",\"mobile\":\""+mobile+"\",\"marks\":{},\"longitude\":\""+longitude+"\",\"latitude\":\""+latitude+"\",\"uuid\":\"" + uuid + "\"}}}";
-        String access_token = jsonObject.getString("token");
+        String access_token = jsonObject.getString("access_token");
         RequestBody rb = RequestBody.create(null, json);
         Request request = new Request.Builder().
                 url(SF_LOGIN).
@@ -323,7 +323,7 @@ public class UserServiceImpl implements UserService {
                 .put(rb).build();
         OkHttpClient client = new OkHttpClient();
         okhttp3.Response response = client.newCall(request).execute();
-        if (response.code() == 200) return null;//正常情况返回null
+        if (response.code() == 200) return APIUtil.getResponse(SUCCESS, response.message());//正常情况返回null
         return APIUtil.logicErrorResponse("更新个人信息失败", response.body());
     }
 
