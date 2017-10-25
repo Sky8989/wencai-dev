@@ -1,4 +1,6 @@
 package com.sftc.web.config;
+import org.springframework.web.context.ContextLoader;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
@@ -7,7 +9,7 @@ import javax.servlet.http.HttpServlet;
  * Created by xf on 2017/10/23.
  */
 
-public class InitTimeListener extends HttpServlet implements ServletContextListener{
+public class InitTimeListener extends ContextLoader implements ServletContextListener{
    public InitTimeListener(){}
     private java.util.Timer timer = null;
     @Override
