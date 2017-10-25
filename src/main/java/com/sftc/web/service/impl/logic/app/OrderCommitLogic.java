@@ -739,7 +739,11 @@ public class OrderCommitLogic {
         order.setImage((String) orderObject.get("image"));
         order.setVoice((String) orderObject.get("voice"));
         order.setWord_message((String) orderObject.get("word_message"));
-        order.setGift_card_id(Integer.parseInt((String) orderObject.get("gift_card_id")));
+        if(!orderObject.getString("gift_card_id").equals("")){
+            order.setGift_card_id(Integer.parseInt((String) orderObject.get("gift_card_id")));
+        }else {
+            order.setGift_card_id(0);
+        }
         order.setVoice_time(Integer.parseInt((String) orderObject.get("voice_time")));
         order.setRegion_type("REGION_NATION");
         orderDao.save(order);
