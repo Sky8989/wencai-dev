@@ -314,13 +314,23 @@ public class UserServiceImpl implements UserService {
 
     //生成临时token  2017-10-23
     public APIResponse getTemporaryToken() throws Exception {
-        String creat_time = Long.toString(System.currentTimeMillis());
-        String tempOpenId = SFOrderHelper.getTempOpenId();
-        String tempToken = makeToken(creat_time,tempOpenId);
-        Token token = new Token(2188,tempToken);
-        token.setGmt_expiry((System.currentTimeMillis() + 300000)+"");
-        tokenMapper.updateToken(token);
-        return APIUtil.getResponse(SUCCESS, token);
+        //2188用户用于发放临时token
+        Token usableToken = tokenMapper.getTokenById(2188);
+        long dataTime = System.currentTimeMillis();
+        long tempTime = Long.parseLong(usableToken.getGmt_expiry());
+        //如果没有过期直接返回
+        if (dataTime < tempTime || dataTime == tempTime) {
+            usableToken = tokenMapper.getTokenById(2188);
+        } else {//如果过期重新创建新的返回
+            String creat_time = Long.toString(System.currentTimeMillis());
+            String tempOpenId = SFOrderHelper.getTempOpenId();
+            String tempToken = makeToken(creat_time,tempOpenId);
+            Token token = new Token(2188,tempToken);
+            token.setGmt_expiry((System.currentTimeMillis() + 300000)+"");
+            tokenMapper.updateToken(token);
+            usableToken = tokenMapper.getTokenById(2188);
+        }
+        return APIUtil.getResponse(SUCCESS, usableToken);
     }
 
     /**

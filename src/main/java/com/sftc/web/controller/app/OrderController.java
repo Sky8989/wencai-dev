@@ -3,7 +3,6 @@ package com.sftc.web.controller.app;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.config.IgnoreToken;
-import com.sftc.web.config.TemporaryToken;
 import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
@@ -155,7 +154,6 @@ public class OrderController extends BaseController {
         return orderService.timeConstants(new APIRequest(request));
     }
 
-    @TemporaryToken
     @ApiOperation(value = "30分钟未揽件同城单转大网单(给顺丰调用)", httpMethod = "POST")
     @RequestMapping(value = "/transform", method = RequestMethod.POST)
     public @ResponseBody
