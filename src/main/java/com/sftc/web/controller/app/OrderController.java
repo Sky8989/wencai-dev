@@ -198,6 +198,7 @@ public class OrderController extends BaseController {
         return orderService.setupCancelSameOrderTimer(request);
     }
 
+    @IgnoreToken
     @ApiOperation(value = "设置兜底记录已读", httpMethod = "POST")
     @RequestMapping(value = "/transform/read", method = RequestMethod.POST)
     public @ResponseBody

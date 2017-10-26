@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
+import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Token;
@@ -325,6 +326,31 @@ public class UserServiceImpl implements UserService {
         okhttp3.Response response = client.newCall(request).execute();
         if (response.code() == 200) return APIUtil.getResponse(SUCCESS, response.message());//正常情况返回null
         return APIUtil.logicErrorResponse("更新个人信息失败", response.body());
+    }
+
+    //生成临时token  2017-10-23
+    public APIResponse getTemporaryToken() throws Exception {
+        //2188用户用于发放临时token
+        Token usableToken = tokenMapper.getTokenById(2188);
+        if (usableToken != null) {
+            long dataTime = System.currentTimeMillis();
+            long tempTime = Long.parseLong(usableToken.getGmt_expiry());
+            //如果没有过期直接返回
+            if (dataTime < tempTime || dataTime == tempTime) {
+                usableToken = tokenMapper.getTokenById(2188);
+            } else {//如果过期重新创建新的返回
+                String creat_time = Long.toString(System.currentTimeMillis());
+                String tempOpenId = SFOrderHelper.getTempOpenId();
+                String tempToken = makeToken(creat_time, tempOpenId);
+                Token token = new Token(2188, tempToken);
+                token.setGmt_expiry((System.currentTimeMillis() + 300000) + "");
+                tokenMapper.updateToken(token);
+                usableToken = tokenMapper.getTokenById(2188);
+            }
+        } else {
+            return APIUtil.selectErrorResponse("token丢失了", null);
+        }
+        return APIUtil.getResponse(SUCCESS, usableToken);
     }
 
     /**

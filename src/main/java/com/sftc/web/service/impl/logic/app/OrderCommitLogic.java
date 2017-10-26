@@ -65,7 +65,6 @@ public class OrderCommitLogic {
     private OrderDao orderDao;
     @Resource
     private OrderExpressDao orderExpressDao;
-
     //////////////////// Public Method ////////////////////
 
     /**

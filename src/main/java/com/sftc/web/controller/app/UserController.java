@@ -63,4 +63,11 @@ public class UserController extends BaseController {
         apiRequest.setRequestParam(object);
         return userService.updatePersonMessage(apiRequest);
     }
+
+    //生成临时Token的接口  2017-10-23 xf
+    @RequestMapping(value = "/temoraryToen", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse getTemporaryToken() throws Exception {
+        return userService.getTemporaryToken();
+    }
 }
