@@ -68,4 +68,12 @@
         </where>
     </select>
 
+
+    <select id="getUserIdByLocalToken" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT user_id
+        FROM sftc_token
+        WHERE local_token = #{token}
+    </select>
+
+
 </mapper>
