@@ -59,7 +59,7 @@
         (#{mobile}, #{user_password}, #{open_id}, #{create_time}, #{avatar}, #{uuid}, #{name})
     </insert>
 
-    <select id="getUuidAndtoken" parameterType="int" resultType="com.sftc.web.model.User" resultMap="User">
+    <select id="getUuidAndtoken" parameterType="java.lang.String" resultType="com.sftc.web.model.User" resultMap="User">
         SELECT
         u.uuid,
         t.access_token
