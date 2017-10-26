@@ -298,6 +298,7 @@ public class UserServiceImpl implements UserService {
         Object requestParam = apiRequest.getRequestParam();
         JSONObject jsonObject = JSONObject.fromObject(requestParam);
         JSONObject merchants = jsonObject.getJSONObject("merchant");
+//      String json = merchants.toString();
         String new_name = merchants.getString("name");
         String email = merchants.getString("email");
         String uuid = merchants.getJSONObject("address").getString("uuid");
