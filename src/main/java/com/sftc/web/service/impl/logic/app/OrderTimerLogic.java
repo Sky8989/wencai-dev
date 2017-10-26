@@ -1,13 +1,11 @@
 package com.sftc.web.service.impl.logic.app;
 
-import com.google.gson.Gson;
-import com.sftc.tools.api.*;
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIUtil;
 import com.sftc.web.config.InitTimeListener;
-import com.sftc.web.config.ReserveNationTimeTask;
 import com.sftc.web.dao.mybatis.OrderMapper;
-
 import net.sf.json.JSONObject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -15,15 +13,13 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 
 
 @Component
-public class OrderTimerLogic{
+public class OrderTimerLogic {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -34,12 +30,8 @@ public class OrderTimerLogic{
     @Resource
     private OrderCancelLogic orderCancelLogic;
 
-    private ScheduledExecutorService reserveScheduledExecutorService; // 大网预约定时器
-    private ScheduledExecutorService cancelScheduledExecutorService; // 大网取消定时器
-    private ScheduledExecutorService cancelSAMEScheduledExecutorService; // 同城取消定时器
     private long timeOutInterval; // 大网取消超时时间间隔
     private long timeOutIntervalForSame; // 大网取消超时时间间隔
-    private Gson gson = new Gson();
 
     /**
      * 设置大网预约单定时器参数
@@ -51,13 +43,10 @@ public class OrderTimerLogic{
         int is_on = requestObject.getInt("on");
         long period = requestObject.containsKey("period") ? requestObject.getInt("period") * 1000 : 1800000;
         long delay = requestObject.containsKey("delay") ? requestObject.getInt("delay") * 1000 : 0;
-        //定时器初始化为servlet启动时开启的定时器
-        reserveScheduledExecutorService = InitTimeListener.reserveScheduledExecutorService;
         JSONObject responseObject = new JSONObject();
 
-        //改为 1 关闭定时器/ 其他 开启定时器
-        if (is_on == 1) {
-            if (reserveScheduledExecutorService != null) {
+        if (is_on == 0) {
+            if (InitTimeListener.reserveScheduledExecutorService != null) {
                 //关闭servlet中的定时器
                 InitTimeListener.reserveScheduledExecutorService.shutdown();
                 InitTimeListener.reserveScheduledExecutorService = null;
@@ -66,7 +55,7 @@ public class OrderTimerLogic{
                 return APIUtil.submitErrorResponse("定时器已经关闭，请勿重复操作", null);
             }
         } else {
-            if (reserveScheduledExecutorService != null) {
+            if (InitTimeListener.reserveScheduledExecutorService != null) {
                 return APIUtil.submitErrorResponse("定时器已经开启，请勿重复操作", null);
             } else {//设置定时器参数的时候再次执行任务
                 final TimerTask task = new TimerTask() {
@@ -103,12 +92,9 @@ public class OrderTimerLogic{
         long period = requestObject.containsKey("period") ? requestObject.getInt("period") * 1000 : 21600000;
         long delay = requestObject.containsKey("delay") ? requestObject.getInt("delay") * 1000 : 0;
         timeOutInterval = requestObject.containsKey("timeOutInterval") ? requestObject.getInt("timeOutInterval") * 1000 : 43200000; // 默认超时时间12小时
-        //定时器初始化为servlet启动时开启的定时器
-        cancelScheduledExecutorService = InitTimeListener.cancelScheduledExecutorService;
         JSONObject responseObject = new JSONObject();
-        //改为 1 关闭定时器/ 其他 开启定时器
-        if (is_on == 1) {
-            if (cancelScheduledExecutorService != null) {
+        if (is_on == 0) {
+            if (InitTimeListener.cancelScheduledExecutorService != null) {
                 //关闭servlet中的定时器
                 InitTimeListener.cancelScheduledExecutorService.shutdown();
                 InitTimeListener.cancelScheduledExecutorService = null;
@@ -117,7 +103,7 @@ public class OrderTimerLogic{
                 return APIUtil.submitErrorResponse("定时器已经关闭，请勿重复操作", null);
             }
         } else {
-            if (cancelScheduledExecutorService != null) {
+            if (InitTimeListener.cancelScheduledExecutorService != null) {
                 return APIUtil.submitErrorResponse("定时器已经开启，请勿重复操作", null);
             } else {//设置定时器参数的时候再次执行任务
                 final TimerTask task = new TimerTask() {
@@ -157,12 +143,9 @@ public class OrderTimerLogic{
         long period = requestObject.containsKey("period") ? requestObject.getInt("period") * 1000 : 21600000;
         long delay = requestObject.containsKey("delay") ? requestObject.getInt("delay") * 1000 : 0;
         timeOutIntervalForSame = requestObject.containsKey("timeOutInterval") ? requestObject.getInt("timeOutInterval") * 1000 : 43200000; // 默认超时时间12小时
-        //定时器初始化为servlet启动时开启的定时器
-        cancelSAMEScheduledExecutorService = InitTimeListener.cancelSAMEScheduledExecutorService;
         JSONObject responseObject = new JSONObject();
-        //改为 1 关闭定时器/ 其他 开启定时器
-        if (is_on == 1) {
-            if (cancelSAMEScheduledExecutorService != null) {
+        if (is_on == 0) {
+            if (InitTimeListener.cancelSAMEScheduledExecutorService != null) {
                 //关闭servlet中的定时器
                 InitTimeListener.cancelSAMEScheduledExecutorService.shutdown();
                 InitTimeListener.cancelSAMEScheduledExecutorService = null;
@@ -171,7 +154,7 @@ public class OrderTimerLogic{
                 return APIUtil.submitErrorResponse("定时器已经关闭，请勿重复操作", null);
             }
         } else {
-            if (cancelSAMEScheduledExecutorService != null) {
+            if (InitTimeListener.cancelSAMEScheduledExecutorService != null) {
                 return APIUtil.submitErrorResponse("定时器已经开启，请勿重复操作", null);
             } else {//设置定时器参数的时候再次执行任务
                 final TimerTask task = new TimerTask() {
