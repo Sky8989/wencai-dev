@@ -20,7 +20,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * 提交大网预约订单定时器任务
  * Created by xf on 2017/10/23.
  */
-public class ReserveNationTimeTask extends TimerTask implements InitializingBean{
+public class ReserveNationTimeTask extends TimerTask implements InitializingBean {
 
     private ServletContext context = null;
     private WebApplicationContext ctx = null;
@@ -35,6 +35,7 @@ public class ReserveNationTimeTask extends TimerTask implements InitializingBean
         this.context = context;
         this.ctx = WebApplicationContextUtils.getWebApplicationContext(context);
     }
+
     @Override
     public void run() {
         logger.info("开始提交大网预约单");
