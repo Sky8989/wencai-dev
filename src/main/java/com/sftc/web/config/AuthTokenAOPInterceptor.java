@@ -34,7 +34,7 @@ public class AuthTokenAOPInterceptor {
                token = transformToken.getLocal_token();
            }else {
                String reason = "数据库中找不到此token";
-               return APIUtil.selectErrorResponse("temporary token is not exist",reason);
+               return APIUtil.submitErrorResponse("AuthToken is not exist",reason);
            }
         }
         //获取当前执行的方法
@@ -51,13 +51,13 @@ public class AuthTokenAOPInterceptor {
                     error = transformTokenCheck(token); //临时token验证
                     if (error != null) {//临时token失效则需要重新获取
                         String reason = "token已失效，请重新获取";
-                        return APIUtil.selectErrorResponse("temporary token is unavailable Please take again", reason);
+                        return APIUtil.submitErrorResponse("AuthToken is unavailable Please take again", reason);
                     }
                 }else {//校验用户
                     error = authTokenCheck(token);
                     if (error != null) {
                         String reason = "数据库中找不到此token";
-                        return APIUtil.selectErrorResponse("网络繁忙，请稍后", reason);
+                        return APIUtil.submitErrorResponse("网络繁忙，请稍后", reason);
                     }
                 }
                 //验证成功返回null
@@ -74,7 +74,7 @@ public class AuthTokenAOPInterceptor {
                 };
                 handlerInterceptorAdapter.preHandle(request,response,proceedingJoinPoint);
                 String reason = "token验证失败";
-                return APIUtil.selectErrorResponse("Authtoken is unavailable", reason);
+                return APIUtil.submitErrorResponse("Authtoken is unavailable", reason);
             }
         }
     }
@@ -85,7 +85,7 @@ public class AuthTokenAOPInterceptor {
         if (user != null) { //此验证只需要找到用户即视为通过
             return null;
         } else {
-            return APIUtil.selectErrorResponse("token验证失败", null);
+            return APIUtil.submitErrorResponse("token验证失败", null);
         }
     }
 
@@ -99,10 +99,10 @@ public class AuthTokenAOPInterceptor {
             if (dataTime < tempTime || dataTime == tempTime) {
                 return null;
             } else {
-                return APIUtil.selectErrorResponse("token已失效，请重新获取", null);
+                return APIUtil.submitErrorResponse("token已失效，请重新获取", null);
             }
         } else {
-            return APIUtil.selectErrorResponse("token验证失败", null);
+            return APIUtil.submitErrorResponse("token验证失败", null);
         }
     }
 }
