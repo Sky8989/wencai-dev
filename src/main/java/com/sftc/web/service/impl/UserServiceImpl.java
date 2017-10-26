@@ -343,7 +343,7 @@ public class UserServiceImpl implements UserService {
                 String tempOpenId = SFOrderHelper.getTempOpenId();
                 String tempToken = makeToken(creat_time, tempOpenId);
                 Token token = new Token(2188, tempToken);
-                token.setGmt_expiry((System.currentTimeMillis() + 300000) + "");
+                token.setGmt_expiry((System.currentTimeMillis() + 60000) + "");
                 tokenMapper.updateToken(token);
                 usableToken = tokenMapper.getTokenById(2188);
             }
@@ -351,7 +351,7 @@ public class UserServiceImpl implements UserService {
             String reason = "token丢失了";
             return APIUtil.selectErrorResponse("temporary token is missing", reason);
         }
-        return APIUtil.getResponse(SUCCESS, usableToken);
+        return APIUtil.getResponse(SUCCESS, usableToken.getLocal_token());
     }
 
     /**
