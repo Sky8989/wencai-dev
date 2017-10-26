@@ -1,13 +1,17 @@
 package com.sftc.web.service.impl;
 
-import com.sftc.tools.api.*;
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.jpa.AddressBookDao;
 import com.sftc.web.dao.jpa.AddressDao;
 import com.sftc.web.dao.mybatis.AddressBookMapper;
 import com.sftc.web.dao.mybatis.AddressMapper;
-import com.sftc.web.model.entity.Address;
+import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.model.Converter.AddressBookFactoty;
 import com.sftc.web.model.dto.AddressBookDTO;
+import com.sftc.web.model.entity.Address;
 import com.sftc.web.model.entity.AddressBook;
 import com.sftc.web.service.AddressBookService;
 import net.sf.json.JSONException;
@@ -17,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.List;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 
@@ -26,7 +30,8 @@ import static com.sftc.tools.api.APIStatus.SUCCESS;
 public class AddressBookServiceImpl implements AddressBookService {
     @Resource
     private AddressBookMapper addressBookMapper;
-
+    @Resource
+    private TokenMapper tokenMapper;
     @Resource
     private AddressMapper addressMapper;
 
@@ -88,19 +93,7 @@ public class AddressBookServiceImpl implements AddressBookService {
                 supplementary_info
         );
 
-        if (addressBookDTOList.size() != 0) {
-            AddressBookDTO addressBookDTO1 = addressBookDTOList.get(0);
-            if(addressBookDTO1.getIs_delete()==0){
-                return APIUtil.submitErrorResponse("地址簿已有该地址", null);
-            }else {
-                //地址簿删除后可添加相同地址，但是地址没有去重，后期处理
-                AddressBook addressBook = AddressBookFactoty.dtoToEntity(addressBookDTO1);
-                addressBook.setIs_delete(0);
-                addressBookDao.save(addressBook);
-            }
-        }
-
-
+        if (addressBookDTOList.size() != 0) return APIUtil.submitErrorResponse("地址簿已有该地址", null);
 
         String create_time = Long.toString(System.currentTimeMillis());
         // 插入地址记录
@@ -202,7 +195,7 @@ public class AddressBookServiceImpl implements AddressBookService {
     public APIResponse selectAddressBookList(APIRequest apiRequest) {
         /// 处理参数
         HttpServletRequest httpServletRequest = apiRequest.getRequest();
-        int user_id = Integer.parseInt(httpServletRequest.getParameter("user_id"));
+        Integer user_id =  TokenUtils.getInstance().getUserId(tokenMapper);
         String address_book_type = httpServletRequest.getParameter("address_book_type");
 
         //执行查询

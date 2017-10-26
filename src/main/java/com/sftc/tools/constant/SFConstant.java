@@ -49,6 +49,10 @@ public class SFConstant {
     /**
      * 用户注册
      */
+    public static String SF_DEVICE_URL = SF_SAME_DOMAIN + "devices";
+    /**
+     * 用户注册
+     */
     public static String SF_REGISTER_URL = SF_SAME_DOMAIN + "merchants";
     /**
      * 用户登录

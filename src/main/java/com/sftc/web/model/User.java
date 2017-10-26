@@ -6,6 +6,9 @@ import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
 
 public class User extends Object {
     private int id;
+    //邀请表id
+    private int invite_id;
+
     private String uuid;
     //用户名字
     private String name;
@@ -57,6 +60,14 @@ public class User extends Object {
     public User() {
     }
 
+    public int getInvite_id() {
+        return invite_id;
+    }
+
+    public void setInvite_id(int invite_id) {
+        this.invite_id = invite_id;
+    }
+
     public String getJs_code() {
         return js_code;
     }
@@ -64,6 +75,7 @@ public class User extends Object {
     public void setJs_code(String js_code) {
         this.js_code = js_code;
     }
+
 
     public int getId() {
         return id;
@@ -169,6 +181,7 @@ public class User extends Object {
     public Integer getPageSizeKey() {return pageSizeKey;}
 
     public void setPageSizeKey(Integer pageSizeKey) {this.pageSizeKey = pageSizeKey;}
+
 
     /**
      * 基于HttpServletRequest作为参数的构造方法 用于cms
