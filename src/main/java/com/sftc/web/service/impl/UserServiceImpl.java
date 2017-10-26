@@ -349,7 +349,7 @@ public class UserServiceImpl implements UserService {
             }
         } else {
             String reason = "token丢失了";
-            return APIUtil.selectErrorResponse("temporary token is missing", reason);
+            return APIUtil.selectErrorResponse("AuthToken is missing", reason);
         }
         return APIUtil.getResponse(SUCCESS, usableToken.getLocal_token());
     }
