@@ -53,6 +53,7 @@
               AND oe.reserve_time IS NOT NULL
               AND oe.reserve_time != ''
               AND oe.state = 'WAIT_HAND_OVER'
+              AND oe.order_number = '' OR oe.order_number IS NULL
     </select>
 
     <!--抓取大网单-->
