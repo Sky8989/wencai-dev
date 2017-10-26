@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("sf")
 public class MessageController extends BaseController {
 
-//    @IgnoreToken
+    @IgnoreToken
     @ApiOperation(value = "获取短信接口", httpMethod = "POST")
     @RequestMapping(value = "/message", method = RequestMethod.POST)
     @ResponseBody
@@ -28,7 +28,7 @@ public class MessageController extends BaseController {
         return messageService.getMessage(apiRequest);
     }
 
-//    @IgnoreToken
+    @IgnoreToken
     @ApiOperation(value = "注册接口", httpMethod = "POST")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
@@ -38,7 +38,7 @@ public class MessageController extends BaseController {
         return messageService.register(apiRequest);
     }
 
-//    @IgnoreToken
+    @IgnoreToken
     @ApiOperation(value = "获取token接口", httpMethod = "POST")
     @RequestMapping(value = "/getToken", method = RequestMethod.POST)
     @ResponseBody
@@ -48,7 +48,7 @@ public class MessageController extends BaseController {
         return messageService.getToken(apiRequest);
     }
 
-//    @IgnoreToken
+    @IgnoreToken
     @ApiOperation(value = "登录接口", httpMethod = "POST")
     @RequestMapping(value = "/sfLogin", method = RequestMethod.POST)
     @ResponseBody

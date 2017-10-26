@@ -24,21 +24,21 @@ public class UserController extends BaseController {
     @Resource
     private UserService userService;
 
-//    @IgnoreToken
+    @IgnoreToken
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse login(@RequestBody UserParam userParam) throws Exception {
         return userService.login(userParam);
     }
 
-//    @IgnoreToken
+    @IgnoreToken
     @RequestMapping(value = "/superLogin", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse superLogin(@RequestBody UserParam userParam) throws Exception {
         return userService.superLogin(userParam);
     }
 
-//    @IgnoreToken
+    @IgnoreToken
     @RequestMapping(value = "/unbind/common", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse commonUnbind(@RequestBody Object object) throws Exception {
@@ -46,7 +46,7 @@ public class UserController extends BaseController {
         return userService.deleteMobile(user_id);
     }
 
-//    @IgnoreToken
+    @IgnoreToken
     @RequestMapping(value = "/unbind/newMobile", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse bindNewMobile(@RequestBody Object object) throws Exception {

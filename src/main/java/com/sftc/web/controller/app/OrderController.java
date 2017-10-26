@@ -49,7 +49,7 @@ public class OrderController extends BaseController {
         return orderService.addFriendOrderCommit(request);
     }
 
-//    @IgnoreToken
+    @IgnoreToken
     @ApiOperation(value = "计价接口", httpMethod = "POST")
     @RequestMapping(value = "/countPrice", method = RequestMethod.POST)
     public @ResponseBody
@@ -57,7 +57,7 @@ public class OrderController extends BaseController {
         return orderService.countPrice(object);
     }
 
-//    @IgnoreToken
+    @IgnoreToken
     @ApiOperation(value = "好友填写收件", httpMethod = "POST")
     @RequestMapping(value = "/fill", method = RequestMethod.POST)
     public @ResponseBody
@@ -107,7 +107,7 @@ public class OrderController extends BaseController {
         return orderService.getMyFriendCircleOrderList(request);
     }
 
-//    @IgnoreToken
+    @IgnoreToken
     @ApiOperation(value = "快递详情", httpMethod = "GET")
     @RequestMapping(value = "/expressDetail", method = RequestMethod.GET)
     public @ResponseBody
