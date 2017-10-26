@@ -348,7 +348,8 @@ public class UserServiceImpl implements UserService {
                 usableToken = tokenMapper.getTokenById(2188);
             }
         } else {
-            return APIUtil.selectErrorResponse("token丢失了", null);
+            String reason = "token丢失了";
+            return APIUtil.selectErrorResponse("temporary token is missing", reason);
         }
         return APIUtil.getResponse(SUCCESS, usableToken);
     }
