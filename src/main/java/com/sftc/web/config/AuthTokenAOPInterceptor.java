@@ -27,8 +27,9 @@ public class AuthTokenAOPInterceptor {
         HttpServletRequest request = res.getRequest();
         HttpServletResponse response = res.getResponse();
         String token = request.getHeader("token");
-        //根据请求的url判断，如果是同城转大网，则需要走临时token验证逻辑
-        if((request.getRequestURL()+"?" + request.getQueryString()).equals("http://localhost:8080/sftc/order/transform?uuid=xxxxxxxxxxx")){
+        //根据请求的url判断，如果是同城转大网，则需要走临时token验证逻辑 getRequestURL()+"?"
+        // + request.getQueryString()).equals("http://localhost:8080/sftc/order/transform?uuid=xxxxxxxxxxx")
+        if((request.getRequestURI().equals("/sftc/order/transform"))){
            Token transformToken = tokenMapper.getTokenById(2188);   //2188用户存放临时token
            if(token.equals(transformToken.getLocal_token())){
                token = transformToken.getLocal_token();
