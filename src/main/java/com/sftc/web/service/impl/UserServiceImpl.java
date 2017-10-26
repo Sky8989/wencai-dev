@@ -298,7 +298,22 @@ public class UserServiceImpl implements UserService {
         Object requestParam = apiRequest.getRequestParam();
         JSONObject jsonObject = JSONObject.fromObject(requestParam);
         JSONObject merchants = jsonObject.getJSONObject("merchant");
-        String json = (String) jsonObject.get("merchant");
+        String new_name = merchants.getString("name");
+        String email = merchants.getString("email");
+        String uuid = merchants.getJSONObject("address").getString("uuid");
+        String province = merchants.getJSONObject("address").getString("province");
+        String city = merchants.getJSONObject("address").getString("city");
+        String region = merchants.getJSONObject("address").getString("region");
+        String street = merchants.getJSONObject("address").getString("street");
+        String zipcode = merchants.getJSONObject("address").getString("zipcode");
+        String receiver = merchants.getJSONObject("address").getString("receiver");
+        String mobile = merchants.getJSONObject("address").getString("mobile");
+        String longitude = merchants.getJSONObject("address").getString("longitude");
+        String latitude = merchants.getJSONObject("address").getString("latitude");
+        String json = "{\"merchant\":{\"name\":\""+new_name+"\",\"attributes\":{},\"summary\":{},\"" +
+                "email\":\""+email+"\",\"address\":{\"type\":\"LIVE\",\"country\":\"中国\",\"province\":\""+province+"\",\"" +
+                "city\":\""+city+"\",\"region\":\""+region+"\",\"street\":\""+street+"\",\"zipcode\":\""+zipcode+"\",\"receiver\":" +
+                "\""+receiver+"\",\"mobile\":\""+mobile+"\",\"marks\":{},\"longitude\":\""+longitude+"\",\"latitude\":\""+latitude+"\",\"uuid\":\"" + uuid + "\"}}}";
         String access_token = jsonObject.getString("token");
         RequestBody rb = RequestBody.create(null, json);
         Request request = new Request.Builder().
