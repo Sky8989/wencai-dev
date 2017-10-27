@@ -45,9 +45,9 @@ public class OrderTimerLogic {
         long delay = requestObject.containsKey("delay") ? requestObject.getInt("delay") * 1000 : 0;
         JSONObject responseObject = new JSONObject();
 
-        if (is_on == 0) {
+        if (is_on == 0) {   //定时器开关  1/0
             if (InitTimeListener.reserveScheduledExecutorService != null) {
-                //关闭servlet中的定时器
+                //关闭servletContext中的定时器
                 InitTimeListener.reserveScheduledExecutorService.shutdown();
                 InitTimeListener.reserveScheduledExecutorService = null;
                 responseObject.put("message", "关闭定时器成功");
@@ -93,9 +93,9 @@ public class OrderTimerLogic {
         long delay = requestObject.containsKey("delay") ? requestObject.getInt("delay") * 1000 : 0;
         timeOutInterval = requestObject.containsKey("timeOutInterval") ? requestObject.getInt("timeOutInterval") * 1000 : 43200000; // 默认超时时间12小时
         JSONObject responseObject = new JSONObject();
-        if (is_on == 0) {
+        if (is_on == 0) {   //定时器开关  1/0
             if (InitTimeListener.cancelScheduledExecutorService != null) {
-                //关闭servlet中的定时器
+                //关闭servletContext中的定时器
                 InitTimeListener.cancelScheduledExecutorService.shutdown();
                 InitTimeListener.cancelScheduledExecutorService = null;
                 responseObject.put("message", "关闭【取消超时大网订单】定时器成功");
@@ -144,9 +144,9 @@ public class OrderTimerLogic {
         long delay = requestObject.containsKey("delay") ? requestObject.getInt("delay") * 1000 : 0;
         timeOutIntervalForSame = requestObject.containsKey("timeOutInterval") ? requestObject.getInt("timeOutInterval") * 1000 : 43200000; // 默认超时时间12小时
         JSONObject responseObject = new JSONObject();
-        if (is_on == 0) {
+        if (is_on == 0) {   //定时器开关  1/0
             if (InitTimeListener.cancelSAMEScheduledExecutorService != null) {
-                //关闭servlet中的定时器
+                //关闭servletContext中的定时器
                 InitTimeListener.cancelSAMEScheduledExecutorService.shutdown();
                 InitTimeListener.cancelSAMEScheduledExecutorService = null;
                 responseObject.put("message", "关闭【取消超时同城订单】定时器成功");

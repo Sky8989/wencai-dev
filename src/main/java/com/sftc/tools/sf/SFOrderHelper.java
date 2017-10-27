@@ -32,6 +32,7 @@ public class SFOrderHelper {
         return result;
     }
 
+    //随机订单id
     public static String getRandomId(int length) {
 
         Random random = new Random();
@@ -47,6 +48,7 @@ public class SFOrderHelper {
         return result;
     }
 
+    //随机Openid，用于临时token的创建
     public static String getRandomOpenId(int length) {
 
         Random random = new Random();
