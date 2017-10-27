@@ -56,42 +56,42 @@ public class MessageServiceImpl implements MessageService {
         JSONObject jsonObject = JSONObject.fromObject(requestParam); // 调用顺丰注册接口的请求参数
         JSONObject jsonDevice = JSONObject.fromObject(requestParam); // 调用顺丰获取设备的请求参数
         String mobile = jsonObject.getJSONObject("message").getString("mobile");
-        String operateType = jsonObject.getJSONObject("message").getString("type");
 
-        // 请求顺丰验证码接口
-        HttpPost post = new HttpPost(SF_TAKE_MESSAGE_URL);
-        // 注册类型的请求验证码，需要先获取设备ID
-        if (operateType != null && operateType.equals("WX_REGISTER_VERIFY_SMS")) { // 注册
-            // 调用顺丰获取设备参数整理
-            jsonDevice.remove("message");
-            jsonDevice.remove("invite");
-            jsonDevice.put("type", "WXC");
-            // 调用顺丰设备接口
-            HttpPost postDevice = new HttpPost(SF_DEVICE_URL);
-            postDevice.addHeader("PushEnvelope-Device-Token", SFTokenHelper.COMMON_ACCESSTOKEN);
-            String resDevice = APIPostUtil.post(gson.toJson(jsonDevice), postDevice);
-            JSONObject resJSONDevice = JSONObject.fromObject(resDevice);
-            // 处理获取顺丰设备ID接口的回调
-            if (resJSONDevice.containsKey("error"))
-                return APIUtil.submitErrorResponse("获取小程序设备ID错误", resJSONDevice);
-            if (!resJSONDevice.containsKey("uuid"))
-                return APIUtil.paramErrorResponse("Parameter uuid missing in sf-api callback.");
-            // 正常情况，添加设备ID到获取验证码的请求headers中
-            String deviceId = resJSONDevice.getString("uuid");
-            post.addHeader("PushEnvelope-Device-ID", deviceId);
-        }
+        // 调用顺丰获取设备接口的参数整理
+        jsonDevice.remove("message");
+        jsonDevice.remove("invite");
+        jsonDevice.getJSONObject("device").put("type", "WXC");
+        // 调用顺丰设备接口
+        HttpPost postDevice = new HttpPost(SF_DEVICE_URL);
+        postDevice.addHeader("PushEnvelope-Device-Token", SFTokenHelper.COMMON_ACCESSTOKEN);
+        String resDevice = APIPostUtil.post(gson.toJson(jsonDevice), postDevice);
+        JSONObject resJSONDevice = JSONObject.fromObject(resDevice);
+        // 处理获取顺丰设备ID接口的回调
+        if (resJSONDevice.containsKey("error"))
+            return APIUtil.submitErrorResponse("获取小程序设备ID错误", resJSONDevice);
+        if (!resJSONDevice.containsKey("device"))
+            return APIUtil.paramErrorResponse("Parameter device missing in sf-api callback.");
+        if (!resJSONDevice.getJSONObject("device").containsKey("uuid"))
+            return APIUtil.paramErrorResponse("Parameter device.uuid missing in sf-api callback.");
+        // 正常情况，添加设备ID到获取验证码的请求headers中
+        String deviceId = resJSONDevice.getJSONObject("device").getString("uuid");
 
         // 顺丰验证码请求参数处理
         jsonObject.remove("device");
         jsonObject.remove("invite");
         jsonObject.getJSONObject("message").remove("mobile");
         jsonObject.getJSONObject("message").put("receiver", mobile);
-        // 请求验证码
+
+        // 请求顺丰验证码接口
+        HttpPost post = new HttpPost(SF_TAKE_MESSAGE_URL);
+        post.addHeader("PushEnvelope-Device-ID", deviceId);
         String res = APIPostUtil.post(jsonObject.toString(), post);
         JSONObject resultObject = JSONObject.fromObject(res);
         // 处理验证码结果
-        if (resultObject.containsKey("errors") || resultObject.containsKey("error"))
-            return APIUtil.submitErrorResponse("SMS_Failed", resultObject);
+        if (resultObject.containsKey("error"))
+            return APIUtil.submitErrorResponse("请求验证码失败", resultObject.getJSONObject("error"));
+        if (resultObject.containsKey("errors"))
+            return APIUtil.submitErrorResponse("请求验证码失败", resultObject.getJSONArray("errors"));
 
         return APIUtil.getResponse(SUCCESS, resultObject);
     }
