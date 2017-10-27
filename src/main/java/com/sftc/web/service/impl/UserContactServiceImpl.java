@@ -180,7 +180,7 @@ public class UserContactServiceImpl implements UserContactService {
             }else {
                 token = COMMON_ACCESSTOKEN;
             }
-            orderses = APIResolve.getOrdersJson(ORDERS_URL, token);
+            orderses = APIResolve.getOrderStatusWithUrl(ORDERS_URL, token);
         } catch (Exception e) {
             return APIUtil.submitErrorResponse("正在同步来往记录订单状态，稍后重试", e);
         }

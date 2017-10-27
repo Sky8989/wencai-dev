@@ -1,6 +1,5 @@
 package com.sftc.web.service.impl.logic.app;
 
-import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -16,7 +15,6 @@ import com.sftc.web.model.entity.Message;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.entity.OrderExpressTransform;
-import com.sftc.web.model.reqeustParam.UserContactParam;
 import com.sftc.web.model.sfmodel.Orders;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -244,7 +242,7 @@ public class OrderDetailLogic {
             }else {
                 token = COMMON_ACCESSTOKEN;
             }
-            orderses = APIResolve.getOrdersJson(ORDERS_URL, token);
+            orderses = APIResolve.getOrderStatusWithUrl(ORDERS_URL, token);
         } catch (Exception e) {
             return APIUtil.submitErrorResponse("正在同步订单状态，稍后重试", e);
         }

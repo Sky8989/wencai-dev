@@ -10,7 +10,7 @@ import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
 import com.sftc.web.model.reqeustParam.UserParam;
-import com.sftc.web.model.wechat.WechatUser;
+import com.sftc.web.model.wechat.WXUser;
 import com.sftc.web.service.MessageService;
 import com.sftc.web.service.UserService;
 import net.sf.json.JSONObject;
@@ -51,11 +51,11 @@ public class UserServiceImpl implements UserService {
     public APIResponse login(UserParam userParam) throws Exception {
         APIStatus status = SUCCESS;
         String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
-        WechatUser wechatUser = APIResolve.getWechatJson(auth_url);
+        WXUser wxUser = APIResolve.getWxUserWithUrl(auth_url);
         User user = null;
         Map<String, String> tokenInfo = new HashMap<String, String>();
-        if (wechatUser.getOpenid() != null) {
-            List<User> userList = userMapper.selectUserByOpenid(wechatUser.getOpenid());
+        if (wxUser.getOpenid() != null) {
+            List<User> userList = userMapper.selectUserByOpenid(wxUser.getOpenid());
             if (userList.size() > 1) {
                 return APIUtil.paramErrorResponse("出现重复用户，请填写用户反馈");
             }
@@ -64,8 +64,8 @@ public class UserServiceImpl implements UserService {
             }
             if (user == null) {
                 User user2 = new User();
-                user2.setOpen_id(wechatUser.getOpenid());
-                user2.setSession_key(wechatUser.getSession_key());
+                user2.setOpen_id(wxUser.getOpenid());
+                user2.setSession_key(wxUser.getSession_key());
                 user2.setCreate_time(Long.toString(System.currentTimeMillis()));
                 //加入头像和昵称
                 if (userParam.getName() != null && userParam.getAvatar() != null) {
@@ -82,8 +82,8 @@ public class UserServiceImpl implements UserService {
                 tokenInfo.put("token", myToken);
                 tokenInfo.put("user_id", (user2.getId() + ""));
             } else {
-                user.setOpen_id(wechatUser.getOpenid());
-                user.setSession_key(wechatUser.getSession_key());
+                user.setOpen_id(wxUser.getOpenid());
+                user.setSession_key(wxUser.getSession_key());
                 user.setCreate_time(Long.toString(System.currentTimeMillis()));
                 //更新头像和昵称
                 if (userParam.getName() != null && userParam.getAvatar() != null) {
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
                 tokenInfo.put("user_id", (token.getUser_id() + ""));
             }
         } else {
-            return APIUtil.submitErrorResponse(wechatUser.getErrmsg(), wechatUser);
+            return APIUtil.submitErrorResponse(wxUser.getErrmsg(), wxUser);
         }
         return APIUtil.getResponse(status, tokenInfo);
     }
@@ -118,16 +118,16 @@ public class UserServiceImpl implements UserService {
     public APIResponse superLogin(UserParam userParam) throws Exception {
         APIStatus status = SUCCESS;
         String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
-        WechatUser wechatUser = APIResolve.getWechatJson(auth_url);
-//        WechatUser wechatUser = new WechatUser();
-//        wechatUser.setOpenid("123");
-//        wechatUser.setSession_key("66==");
-//        wechatUser.setErrmsg("sadsadcuowu");
-//        wechatUser.setErrcode(500);
+        WXUser wxUser = APIResolve.getWxUserWithUrl(auth_url);
+//        WXUser wxUser = new WXUser();
+//        wxUser.setOpenid("123");
+//        wxUser.setSession_key("66==");
+//        wxUser.setErrmsg("sadsadcuowu");
+//        wxUser.setErrcode(500);
         User user = null;
         Map<String, String> tokenInfo = new HashMap<String, String>();
-        if (wechatUser.getOpenid() != null) {
-            List<User> userList = userMapper.selectUserByOpenid(wechatUser.getOpenid());
+        if (wxUser.getOpenid() != null) {
+            List<User> userList = userMapper.selectUserByOpenid(wxUser.getOpenid());
             if (userList.size() > 1) {
                 return APIUtil.paramErrorResponse("出现重复用户，请填写用户反馈");
             }
@@ -136,8 +136,8 @@ public class UserServiceImpl implements UserService {
             }
             if (user == null) {
                 User user2 = new User();
-                user2.setOpen_id(wechatUser.getOpenid());
-                user2.setSession_key(wechatUser.getSession_key());
+                user2.setOpen_id(wxUser.getOpenid());
+                user2.setSession_key(wxUser.getSession_key());
                 user2.setCreate_time(Long.toString(System.currentTimeMillis()));
                 //加入头像和昵称
                 if (userParam.getName() != null && userParam.getAvatar() != null) {
@@ -154,8 +154,8 @@ public class UserServiceImpl implements UserService {
                 tokenInfo.put("token", myToken);
                 tokenInfo.put("user_id", (user2.getId() + ""));
             } else {
-//                user.setOpen_id(wechatUser.getOpenid());// 不更新
-                user.setSession_key(wechatUser.getSession_key());
+//                user.setOpen_id(wxUser.getOpenid());// 不更新
+                user.setSession_key(wxUser.getSession_key());
 //                user.setCreate_time(Long.toString(System.currentTimeMillis()));//不更新
                 //更新头像和昵称
                 if (userParam.getName() != null && userParam.getAvatar() != null) {
@@ -198,7 +198,7 @@ public class UserServiceImpl implements UserService {
                 }
             }
         } else {
-            return APIUtil.submitErrorResponse(wechatUser.getErrmsg(), wechatUser);
+            return APIUtil.submitErrorResponse(wxUser.getErrmsg(), wxUser);
         }
         return APIUtil.getResponse(SUCCESS, tokenInfo);
     }
