@@ -60,6 +60,8 @@ public class User extends Object {
     public User() {
     }
 
+
+
     public int getInvite_id() {
         return invite_id;
     }
@@ -192,5 +194,29 @@ public class User extends Object {
         {this.id = Integer.parseInt(request.getParameter("id"));}
         if (request.getParameter("name") != null && !"".equals(request.getParameter("name")))
         {this.name = request.getParameter("name");}
+    }
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", invite_id=" + invite_id +
+                ", uuid='" + uuid + '\'' +
+                ", name='" + name + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", user_password='" + user_password + '\'' +
+                ", open_id='" + open_id + '\'' +
+                ", session_key='" + session_key + '\'' +
+                ", create_time='" + create_time + '\'' +
+                ", js_code='" + js_code + '\'' +
+                ", summary=" + summary +
+                ", attributes=" + attributes +
+                ", tags=" + tags +
+                ", token=" + token +
+                ", pageNumKey=" + pageNumKey +
+                ", pageSizeKey=" + pageSizeKey +
+                '}';
     }
 }
