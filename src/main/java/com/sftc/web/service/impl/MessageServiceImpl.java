@@ -29,6 +29,7 @@ import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.*;
 import static com.sftc.tools.constant.WXConstant.WX_ACCESS_TOKEN;
 import static com.sftc.tools.constant.WXConstant.WX_SEND_MESSAGE_PATH;
+
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {
     @Resource
@@ -45,71 +46,52 @@ public class MessageServiceImpl implements MessageService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Gson gson = new Gson();
 
-
     /**
      * 获取短信验证码
      */
-
     public APIResponse getMessage(APIRequest apiRequest) {
 
+        // 获取请求参数
         Object requestParam = apiRequest.getRequestParam();
-        JSONObject jsonObject = JSONObject.fromObject(requestParam);  //调用顺丰注册接口的请求参数
-        JSONObject jsonDevice = JSONObject.fromObject(requestParam); //调用顺丰获取设备的请求参数
+        JSONObject jsonObject = JSONObject.fromObject(requestParam); // 调用顺丰注册接口的请求参数
+        JSONObject jsonDevice = JSONObject.fromObject(requestParam); // 调用顺丰获取设备的请求参数
         String mobile = jsonObject.getJSONObject("message").getString("mobile");
-        this.logger.info("------- " + userMapper.findUserByMobile(mobile));
-        Boolean is_login = !userMapper.findUserByMobile(mobile).isEmpty();  //判断当前手机号是登陆注册
-        this.logger.info("--- login --" + is_login);
-        String deviceId = null;
-        //调用顺丰获取设备参数整理
-        jsonDevice .remove("message");
-        jsonDevice .remove("invite");
-        jsonDevice.put("type","WXC");
+        String operateType = jsonObject.getJSONObject("message").getString("type");
 
-        //注册所需的操作
-        if(!is_login) {
-            //调用顺丰设备接口
+        // 请求顺丰验证码接口
+        HttpPost post = new HttpPost(SF_TAKE_MESSAGE_URL);
+        // 注册类型的请求验证码，需要先获取设备ID
+        if (operateType != null && operateType.equals("WX_REGISTER_VERIFY_SMS")) { // 注册
+            // 调用顺丰获取设备参数整理
+            jsonDevice.remove("message");
+            jsonDevice.remove("invite");
+            jsonDevice.put("type", "WXC");
+            // 调用顺丰设备接口
             HttpPost postDevice = new HttpPost(SF_DEVICE_URL);
             postDevice.addHeader("PushEnvelope-Device-Token", SFTokenHelper.COMMON_ACCESSTOKEN);
             String resDevice = APIPostUtil.post(gson.toJson(jsonDevice), postDevice);
             JSONObject resJSONDevice = JSONObject.fromObject(resDevice);
-            this.logger.info("调用顺丰设备接口返回的参数-----" + resJSONDevice);
-            if (resJSONDevice.containsKey("error")) {
-                return APIUtil.submitErrorResponse("调用设备接口错误", resJSONDevice);
-            }
-             deviceId = resJSONDevice.getString("uuid");
-
-            if (!resJSONDevice.containsKey("uuid")) return APIUtil.paramErrorResponse("Parameter_Missing");
-            if (!(resJSONDevice.getJSONObject("message").getString("mobile").length() == 11))
-                return APIUtil.paramErrorResponse(" Mobile's length is not 11");
-
-            //处理captcha相关的验证码
-            if (resJSONDevice.containsKey("captcha")) {
-                if (!resJSONDevice.getJSONObject("captcha").containsKey("uuid") || !resJSONDevice.getJSONObject("captcha").containsKey("content"))
-                    return APIUtil.paramErrorResponse("Parameter_Missing in captcha");
-                String content = resJSONDevice.getJSONObject("captcha").getString("content");
-                String uuid = resJSONDevice.getJSONObject("captcha").getString("uuid");
-                if (uuid.length() < 4 || content.length() < 4)
-                    return APIUtil.paramErrorResponse("length is wrong in captcha");
-            }
+            // 处理获取顺丰设备ID接口的回调
+            if (resJSONDevice.containsKey("error"))
+                return APIUtil.submitErrorResponse("获取小程序设备ID错误", resJSONDevice);
+            if (!resJSONDevice.containsKey("uuid"))
+                return APIUtil.paramErrorResponse("Parameter uuid missing in sf-api callback.");
+            // 正常情况，添加设备ID到获取验证码的请求headers中
+            String deviceId = resJSONDevice.getString("uuid");
+            post.addHeader("PushEnvelope-Device-ID", deviceId);
         }
-        //顺丰验证码请求参数准备
-        jsonObject .remove("device");
-        jsonObject .remove("invite");
-        jsonObject.getJSONObject("message").remove("mobile");
-        jsonObject.getJSONObject("message").put("receiver",mobile);
-        jsonObject.getJSONObject("message").put("type","WX_REGISTER_VERIFY_SMS");
 
-        //请求顺丰验证码接口
-        HttpPost post = new HttpPost(SF_TAKE_MESSAGE_URL);
-        if(!is_login) {
-          post.addHeader("PushEnvelope-Device-ID", deviceId);
-         }
+        // 顺丰验证码请求参数处理
+        jsonObject.remove("device");
+        jsonObject.remove("invite");
+        jsonObject.getJSONObject("message").remove("mobile");
+        jsonObject.getJSONObject("message").put("receiver", mobile);
+        // 请求验证码
         String res = APIPostUtil.post(jsonObject.toString(), post);
-        this.logger.info("验证码--"+res);
         JSONObject resultObject = JSONObject.fromObject(res);
+        // 处理验证码结果
         if (resultObject.containsKey("errors") || resultObject.containsKey("error"))
             return APIUtil.submitErrorResponse("SMS_Failed", resultObject);
-
 
         return APIUtil.getResponse(SUCCESS, resultObject);
     }
@@ -119,7 +101,7 @@ public class MessageServiceImpl implements MessageService {
      */
     public APIResponse register(APIRequest apiRequest) {
         Object requestParam = apiRequest.getRequestParam();
-        Integer user_id =  TokenUtils.getInstance().getUserId(tokenMapper);
+        Integer user_id = TokenUtils.getInstance().getUserId(tokenMapper);
         this.logger.info("-------user_id " + user_id);
         JSONObject jsonObject = JSONObject.fromObject(requestParam);  //调用顺丰注册接口的请求参数
         JSONObject jsonInvite = jsonObject.getJSONObject("invite");  //用户注册时 相关邀请信息
@@ -137,22 +119,20 @@ public class MessageServiceImpl implements MessageService {
         if (resJSONObject.containsKey("error")) {
             return APIUtil.submitErrorResponse("注册失败", resJSONObject);
         } else {
-
             // 注册成功
             JSONObject merchantJSONObject = resJSONObject.getJSONObject("merchant");
             JSONObject tokenJSONObject = resJSONObject.getJSONObject("token");
 
-
             UserInvite invite = null;
-            if(!jsonInvite.getString("referrer_code").equals("0")){
+            if (!jsonInvite.getString("referrer_code").equals("0")) {
                 invite = new UserInvite();
                 invite.setUser_id(user_id);
                 invite.setCity(jsonInvite.getString("city"));
                 invite.setInvite_channel(jsonInvite.getInt("channel"));
                 invite.setInvite_code(invite_code);
                 invite.setCreate_time(Long.toString(System.currentTimeMillis()));
-                invite  = userInviteDao.save(invite);
-                this.logger.info("invite_id= " + invite.getId());
+                invite = userInviteDao.save(invite);
+                this.logger.info("invite_id = " + invite.getId());
             }
 
             // 存储 token中的access_token 到token表
@@ -167,19 +147,15 @@ public class MessageServiceImpl implements MessageService {
             user.setId(user_id);
             user.setMobile(merchantJSONObject.getString("mobile"));
             user.setUuid(merchantJSONObject.getString("uuid"));
-            //推荐注册
-            if(invite != null ){
+            // 推荐注册
+            if (invite != null) {
                 user.setInvite_id(invite.getId());
             }
             userMapper.updateUser(user);
 
-            //存储用户邀请的信息到user_invite表
-
+            // 存储用户邀请的信息到user_invite表
             return APIUtil.getResponse(SUCCESS, resJSONObject);
         }
-
-
-
     }
 
     /**
