@@ -89,7 +89,7 @@ public class OrderCancelLogic {
         if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
             // 取消同城订单
             Order order1 = orderDao.findOne(order_id);
-            order1.setIs_cancel("Cancelled");
+            order1.setIs_cancel(1);
             orderDao.save(order1);
             // 同城 超时未填写或者支付超时 都更新为超时OVERTIME
             List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
@@ -107,7 +107,7 @@ public class OrderCancelLogic {
     private APIResponse cancelNATIONOrder(String order_id) {
         try {
             Order order = orderDao.findOne(order_id);
-            order.setIs_cancel("Cancelled");
+            order.setIs_cancel(1);
             orderDao.save(order);
             List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
             for(OrderExpress orderExpress1 : orderExpress){
@@ -154,7 +154,7 @@ public class OrderCancelLogic {
         // 订单还未提交给顺丰的情况，只更新order的信息即可
         // 订单已提交，仍然需要更新
         Order order1 = orderDao.findOne(order_id);
-        order1.setIs_cancel("Cancelled");
+        order1.setIs_cancel(1);
         orderDao.save(order1);
         List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
         for(OrderExpress orderExpress1 : orderExpress){

@@ -4,12 +4,14 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
+import com.sftc.tools.sf.SFOrderHelper;
+import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
 import com.sftc.web.model.reqeustParam.UserParam;
-import com.sftc.web.model.wechat.WechatUser;
+import com.sftc.web.model.wechat.WXUser;
 import com.sftc.web.service.MessageService;
 import com.sftc.web.service.UserService;
 import net.sf.json.JSONObject;
@@ -50,11 +52,11 @@ public class UserServiceImpl implements UserService {
     public APIResponse login(UserParam userParam) throws Exception {
         APIStatus status = SUCCESS;
         String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
-        WechatUser wechatUser = APIResolve.getWechatJson(auth_url);
+        WXUser wxUser = APIResolve.getWxUserWithUrl(auth_url);
         User user = null;
         Map<String, String> tokenInfo = new HashMap<String, String>();
-        if (wechatUser.getOpenid() != null) {
-            List<User> userList = userMapper.selectUserByOpenid(wechatUser.getOpenid());
+        if (wxUser.getOpenid() != null) {
+            List<User> userList = userMapper.selectUserByOpenid(wxUser.getOpenid());
             if (userList.size() > 1) {
                 return APIUtil.paramErrorResponse("出现重复用户，请填写用户反馈");
             }
@@ -63,8 +65,8 @@ public class UserServiceImpl implements UserService {
             }
             if (user == null) {
                 User user2 = new User();
-                user2.setOpen_id(wechatUser.getOpenid());
-                user2.setSession_key(wechatUser.getSession_key());
+                user2.setOpen_id(wxUser.getOpenid());
+                user2.setSession_key(wxUser.getSession_key());
                 user2.setCreate_time(Long.toString(System.currentTimeMillis()));
                 //加入头像和昵称
                 if (userParam.getName() != null && userParam.getAvatar() != null) {
@@ -81,8 +83,8 @@ public class UserServiceImpl implements UserService {
                 tokenInfo.put("token", myToken);
                 tokenInfo.put("user_id", (user2.getId() + ""));
             } else {
-                user.setOpen_id(wechatUser.getOpenid());
-                user.setSession_key(wechatUser.getSession_key());
+                user.setOpen_id(wxUser.getOpenid());
+                user.setSession_key(wxUser.getSession_key());
                 user.setCreate_time(Long.toString(System.currentTimeMillis()));
                 //更新头像和昵称
                 if (userParam.getName() != null && userParam.getAvatar() != null) {
@@ -108,7 +110,7 @@ public class UserServiceImpl implements UserService {
                 tokenInfo.put("user_id", (token.getUser_id() + ""));
             }
         } else {
-            return APIUtil.submitErrorResponse(wechatUser.getErrmsg(), wechatUser);
+            return APIUtil.submitErrorResponse(wxUser.getErrmsg(), wxUser);
         }
         return APIUtil.getResponse(status, tokenInfo);
     }
@@ -117,16 +119,16 @@ public class UserServiceImpl implements UserService {
     public APIResponse superLogin(UserParam userParam) throws Exception {
         APIStatus status = SUCCESS;
         String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
-        WechatUser wechatUser = APIResolve.getWechatJson(auth_url);
-//        WechatUser wechatUser = new WechatUser();
-//        wechatUser.setOpenid("123");
-//        wechatUser.setSession_key("66==");
-//        wechatUser.setErrmsg("sadsadcuowu");
-//        wechatUser.setErrcode(500);
+        WXUser wxUser = APIResolve.getWxUserWithUrl(auth_url);
+//        WXUser wxUser = new WXUser();
+//        wxUser.setOpenid("123");
+//        wxUser.setSession_key("66==");
+//        wxUser.setErrmsg("sadsadcuowu");
+//        wxUser.setErrcode(500);
         User user = null;
         Map<String, String> tokenInfo = new HashMap<String, String>();
-        if (wechatUser.getOpenid() != null) {
-            List<User> userList = userMapper.selectUserByOpenid(wechatUser.getOpenid());
+        if (wxUser.getOpenid() != null) {
+            List<User> userList = userMapper.selectUserByOpenid(wxUser.getOpenid());
             if (userList.size() > 1) {
                 return APIUtil.paramErrorResponse("出现重复用户，请填写用户反馈");
             }
@@ -135,8 +137,8 @@ public class UserServiceImpl implements UserService {
             }
             if (user == null) {
                 User user2 = new User();
-                user2.setOpen_id(wechatUser.getOpenid());
-                user2.setSession_key(wechatUser.getSession_key());
+                user2.setOpen_id(wxUser.getOpenid());
+                user2.setSession_key(wxUser.getSession_key());
                 user2.setCreate_time(Long.toString(System.currentTimeMillis()));
                 //加入头像和昵称
                 if (userParam.getName() != null && userParam.getAvatar() != null) {
@@ -153,8 +155,8 @@ public class UserServiceImpl implements UserService {
                 tokenInfo.put("token", myToken);
                 tokenInfo.put("user_id", (user2.getId() + ""));
             } else {
-//                user.setOpen_id(wechatUser.getOpenid());// 不更新
-                user.setSession_key(wechatUser.getSession_key());
+//                user.setOpen_id(wxUser.getOpenid());// 不更新
+                user.setSession_key(wxUser.getSession_key());
 //                user.setCreate_time(Long.toString(System.currentTimeMillis()));//不更新
                 //更新头像和昵称
                 if (userParam.getName() != null && userParam.getAvatar() != null) {
@@ -197,7 +199,7 @@ public class UserServiceImpl implements UserService {
                 }
             }
         } else {
-            return APIUtil.submitErrorResponse(wechatUser.getErrmsg(), wechatUser);
+            return APIUtil.submitErrorResponse(wxUser.getErrmsg(), wxUser);
         }
         return APIUtil.getResponse(SUCCESS, tokenInfo);
     }
@@ -297,8 +299,29 @@ public class UserServiceImpl implements UserService {
         Object requestParam = apiRequest.getRequestParam();
         JSONObject jsonObject = JSONObject.fromObject(requestParam);
         JSONObject merchants = jsonObject.getJSONObject("merchant");
-        String json = merchants.toString();
-        String access_token = jsonObject.getString("token");
+//      String json = merchants.toString();
+        String new_name = merchants.getString("name");
+        String email = merchants.getString("email");
+        String uuid = merchants.getJSONObject("address").getString("uuid");
+        String province = merchants.getJSONObject("address").getString("province");
+        String city = merchants.getJSONObject("address").getString("city");
+        String region = merchants.getJSONObject("address").getString("region");
+        String street = merchants.getJSONObject("address").getString("street");
+        String zipcode = merchants.getJSONObject("address").getString("zipcode");
+        String receiver = merchants.getJSONObject("address").getString("receiver");
+        String mobile = merchants.getJSONObject("address").getString("mobile");
+        String longitude = merchants.getJSONObject("address").getString("longitude");
+        String latitude = merchants.getJSONObject("address").getString("latitude");
+        String json = "{\"merchant\":{\"name\":\""+new_name+"\",\"attributes\":{},\"summary\":{},\"" +
+                "email\":\""+email+"\",\"address\":{\"type\":\"LIVE\",\"country\":\"中国\",\"province\":\""+province+"\",\"" +
+                "city\":\""+city+"\",\"region\":\""+region+"\",\"street\":\""+street+"\",\"zipcode\":\""+zipcode+"\",\"receiver\":" +
+                "\""+receiver+"\",\"mobile\":\""+mobile+"\",\"marks\":{},\"longitude\":\""+longitude+"\",\"latitude\":\""+latitude+"\",\"uuid\":\"" + uuid + "\"}}}";
+        String access_token = null;
+        if(jsonObject.getString("token")!=null && !(jsonObject.getString("token")).equals("")){
+            access_token = jsonObject.getString("token");
+        }else{
+            access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
+        }
         RequestBody rb = RequestBody.create(null, json);
         Request request = new Request.Builder().
                 url(SF_LOGIN).
@@ -307,8 +330,34 @@ public class UserServiceImpl implements UserService {
                 .put(rb).build();
         OkHttpClient client = new OkHttpClient();
         okhttp3.Response response = client.newCall(request).execute();
-        if (response.code() == 200) return null;//正常情况返回null
+        if (response.code() == 200) return APIUtil.getResponse(SUCCESS, response.message());//正常情况返回null
         return APIUtil.logicErrorResponse("更新个人信息失败", response.body());
+    }
+
+    //生成临时token  2017-10-23
+    public APIResponse getTemporaryToken() throws Exception {
+        //2188用户用于发放临时token
+        Token usableToken = tokenMapper.getTokenById(2188);
+        if (usableToken != null) {
+            long dataTime = System.currentTimeMillis();
+            long tempTime = Long.parseLong(usableToken.getGmt_expiry());
+            //如果没有过期直接返回
+            if (dataTime < tempTime || dataTime == tempTime) {
+                usableToken = tokenMapper.getTokenById(2188);
+            } else {//如果过期重新创建新的返回
+                String creat_time = Long.toString(System.currentTimeMillis());
+                String tempOpenId = SFOrderHelper.getTempOpenId();
+                String tempToken = makeToken(creat_time, tempOpenId);
+                Token token = new Token(2188, tempToken);
+                token.setGmt_expiry((System.currentTimeMillis() + 60000) + "");
+                tokenMapper.updateToken(token);
+                usableToken = tokenMapper.getTokenById(2188);
+            }
+        } else {
+            String reason = "token丢失了";
+            return APIUtil.selectErrorResponse("AuthToken is missing", reason);
+        }
+        return APIUtil.getResponse(SUCCESS, usableToken.getLocal_token());
     }
 
     /**

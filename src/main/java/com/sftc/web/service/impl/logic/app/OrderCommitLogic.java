@@ -65,7 +65,6 @@ public class OrderCommitLogic {
     private OrderDao orderDao;
     @Resource
     private OrderExpressDao orderExpressDao;
-
     //////////////////// Public Method ////////////////////
 
     /**
@@ -129,7 +128,7 @@ public class OrderCommitLogic {
     /**
      * 大网预约订单提交
      */
-    public void nationOrderReserveCommit(String order_id, long currentTimeMillis) {
+    public APIResponse nationOrderReserveCommit(String order_id, long currentTimeMillis) {
 
         try {
             OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
@@ -138,10 +137,13 @@ public class OrderCommitLogic {
                 OrderExpress oe = OrderExpressFactory.dtoToEntity(orderExpressDTO);
 
                 // 改为提前半小时下单，并且不下预约时间为一小时以前的单，这是为了排除服务器更新上线把定时器关了导致的时间间隔误差
-                if (oe.getReserve_time().equals("") || oe.getReserve_time() == null) continue;
+                if (oe.getReserve_time().equals("") || oe.getReserve_time() == null) {
+                    return APIUtil.submitErrorResponse("非预约单", null);
+                }
                 final long reserve_time = Long.parseLong(oe.getReserve_time());
-                if (reserve_time < currentTimeMillis - 3600000L || reserve_time >= currentTimeMillis + 1800000L)
-                    return;
+                if (reserve_time < currentTimeMillis - 3600000L || reserve_time >= currentTimeMillis + 1800000L) {
+                    return APIUtil.submitErrorResponse(oe.getId() + "--暂未到达预约时间", null);
+                }
 
                 // 大网订单提交参数
                 JSONObject sf = new JSONObject();
@@ -176,6 +178,11 @@ public class OrderCommitLogic {
                     sf.put("pay_method", pay_method);
                 }
 
+                // 订单状态为其它的，不需要再次下单
+                if (!oe.getState().equals("WAIT_HAND_OVER")) continue;
+                // 订单编号不为空，说明已下单
+                if (oe.getOrder_number() != null && !oe.getOrder_number().equals("")) continue;
+
                 // 订单提交
                 String paramStr = gson.toJson(JSONObject.fromObject(sf));
                 HttpPost post = new HttpPost(SF_CREATEORDER_URL);
@@ -200,6 +207,8 @@ public class OrderCommitLogic {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return APIUtil.getResponse(SUCCESS, null);
 
     }
 
@@ -536,7 +545,11 @@ public class OrderCommitLogic {
         order.setImage((String) orderOBJ.get("image"));
         order.setVoice((String) orderOBJ.get("voice"));
         order.setWord_message((String) orderOBJ.get("word_message"));
-        order.setGift_card_id(Integer.parseInt((String) orderOBJ.get("gift_card_id")));
+        if (!orderOBJ.getString("gift_card_id").equals("")) {
+            order.setGift_card_id(Integer.parseInt((String) orderOBJ.get("gift_card_id")));
+        } else {
+            order.setGift_card_id(0);
+        }
         order.setVoice_time(Integer.parseInt((String) orderOBJ.get("voice_time")));
         order.setRegion_type("REGION_SAME");
 
@@ -730,7 +743,11 @@ public class OrderCommitLogic {
         order.setImage((String) orderObject.get("image"));
         order.setVoice((String) orderObject.get("voice"));
         order.setWord_message((String) orderObject.get("word_message"));
-        order.setGift_card_id(Integer.parseInt((String) orderObject.get("gift_card_id")));
+        if (!orderObject.getString("gift_card_id").equals("")) {
+            order.setGift_card_id(Integer.parseInt((String) orderObject.get("gift_card_id")));
+        } else {
+            order.setGift_card_id(0);
+        }
         order.setVoice_time(Integer.parseInt((String) orderObject.get("voice_time")));
         order.setRegion_type("REGION_NATION");
         orderDao.save(order);

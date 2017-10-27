@@ -5,6 +5,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.screenshot.HtmlScreenShotUtil;
+import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.service.QiniuService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -35,7 +36,13 @@ public class OrderOtherLogic {
     public APIResponse timeConstants(APIRequest request) {
         String constantsUrl = SF_CONSTANTS_URL + request.getParameter("constants") + "?latitude=" + request.getParameter("latitude") + "&longitude=" + request.getParameter("longitude");
         HttpGet get = new HttpGet(constantsUrl);
-        get.addHeader("PushEnvelope-Device-Token", (String) request.getParameter("access_token"));
+        String access_token = null;
+        if((String) request.getParameter("access_token")!=null&&!((String) request.getParameter("access_token")).equals("")){
+            access_token = (String) request.getParameter("access_token");
+        }else {
+            access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
+        }
+        get.addHeader("PushEnvelope-Device-Token",access_token );
         String res = APIGetUtil.get(get);
         JSONObject jsonObject = JSONObject.fromObject(res);
         if (jsonObject.get("errors") != null || jsonObject.get("error") != null)

@@ -56,7 +56,7 @@ public class UserController extends BaseController {
     }
 
     //10-12日提出的新需求 更新个人信息
-    @RequestMapping(value = "/merchants/me", method = RequestMethod.POST)
+    @RequestMapping(value = "/merchants/me", method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse updatePersonMessage(@RequestBody Object object) throws Exception {
         APIRequest apiRequest = new APIRequest();

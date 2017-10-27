@@ -3,6 +3,8 @@ package com.sftc.web.config;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.TokenMapper;
+import com.sftc.web.dao.mybatis.UserMapper;
+import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -25,6 +27,16 @@ public class AuthTokenAOPInterceptor {
         HttpServletRequest request = res.getRequest();
         HttpServletResponse response = res.getResponse();
         String token = request.getHeader("token");
+        //根据请求的url判断，如果是同城转大网，则需要走临时token验证逻辑
+        if((request.getRequestURI().equals("/sftc/order/transform"))){
+           Token transformToken = tokenMapper.getTokenById(2188);   //2188用户存放临时token
+           if(token.equals(transformToken.getLocal_token())){
+               token = transformToken.getLocal_token();
+           }else {
+               String reason = "数据库中找不到此token";
+               return APIUtil.submitErrorResponse("AuthToken is not exist",reason);
+           }
+        }
         //获取当前执行的方法
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
         //判断当前执行的方法是否存在自定义的注解
@@ -33,11 +45,23 @@ public class AuthTokenAOPInterceptor {
            return proceedingJoinPoint.proceed();
         }else {
             if (token != null && !token.equals("")) {
-                APIResponse error = authTokenCheck(token);//校验用户
-                //验证成功返回null
-                if (error != null) {
-                    return APIUtil.selectErrorResponse("token不合法", null);
+                User user = tokenMapper.tokenInterceptor(token);
+                APIResponse error = null;
+                if(user!=null && user.getId() == 2188){//如果token为临时token，则进入临时token验证逻辑
+                    error = transformTokenCheck(token); //临时token验证
+                    if (error != null) {//临时token失效则需要重新获取
+                        String reason = "token已失效，请重新获取";
+                        return APIUtil.submitErrorResponse("AuthToken is unavailable Please take again", reason);
+                    }
+                }else {//校验用户
+                    error = authTokenCheck(token);
+                    if (error != null) {
+                        String reason = "数据库中找不到此token";
+                        return APIUtil.submitErrorResponse("网络繁忙，请稍后", reason);
+                    }
                 }
+                //验证成功返回null
+                return proceedingJoinPoint.proceed();
             } else {
                 //构建一个 springMVC 拦截器
                 HandlerInterceptorAdapter handlerInterceptorAdapter = new HandlerInterceptorAdapter() {
@@ -49,39 +73,36 @@ public class AuthTokenAOPInterceptor {
 
                 };
                 handlerInterceptorAdapter.preHandle(request,response,proceedingJoinPoint);
-                return APIUtil.selectErrorResponse("token验证失败", null);
+                String reason = "token验证失败";
+                return APIUtil.submitErrorResponse("Authtoken is unavailable", reason);
             }
-            return proceedingJoinPoint.proceed();
         }
     }
 
-//    private void error(HttpServletResponse response, APIResponse error) {
-//        response.reset();
-//        response.setCharacterEncoding("UTF-8");
-//        response.setContentType("application/json; charset=utf-8");
-//        OutputStreamWriter ow = null;
-//        try {
-//            ServletOutputStream out = response.getOutputStream();
-//            ow = new OutputStreamWriter(out, "UTF-8");
-//            ow.write(new Gson().toJson(error));
-//        } catch (IOException e) {
-//            e.fillInStackTrace();
-//        } finally {
-//            try {
-//                ow.flush();
-//                ow.close();
-//            } catch (IOException e) {
-//                e.fillInStackTrace();
-//            }
-//        }
-//    }
-
+    //普通全局token验证方法
     private APIResponse authTokenCheck(String token) throws Exception {
         User user = tokenMapper.tokenInterceptor(token);
-        if (user != null) {
+        if (user != null) { //此验证只需要找到用户即视为通过
             return null;
         } else {
-            return APIUtil.selectErrorResponse("token验证失败", null);
+            return APIUtil.submitErrorResponse("token验证失败", null);
+        }
+    }
+
+    //同城转大网时的临时token验证方法
+    private APIResponse transformTokenCheck(String token) throws Exception {
+        User user = tokenMapper.tokenInterceptor(token);
+        if (user != null) { //临时token验证需要判断是否已经过了有效时间
+            Token token1 = tokenMapper.getTokenById(user.getId());
+            long dataTime = System.currentTimeMillis();
+            long tempTime = Long.parseLong(token1.getGmt_expiry());
+            if (dataTime < tempTime || dataTime == tempTime) {
+                return null;
+            } else {
+                return APIUtil.submitErrorResponse("token已失效，请重新获取", null);
+            }
+        } else {
+            return APIUtil.submitErrorResponse("token验证失败", null);
         }
     }
 }

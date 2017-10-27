@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sftc.web.dao.mybatis.UserInviteMapper">
+
+
+
+    <insert id="save" parameterType="com.sftc.web.model.UserInvite" useGeneratedKeys="true" keyProperty="id" >
+
+        INSERT INTO sftc_user_invite (user_id,city,invite_channel,invite_code,create_time)
+        VALUES
+            (#{user_id},#{city},#{invite_channel}, #{invite_code}, #{create_time})
+    </insert>
+
+
+
+
+</mapper>
