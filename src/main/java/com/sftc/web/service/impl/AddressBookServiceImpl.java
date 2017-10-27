@@ -8,7 +8,6 @@ import com.sftc.web.dao.jpa.AddressBookDao;
 import com.sftc.web.dao.jpa.AddressDao;
 import com.sftc.web.dao.mybatis.AddressBookMapper;
 import com.sftc.web.dao.mybatis.AddressMapper;
-import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.model.Converter.AddressBookFactoty;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.entity.Address;
@@ -31,8 +30,6 @@ public class AddressBookServiceImpl implements AddressBookService {
     @Resource
     private AddressBookMapper addressBookMapper;
     @Resource
-    private TokenMapper tokenMapper;
-    @Resource
     private AddressMapper addressMapper;
 
     @Resource
@@ -47,25 +44,26 @@ public class AddressBookServiceImpl implements AddressBookService {
         if (!paramObject.containsKey("is_delete")) return APIUtil.paramErrorResponse("地址簿参数is_delete为空");
         if (!paramObject.containsKey("is_mystery")) return APIUtil.paramErrorResponse("地址簿参数is_mystery为空");
         if (!paramObject.containsKey("address_type")) return APIUtil.paramErrorResponse("地址簿参数address_type为空");
-        if (!paramObject.containsKey("address_book_type")) return APIUtil.paramErrorResponse("地址簿参数address_book_type为空");
+        if (!paramObject.containsKey("address_book_type"))
+            return APIUtil.paramErrorResponse("地址簿参数address_book_type为空");
         if (!paramObject.containsKey("address")) return APIUtil.paramErrorResponse("地址簿参数address为空");
         JSONObject address_OBJ = paramObject.getJSONObject("address");
 
-        if (!address_OBJ.containsKey("name")||address_OBJ.getString("name").equals(""))
+        if (!address_OBJ.containsKey("name") || address_OBJ.getString("name").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数name为空");
-        if (!address_OBJ.containsKey("phone")||address_OBJ.getString("phone").equals(""))
+        if (!address_OBJ.containsKey("phone") || address_OBJ.getString("phone").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数phone为空");
-        if (!address_OBJ.containsKey("province")||address_OBJ.getString("province").equals(""))
+        if (!address_OBJ.containsKey("province") || address_OBJ.getString("province").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数province为空");
-        if (!address_OBJ.containsKey("city")||address_OBJ.getString("city").equals(""))
+        if (!address_OBJ.containsKey("city") || address_OBJ.getString("city").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数city为空");
-        if (!address_OBJ.containsKey("area")||address_OBJ.getString("area").equals(""))
+        if (!address_OBJ.containsKey("area") || address_OBJ.getString("area").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数area为空");
-        if (!address_OBJ.containsKey("address")||address_OBJ.getString("address").equals(""))
+        if (!address_OBJ.containsKey("address") || address_OBJ.getString("address").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数address为空");
-        if (!address_OBJ.containsKey("longitude")||address_OBJ.getString("longitude").equals(""))
+        if (!address_OBJ.containsKey("longitude") || address_OBJ.getString("longitude").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数longitude为空");
-        if (!address_OBJ.containsKey("latitude")||address_OBJ.getString("latitude").equals(""))
+        if (!address_OBJ.containsKey("latitude") || address_OBJ.getString("latitude").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数latitude为空");
 
 
@@ -137,19 +135,19 @@ public class AddressBookServiceImpl implements AddressBookService {
 
         //地址的参数中只有补充地址可以为空
         JSONObject address_OBJ = paramObject.getJSONObject("address");
-        if (!address_OBJ.containsKey("name")||address_OBJ.getString("name").equals(""))
+        if (!address_OBJ.containsKey("name") || address_OBJ.getString("name").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数name为空");
-        if (!address_OBJ.containsKey("province")||address_OBJ.getString("province").equals(""))
+        if (!address_OBJ.containsKey("province") || address_OBJ.getString("province").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数province为空");
-        if (!address_OBJ.containsKey("city")||address_OBJ.getString("city").equals(""))
+        if (!address_OBJ.containsKey("city") || address_OBJ.getString("city").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数city为空");
-        if (!address_OBJ.containsKey("area")||address_OBJ.getString("area").equals(""))
+        if (!address_OBJ.containsKey("area") || address_OBJ.getString("area").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数area为空");
-        if (!address_OBJ.containsKey("address")||address_OBJ.getString("address").equals(""))
+        if (!address_OBJ.containsKey("address") || address_OBJ.getString("address").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数address为空");
-        if (!address_OBJ.containsKey("longitude")||address_OBJ.getString("longitude").equals(""))
+        if (!address_OBJ.containsKey("longitude") || address_OBJ.getString("longitude").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数longitude为空");
-        if (!address_OBJ.containsKey("latitude")||address_OBJ.getString("latitude").equals(""))
+        if (!address_OBJ.containsKey("latitude") || address_OBJ.getString("latitude").equals(""))
             return APIUtil.paramErrorResponse("地址簿参数latitude为空");
 
         ///更新 地址簿记录时间 包括映射关系和地址实体的时间
@@ -170,7 +168,7 @@ public class AddressBookServiceImpl implements AddressBookService {
                 supplementary_info
         );
 
-        if (addressBookDTOList.size() != 0){
+        if (addressBookDTOList.size() != 0) {
             AddressBookDTO addressBookDTO = addressBookMapper.selectByPrimaryKey(addressBookParam.getId());
             AddressBook addressBook = AddressBookFactoty.dtoToEntity(addressBookDTO);
             addressBookDao.save(addressBook);
@@ -195,7 +193,7 @@ public class AddressBookServiceImpl implements AddressBookService {
     public APIResponse selectAddressBookList(APIRequest apiRequest) {
         /// 处理参数
         HttpServletRequest httpServletRequest = apiRequest.getRequest();
-        Integer user_id =  TokenUtils.getInstance().getUserId(tokenMapper);
+        Integer user_id = TokenUtils.getInstance().getUserId();
         String address_book_type = httpServletRequest.getParameter("address_book_type");
 
         //执行查询
