@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
 import com.sftc.tools.sf.SFOrderHelper;
+import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Token;
@@ -315,7 +316,12 @@ public class UserServiceImpl implements UserService {
                 "email\":\""+email+"\",\"address\":{\"type\":\"LIVE\",\"country\":\"中国\",\"province\":\""+province+"\",\"" +
                 "city\":\""+city+"\",\"region\":\""+region+"\",\"street\":\""+street+"\",\"zipcode\":\""+zipcode+"\",\"receiver\":" +
                 "\""+receiver+"\",\"mobile\":\""+mobile+"\",\"marks\":{},\"longitude\":\""+longitude+"\",\"latitude\":\""+latitude+"\",\"uuid\":\"" + uuid + "\"}}}";
-        String access_token = jsonObject.getString("token");
+        String access_token = null;
+        if(jsonObject.getString("token")!=null && !(jsonObject.getString("token")).equals("")){
+            access_token = jsonObject.getString("token");
+        }else{
+            access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
+        }
         RequestBody rb = RequestBody.create(null, json);
         Request request = new Request.Builder().
                 url(SF_LOGIN).
