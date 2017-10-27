@@ -134,6 +134,7 @@ public class SFConstant {
         SF_SAME_DOMAIN = (environment == SFEnvironmentDev ? SF_SAME_DOMAIN_DEV : (environment == SFEnvironmentStage ? SF_SAME_DOMAIN_STAGE : SF_SAME_DOMAIN_PRODUCT));
         SF_TAKE_MESSAGE_URL = SF_SAME_DOMAIN + "messages";
         SF_GET_TOKEN = SF_SAME_DOMAIN + "merchants/me/token";
+        SF_DEVICE_URL = SF_SAME_DOMAIN + "devices";
         SF_REGISTER_URL = SF_SAME_DOMAIN + "merchants";
         SF_LOGIN = SF_SAME_DOMAIN + "merchants/me";
         SF_QUOTES_URL = SF_SAME_DOMAIN + "quotes";
