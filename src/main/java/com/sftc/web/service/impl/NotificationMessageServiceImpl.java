@@ -38,18 +38,11 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
 
     @Resource
     private UserMapper userMapper;
-    @Resource
-    private TokenMapper tokenMapper;
-
-    @Resource
-    private OrderDao orderDao;
-    @Resource
-    private OrderExpressDao orderExpressDao;
 
     public APIResponse getMessage(APIRequest request) {
 
         // Param
-    	Integer user_id = TokenUtils.getInstance().getUserId(tokenMapper);
+        Integer user_id = TokenUtils.getInstance().getUserId();
         if (user_id < 1)
             return APIUtil.paramErrorResponse("user_id无效");
 
@@ -58,10 +51,11 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
         List<MessageDTO> messageList = new ArrayList<>();
         for (Message message : messageDTOList) {
             int express_id = message.getExpress_id();
-            if (express_id == 0) continue;;
+            if (express_id == 0) continue;
+
             OrderDTO orderDTO = orderMapper.selectOrderDetailByExpressId(express_id);
             List<OrderExpressDTO> orderExpresses = orderDTO.getOrderExpressList();
-            for(OrderExpressDTO oe : orderExpresses){
+            for (OrderExpressDTO oe : orderExpresses) {
                 User user = userMapper.selectUserByUserId(oe.getShip_user_id());
                 if (user == null) {
                     oe.setShip_avatar(DK_USER_AVATAR_DEFAULT);
@@ -75,7 +69,7 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
                 MessageDTO messageDTO = MessageFactory.entityToDTO(message);
                 messageDTO.setOrder(orderDTO);
                 messageList.add(messageDTO);
-            }else{
+            } else {
                 MessageDTO messageDTO = MessageFactory.entityToDTO(message);
                 messageList.add(messageDTO);
             }

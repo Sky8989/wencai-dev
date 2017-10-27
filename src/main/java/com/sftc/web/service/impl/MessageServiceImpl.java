@@ -101,7 +101,7 @@ public class MessageServiceImpl implements MessageService {
      */
     public APIResponse register(APIRequest apiRequest) {
         Object requestParam = apiRequest.getRequestParam();
-        Integer user_id = TokenUtils.getInstance().getUserId(tokenMapper);
+        Integer user_id = TokenUtils.getInstance().getUserId();
         this.logger.info("-------user_id " + user_id);
         JSONObject jsonObject = JSONObject.fromObject(requestParam);  //调用顺丰注册接口的请求参数
         JSONObject jsonInvite = jsonObject.getJSONObject("invite");  //用户注册时 相关邀请信息
