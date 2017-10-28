@@ -78,11 +78,10 @@ public class WXConstant {
                 JSONObject resultObject = JSONObject.fromObject(resultStr);
                 if (resultObject.containsKey("access_token")) {
                     WX_ACCESS_TOKEN = resultObject.getString("access_token");
-                    //System.out.println("刷新token的操作，最新的access_token:" + WX_ACCESS_TOKEN);
+                    System.out.println("刷新微信模板消息 access_token: " + WX_ACCESS_TOKEN);
                 } else {
-                    System.out.println("刷新WXtoken的操作,获取WXaccess_token失败" + resultStr);
+                    System.out.println("刷新微信模板消息 access_token 失败: " + resultStr);
                 }
-                System.out.println("刷新WXtoken的操作，这里是定时任务,执行次数：" + count++);
             }
         };
         ScheduledExecutorService refreshSES = Executors.newScheduledThreadPool(1);
