@@ -124,11 +124,11 @@ public class MessageServiceImpl implements MessageService {
             JSONObject tokenJSONObject = resJSONObject.getJSONObject("token");
 
             UserInvite invite = null;
-            if (!jsonInvite.getString("referrer_code").equals("0")) {
+            if (jsonInvite != null && jsonInvite.containsKey("referrer_code") && !jsonInvite.getString("referrer_code").equals("0")) {
                 invite = new UserInvite();
                 invite.setUser_id(user_id);
                 invite.setCity(jsonInvite.getString("city"));
-                invite.setInvite_channel(jsonInvite.getInt("channel"));
+                invite.setInvite_channel(jsonInvite.getString("channel"));
                 invite.setInvite_code(invite_code);
                 invite.setCreate_time(Long.toString(System.currentTimeMillis()));
                 invite = userInviteDao.save(invite);
