@@ -1,7 +1,5 @@
 package com.sftc.web.model;
 
-import com.sftc.web.model.Object;
-import com.sftc.web.model.reqeustParam.OrderParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -21,7 +19,7 @@ public class UserInvite extends Object {
     private int user_id;
 
     @ApiModelProperty(value = "邀请渠道")
-    private int invite_channel;
+    private String invite_channel;
 
     @ApiModelProperty(value = "城市")
     private String city;
@@ -32,7 +30,9 @@ public class UserInvite extends Object {
     @ApiModelProperty("创建时间")
     private String create_time;
 
-    public UserInvite() {super();}
+    public UserInvite() {
+        super();
+    }
 
     @Override
     public String toString() {
@@ -62,11 +62,11 @@ public class UserInvite extends Object {
         this.user_id = user_id;
     }
 
-    public int getInvite_channel() {
+    public String getInvite_channel() {
         return invite_channel;
     }
 
-    public void setInvite_channel(int invite_channel) {
+    public void setInvite_channel(String invite_channel) {
         this.invite_channel = invite_channel;
     }
 
