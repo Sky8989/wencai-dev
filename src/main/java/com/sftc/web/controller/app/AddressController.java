@@ -41,8 +41,8 @@ public class AddressController {
         return addressService.consigneeAddress(new APIRequest(request));
     }
 
-    @ApiOperation(value = "修改收件人地址",httpMethod = "PATCH")
-    @RequestMapping(method = RequestMethod.PATCH ,
+    @ApiOperation(value = "修改收件人地址",httpMethod = "PUT")
+    @RequestMapping(method = RequestMethod.PUT ,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody
     APIResponse editAddress(@RequestBody Address address) throws Exception {

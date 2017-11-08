@@ -49,16 +49,16 @@ public class UserController extends BaseController {
     }
 
     @IgnoreToken
-    @ApiOperation(value = "解除绑定手机", httpMethod = "PATCH")
-    @RequestMapping(value = "/mobile/unbind", method = RequestMethod.PATCH)
+    @ApiOperation(value = "解除绑定手机", httpMethod = "PUT")
+    @RequestMapping(value = "/mobile/unbind", method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse commonUnbind(HttpServletRequest request) throws Exception {
         return userService.deleteMobile(new APIRequest(request));
     }
 
     @IgnoreToken
-    @ApiOperation(value = "修改绑定手机", httpMethod = "PATCH")
-    @RequestMapping(value = "/mobile/bind", method = RequestMethod.PATCH)
+    @ApiOperation(value = "修改绑定手机", httpMethod = "PUT")
+    @RequestMapping(value = "/mobile/bind", method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse bindNewMobile(@RequestBody UserNewMobileVO userNewMobileVO) throws Exception {
         APIRequest apiRequest = new APIRequest();

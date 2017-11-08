@@ -45,8 +45,8 @@ public class UserContactController extends BaseController {
         return userContactService.getContactInfo(request);
     }
 
-    @ApiOperation(value = "好友标星",httpMethod = "PATCH")
-    @RequestMapping(value = "/star",method = RequestMethod.PATCH)
+    @ApiOperation(value = "好友标星",httpMethod = "PUT")
+    @RequestMapping(value = "/star",method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse getContactInfo(@RequestBody FriendStarVO friendStarVO) throws Exception {
         APIRequest request = new APIRequest();
