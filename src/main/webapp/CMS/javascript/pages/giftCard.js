@@ -55,6 +55,22 @@ $('#giftCard_list').ready(
     }
 );
 
+// layui.use('upload', function(){
+//     var upload = layui.upload;
+//
+//     //执行实例
+//     var uploadInst = upload.render({
+//         elem: '#test1' //绑定元素
+//         ,url: '/upload/' //上传接口
+//         ,done: function(res){
+//             //上传完毕回调
+//         }
+//         ,error: function(){
+//             //请求异常回调
+//         }
+//     });
+// });
+
 
 /**
  * 分页插件的初始化方法
@@ -213,18 +229,18 @@ layui.use(['layer', 'form', 'upload'], function () { //独立版的layer无需�
     });
 
 
-    /*//执行实例
-     var uploadInst = upload.render({
-     elem: '#test1' //绑定元素
-     , url: '/upload/' //上传接口
-     , field: 'icon' //上传接口
-     , done: function (res) {
-     //上传完毕回调
-     }
-     , error: function () {
-     //请求异常回调
-     }
-     });*/
+    //执行实例
+    //  var uploadInst = upload.render({
+    //  elem: '#test1' //绑定元素
+    //  , url: '/upload/' //上传接口
+    //  , field: 'icon' //上传接口
+    //  , done: function (res) {
+    //  //上传完毕回调
+    //  }
+    //  , error: function () {
+    //  //请求异常回调
+    //  }
+    //  });
 
     //监听提交
     form.on('submit(submit_1)', function (data) {
@@ -240,7 +256,6 @@ layui.use(['layer', 'form', 'upload'], function () { //独立版的layer无需�
 
 //新增giftcard
 function ajax_addGiftCard(json_data) {
-
 
     var post_param = JSON.parse(json_data);
     post_param.icon = (icon == undefined) ? 'uploadurl_param' : icon;

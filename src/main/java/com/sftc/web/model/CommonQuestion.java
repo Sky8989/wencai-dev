@@ -1,25 +1,28 @@
 package com.sftc.web.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by IntelliJ IDEA.
- *
- * @author _KeMing
- * @version 1.0
- * @Package com.sftc.web.model
- * @Description: 常见问题类
- * @date 2017/4/25
- * @Time 上午10:46
- */
+@Entity
+@Table(name = "sftc_common_question")
+@ApiModel(value = "常见问题")
 public class CommonQuestion extends Object {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty("主键")
     private int id;
-    // 创建时间
+
+    @ApiModelProperty("创建时间")
     private String create_time;
-    // 标题
+
+    @ApiModelProperty("标题")
     private String title;
-    // 内容
+
+    @ApiModelProperty("内容")
     private String content;
 
     public int getId() {
@@ -50,7 +53,9 @@ public class CommonQuestion extends Object {
         return content;
     }
 
-    public void setContent(String content) {this.content = content;}
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public CommonQuestion() {
     }

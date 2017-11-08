@@ -1,13 +1,12 @@
 package com.sftc.web.service.impl;
 
 
-import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
-import com.sftc.web.mapper.AddressMapper;
-import com.sftc.web.mapper.AddressResolutionMapper;
-import com.sftc.web.model.Address;
+import com.sftc.web.dao.jpa.AddressDao;
+import com.sftc.web.dao.mybatis.AddressMapper;
+import com.sftc.web.dao.mybatis.AddressResolutionMapper;
+import com.sftc.web.model.entity.Address;
 import com.sftc.web.model.AddressResolution;
-import com.sftc.web.model.sfmodel.SFServiceAddress;
 import com.sftc.web.service.AddressService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.ThirdPartyConstant.MAP_ADDRESS_DISTANCE_URL;
@@ -35,6 +33,8 @@ public class AddressServiceImpl implements AddressService {
     private AddressMapper addressMapper;
     @Resource
     private AddressResolutionMapper addressResolutionMapper;
+    @Resource
+    private AddressDao addressDao;
 
     public APIResponse addAddress(Address address) {
         APIStatus status = SUCCESS;
@@ -153,10 +153,10 @@ public class AddressServiceImpl implements AddressService {
 
         JSONObject sourceObject = requestObject.getJSONObject("source");
         JSONObject targetObject = requestObject.getJSONObject("target");
-        double senderLong = (Double) sourceObject.get("longitude");
-        double senderLat = (Double) sourceObject.get("latitude");
-        double receiverLong = (Double) targetObject.get("longitude");
-        double receiverLat = (Double) targetObject.get("latitude");
+        double senderLong = sourceObject.getDouble("longitude");
+        double senderLat = sourceObject.getDouble("latitude");
+        double receiverLong = targetObject.getDouble("longitude");
+        double receiverLat = targetObject.getDouble("latitude");
 
         if (senderLong == 0 || receiverLong == 0 || senderLat == 0 || receiverLat == 0)
             return APIUtil.paramErrorResponse("请求体不完整");
@@ -187,10 +187,10 @@ public class AddressServiceImpl implements AddressService {
 
         JSONObject sourceObject = requestObject.getJSONObject("source");
         JSONObject targetObject = requestObject.getJSONObject("target");
-        double senderLong = (Double) sourceObject.get("longitude");
-        double senderLat = (Double) sourceObject.get("latitude");
-        double receiverLong = (Double) targetObject.get("longitude");
-        double receiverLat = (Double) targetObject.get("latitude");
+        double senderLong = sourceObject.getDouble("longitude");
+        double senderLat = sourceObject.getDouble("latitude");
+        double receiverLong =  targetObject.getDouble("longitude");
+        double receiverLat =targetObject.getDouble("latitude");
 
         if (senderLong == 0 || receiverLong == 0 || senderLat == 0 || receiverLat == 0)
             return APIUtil.paramErrorResponse("请求体不完整");

@@ -149,6 +149,67 @@ function data_rendering(data) {
     $('#data_list').empty();//清空上一次的分页查询结果
     for (var i = 0; i < data.result.list.length; i++) {
         var dataD = data.result.list[i];
+        if(dataD.object_type == "FILE"){
+            dataD.object_type = "文件"
+        }if(dataD.object_type == "ELECTRONICS"){
+            dataD.object_type = "电子产品"
+        }if(dataD.object_type == "DRESS_SHOES"){
+            dataD.object_type = "服装鞋帽"
+        }if(dataD.object_type == "AUTOPARTS"){
+            dataD.object_type = "汽车配件"
+        }if(dataD.object_type == "FRESH"){
+            dataD.object_type = "生鲜蔬果"
+        }if(dataD.object_type == "FLOWER"){
+            dataD.object_type = "鲜花"
+        }if(dataD.object_type == "CAKE"){
+            dataD.object_type = "蛋糕"
+        }if(dataD.object_type == "CATERING_TAKEOUT"){
+            dataD.object_type = "餐饮"
+        }if(dataD.object_type == "OTHERS"){
+            dataD.object_type = "其他"
+        }if(dataD.object_type == undefined){
+            dataD.object_type = "无"
+        }if(dataD.state == "WAIT_FILL"){
+            dataD.state = "待好友填写"
+        }if(dataD.state == "ALREADY_FILL"){
+            dataD.state = "	好友已填写"
+        }if(dataD.state == "INIT"){
+            dataD.state = "下单"
+        }if(dataD.state == "PAYING"){
+            dataD.state = "支付中"
+        }if(dataD.state == "WAIT_HAND_OVER"){
+            dataD.state = "待揽件"
+        }if(dataD.state == "DELIVERING"){
+            dataD.state = "派送中"
+        }if(dataD.state == "FINISHED"){
+            dataD.state = "已完成"
+        }if(dataD.state == "ABNORMAL"){
+            dataD.state = "不正常的"
+        }if(dataD.state == "CANCELED"){
+            dataD.state = "取消单"
+        }if(dataD.state == "WAIT_REFUND"){
+            dataD.state = "等待退款"
+        }if(dataD.state == "REFUNDING"){
+            dataD.state = "退款中"
+        }if(dataD.state == "REFUNDED"){
+            dataD.state = "已退款"
+        }if(dataD.state == "OVERTIME"){
+            dataD.state = "填写超时、付款超时"
+        }if(dataD.ship_name == undefined){
+            dataD.ship_name = "无"
+        }if(dataD.ship_mobile == undefined){
+            dataD.ship_mobile = "无"
+        }
+        dataD.package_type = parseInt(dataD.package_type);
+        if(dataD.package_type>0 && dataD.package_type <= 5){
+            dataD.package_type = "小包裹"
+        }if(dataD.package_type>5 && dataD.package_type <= 10){
+            dataD.package_type = "中包裹"
+        }if(dataD.package_type>10 && dataD.package_type <= 15){
+            dataD.package_type = "大包裹"
+        }if(dataD.package_type == undefined){
+            dataD.package_type = "无"
+        }
         $('#data_list').append(
             '<tr class="cen">' +
             '<td>' + dataD.id + '</td>' +

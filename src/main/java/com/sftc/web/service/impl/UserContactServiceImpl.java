@@ -3,9 +3,12 @@ package com.sftc.web.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFTokenHelper;
-import com.sftc.web.mapper.*;
+import com.sftc.web.dao.jpa.OrderExpressDao;
+import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.*;
 import com.sftc.web.model.apiCallback.ContactCallback;
+import com.sftc.web.model.entity.Order;
+import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.reqeustParam.UserContactParam;
 import com.sftc.web.model.sfmodel.Orders;
 import com.sftc.web.service.UserContactService;
@@ -18,6 +21,7 @@ import java.lang.Object;
 import java.util.List;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.SFConstant.SF_ORDER_SYNC_URL;
 
 @Service("userContactService")
 public class UserContactServiceImpl implements UserContactService {
@@ -39,6 +43,8 @@ public class UserContactServiceImpl implements UserContactService {
 
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private OrderExpressDao orderExpressDao;
 
     /*
      * 根据id查询好友详情
@@ -143,11 +149,11 @@ public class UserContactServiceImpl implements UserContactService {
 
     private APIResponse syncFriendExpress(UserContactParam userContactParam) {
         // handle url
-        String ORDERS_URL = "http://api-dev.sf-rush.com/requests/uuid/status?batch=true";
+        String ORDERS_URL = SF_ORDER_SYNC_URL;
         String uuids = "";
 
 
-//        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForId(userContactParam.getUser_id());
+//        List<OrderExpressDTO> orderExpressList = orderExpressMapper.selectExpressForId(userContactParam.getUser_id());
         PageHelper.startPage(userContactParam.getPageNum(), userContactParam.getPageSize());
         List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForContactInfo(userContactParam.getUser_id(), userContactParam.getFriend_id());
 
@@ -162,7 +168,7 @@ public class UserContactServiceImpl implements UserContactService {
 
         if (uuids.equals("")) return null; //无需同步的订单 直接返回
         uuids = uuids.substring(0, uuids.length() - 1);
-        ORDERS_URL = ORDERS_URL.replace("uuid", uuids);
+        ORDERS_URL = ORDERS_URL.replace("{uuid}", uuids);
 
         // POST
         List<Orders> orderses = null;
@@ -177,7 +183,12 @@ public class UserContactServiceImpl implements UserContactService {
             for (Orders orders : orderses) {
                 String uuid = orders.getUuid();
                 String order_status = orders.getStatus();
-                orderExpressMapper.updateOrderExpressForSF(new OrderExpress(order_status, uuid));
+                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
+                orderExpress.setState(order_status);
+                if(orders.getAttributes()!=null){
+                    orderExpress.setAttributes(orders.getAttributes());
+                }
+                orderExpressDao.save(orderExpress);
             }
         }
         return null;
@@ -190,9 +201,9 @@ public class UserContactServiceImpl implements UserContactService {
         // Param
         Object param = request.getRequestParam();
         JSONObject requestObject = JSONObject.fromObject(param);
-        int user_id = ((Double) requestObject.get("user_id")).intValue();
-        int friend_id = ((Double) requestObject.get("friend_id")).intValue();
-        int is_star = ((Double) requestObject.get("is_star")).intValue();
+        int user_id = requestObject.getInt("user_id");
+        int friend_id = requestObject.getInt("friend_id");
+        int is_star = requestObject.getInt("is_star");
         if (user_id < 1)
             return APIUtil.paramErrorResponse("参数user_id无效");
         if (friend_id < 1)

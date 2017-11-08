@@ -5,10 +5,9 @@ import com.github.pagehelper.PageInfo;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
-import com.sftc.web.mapper.GiftCardMapper;
+import com.sftc.web.dao.mybatis.GiftCardMapper;
 import com.sftc.web.model.GiftCard;
 import com.sftc.web.model.GiftCardList;
-import com.sftc.web.model.Order;
 import com.sftc.web.service.GiftCardService;
 import org.springframework.stereotype.Service;
 
@@ -23,18 +22,6 @@ import static com.sftc.tools.api.APIStatus.SUCCESS;
 public class GiftCardServiceImpl implements GiftCardService {
     @Resource
     private GiftCardMapper giftCardMapper;
-
-    /*
-    * 订单详情接口
-    * */
-    public APIResponse getGiftCard(APIRequest request) {
-        String orderSn = (String) request.getParameter("orderSn");
-        Order order = giftCardMapper.giftCardDetail(orderSn);
-        if (order == null)
-            return APIUtil.selectErrorResponse("没有该礼卡", null);
-
-        return APIUtil.getResponse(SUCCESS, order);
-    }
 
     public APIResponse getGiftCardList(APIRequest request) {
 
