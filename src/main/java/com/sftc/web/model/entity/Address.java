@@ -14,37 +14,37 @@ public class Address extends Object {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty("主键")
+    @ApiModelProperty(value = "主键")
     private int id;
 
-    @ApiModelProperty("用户id")
+    @ApiModelProperty(value = "用户id")
     private int user_id;
 
-    @ApiModelProperty("名字")
+    @ApiModelProperty(value = "地址名称",example = "悟空测试订单")
     private String name;
 
-    @ApiModelProperty("电话")
+    @ApiModelProperty(value = "用户电话",example = "13066667777")
     private String phone;
 
-    @ApiModelProperty("省份")
+    @ApiModelProperty(value = "省份",example = "广东")
     private String province;
 
-    @ApiModelProperty("城市")
+    @ApiModelProperty(value = "城市",example = "深圳")
     private String city;
 
-    @ApiModelProperty("区域")
+    @ApiModelProperty(value = "区域",example = "龙岗区")
     private String area;
 
-    @ApiModelProperty("详细地址")
+    @ApiModelProperty(value = "详细地址",example = "龙城广场地铁站")
     private String address;
 
-    @ApiModelProperty("补充地址")
+    @ApiModelProperty(value = "补充地址",example = "118号")
     private String supplementary_info;
 
-    @ApiModelProperty("经度")
+    @ApiModelProperty(value = "经度",example = "114.260976")
     private double longitude;
 
-    @ApiModelProperty("纬度")
+    @ApiModelProperty(value = "纬度",example = "22.723223")
     private double latitude;
 
     @ApiModelProperty("创建时间")

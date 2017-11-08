@@ -17,7 +17,6 @@ import java.util.Arrays;
 
 /**
  * 全局的异常处理
- * Created by huxingyue on 2017/8/9.
  */
 @ControllerAdvice
 public class GlobalControllerExceptionHandler {
@@ -57,12 +56,4 @@ public class GlobalControllerExceptionHandler {
         return ControllerHelper.responseEntityBuilder(APIUtil.logicErrorResponse("系统异常，请您稍后再尝试"
                 , resultOBJ));
     }
-
-//    // 通用异常的处理，返回500
-//    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)  // 500
-//    @ExceptionHandler(Exception.class)
-//    @ResponseBody
-//    public ResponseEntity<APIResponse> handleException(Exception ex) {
-//        return ControllerHelper.responseEntityBuilder(APIUtil.logicErrorResponse("Dankal_Server_Error", ex.getStackTrace()));
-//    }
 }

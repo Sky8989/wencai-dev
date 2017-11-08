@@ -6,6 +6,9 @@ import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
 
 public class User extends Object {
     private int id;
+    //邀请表id
+    private int invite_id;
+
     private String uuid;
     //用户名字
     private String name;
@@ -57,6 +60,16 @@ public class User extends Object {
     public User() {
     }
 
+
+
+    public int getInvite_id() {
+        return invite_id;
+    }
+
+    public void setInvite_id(int invite_id) {
+        this.invite_id = invite_id;
+    }
+
     public String getJs_code() {
         return js_code;
     }
@@ -64,6 +77,7 @@ public class User extends Object {
     public void setJs_code(String js_code) {
         this.js_code = js_code;
     }
+
 
     public int getId() {
         return id;
@@ -170,6 +184,7 @@ public class User extends Object {
 
     public void setPageSizeKey(Integer pageSizeKey) {this.pageSizeKey = pageSizeKey;}
 
+
     /**
      * 基于HttpServletRequest作为参数的构造方法 用于cms
      * 后期便于应用扩展工厂模式 将此参数抽出
@@ -179,5 +194,29 @@ public class User extends Object {
         {this.id = Integer.parseInt(request.getParameter("id"));}
         if (request.getParameter("name") != null && !"".equals(request.getParameter("name")))
         {this.name = request.getParameter("name");}
+    }
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", invite_id=" + invite_id +
+                ", uuid='" + uuid + '\'' +
+                ", name='" + name + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", user_password='" + user_password + '\'' +
+                ", open_id='" + open_id + '\'' +
+                ", session_key='" + session_key + '\'' +
+                ", create_time='" + create_time + '\'' +
+                ", js_code='" + js_code + '\'' +
+                ", summary=" + summary +
+                ", attributes=" + attributes +
+                ", tags=" + tags +
+                ", token=" + token +
+                ", pageNumKey=" + pageNumKey +
+                ", pageSizeKey=" + pageSizeKey +
+                '}';
     }
 }

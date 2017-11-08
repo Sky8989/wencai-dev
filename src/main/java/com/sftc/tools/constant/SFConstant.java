@@ -1,5 +1,7 @@
 package com.sftc.tools.constant;
 
+import com.sftc.tools.sf.SFTokenHelper;
+
 import static com.sftc.tools.constant.DKConstant.DKEnvironment.DKEnvironmentDev;
 import static com.sftc.tools.constant.DKConstant.DKEnvironment.DKEnvironmentProduct;
 import static com.sftc.tools.constant.DKConstant.DKEnvironment.DKEnvironmentStage;
@@ -49,6 +51,10 @@ public class SFConstant {
     /**
      * 用户注册
      */
+    public static String SF_DEVICE_URL = SF_SAME_DOMAIN + "devices";
+    /**
+     * 用户注册
+     */
     public static String SF_REGISTER_URL = SF_SAME_DOMAIN + "merchants";
     /**
      * 用户登录
@@ -81,7 +87,6 @@ public class SFConstant {
      * 订单状态同步SF_NATION_ORDER_URL
      */
     public static String SF_ORDER_SYNC_URL = SF_SAME_DOMAIN + "requests/{uuid}/status?batch=true";
-
 
 
     /////////////// 大网用户相关 ///////////////
@@ -130,6 +135,7 @@ public class SFConstant {
         SF_SAME_DOMAIN = (environment == SFEnvironmentDev ? SF_SAME_DOMAIN_DEV : (environment == SFEnvironmentStage ? SF_SAME_DOMAIN_STAGE : SF_SAME_DOMAIN_PRODUCT));
         SF_TAKE_MESSAGE_URL = SF_SAME_DOMAIN + "messages";
         SF_GET_TOKEN = SF_SAME_DOMAIN + "merchants/me/token";
+        SF_DEVICE_URL = SF_SAME_DOMAIN + "devices";
         SF_REGISTER_URL = SF_SAME_DOMAIN + "merchants";
         SF_LOGIN = SF_SAME_DOMAIN + "merchants/me";
         SF_QUOTES_URL = SF_SAME_DOMAIN + "quotes";
@@ -138,6 +144,13 @@ public class SFConstant {
         SF_REQUEST_URL = SF_SAME_DOMAIN + "requests";
         SF_CONSTANTS_URL = SF_SAME_DOMAIN + "constants/";
         SF_ORDER_SYNC_URL = SF_SAME_DOMAIN + "requests/{uuid}/status?batch=true";
+
+        // 设置环境的时候，除了替换SFAPI的URL，还要更换公共token和公共uuid。
+        // 公共uuid可以先写死，因为数据库一般情况不会删档，uuid也是固定的，在设置环境的时候进行替换。
+        // 目前使用的都是Bingo的uuid，开发环境编号为10093，生产环境编号为10136。
+        SFTokenHelper.COMMON_UUID = environment == SFEnvironmentDev ? "2c9a85895d82ebe7015d8d4c6cc11df6" : "2c9280825bf24c1f015bf74d0ddf615d";
+        // TODO：硬编码替换token，是不正确的，token过了一段时间就会失效。需要使用其它方案，暂时使用API来设置公共token，每次项目部署后都应该手动调用API进行设置。
+        SFTokenHelper.COMMON_ACCESSTOKEN = environment == SFEnvironmentDev ? "EyMivbd44I124lcddrBG" : "tJN5WHBVVTia2JsC0Fjh";
     }
 
     public static String getSfSameDomain() {

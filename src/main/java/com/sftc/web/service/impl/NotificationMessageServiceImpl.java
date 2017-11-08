@@ -1,29 +1,32 @@
 package com.sftc.web.service.impl;
 
+import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.MessageMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
+import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
+import com.sftc.web.model.User;
 import com.sftc.web.model.Converter.MessageFactory;
 import com.sftc.web.model.dto.MessageDTO;
-import com.sftc.web.model.entity.Message;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
-import com.sftc.web.model.User;
+import com.sftc.web.model.entity.Message;
 import com.sftc.web.service.NotificationMessageService;
-import net.sf.json.JSONObject;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
 
 @Service
 public class NotificationMessageServiceImpl implements NotificationMessageService {
@@ -36,19 +39,10 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
     @Resource
     private UserMapper userMapper;
 
-    @Resource
-    private OrderDao orderDao;
-    @Resource
-    private OrderExpressDao orderExpressDao;
-
     public APIResponse getMessage(APIRequest request) {
 
         // Param
-        String userID = (String) request.getParameter("user_id");
-        if (userID == null || userID.equals(""))
-            return APIUtil.paramErrorResponse("user_id不能为空");
-
-        int user_id = Integer.parseInt(userID);
+        Integer user_id = TokenUtils.getInstance().getUserId();
         if (user_id < 1)
             return APIUtil.paramErrorResponse("user_id无效");
 
@@ -57,10 +51,11 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
         List<MessageDTO> messageList = new ArrayList<>();
         for (Message message : messageDTOList) {
             int express_id = message.getExpress_id();
-            if (express_id == 0) continue;;
+            if (express_id == 0) continue;
+
             OrderDTO orderDTO = orderMapper.selectOrderDetailByExpressId(express_id);
             List<OrderExpressDTO> orderExpresses = orderDTO.getOrderExpressList();
-            for(OrderExpressDTO oe : orderExpresses){
+            for (OrderExpressDTO oe : orderExpresses) {
                 User user = userMapper.selectUserByUserId(oe.getShip_user_id());
                 if (user == null) {
                     oe.setShip_avatar(DK_USER_AVATAR_DEFAULT);
@@ -74,7 +69,7 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
                 MessageDTO messageDTO = MessageFactory.entityToDTO(message);
                 messageDTO.setOrder(orderDTO);
                 messageList.add(messageDTO);
-            }else{
+            } else {
                 MessageDTO messageDTO = MessageFactory.entityToDTO(message);
                 messageList.add(messageDTO);
             }

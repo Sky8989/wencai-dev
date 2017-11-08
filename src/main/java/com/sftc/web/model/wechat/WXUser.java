@@ -1,16 +1,12 @@
 package com.sftc.web.model.wechat;
 
+
 /**
- * Created by IntelliJ IDEA.
+ * 微信登录返回Json数据模型
  *
- * @author _KeMing
- * @version 1.0
- * @Package com.sftc.web.model.wechat
- * @Description: 微信登录返回Json数据模型
- * @date 2017/4/19
- * @Time 下午3:12
+ * @author bingo
  */
-public class WechatUser {
+public class WXUser {
 
     private String openid;
     private String session_key;

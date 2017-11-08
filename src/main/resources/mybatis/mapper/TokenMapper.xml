@@ -20,13 +20,13 @@
         INSERT INTO sftc_token
         (create_time, is_logout, gmt_modified, gmt_expiry, local_token, user_id)
         VALUES
-            (#{create_time}, #{is_logout}, #{gmt_modified}, #{gmt_expiry}, #{local_token}, #{user_id})
+        (#{create_time}, #{is_logout}, #{gmt_modified}, #{gmt_expiry}, #{local_token}, #{user_id})
     </insert>
 
     <select id="getToken" parameterType="int" resultType="com.sftc.web.model.Token" resultMap="getToken">
         SELECT
-            u.name,
-            t.access_token
+        u.name,
+        t.access_token
         FROM sftc_order o, sftc_user u, sftc_token t
         WHERE u.id = o.sender_user_id AND u.id = t.user_id AND o.id = #{id}
     </select>
@@ -45,7 +45,7 @@
         SELECT sftc_user.*
         FROM sftc_token, sftc_user
         WHERE
-            sftc_user.id = sftc_token.user_id AND sftc_token.local_token = #{token}
+        sftc_user.id = sftc_token.user_id AND sftc_token.local_token = #{token}
     </select>
 
     <select id="getTokenByMobile" parameterType="java.lang.String" resultType="com.sftc.web.model.Token">
@@ -67,5 +67,13 @@
             <if test="user_id != null">and user_id LIKE '%${user_id}%'</if>
         </where>
     </select>
+
+
+    <select id="getUserIdByLocalToken" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT user_id
+        FROM sftc_token
+        WHERE local_token = #{token}
+    </select>
+
 
 </mapper>
