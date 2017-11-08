@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sftc.web.dao.mybatis.PriceExaplainMapper">
+
+    <select id="queryPriceExplainByCirty" resultType="com.sftc.web.model.entity.PriceExplain">
+        SELECT distance_price,weight_price FROM sftc_price_explain WHERE city = #{city}
+    </select>
+
+</mapper>
