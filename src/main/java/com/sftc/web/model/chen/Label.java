@@ -8,8 +8,8 @@ import java.io.Serializable;
 
 /**
  * 用户标签
- * Created by CatalpaFlat on 2017/11/6.
  */
+@ApiModel(value = "标签")
 public class Label implements Serializable{
     @ApiModelProperty(value = "用户标签id")
     private String id;
