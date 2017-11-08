@@ -1,0 +1,32 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+    <!-- 读取配置文件 包括数据库连接配置、redis配置等 -->
+    <context:property-placeholder ignore-unresolvable="true"
+                                  location="classpath:redis.properties,
+                                            classpath:application.properties"/>
+    <!-- redis required -->
+    <import resource="classpath:cache/cache-redis.xml"/>
+
+    <!-- 顺丰api配置 -->
+    <bean class="com.sftc.web.config.SFConfig">
+        <property name="SF_SAME_DOMAIN_DEV" value="${sf-api.domain.same.dev}"/>
+        <property name="SF_SAME_DOMAIN_STAGE" value="${sf-api.domain.same.stage}"/>
+        <property name="SF_SAME_DOMAIN_PRODUCT" value="${sf-api.domain.same.product}"/>
+        <property name="SF_NATION_DOMAIN_DEV" value="${sf-api.domain.nation.dev}"/>
+        <property name="SF_NATION_DOMAIN_PRODUCT" value="${sf-api.domain.nation.product}"/>
+        <property name="SF_SAME_COMMON_TOKEN_USERNAME" value="${sf-api.same.common.username}"/>
+        <property name="SF_SAME_COMMON_TOKEN_PASSWORD" value="${sf-api.same.common.password}"/>
+    </bean>
+
+    <!-- phantomJS配置 -->
+    <bean class="com.sftc.web.config.PhantomJSConfig">
+        <property name="SHELL_PATH" value="${phantomJS.path.shell}"/>
+        <property name="JS_PATH" value="${phantomJS.path.js}"/>
+        <property name="OUTPUT_PATH" value="${phantomJS.path.output}"/>
+    </bean>
+
+</beans>

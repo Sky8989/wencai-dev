@@ -1,9 +1,8 @@
 package com.sftc.web.controller.cms;
 
-import com.google.gson.Gson;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.controller.AbstractBasicController;
+import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.reqeustParam.UserParam;
 import com.sftc.web.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -18,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RequestMapping("cms/user")
 @Controller
-public class CMSUserController extends AbstractBasicController {
+public class CMSUserController extends BaseController {
 
     @Resource
     private UserService userService;

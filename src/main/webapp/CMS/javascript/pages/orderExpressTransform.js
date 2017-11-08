@@ -141,6 +141,11 @@ function data_rendering(data) {
     $('#data_list').empty();//清空上一次的分页查询结果
     for (var i = 0; i < data.result.list.length; i++) {
         var dataD = data.result.list[i];
+        if(dataD.is_read == 0){
+            dataD.is_read = "未读"
+        }if(dataD.is_read == 1){
+            dataD.is_read = "已读"
+        }
         $('#data_list').append(
             '<tr class="cen">' +
 
