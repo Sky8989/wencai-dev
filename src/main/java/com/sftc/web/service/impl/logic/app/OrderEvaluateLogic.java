@@ -2,6 +2,7 @@ package com.sftc.web.service.impl.logic.app;
 
 import com.google.gson.Gson;
 import com.sftc.tools.api.APIPostUtil;
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.EvaluateMapper;
@@ -34,15 +35,15 @@ public class OrderEvaluateLogic {
     /**
      * 评价某个订单的单一包裹
      */
-    public APIResponse evaluateSingle(Object object) {
+    public APIResponse evaluateSingle(APIRequest request) {
 
         // 生成 顺丰订单评价接口 需要的信息
-        String str = gson.toJson(object);
+        String str = gson.toJson(request.getRequestParam());
         JSONObject jsonObject;
-        JSONObject jsonObjectParam = JSONObject.fromObject(object);
-        JSONObject request = jsonObjectParam.getJSONObject("request");
+        JSONObject jsonObjectParam = JSONObject.fromObject(request.getRequestParam());
+        JSONObject requestOBJ = jsonObjectParam.getJSONObject("request");
         JSONObject attributes = jsonObjectParam.getJSONObject("request").getJSONObject("attributes");
-        String uuid = request.getString("uuid");
+        String uuid = requestOBJ.getString("uuid");
         OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
         boolean isNationFlag = false;
         if (orderExpress == null) {
@@ -63,7 +64,7 @@ public class OrderEvaluateLogic {
             evaluate.setMerchant_tags(attributes.getString("merchant_tags"));
             evaluate.setOrderExpress_id(orderExpress.getId());
             evaluate.setUuid(uuid);
-            evaluate.setUser_id(request.getInt("user_id"));
+            evaluate.setUser_id(requestOBJ.getInt("user_id"));
             evaluate.setCreate_time(Long.toString(System.currentTimeMillis()));
             evaluateMapper.addEvaluate(evaluate);
             return APIUtil.getResponse(SUCCESS, evaluate);
@@ -72,7 +73,7 @@ public class OrderEvaluateLogic {
         /// 向顺丰的接口发送评价信息
         String evaluate_url = SF_REQUEST_URL + "/" + uuid + "/attributes/merchant_comment";
         HttpPut put = new HttpPut(evaluate_url);
-        put.addHeader("PushEnvelope-Device-Token", (String) request.get("access_token"));
+        put.addHeader("PushEnvelope-Device-Token", (String) requestOBJ.get("access_token"));
         String res = APIPostUtil.post(str, put);
         jsonObject = JSONObject.fromObject(res);
         if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {
@@ -85,7 +86,7 @@ public class OrderEvaluateLogic {
             evaluate.setMerchant_tags(attributes.getString("merchant_tags"));
             evaluate.setOrderExpress_id(orderExpress.getId());
             evaluate.setUuid(uuid);
-            evaluate.setUser_id(request.getInt("user_id"));
+            evaluate.setUser_id(requestOBJ.getInt("user_id"));
             evaluate.setCreate_time(Long.toString(System.currentTimeMillis()));
             evaluateMapper.addEvaluate(evaluate);
             jsonObject = jsonObject.getJSONObject("request").getJSONObject("attributes");

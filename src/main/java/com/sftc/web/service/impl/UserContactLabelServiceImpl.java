@@ -16,7 +16,8 @@ public class UserContactLabelServiceImpl implements UserContactLabelService {
     private UserContactLabelMapper userContactLabelMapper;
 
     // 添加好友普通标签
-    public APIResponse addLabelForFriend(UserContactLabel userContactLabel) {
+    public APIResponse addLabelForFriend(APIRequest request) {
+        UserContactLabel userContactLabel = (UserContactLabel) request.getRequestParam();
         APIStatus status = APIStatus.SUCCESS;
         userContactLabel.setCreate_time(Long.toString(System.currentTimeMillis()));
         userContactLabelMapper.addLabel(userContactLabel);

@@ -1,4 +1,4 @@
-package com.sftc.web.model.vo;
+package com.sftc.web.model.SwaggerRequestVO;
 
 import com.sftc.web.model.entity.Address;
 import io.swagger.annotations.ApiModel;
@@ -10,27 +10,16 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "地址簿包装类")
 public class AddressBookRequestVO {
 
-    @ApiModelProperty(value = "用户id",example = "10136")
-    private int user_id;
     @ApiModelProperty(value = "是否删除",example = "0")
     private int is_delete;
     @ApiModelProperty(value = "是否神秘",example = "0")
     private int is_mystery;
-
     @ApiModelProperty(value = "地址类型",example = "address_history")
     private String address_type;
     @ApiModelProperty(value = "地址簿类型",example = "sender")
     private String address_book_type;
     @ApiModelProperty(value = "地址类")
     private Address address;
-
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
 
     public int getIs_delete() {
         return is_delete;

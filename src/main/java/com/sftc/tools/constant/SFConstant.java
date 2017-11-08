@@ -43,7 +43,6 @@ public class SFConstant {
      */
     public static String SF_TAKE_CAPTCHAS_MESSAGE_URL = SF_SAME_DOMAIN + "captchas";
 
-
     /**
      * 获取token
      */

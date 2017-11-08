@@ -30,8 +30,11 @@ public class APISwaggerConfig {
     public Docket createAPI() {
         ParameterBuilder tokenPar = new ParameterBuilder();
         List<Parameter> pars = new ArrayList<Parameter>();
-        //全局token认证
-        tokenPar.name("token").description("令牌").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
+        tokenPar.name("token").description("Token安全验证")
+                .modelRef(new ModelRef("string"))
+                .parameterType("header")
+                .defaultValue("a9081b1158e650b3985424")
+                .required(false).build();
         pars.add(tokenPar.build());
         return new Docket(DocumentationType.SWAGGER_2).forCodeGeneration(true).select().apis(RequestHandlerSelectors.any())
                 //过滤生成链接
@@ -43,10 +46,9 @@ public class APISwaggerConfig {
 
     private ApiInfo apiInfo() {
 
-        Contact contact = new Contact("bingo", "http://xyj.dankal.cn/dashboard/#!/project/1iDRGSOLWL", "bingo@dankal.cn");
-        ApiInfo apiInfo = new ApiInfoBuilder().license("Apache License Version 2.0").title("顺丰同城专送").description("DANKAL-JavaEE-API-Docs").contact(contact).version("1.0").build();
+        Contact contact = new Contact("Dankal", "http://xyj.dankal.cn/dashboard/#!/project/1iDRGSOLWL", "bingo@dankal.cn");
 
-        return apiInfo;
+        return new ApiInfoBuilder().license("Apache License Version 2.0").title("顺丰同城专送C端").description("小程序服务端接口文档").contact(contact).version("1.0").build();
     }
 
 }

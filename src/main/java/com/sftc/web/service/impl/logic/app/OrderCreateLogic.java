@@ -8,6 +8,7 @@ import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
+import com.sftc.web.model.SwaggerOrderVO.FriendFillVO;
 import com.sftc.web.model.entity.Message;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
@@ -23,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 
@@ -35,8 +35,6 @@ public class OrderCreateLogic {
     private OrderMapper orderMapper;
     @Resource
     private OrderExpressMapper orderExpressMapper;
-    @Resource
-    private AddressMapper addressMapper;
     @Resource
     private UserContactMapper userContactMapper;
     @Resource
@@ -104,14 +102,17 @@ public class OrderCreateLogic {
      */
     //使用最高级别的事物 防止提交过程中有好友包裹被填写
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
-    public synchronized APIResponse friendFillOrder(Map rowData) {
-        JSONObject paramOBJ = JSONObject.fromObject(rowData);
+    public synchronized APIResponse friendFillOrder(APIRequest request) {
+        FriendFillVO friendFillVO = (FriendFillVO) request.getRequestParam();
+        JSONObject paramOBJ = JSONObject.fromObject(friendFillVO);
 //        // 修复 空格对Gson的影响
 //        String strJsonResult = orderExpressStr.replace(" ", "");
 //        OrderExpressDTO orderExpress = new Gson().fromJson(strJsonResult, OrderExpressDTO.class);
         OrderExpress orderExpress = (OrderExpress) JSONObject.toBean(paramOBJ, OrderExpress.class);
         // 判断订单是否下单
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
+        if (orderDTO == null)
+            return APIUtil.selectErrorResponse("订单不存在", null);
         if (orderDTO.getRegion_type() != null && !"".equals(orderDTO.getRegion_type()) && orderDTO.getRegion_type().length() != 0) {
             return APIUtil.submitErrorResponse("订单已经下单，现在您无法再填写信息", orderExpress.getOrder_id());
         }
@@ -170,7 +171,7 @@ public class OrderCreateLogic {
             }
             // 消息通知表插入或者更新消息
             List<Message> messageListRE = messageMapper.selectMessageReceiveExpress(orderExpress1.getShip_user_id());
-            if (messageListRE.isEmpty()&& messageListRE.size() == 0) {
+            if (messageListRE.isEmpty() && messageListRE.size() == 0) {
                 Message message = new Message("RECEIVE_EXPRESS", 0, realList.get(0).getId(), orderExpress1.getShip_user_id());
                 messageMapper.insertMessage(message);
             } else {

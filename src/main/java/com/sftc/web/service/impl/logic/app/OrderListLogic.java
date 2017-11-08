@@ -6,18 +6,17 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFOrderHelper;
+import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.jpa.OrderExpressDao;
-import com.sftc.web.dao.mybatis.EvaluateMapper;
-import com.sftc.web.dao.mybatis.OrderExpressMapper;
-import com.sftc.web.dao.mybatis.OrderMapper;
-import com.sftc.web.dao.mybatis.UserMapper;
+import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.Evaluate;
+import com.sftc.web.model.User;
+import com.sftc.web.model.UserContact;
+import com.sftc.web.model.apiCallback.OrderCallback;
+import com.sftc.web.model.apiCallback.OrderFriendCallback;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
-import com.sftc.web.model.User;
-import com.sftc.web.model.apiCallback.OrderCallback;
-import com.sftc.web.model.apiCallback.OrderFriendCallback;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.sfmodel.Orders;
 import net.sf.json.JSONArray;
@@ -40,6 +39,8 @@ public class OrderListLogic {
     @Resource
     private UserMapper userMapper;
     @Resource
+    private UserContactMapper userContactMapper;
+    @Resource
     private OrderExpressMapper orderExpressMapper;
     @Resource
     private EvaluateMapper evaluateMapper;
@@ -52,8 +53,9 @@ public class OrderListLogic {
      * 我的订单列表
      */
     public APIResponse getMyOrderList(APIRequest request) {
+        Integer user_id = TokenUtils.getInstance().getUserId();
         MyOrderParam myOrderParam = (MyOrderParam) request.getRequestParam();
-
+        myOrderParam.setId(user_id);
         APIResponse errorResponse = syncSFExpressStatus(myOrderParam);
         if (errorResponse != null) return errorResponse;
 
@@ -88,6 +90,8 @@ public class OrderListLogic {
         // select
 //        List<OrderDTO> orderList = orderMapper.selectMyOrderList(myOrderParam);
         List<OrderDTO> orderDTOList = orderMapper.selectMyOrderList2(myOrderParam);
+        if (orderDTOList.size() == 0)
+            return APIUtil.selectErrorResponse("您还未创建订单", null);
         List<OrderCallback> orderCallbacks = new ArrayList<OrderCallback>();
         for (OrderDTO orderDTO : orderDTOList) {
             OrderCallback callback = new OrderCallback();
@@ -139,7 +143,9 @@ public class OrderListLogic {
      * 我的好友圈订单列表
      */
     public APIResponse getMyFriendCircleOrderList(APIRequest request) {
+        Integer user_id = TokenUtils.getInstance().getUserId();
         MyOrderParam myOrderParam = (MyOrderParam) request.getRequestParam();
+        myOrderParam.setId(user_id);
 
         APIResponse errorResponse = syncSFExpressStatus(myOrderParam);
         if (errorResponse != null) return errorResponse;
@@ -148,6 +154,8 @@ public class OrderListLogic {
         myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());
         // select
         List<OrderDTO> orderDTOList = orderMapper.selectMyFriendOrderList(myOrderParam);
+        if (orderDTOList.size() == 0)
+            return APIUtil.selectErrorResponse("暂无好友订单", null);
         List<OrderFriendCallback> orderCallbacks = new ArrayList<OrderFriendCallback>();
         for (OrderDTO orderDTO : orderDTOList) {
             OrderFriendCallback callback = new OrderFriendCallback();
@@ -174,6 +182,17 @@ public class OrderListLogic {
             HashSet flagSetIsEvaluated = new HashSet();
             for (OrderExpress oe : orderDTO.getOrderExpressList()) {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
+                int user_contact_id = 0;//好友圈也需要好友关系id
+                UserContact userContact = null;
+                if (orderDTO.getSender_user_id() != 0 && oe.getShip_user_id() != 0) {
+                    if (user_id == orderDTO.getSender_user_id()) {//如果为寄件方
+                        userContact = userContactMapper.friendDetail(orderDTO.getSender_user_id(), oe.getShip_user_id());
+                    } else {//如果为收件方
+                        userContact = userContactMapper.friendDetail(oe.getShip_user_id(), orderDTO.getSender_user_id());
+                    }
+                    if (userContact == null) user_contact_id = 0;
+                    else user_contact_id = userContact.getId();
+                }
                 OrderFriendCallback.OrderFriendCallbackExpress express = new OrderFriendCallback().new OrderFriendCallbackExpress();
                 express.setId(oe.getId());
                 express.setShip_user_id(oe.getShip_user_id());
@@ -184,6 +203,7 @@ public class OrderListLogic {
                 express.setObject_type(oe.getObject_type());
                 express.setPackage_comments(oe.getPackage_comments());
                 express.setReserve_time(oe.getReserve_time());
+                express.setUser_contact_id(user_contact_id);
                 //如果有异常信息，则添加异常信息
                 if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
                     express.setAttributes((oe.getAttributes()));
@@ -275,7 +295,7 @@ public class OrderListLogic {
                 String status = (orders.isPayed() && orders.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orders.getStatus();
                 OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(orders.getUuid());
                 orderExpress.setState(status);
-                if( orders.getAttributes()!=null){
+                if (orders.getAttributes() != null) {
                     orderExpress.setAttributes(orders.getAttributes());
                 }
                 orderExpressDao.save(orderExpress);

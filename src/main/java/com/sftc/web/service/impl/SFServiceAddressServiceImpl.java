@@ -113,7 +113,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         String senderArea = (String) sourceObject.get("area");
         String receiverCity = (String) targetObject.get("city");
         String receiverArea = (String) targetObject.get("area");
-        String dateTime = requestObject.containsKey("query_time") ? (String) requestObject.get("query_time") : null;
+        String dateTime = requestObject.containsKey("query_time") ? (String) requestObject.get("query_time") : "";
 
         if (senderCity == null || receiverCity == null || senderArea == null || receiverArea == null || senderCity.equals("") || receiverCity.equals("") || senderArea.equals("") || receiverArea.equals(""))
             return APIUtil.paramErrorResponse("请求体不完整");
@@ -180,7 +180,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
     private APIResponse getServiceRate(String origin, String dest, String weight, String dateTime) {
 
         String pattern = "yyyy-MM-dd'T'HH:mm:ssZZ";
-        Date date = dateTime == null ? new Date() : new Date(Long.parseLong(dateTime));
+        Date date = dateTime.equals("") ? new Date() : new Date(Long.parseLong(dateTime));
         String time = DateFormatUtils.format(date, pattern);
         try {
             time = URLEncoder.encode(time, "UTF-8");

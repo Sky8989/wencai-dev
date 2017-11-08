@@ -16,6 +16,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 
@@ -103,7 +104,7 @@ public class TokenServiceImpl implements TokenService {
      *
      * @return APIResponse
      */
-    private APIResponse mobileGetToken(JSONObject mobileLogin) {
+    private APIResponse mobileGetToken(JSONObject mobileLogin)throws Exception {
         //获取手机号 短信验证码 发送注册请求   提取返回值
 
         // handle param
@@ -210,4 +211,21 @@ public class TokenServiceImpl implements TokenService {
         String s = MD5Util.MD5(str1 + str2);
         return s.substring(0, s.length() - 10);
     }
+
+	@SuppressWarnings("unused")
+	@Override
+	public APIResponse deleteToken(APIRequest apiRequest) throws Exception {
+		Object requestParam = apiRequest.getRequestParam();
+		String mobile = JSONObject.fromObject(requestParam).getString("mobile");
+		User user = null;
+		if(mobile != null && !mobile.equals("")){
+			user = userMapper.selectUserByPhone(mobile);
+		}
+		if(user == null){
+			 return APIUtil.submitErrorResponse("当前手机号还未注册",user);
+		}
+		//删除token表中对应的数据
+		tokenMapper.deleteTokenByUserId(user.getId());
+		return  APIUtil.getResponse(SUCCESS, null);
+	}
 }

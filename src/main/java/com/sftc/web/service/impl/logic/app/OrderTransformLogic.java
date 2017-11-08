@@ -151,9 +151,11 @@ public class OrderTransformLogic {
             return APIUtil.paramErrorResponse("express_transform_id不能为空");
 
         int express_transform_id = requestObject.getInt("express_transform_id");
-        OrderExpressTransform orderExpressTransform = orderExpressTransformDao.findOne(express_transform_id);
-        orderExpressTransform.setIs_read(1);
-        orderExpressTransformDao.save(orderExpressTransform);
+//        OrderExpressTransform orderExpressTransform = orderExpressTransformDao.findOne(express_transform_id);
+//        orderExpressTransform.setIs_read(1);
+//        orderExpressTransformDao.save(orderExpressTransform);
+        //事务问题,先存在查的改为统一使用Mybatis
+        orderExpressTransformMapper.updateExpressTransformReadStatusById(express_transform_id);
 
         OrderExpressTransform orderExpressTransform2 = orderExpressTransformMapper.selectExpressTransformByID(express_transform_id);
         if (orderExpressTransform2 == null)

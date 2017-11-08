@@ -26,4 +26,6 @@ public interface TokenMapper {
     User tokenInterceptor(String token);
 
     Integer getUserIdByLocalToken(String token);
+    
+    void deleteTokenByUserId(Integer user_id);
 }

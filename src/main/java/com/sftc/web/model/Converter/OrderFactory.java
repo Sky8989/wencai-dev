@@ -14,7 +14,6 @@ public class OrderFactory {
         order.setId(orderDTO.getId());
         order.setCreate_time(orderDTO.getCreate_time());
         order.setPay_method(orderDTO.getPay_method());
-        order.setFreight(orderDTO.getFreight());
         order.setOrder_type(orderDTO.getOrder_type());
         order.setOrder_type(orderDTO.getOrder_type());
         order.setRegion_type(orderDTO.getRegion_type());

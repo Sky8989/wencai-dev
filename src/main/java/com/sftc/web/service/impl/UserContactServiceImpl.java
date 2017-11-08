@@ -48,18 +48,12 @@ public class UserContactServiceImpl implements UserContactService {
 
     @Resource
     private UserMapper userMapper;
-    @Resource
-    private OrderExpressDao orderExpressDao;
 
     /*
      * 根据id查询好友详情
      */
     public APIResponse getFriendDetail(APIRequest request) {
-
-        // Param
-
         String friendId = (String) request.getParameter("friend_id");
-
 
         if (friendId == null || friendId.equals(""))
             return APIUtil.paramErrorResponse("friend_id不能为空");
@@ -90,12 +84,11 @@ public class UserContactServiceImpl implements UserContactService {
     public APIResponse getFriendList(APIRequest request) {
         Paging paging = (Paging) request.getRequestParam();
         Integer user_id = TokenUtils.getInstance().getUserId();
-        paging.setUser_id(user_id);
         // verify params
         if (paging.getPageNum() < 1 || paging.getPageSize() < 1) {
             return APIUtil.paramErrorResponse("分页参数无效");
         }
-
+        paging.setUser_id(user_id);
         paging.setPageNum((paging.getPageNum() - 1) * paging.getPageSize());
         List<UserContact> userContactList = null;
         try {
@@ -111,24 +104,23 @@ public class UserContactServiceImpl implements UserContactService {
     /**
      * 来往记录
      */
-    public APIResponse getContactInfo(UserContactParam userContactParam) {
+    public APIResponse getContactInfo(APIRequest request) {
+        UserContactParam userContactParam = (UserContactParam) request.getRequestParam();
         Integer user_id = TokenUtils.getInstance().getUserId();
-        userContactParam.setUser_id(user_id);
-
         // handle param
         if (userContactParam.getAccess_token() == null || userContactParam.getAccess_token().length() == 0) {
             //传入公共token
             userContactParam.setAccess_token(SFTokenHelper.COMMON_ACCESSTOKEN);
-        } else if (userContactParam.getUser_id() == 0) {
+        } else if (user_id == 0) {
             return APIUtil.paramErrorResponse("用户id不能为空");
         } else if (userContactParam.getFriend_id() == 0) {
             return APIUtil.paramErrorResponse("好友id不能为空");
-        } else if (userContactParam.getUser_id() == userContactParam.getFriend_id()) {
+        } else if (user_id == userContactParam.getFriend_id()) {
             return APIUtil.paramErrorResponse("I believe that you can't fuck yourself !");
         } else if (userContactParam.getPageNum() < 1 || userContactParam.getPageSize() < 1) {
             return APIUtil.paramErrorResponse("分页参数无效");
         }
-
+        userContactParam.setUser_id(user_id);
         APIResponse apiResponse = syncFriendExpress(userContactParam);
         if (apiResponse != null) return apiResponse;
 
@@ -179,7 +171,7 @@ public class UserContactServiceImpl implements UserContactService {
         List<Orders> orderses = null;
         try {
             String token = userContactParam.getAccess_token();
-            if (!token.equals("") && token != null) {
+            if (token != null && !token.equals("")) {
                 token = userContactParam.getAccess_token();
             } else {
                 token = COMMON_ACCESSTOKEN;
@@ -193,13 +185,21 @@ public class UserContactServiceImpl implements UserContactService {
         if (orderses != null) {
             for (Orders orders : orderses) {
                 String uuid = orders.getUuid();
-                String order_status = orders.getStatus();
-                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
-                orderExpress.setState(order_status);
+                Order order = orderMapper.selectOrderDetailByUuid(orders.getUuid());
+                String order_status = (orders.isPayed() && orders.getStatus().equals("PAYING") &&
+                        order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orders.getStatus();
+//                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
+//                orderExpress.setState(order_status);
                 if (orders.getAttributes() != null) {
-                    orderExpress.setAttributes(orders.getAttributes());
+//                    orderExpress.setAttributes(orders.getAttributes());
+                    //事务问题,先存在查的改为统一使用Mybatis
+                    String attributes = orders.getAttributes();
+                    orderExpressMapper.updateExpressAttributeSByUUID(uuid, attributes);
                 }
-                orderExpressDao.save(orderExpress);
+//                orderExpressDao.save(orderExpress);
+
+                //事务问题,先存在查的改为统一使用Mybatis,这里的同步也是此情况
+                orderExpressMapper.updateOrderExpressStatusByUUID(uuid, order_status);
             }
         }
         return null;

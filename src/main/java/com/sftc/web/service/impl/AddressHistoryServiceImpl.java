@@ -14,6 +14,7 @@ import com.sftc.web.model.dto.AddressDTO;
 import com.sftc.web.model.entity.Address;
 import com.sftc.web.model.entity.AddressBook;
 import com.sftc.web.service.AddressHistoryService;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -49,6 +50,7 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
 
         // Handle avatar
         List<AddressBookDTO> addressBookDTOList = addressBookMapper.selectAddressHistoryListByUserId(user_id, (pageNum - 1) * pageSzie, pageSzie);
+        if(addressBookDTOList == null) return APIUtil.selectErrorResponse("暂无历史地址",null);
         for (AddressBookDTO ab : addressBookDTOList) {
             Address address = ab.getAddress();
             User user = userMapper.selectUserByUserId(address.getUser_id());
@@ -68,8 +70,8 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
      * 删除历史地址
      */
     public APIResponse deleteAddressHistory(APIRequest request) {
-        // Param
-        String addressHistoryId = (String) request.getParameter("address_history_id");
+        JSONObject paramObject = JSONObject.fromObject(request.getRequestParam());
+        String addressHistoryId = paramObject.getString("address_history_id");
         if (addressHistoryId == null || addressHistoryId.equals(""))
             return APIUtil.paramErrorResponse("address_history_id不能为空");
         long address_history_id = Long.parseLong(addressHistoryId);
@@ -77,6 +79,7 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
             return APIUtil.paramErrorResponse("address_history_id不正确");
 
         AddressBook addressBook = addressBookDao.findOne(address_history_id);
+        if(addressBook == null) return APIUtil.selectErrorResponse("该地址簿不存在",null);
         addressBook.setIs_delete(1);
         addressBookDao.save(addressBook);
         return APIUtil.getResponse(SUCCESS, null);

@@ -26,4 +26,6 @@ public interface TokenService {
      * @throws Exception
      */
     APIResponse getTokenList(APIRequest apiRequest) throws Exception;
+
+	APIResponse deleteToken(APIRequest apiRequest) throws Exception;
 }

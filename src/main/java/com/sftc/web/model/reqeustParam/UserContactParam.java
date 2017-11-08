@@ -1,11 +1,20 @@
 package com.sftc.web.model.reqeustParam;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+@ApiModel(value = "来往记录请求类")
 public class UserContactParam {
+    @ApiModelProperty(name = "access_token",value = "顺丰access_token",example = "EyMivbd44I124lcddrBG",required = true)
     private String access_token;
+    @ApiModelProperty(name = "user_id",value = "用户id",example = "10093",required = true,hidden = true)
     private int user_id;
+    @ApiModelProperty(name = "friend_id",value = "好友id",example = "10085",required = true)
     private int friend_id;
+    @ApiModelProperty(name = "pageNum",value = "页码",example = "1",required = true)
     private int pageNum;
+    @ApiModelProperty(name = "pageSize",value = "每页条数",example = "10",required = true)
     private int pageSize;
+    @ApiModelProperty(name = "pageSize",value = "订单id")
     private String order_id;
 
     public String getOrder_id() {return order_id;}

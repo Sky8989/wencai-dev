@@ -6,9 +6,9 @@ import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.tools.sf.SFTokenHelper;
-import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
-import com.sftc.web.model.*;
+import com.sftc.web.model.GiftCard;
+import com.sftc.web.model.User;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
 import com.sftc.web.model.entity.Message;
@@ -22,9 +22,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.lang.Object;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,8 +45,6 @@ public class OrderDetailLogic {
     private OrderExpressTransformMapper orderExpressTransformMapper;
     @Resource
     private MessageMapper messageMapper;
-    @Resource
-    private OrderExpressDao orderExpressDao;
 
     /**
      * 订单详情接口
@@ -61,17 +56,17 @@ public class OrderDetailLogic {
             return APIUtil.paramErrorResponse("order_id不能为空");
 
         OrderDTO orderDTO1 = orderMapper.selectOrderDetailByOrderId(order_id);
+        if (orderDTO1 == null)
+            return APIUtil.selectErrorResponse("订单不存在", null);
 
         if (orderDTO1.getRegion_type() != null && orderDTO1.getRegion_type().equals("REGION_SAME")) {
-
-                APIResponse apiResponse = syncOrderExpress(order_id);
-                if (apiResponse != null) return apiResponse;
+            APIResponse apiResponse = syncOrderExpress(order_id);
+            if (apiResponse != null) return apiResponse;
         }
 
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
 
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-        List<OrderExpressDTO> dtoList = new ArrayList<OrderExpressDTO>();
+        JSONObject respObject = new JSONObject();
         if (orderDTO == null) return APIUtil.getResponse(SUCCESS, null);
         List<OrderExpressDTO> orderExpress = orderDTO.getOrderExpressList();
         for (OrderExpressDTO orderExpressDTO : orderExpress) {
@@ -80,7 +75,6 @@ public class OrderDetailLogic {
                 // 扩展收件人头像
                 orderExpressDTO.setShip_avatar(receiver.getAvatar());
             }
-            dtoList.add(orderExpressDTO);
         }
 
         // order
@@ -95,13 +89,10 @@ public class OrderDetailLogic {
         // giftCard
         GiftCard giftCard = giftCardMapper.selectGiftCardById(orderDTO.getGift_card_id());
 
-        resultMap.put("order", orderMap);
-        resultMap.put("giftCard", giftCard);
+        respObject.put("order", orderMap);
+        respObject.put("giftCard", giftCard);
 
-        //查询是否有未读收到好友地址消息 若有则消除
-        //remarkMessageReceiveAddress(order.getOrderExpressDTOList(), order.getSender_user_id());
-
-        return APIUtil.getResponse(SUCCESS, resultMap);
+        return APIUtil.getResponse(SUCCESS, respObject);
     }
 
     /**
@@ -163,44 +154,30 @@ public class OrderDetailLogic {
                 return APIUtil.selectErrorResponse("查询失败", respObject);
             }
 
-            // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
-            OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
             String order_status = respObject.getJSONObject("request").getString("status");
             String directed_code = null;
-            int is_directed = 0;
+            int is_directed = respObject.getJSONObject("request").getString("type").equals("DIRECTED") ? 1 : 0;
+
             if (respObject.containsKey("request")) {
                 JSONObject req = respObject.getJSONObject("request");
                 if (req != null && req.containsKey("attributes")) {
-                    JSONObject attributuOBJ = respObject.getJSONObject("request").getJSONObject("attributes");
+                    JSONObject attributuOBJ = req.getJSONObject("attributes");
                     if (attributuOBJ != null) {
-                        if (attributuOBJ.containsKey("source") && attributuOBJ.getString("source") != null) {
-                            if (attributuOBJ.getString("source").equals("DIRECTED")) {
-                                is_directed = 1;
-                            }
-                        }
                         if (attributuOBJ.containsKey("directed_code")) {
                             directed_code = attributuOBJ.getString("directed_code");
-                            orderExpress.setDirected_code(directed_code);
+                            is_directed = 1;
                         }
                     }
                 }
             }
-
-            if (order_status.equals("WAIT_HAND_OVER")) { // 当同城查询出来的状态是待揽件 我方库中也要存为待揽件
-                orderExpress.setState("WAIT_HAND_OVER");
-            }
-            orderExpressDao.save(orderExpress);
-
+            // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
             boolean payed = respObject.getJSONObject("request").getBoolean("payed");
             if (payed && order_status.equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) {
+                order_status = "WAIT_HAND_OVER";
                 respObject.getJSONObject("request").put("status", "WAIT_HAND_OVER");
-                OrderExpress oe = orderExpressMapper.selectExpressByUuid(uuid);
-                oe.setState("WAIT_HAND_OVER");
-                oe.setDirected_code(directed_code);
-                oe.setIs_directed(is_directed);
-                orderExpressDao.save(oe);
-                order = orderMapper.selectOrderDetailByUuid(uuid);
             }
+            orderExpressMapper.updateExpressDirectedByUUID(uuid, order_status, directed_code, is_directed);
+
             APIResponse apiResponse = syncOrderExpress(order.getId());
             if (apiResponse != null) return apiResponse;
             order = orderMapper.selectOrderDetailByUuid(uuid);
@@ -208,6 +185,22 @@ public class OrderDetailLogic {
 
         respObject.put("order", order);
 
+        return APIUtil.getResponse(SUCCESS, respObject);
+    }
+
+    /**
+     * 纯走B端的同城订单详情查询，封装使用公共token
+     */
+    public APIResponse selectSameExpressDetail(APIRequest request) {
+        // Param
+        String uuid = (String) request.getParameter("uuid");
+        if (!(uuid != null && !uuid.equals(""))) {
+            return APIUtil.paramErrorResponse("Parameter uuid missing.");
+        }
+        JSONObject respObject = SFExpressHelper.getExpressDetail(uuid, COMMON_ACCESSTOKEN);
+        if (respObject.containsKey("error")) {
+            return APIUtil.selectErrorResponse("查询失败", respObject.getJSONObject("error"));
+        }
         return APIUtil.getResponse(SUCCESS, respObject);
     }
 
@@ -237,9 +230,9 @@ public class OrderDetailLogic {
         List<Orders> orderses = null;
         try {
             String token = user.getToken().getAccess_token();
-            if(!token.equals("") && token != null){
+            if (token != null && !token.equals("")) {
                 token = user.getToken().getAccess_token();
-            }else {
+            } else {
                 token = COMMON_ACCESSTOKEN;
             }
             orderses = APIResolve.getOrderStatusWithUrl(ORDERS_URL, token);
@@ -251,13 +244,21 @@ public class OrderDetailLogic {
         if (orderses != null) {
             for (Orders orders : orderses) {
                 String uuid = orders.getUuid();
-                String order_status = orders.getStatus();
-                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
-                orderExpress.setState(order_status);
+                Order order = orderMapper.selectOrderDetailByUuid(orders.getUuid());
+                String order_status = (orders.isPayed() && orders.getStatus().equals("PAYING") &&
+                        order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orders.getStatus();
+//                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
+//                orderExpress.setState(order_status);
                 if (orders.getAttributes() != null) {
-                    orderExpress.setAttributes(orders.getAttributes());
+//                    orderExpress.setAttributes(orders.getAttributes());
+                    //事务问题,先存在查的改为统一使用Mybatis
+                    String attributes = orders.getAttributes();
+                    orderExpressMapper.updateExpressAttributeSByUUID(uuid, attributes);
                 }
-                orderExpressDao.save(orderExpress);
+//                orderExpressDao.save(orderExpress);
+
+                //事务问题,先存在查的改为统一使用Mybatis,这里的同步也是此情况
+                orderExpressMapper.updateOrderExpressStatusByUUID(uuid, order_status);
             }
         }
         return null;

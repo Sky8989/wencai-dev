@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -82,13 +83,16 @@ public class CouponServiceImpl implements CouponService {
      */
     public APIResponse exchangeCoupon(APIRequest apiRequest) throws Exception {
         Promo promo = (Promo) apiRequest.getRequestParam();
-        //过滤参数 处理参数
+        // 过滤参数 处理参数
+        if (promo.getPromo_code() == null)
+            return APIUtil.paramErrorResponse("请输入密语");
         if ("".equals(promo.getPromo_code()) || promo.getPromo_code().contains(" "))
             return APIUtil.paramErrorResponse("Don't input '' or ' ' ");
-        APIStatus status = APIStatus.SUCCESS;
-        String coupon_exchange_url = SF_COUPON_EXCHANGE_API.replace("{promo_code}", promo.getPromo_code());
 
-        //更新商户信息
+        String promo_code = URLEncoder.encode(promo.getPromo_code(), "UTF-8");
+        String coupon_exchange_url = SF_COUPON_EXCHANGE_API.replace("{promo_code}", promo_code);
+
+        // 更新商户信息
         APIResponse apiResponse = updateMerchantAddress(promo.getToken());
         if (apiResponse != null) return apiResponse;
 
@@ -97,14 +101,14 @@ public class CouponServiceImpl implements CouponService {
         httpPost.addHeader("PushEnvelope-Device-Token", promo.getToken());
         String res = APIPostUtil.post("", httpPost);
 
-        //处理错误信息
+        // 处理错误信息
         JSONObject resJSONObject = JSONObject.fromObject(res);
         if (resJSONObject.containsKey(ERROR_STRING_1) || resJSONObject.containsKey(ERROR_STRING_2)
                 || resJSONObject.containsKey(ERROR_STRING_3) || resJSONObject.containsKey(ERROR_STRING_4)) {
             return APIUtil.submitErrorResponse("兑换失败：" + resJSONObject.getJSONObject("error").getString("message"), resJSONObject);
         }
 
-        return APIUtil.getResponse(status, resJSONObject);
+        return APIUtil.getResponse(APIStatus.SUCCESS, resJSONObject);
 
     }
 

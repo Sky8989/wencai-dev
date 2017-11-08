@@ -20,7 +20,7 @@ public interface UserContactService {
     /**
      * 好友圈来往记录
      */
-    APIResponse getContactInfo(UserContactParam userContactParam);
+    APIResponse getContactInfo(APIRequest request);
 
     /**
      * 星标/取消星标好友
