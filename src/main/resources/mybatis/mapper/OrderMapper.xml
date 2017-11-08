@@ -44,33 +44,38 @@
         WHERE id = #{gift_card_id}
     </select>
 
-    <select id="selectNationReserveOrders" resultType="int">
+    <select id="selectNationReserveOrders" resultType="java.lang.String">
         SELECT DISTINCT oe.order_id
         FROM sftc_order o, sftc_order_express oe
-        WHERE o.id = oe.order_id AND o.region_type = 'REGION_NATION' AND oe.reserve_time IS NOT NULL AND
-              oe.reserve_time != ''
+        WHERE o.id = oe.order_id
+              AND o.region_type = 'REGION_NATION'
+              AND o.is_cancel = 0
+              AND oe.reserve_time IS NOT NULL
+              AND oe.reserve_time != ''
+              AND oe.state = 'WAIT_HAND_OVER'
+              AND (oe.order_number = '' OR oe.order_number IS NULL)
     </select>
 
     <!--抓取大网单-->
-    <select id="selectNationUnCommitOrders" resultType="int">
+    <select id="selectNationUnCommitOrders" resultType="java.lang.String">
         SELECT DISTINCT oe.order_id
         FROM sftc_order o, sftc_order_express oe
-        WHERE o.id = oe.order_id AND o.region_type = 'REGION_NATION' AND o.is_cancel = ''
-              AND (oe.state = 'WAIT_FILL' OR oe.state = 'ALREADY_FILL' OR oe.state = 'PAYING')
+        WHERE o.id = oe.order_id AND o.region_type = 'REGION_NATION' AND o.is_cancel = 0
+              AND (oe.state = 'WAIT_FILL' OR oe.state = 'ALREADY_FILL' OR oe.state = 'PAYING') AND receive_time IS NOT NULL
     </select>
 
     <!--抓取未提交的好友多包裹-->
-    <select id="selectMutilExpressOrders" resultType="int">
+    <select id="selectMutilExpressOrders" resultType="java.lang.String">
         SELECT DISTINCT oe.order_id
         FROM sftc_order o, sftc_order_express oe
-        WHERE o.id = oe.order_id AND o.is_cancel = ''
+        WHERE o.id = oe.order_id AND o.is_cancel = 0
               AND (SELECT COUNT(order_id)
                    FROM sftc_order_express
                    WHERE order_id = o.id) > 1 AND region_type IS NULL
     </select>
 
     <!--抓取同城单-->
-    <select id="selectSameUnCommitOrders" resultType="int">
+    <select id="selectSameUnCommitOrders" resultType="java.lang.String">
         SELECT DISTINCT oe.order_id
         FROM sftc_order o, sftc_order_express oe
         WHERE o.id = oe.order_id
@@ -78,7 +83,7 @@
               (1 = (SELECT COUNT(order_id)
                     FROM sftc_order_express
                     WHERE order_id = o.id))
-              AND o.is_cancel = ''
+              AND o.is_cancel = 0
               AND (
                   (oe.state = 'WAIT_FILL' OR oe.state = 'ALREADY_FILL')
                   OR
@@ -299,14 +304,14 @@
     </select>
 
     <!-- 查看快递订单详情  -->
-    <select id="selectOrderDetailByUuid" parameterType="String" resultMap="orderMap">
+    <select id="selectOrderDetailByUuid" parameterType="java.lang.String" resultMap="orderMap">
         SELECT *
         FROM sftc_order o, sftc_order_express oe
         WHERE oe.uuid = #{uuid} AND o.id = oe.order_id
     </select>
 
     <!--  删除订单  -->
-    <delete id="deleOrderAndOrderExpress" parameterType="String">
+    <delete id="deleOrderAndOrderExpress" parameterType="java.lang.String">
         DELETE sftc_order, sftc_order_express
         FROM sftc_order
             LEFT JOIN sftc_order_express
@@ -317,7 +322,7 @@
     <!-- 取消订单，更新order的is_cancel-->
     <update id="updateCancelOrderById" parameterType="java.lang.String">
         UPDATE sftc_order
-        SET is_cancel = 'Cancelled'
+        SET is_cancel = 1
         WHERE id = #{id}
     </update>
 

@@ -1,8 +1,12 @@
 package com.sftc.web.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.sftc.tools.api.*;
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResolve;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFTokenHelper;
+import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.*;
@@ -22,6 +26,7 @@ import java.util.List;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_ORDER_SYNC_URL;
+import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
 
 @Service("userContactService")
 public class UserContactServiceImpl implements UserContactService {
@@ -52,15 +57,14 @@ public class UserContactServiceImpl implements UserContactService {
     public APIResponse getFriendDetail(APIRequest request) {
 
         // Param
-        String userId = (String) request.getParameter("user_id");
+
         String friendId = (String) request.getParameter("friend_id");
 
-        if (userId == null || userId.equals(""))
-            return APIUtil.paramErrorResponse("user_id不能为空");
+
         if (friendId == null || friendId.equals(""))
             return APIUtil.paramErrorResponse("friend_id不能为空");
 
-        int user_id = Integer.parseInt(userId);
+        Integer user_id = TokenUtils.getInstance().getUserId();
         int friend_id = Integer.parseInt(friendId);
 
         if (user_id < 1)
@@ -85,11 +89,10 @@ public class UserContactServiceImpl implements UserContactService {
      */
     public APIResponse getFriendList(APIRequest request) {
         Paging paging = (Paging) request.getRequestParam();
-
+        Integer user_id = TokenUtils.getInstance().getUserId();
+        paging.setUser_id(user_id);
         // verify params
-        if (paging.getUser_id() == 0) {
-            return APIUtil.paramErrorResponse("用户id不能为空");
-        } else if (paging.getPageNum() < 1 || paging.getPageSize() < 1) {
+        if (paging.getPageNum() < 1 || paging.getPageSize() < 1) {
             return APIUtil.paramErrorResponse("分页参数无效");
         }
 
@@ -109,6 +112,8 @@ public class UserContactServiceImpl implements UserContactService {
      * 来往记录
      */
     public APIResponse getContactInfo(UserContactParam userContactParam) {
+        Integer user_id = TokenUtils.getInstance().getUserId();
+        userContactParam.setUser_id(user_id);
 
         // handle param
         if (userContactParam.getAccess_token() == null || userContactParam.getAccess_token().length() == 0) {
@@ -173,7 +178,13 @@ public class UserContactServiceImpl implements UserContactService {
         // POST
         List<Orders> orderses = null;
         try {
-            orderses = APIResolve.getOrdersJson(ORDERS_URL, userContactParam.getAccess_token());
+            String token = userContactParam.getAccess_token();
+            if (!token.equals("") && token != null) {
+                token = userContactParam.getAccess_token();
+            } else {
+                token = COMMON_ACCESSTOKEN;
+            }
+            orderses = APIResolve.getOrderStatusWithUrl(ORDERS_URL, token);
         } catch (Exception e) {
             return APIUtil.submitErrorResponse("正在同步来往记录订单状态，稍后重试", e);
         }
@@ -185,7 +196,7 @@ public class UserContactServiceImpl implements UserContactService {
                 String order_status = orders.getStatus();
                 OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
                 orderExpress.setState(order_status);
-                if(orders.getAttributes()!=null){
+                if (orders.getAttributes() != null) {
                     orderExpress.setAttributes(orders.getAttributes());
                 }
                 orderExpressDao.save(orderExpress);
@@ -201,7 +212,7 @@ public class UserContactServiceImpl implements UserContactService {
         // Param
         Object param = request.getRequestParam();
         JSONObject requestObject = JSONObject.fromObject(param);
-        int user_id = requestObject.getInt("user_id");
+        Integer user_id = TokenUtils.getInstance().getUserId();
         int friend_id = requestObject.getInt("friend_id");
         int is_star = requestObject.getInt("is_star");
         if (user_id < 1)

@@ -3,18 +3,16 @@ package com.sftc.web.service.impl;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.jpa.AddressBookDao;
-import com.sftc.web.dao.jpa.AddressHistoryDao;
 import com.sftc.web.dao.mybatis.AddressBookMapper;
-import com.sftc.web.dao.mybatis.AddressHistoryMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Converter.AddressFactory;
-import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.User;
+import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.dto.AddressDTO;
 import com.sftc.web.model.entity.Address;
 import com.sftc.web.model.entity.AddressBook;
-import com.sftc.web.model.entity.AddressHistory;
 import com.sftc.web.service.AddressHistoryService;
 import org.springframework.stereotype.Service;
 
@@ -28,14 +26,9 @@ import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
 public class AddressHistoryServiceImpl implements AddressHistoryService {
 
     @Resource
-    private AddressHistoryMapper addressHistoryMapper;
-    @Resource
     private AddressBookMapper addressBookMapper;
     @Resource
     private AddressBookDao addressBookDao;
-    @Resource
-    private AddressHistoryDao addressHistoryDao;
-
     @Resource
     private UserMapper userMapper;
 
@@ -44,13 +37,11 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
      */
     public APIResponse selectAddressHistory(APIRequest request) {
         // Param
-        String userId = (String) request.getParameter("user_id");
         String page = (String) request.getParameter("pageNum");
         String size = (String) request.getParameter("pageSize");
-        if (userId == null || userId.equals("")) return APIUtil.paramErrorResponse("user_id不能为空");
         if (page == null || page.equals("")) return APIUtil.paramErrorResponse("pageNum不能为空");
         if (size == null || size.equals("")) return APIUtil.paramErrorResponse("pageSize不能为空");
-        int user_id = Integer.parseInt(userId);
+        Integer user_id = TokenUtils.getInstance().getUserId();
         int pageNum = Integer.parseInt(page);
         int pageSzie = Integer.parseInt(size);
         if (user_id < 1) return APIUtil.paramErrorResponse("user_id不正确");
@@ -85,7 +76,6 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
         if (address_history_id < 1)
             return APIUtil.paramErrorResponse("address_history_id不正确");
 
-//        addressBookMapper.updateIsDeleteStatusByPrimaryKey(address_history_id, 1);
         AddressBook addressBook = addressBookDao.findOne(address_history_id);
         addressBook.setIs_delete(1);
         addressBookDao.save(addressBook);

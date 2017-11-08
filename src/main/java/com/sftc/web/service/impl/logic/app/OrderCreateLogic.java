@@ -116,7 +116,7 @@ public class OrderCreateLogic {
             return APIUtil.submitErrorResponse("订单已经下单，现在您无法再填写信息", orderExpress.getOrder_id());
         }
 
-        if (orderDTO.getIs_cancel() != null && "Cancelled".equals(orderDTO.getIs_cancel())) {
+        if (orderDTO.getIs_cancel() == 1) {
             return APIUtil.submitErrorResponse("订单已取消，现在您无法再填写信息", null);
         }
 

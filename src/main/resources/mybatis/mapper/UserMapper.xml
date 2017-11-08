@@ -34,6 +34,11 @@
         WHERE open_id = #{open_id}
     </select>
 
+    <select id="findUserByMobile" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
+        SELECT *
+        FROM sftc_user
+        WHERE mobile = #{mobile}
+    </select>
     <select id="selectUserByUserId" parameterType="int" resultType="com.sftc.web.model.User">
         SELECT *
         FROM sftc_user
@@ -43,29 +48,29 @@
     <insert id="insertOpenid" parameterType="com.sftc.web.model.User" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_user (open_id, create_time, session_key)
         VALUES
-            (#{open_id}, #{create_time}, #{session_key})
+        (#{open_id}, #{create_time}, #{session_key})
     </insert>
 
     <insert id="insertWithAvatarAndName" parameterType="com.sftc.web.model.User" useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO sftc_user (open_id, create_time, session_key, avatar, name)
         VALUES
-            (#{open_id}, #{create_time}, #{session_key}, #{avatar}, #{name})
+        (#{open_id}, #{create_time}, #{session_key}, #{avatar}, #{name})
     </insert>
 
     <!--添加顺丰传过来的Merchant信息-->
     <insert id="addMerchant" parameterType="com.sftc.web.model.User" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_user (mobile, user_password, open_id, create_time, avatar, uuid, name) VALUES
-            (#{mobile}, #{user_password}, #{open_id}, #{create_time}, #{avatar}, #{uuid}, #{name})
+        (#{mobile}, #{user_password}, #{open_id}, #{create_time}, #{avatar}, #{uuid}, #{name})
     </insert>
 
-    <select id="getUuidAndtoken" parameterType="int" resultType="com.sftc.web.model.User" resultMap="User">
+    <select id="getUuidAndtoken" parameterType="java.lang.String" resultType="com.sftc.web.model.User" resultMap="User">
         SELECT
-            u.uuid,
-            t.access_token
+        u.uuid,
+        t.access_token
         FROM sftc_user u, sftc_token t, sftc_order o
         WHERE
-            u.id = o.sender_user_id AND u.id = t.user_id AND o.id = #{id}
+        u.id = o.sender_user_id AND u.id = t.user_id AND o.id = #{id}
     </select>
 
     <update id="updateUserOfAvatar" parameterType="com.sftc.web.model.User">
@@ -83,6 +88,7 @@
         <trim prefix="set" suffixOverrides=",">
             <if test="uuid!=null">uuid=#{uuid},</if>
             <if test="mobile!=null">mobile=#{mobile},</if>
+            <if test="invite_id!=null">invite_id=#{invite_id},</if>
         </trim>
         WHERE id=#{id}
     </update>

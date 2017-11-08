@@ -73,7 +73,7 @@ public class APIUtil {
         return apiResponse;
     }
 
-    // 初始化单例参数
+    // 初始化
     private static APIResponse apiResponse() {
         APIResponse apiResponse = new APIResponse();
         apiResponse.setState(SUCCESS.getState());
