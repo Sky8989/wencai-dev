@@ -24,4 +24,6 @@ public interface TokenMapper {
     List<Token> getTokenList(Token token);
 
     User tokenInterceptor(String token);
+
+    Integer getUserIdByLocalToken(String token);
 }

@@ -68,7 +68,7 @@
     <!-- 静态资源访问处理 -->
     <mvc:default-servlet-handler/>
 
-    <!-- 启动Aspectj注解模式驱动AOP -->
+     <!--启动Aspectj注解模式驱动AOP-->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
     <bean id="tokenInterceptor" class="com.sftc.web.config.AuthTokenAOPInterceptor"/>
     <aop:config>

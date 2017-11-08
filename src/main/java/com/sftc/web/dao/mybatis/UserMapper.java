@@ -12,13 +12,15 @@ public interface UserMapper {
 
     List<User> selectUserByOpenid(String open_id);
 
+    List<User> findUserByMobile(String mobile);
+
     User selectUserByUserId(int user_id);
 
     void insertOpenid(User user);
 
     void addMerchant(User merchant);
 
-    User getUuidAndtoken(int order_id);
+    User getUuidAndtoken(String order_id);
 
     void insertWithAvatarAndName(User user);
 

@@ -57,7 +57,7 @@ public class Order extends Object {
     // 订单地域 同城 大网
     private String region_type;
     //新添加 is_cancel
-    private String is_cancel;
+    private int is_cancel;
 
     public Order() {
     }
@@ -329,11 +329,11 @@ public class Order extends Object {
         this.region_type = region_type;
     }
 
-    public String getIs_cancel() {
+    public int getIs_cancel() {
         return is_cancel;
     }
 
-    public void setIs_cancel(String is_cancel) {
+    public void setIs_cancel(int is_cancel) {
         this.is_cancel = is_cancel;
     }
 
