@@ -39,8 +39,8 @@ public class OrderPayLogic {
         JSONObject jsonObject = JSONObject.fromObject(object);
         HttpPost post = new HttpPost(SF_QUOTES_URL);
         JSONObject requestObject = jsonObject.getJSONObject("request");
-        String uuid = (String) requestObject.getJSONObject("merchant").get("uuid");
-        String access_token = (String) requestObject.getJSONObject("token").get("access_token");
+        String uuid = requestObject.getJSONObject("merchant").getString("uuid");
+        String access_token = requestObject.getJSONObject("token").getString("access_token");
 
         // 预约时间处理
         String reserve_time = (String) requestObject.getString("reserve_time");
