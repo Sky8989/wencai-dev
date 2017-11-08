@@ -30,10 +30,10 @@ public class OrderOtherLogic {
     @Resource
     private QiniuService qiniuService;
 
-    private static final String PACKAGE_SMALL_ICON = "https://sf.dankal.cn/small.png";
-    private static final String PACKAGE_MIDDLE_ICON = "https://sf.dankal.cn/middle.png";
-    private static final String PACKAGE_BIG_ICON = "https://sf.dankal.cn/big.png";
-    private static final String PACKAGE_SUPER_BIG_ICON = "https://sf.dankal.cn/super_big.png";
+    private static final String PACKAGE_SMALL_ICON = "https://sf.dankal.cn/icn_package_small.png";
+    private static final String PACKAGE_MIDDLE_ICON = "https://sf.dankal.cn/icn_package_middle.png";
+    private static final String PACKAGE_BIG_ICON = "https://sf.dankal.cn/icn_package_big%20.png";
+    private static final String PACKAGE_SUPER_BIG_ICON = "https://sf.dankal.cn/icn_package_super.png";
 
     /**
      * 预约时间规则 (获取订单常量)
