@@ -98,7 +98,7 @@ public class OrderPayLogic {
      * 支付订单
      */
     public APIResponse payOrder(APIRequest request) {
-        String token = (String) request.getParameter("local_token");
+        String token = (String) request.getParameter("token");
         String uuid = (String) request.getParameter("uuid");
         String access_token = (String) request.getParameter("access_token");
 
