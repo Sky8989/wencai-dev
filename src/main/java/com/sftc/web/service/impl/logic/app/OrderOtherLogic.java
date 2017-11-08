@@ -30,6 +30,11 @@ public class OrderOtherLogic {
     @Resource
     private QiniuService qiniuService;
 
+    private static final String PACKAGE_SMALL_ICON = "https://sf.dankal.cn/small.png";
+    private static final String PACKAGE_MIDDLE_ICON = "https://sf.dankal.cn/middle.png";
+    private static final String PACKAGE_BIG_ICON = "https://sf.dankal.cn/big.png";
+    private static final String PACKAGE_SUPER_BIG_ICON = "https://sf.dankal.cn/super_big.png";
+
     /**
      * 预约时间规则 (获取订单常量)
      */
@@ -69,6 +74,35 @@ public class OrderOtherLogic {
                                     TimeZone timeZone = TimeZone.getTimeZone("ETC/GMT-8");
                                     String resTimeLimit = DateFormatUtils.format(limitDate, pattern, timeZone);
                                     timeLimitObj.put("name", resTimeLimit);
+                                }
+                            }
+                        }
+                    }
+                    if (jsonObject.getJSONObject("constant").getJSONObject("value").containsKey("PACKAGE_TYPE")) {
+                        JSONArray packageTypeArr = jsonObject.getJSONObject("constant").getJSONObject("value").getJSONArray("PACKAGE_TYPE");
+                        for (int i = 0; i < packageTypeArr.size(); i++) {
+                            JSONObject packageTypeOBJ = packageTypeArr.getJSONObject(i);
+                            if (packageTypeOBJ.containsKey("weight_segment") && (packageTypeOBJ.getJSONArray("weight_segment").size() != 0
+                                    && packageTypeOBJ.getJSONArray("weight_segment").size() < 5)) {
+                                JSONArray weightArr = packageTypeOBJ.getJSONArray("weight_segment");
+                                for (int j = 0; j < weightArr.size(); j++) {
+                                    JSONObject weightOBJ = weightArr.getJSONObject(j);
+                                    if (j == 0) {
+                                        weightOBJ.put("contents", "小包裹");
+                                        weightOBJ.put("package_icon", PACKAGE_SMALL_ICON);
+                                    }
+                                    if (j == 1) {
+                                        weightOBJ.put("contents", "中包裹");
+                                        weightOBJ.put("package_icon", PACKAGE_MIDDLE_ICON);
+                                    }
+                                    if (j == 2) {
+                                        weightOBJ.put("contents", "大包裹");
+                                        weightOBJ.put("package_icon", PACKAGE_BIG_ICON);
+                                    }
+                                    if (j == 3) {
+                                        weightOBJ.put("contents", "超大包裹");
+                                        weightOBJ.put("package_icon", PACKAGE_SUPER_BIG_ICON);
+                                    }
                                 }
                             }
                         }
