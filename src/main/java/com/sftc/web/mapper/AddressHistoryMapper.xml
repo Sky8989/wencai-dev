@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sftc.web.mapper.AddressHistoryMapper">
+
+    <resultMap id="addressHistoryMap" type="com.sftc.web.model.AddressHistory">
+        <result column="id" property="id"/>
+        <result column="user_id" property="user_id"/>
+        <result column="address_id" property="address_id"/>
+        <result column="is_delete" property="is_delete"/>
+        <result column="is_mystery" property="is_mystery"/>
+        <result column="create_time" property="create_time"/>
+        <association property="address" column="address_id" select="selectAddress"/>
+    </resultMap>
+
+    <insert id="insertAddressHistory" parameterType="com.sftc.web.model.AddressHistory">
+        INSERT INTO sftc_address_history (user_id, address_id, is_delete, is_mystery, create_time)
+        VALUES (
+        #{user_id, jdbcType=INTEGER},
+        #{address_id, jdbcType=INTEGER},
+        #{is_delete, jdbcType=INTEGER},
+        #{is_mystery, jdbcType=INTEGER},
+        #{create_time, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <select id="selectAddress" parameterType="int" resultType="com.sftc.web.model.Address">
+        SELECT * FROM sftc_address WHERE id=#{address_id}
+    </select>
+
+    <select id="selectAddressHistoryListByUserId" parameterType="int" resultMap="addressHistoryMap">
+        SELECT *
+        FROM sftc_address_history ah, sftc_address a
+        WHERE ah.address_id=a.id AND ah.user_id=#{user_id} AND ah.is_delete=0
+        GROUP BY phone, longitude, latitude
+        ORDER BY ah.create_time desc
+        limit #{startIndex}, #{pageSize}
+    </select>
+
+    <update id="deleteAddressHistoryWithId" parameterType="int">
+        UPDATE sftc_address_history
+        SET is_delete=1
+        WHERE id=#{address_history_id}
+    </update>
+
+</mapper>

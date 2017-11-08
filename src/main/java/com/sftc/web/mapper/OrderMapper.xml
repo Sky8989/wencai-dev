@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sftc.web.mapper.OrderMapper">
+
+    <resultMap id="orderMap" type="com.sftc.web.model.Order">
+        <id property="id" column="id"/>
+        <result property="order_type" column="order_type"/>
+        <result property="region_type" column="region_type"/>
+        <result property="longitude" column="longitude"/>
+        <result property="latitude" column="latitude"/>
+        <result property="sender_user_id" column="sender_user_id"/>
+        <result property="sender_mobile" column="sender_mobile"/>
+        <result property="sender_name" column="sender_name"/>
+        <result property="sender_province" column="sender_province"/>
+        <result property="sender_city" column="sender_city"/>
+        <result property="sender_area" column="sender_area"/>
+        <result property="sender_addr" column="sender_addr"/>
+        <result property="voice" column="voice"/>
+        <result property="image" column="image"/>
+        <result property="word_message" column="word_message"/>
+        <result property="pay_method" column="pay_method"/>
+        <result property="distribution_method" column="distribution_method"/>
+        <result property="gmt_pay_create" column="gmt_pay_create"/>
+        <result property="gift_card_id" column="gift_card_id"/>
+        <result property="voice_time" column="voice_time"/>
+        <result property="create_time" column="create_time"/>
+        <association property="giftCard" select="selectGiftCard" column="gift_card_id">
+        </association>
+        <collection property="orderExpressList" ofType="com.sftc.web.model.OrderExpress" select="selectExpressList"
+                    column="id">
+        </collection>
+    </resultMap>
+
+    <select id="selectExpressList" parameterType="java.lang.String" resultType="com.sftc.web.model.OrderExpress">
+        select * from sftc_order_express where order_id=#{id}
+    </select>
+
+    <select id="selectGiftCard" parameterType="java.lang.String" resultType="com.sftc.web.model.GiftCard">
+        select * from sftc_gift_card where id=#{gift_card_id}
+    </select>
+
+    <select id="selectEvaluate" parameterType="int" resultType="com.sftc.web.model.Evaluate">
+        SELECT * FROM  sftc_evaluate WHERE order_id = #{order_id}
+    </select>
+
+    <select id="selectNationReserveOrders" resultType="int">
+        SELECT DISTINCT oe.order_id
+        FROM sftc_order o, sftc_order_express oe
+        WHERE o.id = oe.order_id AND o.region_type = 'REGION_NATION' AND oe.reserve_time IS NOT NULL AND oe.reserve_time != ''
+    </select>
+
+    <!--抓取大网单-->
+    <select id="selectNationUnCommitOrders" resultType="int">
+        SELECT DISTINCT oe.order_id
+        FROM sftc_order o, sftc_order_express oe
+        WHERE o.id = oe.order_id AND o.region_type = 'REGION_NATION' AND o.is_cancel =''
+        AND (oe.state = 'WAIT_FILL' OR oe.state = 'ALREADY_FILL' OR oe.state = 'PAYING')
+    </select>
+
+    <!--抓取未提交的好友多包裹-->
+    <select id="selectMutilExpressOrders" resultType="int">
+        SELECT DISTINCT oe.order_id
+        FROM sftc_order o, sftc_order_express oe
+        WHERE o.id = oe.order_id AND o.is_cancel =''
+        AND( SELECT COUNT(order_id) FROM sftc_order_express WHERE order_id = o.id) > 1 AND region_type IS NULL
+    </select>
+
+    <!--抓取同城单-->
+    <select id="selectSameUnCommitOrders" resultType="int">
+        SELECT DISTINCT oe.order_id FROM sftc_order o, sftc_order_express oe
+        WHERE o.id = oe.order_id
+        AND
+        (1=(SELECT COUNT(order_id) FROM sftc_order_express WHERE order_id = o.id))
+        AND o.is_cancel =''
+        AND (
+            (oe.state = 'WAIT_FILL' OR oe.state ='ALREADY_FILL' )
+            OR
+            (o.region_type = 'REGION_SAME' AND oe.state = 'PAYING')
+            )
+    </select>
+
+    <select id="selectOrderDetailByOrderId" resultMap="orderMap" parameterType="int">
+        SELECT * FROM sftc_order WHERE id=#{order_id}
+    </select>
+
+    <!--添加了行级锁和排他锁的订单详情查询-->
+    <select id="selectOrderDetailByOrderIdForUpdate" resultMap="orderMap" parameterType="int">
+        SELECT * FROM sftc_order WHERE id=#{order_id} FOR UPDATE
+    </select>
+
+    <select id="selectOrderDetailByExpressId" resultMap="orderMap" parameterType="int">
+        SELECT *
+        FROM sftc_order o, sftc_order_express oe
+        WHERE o.id=oe.order_id AND oe.id=#{express_id}
+    </select>
+
+    <!-- 添加订单 -->
+    <insert id="addOrder" parameterType="com.sftc.web.model.Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sftc_order
+        (freight,
+        create_time, sender_province, sender_name, sender_mobile, sender_city,
+        sender_area, sender_addr, word_message, image, voice,
+        sender_user_id, gift_card_id, pay_method, distribution_method, longitude,
+        latitude,order_type,voice_time,region_type)
+        VALUES (
+        #{freight, jdbcType=DOUBLE},
+        #{create_time, jdbcType=VARCHAR},
+        #{sender_province, jdbcType=VARCHAR},
+        #{sender_name, jdbcType=VARCHAR},
+        #{sender_mobile, jdbcType=VARCHAR},
+        #{sender_city, jdbcType=VARCHAR},
+        #{sender_area, jdbcType=VARCHAR},
+        #{sender_addr, jdbcType=VARCHAR},
+        #{word_message, jdbcType=VARCHAR},
+        #{image, jdbcType=VARCHAR},
+        #{voice, jdbcType=VARCHAR},
+        #{sender_user_id, jdbcType=INTEGER},
+        #{gift_card_id, jdbcType=INTEGER},
+        #{pay_method, jdbcType=VARCHAR},
+        #{distribution_method, jdbcType=VARCHAR},
+        #{longitude, jdbcType=DOUBLE},
+        #{latitude, jdbcType=DOUBLE},
+        #{order_type, jdbcType=VARCHAR},
+        #{voice_time, jdbcType=INTEGER},
+        #{region_type, jdbcType=VARCHAR, javaType=String}
+        )
+    </insert>
+
+    <!-- 添加订单 -->
+    <insert id="addOrder2" parameterType="com.sftc.web.model.Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sftc_order
+        (freight,
+        create_time, sender_province, sender_name, sender_mobile, sender_city,
+        sender_area, sender_addr, supplementary_info,word_message, image, voice,
+        sender_user_id, gift_card_id, pay_method, distribution_method, longitude,
+        latitude,order_type,voice_time,region_type)
+        VALUES (
+        #{freight, jdbcType=DOUBLE},
+        #{create_time, jdbcType=VARCHAR},
+        #{sender_province, jdbcType=VARCHAR},
+        #{sender_name, jdbcType=VARCHAR},
+        #{sender_mobile, jdbcType=VARCHAR},
+        #{sender_city, jdbcType=VARCHAR},
+        #{sender_area, jdbcType=VARCHAR},
+        #{sender_addr, jdbcType=VARCHAR},
+        #{supplementary_info, jdbcType=VARCHAR},
+        #{word_message, jdbcType=VARCHAR},
+        #{image, jdbcType=VARCHAR},
+        #{voice, jdbcType=VARCHAR},
+        #{sender_user_id, jdbcType=INTEGER},
+        #{gift_card_id, jdbcType=INTEGER},
+        #{pay_method, jdbcType=VARCHAR},
+        #{distribution_method, jdbcType=VARCHAR},
+        #{longitude, jdbcType=DOUBLE},
+        #{latitude, jdbcType=DOUBLE},
+        #{order_type, jdbcType=VARCHAR},
+        #{voice_time, jdbcType=INTEGER},
+        #{region_type, jdbcType=VARCHAR, javaType=String}
+        )
+    </insert>
+
+    <update id="updateOrderRegionType">
+        update sftc_order
+        set region_type=#{region_type, jdbcType=VARCHAR}
+        WHERE id=#{id}
+    </update>
+
+    <sql id="Order_And_OrderExpress_List">
+        o.create_time, o.sender_mobile, o.sender_name, o.sender_province,
+        o.sender_city, o.sender_area, o.sender_addr, o.voice,o.voice_time,o.image
+        ,o.pay_method,o.distribution_method,oe.uuid,
+        o.pay_time, o.gift_card_id,o.longitude,o.latitude,oe.order_number,oe.ship_province,
+        oe.ship_name, oe.ship_city, oe.ship_area, oe.ship_addr, oe.package_type,oe.object_type,
+        gc.name,gc.icon,oe.longitude,oe.latitude,
+        gc.type,gc.create_time
+    </sql>
+
+    <!-- 我的订单列表  -->
+    <select id="selectMyOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+            resultMap="orderMap">
+        SELECT * FROM sftc_order
+        WHERE id IN (
+        SELECT o.id FROM sftc_order o, sftc_order_express oe
+        WHERE o.id=oe.order_id AND o.sender_user_id=#{id}
+        <if test="keyword!=null">
+            AND (
+            o.sender_name LIKE #{keyword} OR
+            o.sender_province LIKE #{keyword} OR
+            o.sender_city LIKE #{keyword} OR
+            o.sender_area LIKE #{keyword} OR
+            o.sender_addr LIKE #{keyword} OR
+            oe.order_number LIKE #{keyword} OR
+            oe.ship_name LIKE #{keyword} OR
+            oe.ship_province LIKE #{keyword} OR
+            oe.ship_city LIKE #{keyword} OR
+            oe.ship_area LIKE #{keyword} OR
+            oe.ship_addr LIKE #{keyword} OR
+            oe.state LIKE #{keyword}
+            )
+        </if>
+        )
+        ORDER by create_time desc
+        limit #{pageNum}, #{pageSize}
+    </select>
+    <!--解决多字段 转义的问题-->
+    <select id="selectMyOrderList2" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+            resultMap="orderMap">
+        SELECT * FROM sftc_order
+        WHERE id IN (
+        SELECT o.id FROM sftc_order o, sftc_order_express oe
+        WHERE o.id=oe.order_id AND o.sender_user_id=#{id}
+        <if test="keyword_state != null">
+            AND (oe.state REGEXP ${keyword_state} )
+        </if>
+        <if test="keyword!=null">
+            AND (
+            o.sender_name LIKE #{keyword} OR
+            o.sender_province LIKE #{keyword} OR
+            o.sender_city LIKE #{keyword} OR
+            o.sender_area LIKE #{keyword} OR
+            o.sender_addr LIKE #{keyword} OR
+            oe.order_number LIKE #{keyword} OR
+            oe.ship_name LIKE #{keyword} OR
+            oe.ship_province LIKE #{keyword} OR
+            oe.ship_city LIKE #{keyword} OR
+            oe.ship_area LIKE #{keyword} OR
+            oe.ship_addr LIKE #{keyword} OR
+            oe.state LIKE #{keyword}
+            )
+        </if>
+        )
+        ORDER by create_time desc
+        limit #{pageNum}, #{pageSize}
+    </select>
+
+
+    <!-- 我的好友订单列表  -->
+    <select id="selectMyFriendOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+            resultMap="orderMap">
+
+        SELECT * FROM sftc_order o
+        WHERE id IN (
+            SELECT t.order_id FROM (
+              SELECT distinct oe.order_id FROM sftc_order_express oe WHERE (oe.sender_user_id=#{id} OR oe.ship_user_id=#{id})
+            ) AS t
+        ) AND order_type='ORDER_MYSTERY'
+        ORDER by o.create_time desc
+        limit #{pageNum}, #{pageSize}
+    </select>
+
+    <!-- 好友填写地址  -->
+    <insert id="friendWriteAddress" parameterType="com.sftc.web.model.Order">
+        INSERT INTO sftc_order (ship_mobile, ship_name,ship_province, ship_city,
+        ship_area, ship_addr) VALUES (
+        #{ship_mobile, jdbcType=VARCHAR},
+        #{ship_name, jdbcType=VARCHAR},
+        #{ship_province, jdbcType=VARCHAR},
+        #{ship_city, jdbcType=VARCHAR},
+        #{ship_area, jdbcType=VARCHAR},
+        #{ship_addr, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <select id="myOrderLists" parameterType="com.sftc.web.model.OrderExpress" resultMap="orderMap">
+        select
+        sftc_order_express.id,
+        sftc_order_express.order_number,
+        sftc_order.pay_time,
+        sftc_order.pay_method,
+        sftc_order.distribution_method,
+        sftc_order.freight,
+        sftc_order.sender_name,
+        sftc_order.sender_mobile,
+        sftc_order.sender_province,
+        sftc_order.sender_city,
+        sftc_order.sender_area,
+        sftc_order.sender_addr,
+        sftc_order.word_message,
+        sftc_order.image,
+        sftc_order.voice,
+        sftc_order.longitude,
+        sftc_order.latitude,
+        sftc_order.job_number,
+        sftc_order.sender_user_id,
+        sftc_order.gift_card_id,
+        sftc_order_express.ship_name,
+        sftc_order_express.ship_mobile,
+        sftc_order_express.ship_province,
+        sftc_order_express.ship_city,
+        sftc_order_express.ship_area,
+        sftc_order_express.ship_addr,
+        sftc_order_express.package_type,
+        sftc_order_express.object_type,
+        sftc_order_express.state,
+        sftc_order_express.is_use,
+        sftc_order_express.sender_user_id,
+        sftc_order_express.order_id,
+        sftc_order_express.ship_user_id
+        from
+        sftc_order,
+        sftc_order_express
+        where
+        (sftc_order_express.sender_user_id=#{id}
+        or
+        sftc_order_express.ship_user_id=#{id})
+        <if test="state!=null">
+            and sftc_order_express.state=#{state}
+        </if>
+    </select>
+
+    <sql id="orderDetail">
+        o.sender_mobile, o.sender_name, o.sender_province,
+        o.sender_city, o.sender_area, o.sender_addr, o.voice,o.voice_time,o.image ,o.pay_method,o.distribution_method,
+        gc.name,gc.icon,gc.type,gc.create_time
+    </sql>
+
+    <!-- 查看快递订单详情  -->
+    <select id="selectOrderDetailByUuid" parameterType="String" resultMap="orderMap">
+        SELECT *
+        FROM sftc_order o, sftc_order_express oe
+        WHERE oe.uuid=#{uuid} AND o.id=oe.order_id
+    </select>
+
+    <!--  删除订单  -->
+    <delete id="deleOrderAndOrderExpress" parameterType="String">
+        DELETE sftc_order, sftc_order_express
+        FROM sftc_order LEFT JOIN sftc_order_express
+        ON sftc_order.id=sftc_order_express.order_id
+        WHERE sftc_order_express.uuid=#{uuid}
+    </delete>
+
+    <!-- 取消订单，更新order的is_cancel-->
+    <update id="updateCancelOrderById" parameterType="int">
+        UPDATE sftc_order SET is_cancel = 'Cancelled' WHERE id = #{id}
+    </update>
+
+    <!--下面是cms系统用到的mapper-->
+    <select id="selectOrderByPage" resultMap="orderMap" parameterType="com.sftc.web.model.Order">
+        SELECT * FROM sftc_order
+        <where>
+            <if test="id != 0">and id = #{id}</if>
+            <if test="order_type != null">and order_type = #{order_type}</if>
+            <if test="region_type != null">and region_type = #{region_type}</if>
+            <if test="sender_mobile != null">and sender_mobile = #{sender_mobile}</if>
+        </where>
+    </select>
+</mapper>
