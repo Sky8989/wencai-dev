@@ -98,11 +98,9 @@ public class OrderPayLogic {
      * 支付订单
      */
     public APIResponse payOrder(APIRequest request) {
-        JSONObject jsonObject = JSONObject.fromObject(request.getRequestParam());
-        String token = jsonObject.getString("local_token");
-        String uuid = jsonObject.getString("uuid");
-        String access_token = jsonObject.getString("access_token");
-
+        String token = (String) request.getParameter("local_token");
+        String uuid = (String) request.getParameter("uuid");
+        String access_token = (String) request.getParameter("access_token");
 
         if (token == null || token.equals(""))
             return APIUtil.paramErrorResponse("token参数缺失");
@@ -116,7 +114,7 @@ public class OrderPayLogic {
 
 
         User user = userMapper.selectUserByUserId(tokenPram.getUser_id());
-        if(user == null) return APIUtil.selectErrorResponse("该token无对应的用户",null);
+        if (user == null) return APIUtil.selectErrorResponse("该token无对应的用户", null);
         String pay_url = SF_REQUEST_URL + "/" + uuid + "/js_pay?open_id=" + user.getOpen_id();
         HttpPost post = new HttpPost(pay_url);
         post.addHeader("PushEnvelope-Device-Token", access_token);

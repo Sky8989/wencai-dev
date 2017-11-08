@@ -4,6 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
+import com.sftc.web.model.SwaggerOrderVO.FriendFillVO;
 import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.service.EvaluateService;
@@ -63,7 +64,7 @@ public class OrderController extends BaseController {
     @ApiOperation(value = "好友填写收件", httpMethod = "POST")
     @RequestMapping(value = "/fill", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse fillOrder(@RequestBody Map rowData) throws Exception {
+    APIResponse fillOrder(@RequestBody FriendFillVO rowData) throws Exception {
         APIRequest request = new APIRequest();
         request.setRequestParam(rowData);
         return orderService.friendFillOrder(request);

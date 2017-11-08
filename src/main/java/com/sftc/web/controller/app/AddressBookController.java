@@ -24,18 +24,18 @@ public class AddressBookController {
     @Resource
     private AddressBookService addressBookService;
 
-    @ApiOperation(value = "006添加地址簿",httpMethod = "POST")
+    @ApiOperation(value = "006添加地址簿", httpMethod = "POST")
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse addAddress(@RequestBody Object addressBookRequestVO) throws Exception {
+    APIResponse addAddress(@RequestBody Object object) throws Exception {
         APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(addressBookRequestVO);
+        apiRequest.setRequestParam(object);
         return addressBookService.addAddressBook(apiRequest);
     }
 
-    @ApiOperation(value = "007删除地址簿",httpMethod = "GET")
+    @ApiOperation(value = "007删除地址簿", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "addressBook_id",value = "地址簿id",required = true,paramType = "path")
+            @ApiImplicitParam(name = "addressBook_id", value = "地址簿id", required = true, paramType = "path")
     })
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public @ResponseBody
@@ -44,10 +44,10 @@ public class AddressBookController {
         return addressBookService.deleteAddressBook(apiRequest);
     }
 
-    @ApiOperation(value = "008修改地址簿",httpMethod = "POST")
+    @ApiOperation(value = "008修改地址簿", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id",value = "地址簿id",required = true),
-            @ApiImplicitParam(name = "address",value = "地址实体",required = true,dataType = "com.sftc.web.model.entity.Address"),
+            @ApiImplicitParam(name = "id", value = "地址簿id", required = true),
+            @ApiImplicitParam(name = "address", value = "地址实体", required = true, dataType = "com.sftc.web.model.entity.Address"),
     })
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public @ResponseBody
@@ -57,11 +57,10 @@ public class AddressBookController {
         return addressBookService.updateAddressBook(apiRequest);
     }
 
-
-    @ApiOperation(value = "009地址簿查找",httpMethod = "GET")
+    @ApiOperation(value = "009地址簿查找", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "user_id",value = "用户id",required = true,paramType = "query",defaultValue = "10028"),
-            @ApiImplicitParam(name = "address_book_type",value = "地址簿类型 sender/ship",required = true,paramType = "query",defaultValue = "sender"),
+            @ApiImplicitParam(name = "user_id", value = "用户id", required = true, paramType = "query", defaultValue = "10028"),
+            @ApiImplicitParam(name = "address_book_type", value = "地址簿类型 sender/ship", required = true, paramType = "query", defaultValue = "sender"),
     })
     @RequestMapping(value = "/selectList", method = RequestMethod.GET)
     public @ResponseBody

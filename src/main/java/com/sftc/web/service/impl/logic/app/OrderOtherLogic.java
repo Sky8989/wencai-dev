@@ -34,17 +34,17 @@ public class OrderOtherLogic {
      * 预约时间规则 (获取订单常量)
      */
     public APIResponse timeConstants(APIRequest request) {
-        JSONObject paramObject = JSONObject.fromObject(request.getRequestParam());
-        String constantsUrl = SF_CONSTANTS_URL + paramObject.getString("constants") + "?latitude="
-                + paramObject.getString("latitude") + "&longitude=" + paramObject.getString("longitude");
+//        JSONObject paramObject = JSONObject.fromObject(request.getRequestParam());
+        String constantsUrl = SF_CONSTANTS_URL + request.getParameter("constants") + "?latitude="
+                + request.getParameter("latitude") + "&longitude=" + request.getParameter("longitude");
         HttpGet get = new HttpGet(constantsUrl);
-        String access_token = null;
-        if(paramObject.getString("access_token")!=null&&!(paramObject.getString("access_token")).equals("")){
-            access_token = paramObject.getString("access_token");
-        }else {
+        String access_token;
+        if (request.getParameter("access_token") != null && !(request.getParameter("access_token")).equals("")) {
+            access_token = (String) request.getParameter("access_token");
+        } else {
             access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
         }
-        get.addHeader("PushEnvelope-Device-Token",access_token );
+        get.addHeader("PushEnvelope-Device-Token", access_token);
         String res = APIGetUtil.get(get);
         JSONObject jsonObject = JSONObject.fromObject(res);
         if (jsonObject.get("errors") != null || jsonObject.get("error") != null)
