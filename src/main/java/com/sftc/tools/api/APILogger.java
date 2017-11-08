@@ -2,9 +2,10 @@ package com.sftc.tools.api;
 
 import com.google.gson.Gson;
 import net.sf.json.JSONObject;
-import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.Set;
 @Aspect
 public class APILogger {
 
-    private Logger logger = Logger.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Pointcut("execution(* com.sftc.web.service..*(..))")
     public void apiPointcut() {
@@ -28,7 +29,7 @@ public class APILogger {
             APIRequest request = (APIRequest) obj[0];
             Set set;
             if (request.getRequestParam() != null) { // Json params
-                Map map = (Map) JSONObject.fromObject(new Gson().toJson(request.getRequestParam()));
+                Map map = JSONObject.fromObject(new Gson().toJson(request.getRequestParam()));
                 set = map.entrySet();
             } else { // Form params
                 set = request.getParams().entrySet();

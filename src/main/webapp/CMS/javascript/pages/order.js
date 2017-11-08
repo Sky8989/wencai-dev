@@ -149,6 +149,31 @@ function data_rendering(data) {
     $('#order_list').empty();//清空上一次的分页查询结果
     for (var i = 0; i < data.result.list.length; i++) {
         var dataD = data.result.list[i];
+        if(dataD.order_type == "ORDER_MYSTERY"){
+            dataD.order_type = "好友订单"
+        }if(dataD.order_type == "ORDER_BASIS"){
+            dataD.order_type = "普通订单"
+        }if(dataD.order_type == undefined){
+            dataD.order_type = "无"
+        }if(dataD.region_type == "REGION_NATION"){
+            dataD.region_type = "大网订单"
+        }if(dataD.region_type == "REGION_SAME"){
+            dataD.region_type = "同城订单"
+        }if(dataD.region_type == undefined){
+            dataD.region_type = "无"
+        }if(dataD.pay_method == "FREIGHT_COLLECT"){
+            dataD.pay_method = "到付"
+        }if(dataD.pay_method == "FREIGHT_PREPAID"){
+            dataD.pay_method = "寄付"
+        }if(dataD.pay_method == "2"){
+            dataD.pay_method = "到付"
+        }if(dataD.pay_method == "1"){
+            dataD.pay_method = "寄付"
+        }if(dataD.pay_method == undefined){
+            dataD.pay_method = "无"
+        }if(dataD.is_cancel == "Cancelled"){
+            dataD.is_cancel = "已取消"
+        }
         $('#order_list').append(
             '<tr class="cen">' +
             '<td>' + dataD.id + '</td>' +

@@ -5,18 +5,18 @@ import com.sftc.tools.api.APIPostUtil;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
-import com.sftc.web.mapper.TokenMapper;
-import com.sftc.web.mapper.UserMapper;
+import com.sftc.web.dao.mybatis.TokenMapper;
+import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
 import com.sftc.web.service.MessageService;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.json.Json;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +34,7 @@ public class MessageServiceImpl implements MessageService {
     @Resource
     private UserMapper userMapper;
 
-    private Logger logger = Logger.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Gson gson = new Gson();
 
 

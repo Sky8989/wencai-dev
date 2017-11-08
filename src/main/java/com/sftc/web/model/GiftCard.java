@@ -1,5 +1,9 @@
 package com.sftc.web.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -12,16 +16,17 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2017/4/25
  * @Time 上午10:45
  */
+@ApiModel(value = "礼品卡")
 public class GiftCard extends Object {
-
+    @ApiModelProperty("主键")
     private int id;
-    // 创建时间
+    @ApiModelProperty("创建时间")
     private String create_time;
-    // 名称
+    @ApiModelProperty("名称")
     private String name;
-    // 图片地址
+    @ApiModelProperty("图片")
     private String icon;
-    // 类型
+    @ApiModelProperty("类型")
     private String type;
 
     public GiftCard() {
