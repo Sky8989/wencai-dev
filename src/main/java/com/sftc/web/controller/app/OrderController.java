@@ -54,7 +54,9 @@ public class OrderController extends BaseController {
     @RequestMapping(value = "/countPrice", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse countPrice(@RequestBody Object object) throws Exception {
-        return orderService.countPrice(object);
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.countPrice(request);
     }
 
     @IgnoreToken
@@ -62,7 +64,9 @@ public class OrderController extends BaseController {
     @RequestMapping(value = "/fill", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse fillOrder(@RequestBody Map rowData) throws Exception {
-        return orderService.friendFillOrder(rowData);
+        APIRequest request = new APIRequest();
+        request.setRequestParam(rowData);
+        return orderService.friendFillOrder(request);
     }
 
     @ApiOperation(value = "寄件人填写订单", httpMethod = "POST")
@@ -137,14 +141,18 @@ public class OrderController extends BaseController {
     @RequestMapping(value = "/evaluateSingle", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse evaluate(@RequestBody Object object) throws Exception {
-        return orderService.evaluateSingle(object);
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.evaluateSingle(request);
     }
 
     @ApiOperation(value = "取消订单", httpMethod = "POST")
     @RequestMapping(value = "/cancelOrder", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse cancelOrder(@RequestBody Object object) throws Exception {
-        return orderService.cancelOrder(object);
+        APIRequest request = new APIRequest();
+        request.setRequestParam(object);
+        return orderService.cancelOrder(request);
     }
 
     @ApiOperation(value = "时间规则", httpMethod = "POST")

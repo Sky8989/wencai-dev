@@ -12,9 +12,9 @@ public interface OrderExpressMapper {
 
     List<OrderExpress> selectExpressForId(int id);
 
-//    void addOrderExpress(OrderExpress orderExpress);
+    void addOrderExpress(OrderExpress orderExpress);
 
-//    void addOrderExpress2(OrderExpress orderExpress);//多增加门牌号信息
+    void addOrderExpress2(OrderExpress orderExpress);//多增加门牌号信息
 
     void updateOrderExpressForSF(OrderExpress orderExpress);
 
@@ -31,6 +31,13 @@ public interface OrderExpressMapper {
      * 根据uuid更改订单状态
      */
     void updateOrderExpressStatusByUUID(@Param("uuid") String uuid, @Param("status") String status);
+
+    //根据uuid更改订单的状态和取件码以及取件码的状态
+    void updateExpressDirectedByUUID(@Param("uuid") String uuid, @Param("status") String status,
+                                     @Param("directed_code") String directed_code, @Param("is_directed") int is_directed);
+
+    //根据uuid更改订单的Attributes
+    void updateExpressAttributeSByUUID(@Param("uuid") String uuid, @Param("attributes") String attributes);
 
     // 更改 快递状态 为 取消 CANCELED
 //    void updateOrderExpressCanceled(String order_id);

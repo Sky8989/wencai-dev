@@ -8,7 +8,6 @@ import com.sftc.web.service.impl.logic.cms.CMSOrderListLogic;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Map;
 
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
@@ -67,8 +66,8 @@ public class OrderServiceImpl implements OrderService {
         return orderTransformLogic.readExpressTransform(request);
     }
 
-    public APIResponse countPrice(Object object) {
-        return orderPayLogic.countPrice(object);
+    public APIResponse countPrice(APIRequest request) {
+        return orderPayLogic.countPrice(request);
     }
 
     public APIResponse payOrder(APIRequest request) {
@@ -79,8 +78,8 @@ public class OrderServiceImpl implements OrderService {
         return orderCreateLogic.friendPlaceOrder(request);
     }
 
-    public synchronized APIResponse friendFillOrder(Map rowData) {
-        return orderCreateLogic.friendFillOrder(rowData);
+    public synchronized APIResponse friendFillOrder(APIRequest request) {
+        return orderCreateLogic.friendFillOrder(request);
     }
 
     public APIResponse selectOrderDetail(APIRequest request) {
@@ -89,6 +88,10 @@ public class OrderServiceImpl implements OrderService {
 
     public APIResponse selectExpressDetail(APIRequest request) {
         return orderDetailLogic.selectExpressDetail(request);
+    }
+
+    public APIResponse selectSameExpressDetail(APIRequest request) {
+        return orderDetailLogic.selectSameExpressDetail(request);
     }
 
     public APIResponse updateOrderStatus(APIRequest request) {
@@ -114,12 +117,12 @@ public class OrderServiceImpl implements OrderService {
     //面对面下单
 //    public APIResponse faceOrdered(APIRequest request) {return orderCommitLogic.faceOrdered(request);}
 
-    public APIResponse evaluateSingle(Object object) {
-        return orderEvaluateLogic.evaluateSingle(object);
+    public APIResponse evaluateSingle(APIRequest request) {
+        return orderEvaluateLogic.evaluateSingle(request);
     }
 
-    public APIResponse cancelOrder(Object object) {
-        return orderCancelLogic.cancelOrder(object);
+    public APIResponse cancelOrder(APIRequest request) {
+        return orderCancelLogic.cancelOrder(request);
     }
 
     public APIResponse timeConstants(APIRequest request) {

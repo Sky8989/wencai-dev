@@ -8,11 +8,11 @@ import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
-import com.sftc.web.model.entity.Message;
+import com.sftc.web.model.UserContactNew;
 import com.sftc.web.model.dto.OrderDTO;
+import com.sftc.web.model.entity.Message;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
-import com.sftc.web.model.UserContactNew;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Component;
@@ -35,8 +35,6 @@ public class OrderCreateLogic {
     private OrderMapper orderMapper;
     @Resource
     private OrderExpressMapper orderExpressMapper;
-    @Resource
-    private AddressMapper addressMapper;
     @Resource
     private UserContactMapper userContactMapper;
     @Resource
@@ -104,7 +102,8 @@ public class OrderCreateLogic {
      */
     //使用最高级别的事物 防止提交过程中有好友包裹被填写
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
-    public synchronized APIResponse friendFillOrder(Map rowData) {
+    public synchronized APIResponse friendFillOrder(APIRequest request) {
+        Map rowData = (Map) request.getRequestParam();
         JSONObject paramOBJ = JSONObject.fromObject(rowData);
 //        // 修复 空格对Gson的影响
 //        String strJsonResult = orderExpressStr.replace(" ", "");
@@ -170,7 +169,7 @@ public class OrderCreateLogic {
             }
             // 消息通知表插入或者更新消息
             List<Message> messageListRE = messageMapper.selectMessageReceiveExpress(orderExpress1.getShip_user_id());
-            if (messageListRE.isEmpty()&& messageListRE.size() == 0) {
+            if (messageListRE.isEmpty() && messageListRE.size() == 0) {
                 Message message = new Message("RECEIVE_EXPRESS", 0, realList.get(0).getId(), orderExpress1.getShip_user_id());
                 messageMapper.insertMessage(message);
             } else {
