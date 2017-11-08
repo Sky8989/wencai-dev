@@ -75,5 +75,8 @@
         WHERE local_token = #{token}
     </select>
 
+	<delete id="deleteTokenByUserId" parameterType="java.lang.Integer">
+	DELETE  from sftc_token where user_id = #{user_id}
+	</delete>
 
 </mapper>

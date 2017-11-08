@@ -5,13 +5,19 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.Result;
+import com.sftc.web.model.SwaggerRequestVO.GetTokenRequestVO;
+import com.sftc.web.model.SwaggerRequestVO.RegisterRequestVO;
+import com.sftc.web.model.SwaggerRequestVO.SFLoginRequestVO;
+import com.sftc.web.model.SwaggerRequestVO.SMSMessageRequestVO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Controller
 @Api(description = "顺丰API，包括登录、注册、获取短信、获取token等")
@@ -19,54 +25,51 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MessageController extends BaseController {
 
     @IgnoreToken
-    @ApiOperation(value = "获取短信接口", httpMethod = "POST")
+    @ApiOperation(value = "获取验证码【调顺丰】", httpMethod = "POST")
     @RequestMapping(value = "/message", method = RequestMethod.POST)
     @ResponseBody
-    APIResponse message(@RequestBody Object obj) throws Exception {
+    public APIResponse message(@RequestBody SMSMessageRequestVO smsMessageRequestVO) throws Exception {
         APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(obj);
+        apiRequest.setRequestParam(smsMessageRequestVO);
         return messageService.getMessage(apiRequest);
     }
 
     @IgnoreToken
-    @ApiOperation(value = "注册接口", httpMethod = "POST")
+    @ApiOperation(value = "注册接口【调顺丰】", httpMethod = "POST")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    APIResponse register(@RequestBody Object obj) throws Exception {
+    public APIResponse register(@RequestBody RegisterRequestVO registerRequestVO) throws Exception {
         APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(obj);
+        apiRequest.setRequestParam(registerRequestVO);
         return messageService.register(apiRequest);
     }
 
     @IgnoreToken
-    @ApiOperation(value = "获取token接口", httpMethod = "POST")
-    @RequestMapping(value = "/getToken", method = RequestMethod.POST)
+    @ApiOperation(value = "获取token【调顺丰】", httpMethod = "POST")
+    @RequestMapping(value = "/token", method = RequestMethod.POST)
     @ResponseBody
-    APIResponse getToken(@RequestBody Object obj) throws Exception {
+    public APIResponse getToken(@RequestBody GetTokenRequestVO getTokenRequestVO) throws Exception {
         APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(obj);
+        apiRequest.setRequestParam(getTokenRequestVO);
         return messageService.getToken(apiRequest);
     }
 
     @IgnoreToken
-    @ApiOperation(value = "登录接口", httpMethod = "POST")
-    @RequestMapping(value = "/sfLogin", method = RequestMethod.POST)
+    @ApiOperation(value = "sf登录【调顺丰】", httpMethod = "POST")
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    APIResponse login(@RequestBody Object obj) throws Exception {
+    public APIResponse login(@RequestBody SFLoginRequestVO sfLoginRequestVO) throws Exception {
         APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(obj);
+        apiRequest.setRequestParam(sfLoginRequestVO);
         return messageService.sfLogin(apiRequest);
     }
 
-    @RequestMapping(value = "/quotes", method = RequestMethod.POST)
-    void quotes(@RequestBody Result r) throws Exception {
-        System.out.println(r.getRequest().getPackages().get(0).getType() + r.getRequest().getPackages().get(1).getType());
-    }
-
+    @ApiIgnore
     @ApiOperation(value = "获取图片验证码", httpMethod = "GET")
+    @ApiImplicitParam(name = "token",value = "用户token",defaultValue = "f9f99534f926c53d8996ba",paramType = "query",required = true)
     @RequestMapping(value = "/message/captchas", method = RequestMethod.GET)
     @ResponseBody
-    APIResponse messagCeaptchas() throws Exception {
+    public APIResponse messagCeaptchas() throws Exception {
         return messageService.captchas();
     }
 

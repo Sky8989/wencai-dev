@@ -3,12 +3,15 @@ package com.sftc.web.model.entity;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.model.Object;
 import com.sftc.web.model.reqeustParam.OrderParam;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
 
 @Entity
 @Table(name = "sftc_order")
+@ApiModel(value = "订单实体类")
 public class Order extends Object {
     @Id
     private String id;
@@ -20,8 +23,6 @@ public class Order extends Object {
     private String pay_method;
     // 配送方式
     private String distribution_method;
-    // 运费
-    private double freight;
     // 寄件人姓名
     private String sender_name;
     // 寄件人手机
@@ -36,21 +37,21 @@ public class Order extends Object {
     private String sender_addr;
     // 寄件人门牌号
     private String supplementary_info;
-    // 文字寄语
+
     private String word_message;
-    // 包裹图片
+
     private String image;
-    // 语音
+
     private String voice;
     // 经度
     private double longitude;
     // 纬度
     private double latitude;
-    // 寄件人id(根据用户表id)
+
     private int sender_user_id;
-    // 礼卡表id
+
     private int gift_card_id;
-    // 语音时间
+
     private int voice_time;
     // 订单类型 普通 神秘
     private String order_type;
@@ -69,14 +70,13 @@ public class Order extends Object {
     }
 
     public Order(String create_time, String id,String pay_method,
-                 String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
+                 String distribution_method, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,String supplementary_info,
                  double longitude, double latitude, String order_type, int sender_user_id) {
         this.create_time = create_time;
         this.id = id;
         this.pay_method = pay_method;
         this.distribution_method = distribution_method;
-        this.freight = freight;
         this.sender_name = sender_name;
         this.sender_mobile = sender_mobile;
         this.sender_province = sender_province;
@@ -90,13 +90,12 @@ public class Order extends Object {
         this.sender_user_id = sender_user_id;
     }
     public Order(String create_time, String pay_method,
-                 String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
+                 String distribution_method, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,
                  double longitude, double latitude, String order_type, int sender_user_id) {
         this.create_time = create_time;
         this.pay_method = pay_method;
         this.distribution_method = distribution_method;
-        this.freight = freight;
         this.sender_name = sender_name;
         this.sender_mobile = sender_mobile;
         this.sender_province = sender_province;
@@ -191,14 +190,6 @@ public class Order extends Object {
 
     public void setDistribution_method(String distribution_method) {
         this.distribution_method = distribution_method;
-    }
-
-    public double getFreight() {
-        return freight;
-    }
-
-    public void setFreight(double freight) {
-        this.freight = freight;
     }
 
     public String getSender_name() {

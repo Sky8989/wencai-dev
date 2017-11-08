@@ -2,11 +2,11 @@ package com.sftc.web.service.impl;
 
 
 import com.sftc.tools.api.*;
-import com.sftc.web.dao.jpa.AddressDao;
+import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.mybatis.AddressMapper;
 import com.sftc.web.dao.mybatis.AddressResolutionMapper;
-import com.sftc.web.model.entity.Address;
 import com.sftc.web.model.AddressResolution;
+import com.sftc.web.model.entity.Address;
 import com.sftc.web.service.AddressService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -22,9 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.ThirdPartyConstant.MAP_ADDRESS_DISTANCE_URL;
-import static com.sftc.tools.constant.ThirdPartyConstant.MAP_ADDRESS_DISTANCE_URL_2;
-import static com.sftc.tools.constant.ThirdPartyConstant.MAP_GEOCODER_URL;
+import static com.sftc.tools.constant.ThirdPartyConstant.*;
 
 @Service("addressService")
 public class AddressServiceImpl implements AddressService {
@@ -33,13 +31,13 @@ public class AddressServiceImpl implements AddressService {
     private AddressMapper addressMapper;
     @Resource
     private AddressResolutionMapper addressResolutionMapper;
-    @Resource
-    private AddressDao addressDao;
 
     public APIResponse addAddress(Address address) {
         APIStatus status = SUCCESS;
         address.setCreate_time(Long.toString(System.currentTimeMillis()));
         try {
+            Integer user_id = TokenUtils.getInstance().getUserId();
+            address.setUser_id(user_id);
             addressMapper.addAddress(address);
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,11 +48,12 @@ public class AddressServiceImpl implements AddressService {
 
     public APIResponse consigneeAddress(APIRequest request) {
         APIStatus status = APIStatus.SELECT_FAIL;
-        String id = request.getParameter("user_id").toString();
+        int id = TokenUtils.getInstance().getUserId();
         List<Address> addressList = new ArrayList<Address>();
-        if (id != null) {
+        if (id != 0) {
             try {
-                addressList = addressMapper.addressDetail(Integer.parseInt(id));
+                addressList = addressMapper.addressDetail(id);
+                if(addressList == null) return APIUtil.selectErrorResponse("该用户暂无地址信息",null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -66,6 +65,9 @@ public class AddressServiceImpl implements AddressService {
     public APIResponse editAddress(Address address) {
         APIStatus status = SUCCESS;
         try {
+            Integer user_id = TokenUtils.getInstance().getUserId();
+            address.setUser_id(user_id);
+            address.setCreate_time(Long.toString(System.currentTimeMillis()));
             addressMapper.editeAddress(address);
         } catch (Exception e) {
             e.printStackTrace();

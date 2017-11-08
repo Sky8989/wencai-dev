@@ -1,4 +1,4 @@
-#javaweb_sftc
+# javaweb_sftc
 
 顺丰同城速递 JavaWeb 端代码仓库
 
@@ -64,4 +64,92 @@ $ ssh-add ~/.ssh/id_rsa
 ```
 
 > 由 Bingo 负责与顺丰的海龙对接，暂时只添加了 Bingo 的公钥，只有 Bingo 可以登录跳板机进而登录专用主机。
+
+## 项目部署
+
+### 开发环境
+
+开发环境已经搭建 Jenkins，持续构建，无须手动发版本，只要把代码 Push 到 dev 分支即可。
+
+### 生产环境
+
+生产环境需要 SSH 连上顺丰小程序专用机 wx01，然后进入 `/home/deploy/javaweb_sftc/` 目录。
+
+现在定时器已经默认开启，无需手动调用接口开启。
+
+## 项目相关
+
+### 订单状态
+
+| state  | 状态 |
+| --- | --- |
+| WAIT_FILL | 待好友填写 |
+| ALREADY_FILL | 好友已填写 |
+| INIT | 下单 |
+| PAYING | 支付中 |
+| WAIT_HAND_OVER	 | 待揽件 |
+| DELIVERING | 派送中 |
+| FINISHED | 已完成 |
+| ABNORMAL | 不正常的 |
+| CANCELED | 取消单 |
+| WAIT_REFUND | 等待退款 |
+| REFUNDING | 退款中 |
+| REFUNDED | 已退款 |
+| OVERTIME | 填写超时、付款超时 |
+
+#### 订单状态周期
+
+##### 同城寄付
+
+下单 -> `INIT`
+调起支付 -> `PAYING` (payed: false) -> 等待支付完成
+完成支付 -> `PAYING` (payed: true) -> 呼叫小哥
+派到小哥 -> `WAIT_HAND_OVER` 待揽件
+小哥揽件 -> `DELIVERING` 派送中
+送达 -> `FINISHED` 已完成
+
+##### 同城到付
+
+下单 -> `INIT` -> 呼叫小哥
+派到小哥 -> `WAIT_HAND_OVER` 待揽件
+小哥揽件 -> `DELIVERING` 派送中
+送达 -> 小哥提供二维码，用户扫码支付 (`PAYING`) 
+支付完成 -> `FINISHED` 已完成
+
+#### 我的订单列表，关键词搜索订单状态
+
+| keyword | state |
+| --- | ---- |
+| 已 | FINISHED |
+| 已完成 | FINISHED |
+| 完成 | FINISHED |
+| 待填写 | WAIT_FILL |
+| 已填写 | ALREADY_FILL |
+| 下单 | INIT |
+| 待支付 | INIT + PAYING |
+| 支付 | PAYING |
+| 支付中 | PAYING |
+| 待揽件 | WAIT_HAND_OVER |
+| 揽件 | WAIT_HAND_OVER |
+| 退款 | WAIT_REFUND + REFUNDING + REFUNDED |
+| 已退款 | REFUNDED |
+| 退款中 | REFUNDING |
+| 待退款 | WAIT_REFUND |
+| 派送 | DELIVERING |
+| 派送中 | DELIVERING |
+| 派件 | DELIVERING |
+| 派件中 | DELIVERING |
+| 取消 | CANCELED |
+| 已取消 | CANCELED |
+| 取消订单 | CANCELED |
+| 订单取消 | CANCELED |
+
+
+	
+	
+	
+	
+	
+
+
 

@@ -2,8 +2,9 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.dto.AddressBookDTO;
-import com.sftc.web.model.vo.AddressBookRequestVO;
+import com.sftc.web.model.SwaggerRequestVO.AddressBookRequestVO;
+import com.sftc.web.model.SwaggerRequestVO.AddressBookUpdateVO;
+import com.sftc.web.model.SwaggerRequestVO.AddressBookDeleteVO;
 import com.sftc.web.service.AddressBookService;
 import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
@@ -23,8 +24,8 @@ public class AddressBookController {
     @Resource
     private AddressBookService addressBookService;
 
-    @ApiOperation(value = "006添加地址簿",httpMethod = "POST")
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @ApiOperation(value = "添加地址簿",httpMethod = "POST")
+    @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody
     APIResponse addAddress(@RequestBody AddressBookRequestVO addressBookRequestVO) throws Exception {
         APIRequest apiRequest = new APIRequest();
@@ -32,37 +33,28 @@ public class AddressBookController {
         return addressBookService.addAddressBook(apiRequest);
     }
 
-    @ApiOperation(value = "007删除地址簿",httpMethod = "GET")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "addressBook_id",value = "地址簿id",required = true,paramType = "path")
-    })
-    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    @ApiOperation(value = "删除地址簿 软删除",httpMethod = "DELETE")
+    @RequestMapping(method = RequestMethod.DELETE)
     public @ResponseBody
-    APIResponse deleteAddress(HttpServletRequest httpServletRequest) throws Exception {
-        APIRequest apiRequest = new APIRequest(httpServletRequest);
+    APIResponse deleteAddress(@RequestBody AddressBookDeleteVO addressBookDeleteVO) throws Exception {
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(addressBookDeleteVO);
         return addressBookService.deleteAddressBook(apiRequest);
     }
 
-    @ApiOperation(value = "008修改地址簿",httpMethod = "POST")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id",value = "地址簿id",required = true),
-            @ApiImplicitParam(name = "address",value = "地址实体",required = true,dataType = "com.sftc.web.model.entity.Address"),
-    })
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @ApiOperation(value = "修改地址簿",httpMethod = "PUT")
+    @RequestMapping(method = RequestMethod.PUT)
     public @ResponseBody
-    APIResponse updateAddress(@RequestBody Object object) throws Exception {
+    APIResponse updateAddress(@RequestBody AddressBookUpdateVO addressBookUpdateVO) throws Exception {
         APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(object);
+        apiRequest.setRequestParam(addressBookUpdateVO);
         return addressBookService.updateAddressBook(apiRequest);
     }
 
 
-    @ApiOperation(value = "009地址簿查找",httpMethod = "GET")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "user_id",value = "用户id",required = true,paramType = "query",defaultValue = "10028"),
-            @ApiImplicitParam(name = "address_book_type",value = "地址簿类型 sender/ship",required = true,paramType = "query",defaultValue = "sender"),
-    })
-    @RequestMapping(value = "/selectList", method = RequestMethod.GET)
+    @ApiOperation(value = "地址簿查找",httpMethod = "GET")
+    @ApiImplicitParam(name = "address_book_type",value = "地址簿类型 sender/ship",required = true,paramType = "query",defaultValue = "sender")
+    @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     APIResponse updateAddress(HttpServletRequest httpServletRequest) throws Exception {
         APIRequest apiRequest = new APIRequest(httpServletRequest);

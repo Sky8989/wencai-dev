@@ -10,17 +10,11 @@ import com.sftc.tools.api.APIResponse;
 public interface LatitudeLongitudeService {
     /**
      * 获取随机经纬度
-     *
-     * @param apiRequest
-     * @return
      */
     APIResponse getLatitudeLongitude(APIRequest apiRequest);
 
     /**
      * 设置经纬度接口的相关参数
-     *
-     * @param apiRequest
-     * @return
      */
     APIResponse setLatitudeLongitudeConstant(APIRequest apiRequest);
 }

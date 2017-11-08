@@ -27,14 +27,9 @@ import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.*;
-import static com.sftc.tools.constant.WXConstant.WX_ACCESS_TOKEN;
-import static com.sftc.tools.constant.WXConstant.WX_SEND_MESSAGE_PATH;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {
-    @Resource
-    private UserInviteMapper userInviteMapper;
-
     @Resource
     private TokenMapper tokenMapper;
     @Resource
@@ -105,8 +100,13 @@ public class MessageServiceImpl implements MessageService {
         this.logger.info("-------user_id " + user_id);
         JSONObject jsonObject = JSONObject.fromObject(requestParam);  //调用顺丰注册接口的请求参数
         JSONObject jsonInvite = jsonObject.getJSONObject("invite");  //用户注册时 相关邀请信息
-        String invite_code = jsonObject.getJSONObject("merchant").getJSONObject("attributes").getString("invite_code");
 
+        String invite_code = null ;
+        if(jsonObject.getJSONObject("merchant").getJSONObject("attributes").containsKey("invite_code"))
+            invite_code = jsonObject.getJSONObject("merchant").getJSONObject("attributes").getString("invite_code");
+
+
+        this.logger.info("--- invite_code " + invite_code);
         jsonObject.remove("invite");
 
         // 调用顺丰接口
@@ -124,11 +124,17 @@ public class MessageServiceImpl implements MessageService {
             JSONObject tokenJSONObject = resJSONObject.getJSONObject("token");
 
             UserInvite invite = null;
-            if (jsonInvite != null && jsonInvite.containsKey("referrer_code") && !jsonInvite.getString("referrer_code").equals("0")) {
+            if (invite_code != null && !invite_code.equals("")) {
+                String city = jsonInvite.getString("city");
+                String channel = jsonInvite.getString("channel");
                 invite = new UserInvite();
                 invite.setUser_id(user_id);
-                invite.setCity(jsonInvite.getString("city"));
-                invite.setInvite_channel(jsonInvite.getString("channel"));
+
+                if(city != null && !"".equals(city))
+                    invite.setCity(city);
+
+                if(channel != null && !"".equals(channel))
+                    invite.setInvite_channel(channel);
                 invite.setInvite_code(invite_code);
                 invite.setCreate_time(Long.toString(System.currentTimeMillis()));
                 invite = userInviteDao.save(invite);
@@ -145,7 +151,7 @@ public class MessageServiceImpl implements MessageService {
             // 存储 merchant中的uuid 到user表
             User user = new User();
             user.setId(user_id);
-            user.setMobile(merchantJSONObject.getString("mobile"));
+           user.setMobile(merchantJSONObject.getString("mobile"));
             user.setUuid(merchantJSONObject.getString("uuid"));
             // 推荐注册
             if (invite != null) {
@@ -155,7 +161,7 @@ public class MessageServiceImpl implements MessageService {
 
             // 存储用户邀请的信息到user_invite表
             return APIUtil.getResponse(SUCCESS, resJSONObject);
-        }
+       }
     }
 
     /**
@@ -164,9 +170,8 @@ public class MessageServiceImpl implements MessageService {
     public APIResponse getToken(APIRequest apiRequest) {
 
         JSONObject jsonObject = JSONObject.fromObject(apiRequest.getRequestParam());
-
-        if (jsonObject.containsKey("user_id")) {
-            int user_id = jsonObject.getInt("user_id");
+        Integer user_id = TokenUtils.getInstance().getUserId();
+        if (user_id != 0) {
             String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
             jsonObject.remove("user_id");
 
@@ -228,7 +233,7 @@ public class MessageServiceImpl implements MessageService {
     public APIResponse sfLogin(APIRequest apiRequest) {
 
         JSONObject jsonObject = JSONObject.fromObject(apiRequest.getRequestParam());
-        int user_id = jsonObject.getInt("user_id");
+        int user_id = TokenUtils.getInstance().getUserId();
         String sfToken = jsonObject.getString("token");
         jsonObject.remove("user_id");
         jsonObject.remove("token");
@@ -265,38 +270,38 @@ public class MessageServiceImpl implements MessageService {
      * @param messageArr 消息内容数据的数组
      * @param pagePath   跳转页面的路径
      */
-    public void sendWXTemplateMessage(int touser_id, String[] messageArr, String pagePath, String form_id, String template_id) {
-        User user = userMapper.selectUserByUserId(touser_id);
-
-        // 构造 data 的数据体
-        JSONObject dataBody = new JSONObject();
-        for (int i = 0; messageArr.length > i; i++) {
-            System.out.println(messageArr[i]);
-            JSONObject keyword = new JSONObject();
-            keyword.put("value", messageArr[i]);
-            keyword.put("color", "#666666");
-            dataBody.put("keyword" + (i + 1), keyword);
-        }
-
-        // 构造模板消息数据
-        JSONObject messageBody = new JSONObject();
-        messageBody.put("touser", user.getOpen_id());
-        messageBody.put("template_id", template_id);
-        messageBody.put("page", pagePath);
-        messageBody.put("form_id", form_id);
-        messageBody.put("emphasis_keyword", "keyword1.DATA");
-        messageBody.put("data", dataBody.toString());
-        String postStr = messageBody.toString();
-        String postURL = WX_SEND_MESSAGE_PATH + WX_ACCESS_TOKEN;
-        HttpPost httpPost = new HttpPost(postURL);
-        String resultStr = APIPostUtil.post(postStr, httpPost);
-        JSONObject resultJSONObject = JSONObject.fromObject(resultStr);
-        if (resultJSONObject.containsKey("errcode") && resultJSONObject.getInt("errcode") != 0) {
-            logger.error(resultStr);
-        } else {
-            logger.info(resultStr);
-        }
-    }
+//    public void sendWXTemplateMessage(int touser_id, String[] messageArr, String pagePath, String form_id, String template_id) {
+//        User user = userMapper.selectUserByUserId(touser_id);
+//
+//        // 构造 data 的数据体
+//        JSONObject dataBody = new JSONObject();
+//        for (int i = 0; messageArr.length > i; i++) {
+//            System.out.println(messageArr[i]);
+//            JSONObject keyword = new JSONObject();
+//            keyword.put("value", messageArr[i]);
+//            keyword.put("color", "#666666");
+//            dataBody.put("keyword" + (i + 1), keyword);
+//        }
+//
+//        // 构造模板消息数据
+//        JSONObject messageBody = new JSONObject();
+//        messageBody.put("touser", user.getOpen_id());
+//        messageBody.put("template_id", template_id);
+//        messageBody.put("page", pagePath);
+//        messageBody.put("form_id", form_id);
+//        messageBody.put("emphasis_keyword", "keyword1.DATA");
+//        messageBody.put("data", dataBody.toString());
+//        String postStr = messageBody.toString();
+//        String postURL = WX_SEND_MESSAGE_PATH + WX_ACCESS_TOKEN;
+//        HttpPost httpPost = new HttpPost(postURL);
+//        String resultStr = APIPostUtil.post(postStr, httpPost);
+//        JSONObject resultJSONObject = JSONObject.fromObject(resultStr);
+//        if (resultJSONObject.containsKey("errcode") && resultJSONObject.getInt("errcode") != 0) {
+//            logger.error(resultStr);
+//        } else {
+//            logger.info(resultStr);
+//        }
+//    }
 
     /**
      * 获取图片验证码

@@ -11,7 +11,7 @@ public interface UserContactLabelService {
      * @param userContactLabel
      * @return
      */
-    APIResponse addLabelForFriend(UserContactLabel userContactLabel);
+    APIResponse addLabelForFriend(APIRequest request);
 
     /**
      * 删除好友的标签

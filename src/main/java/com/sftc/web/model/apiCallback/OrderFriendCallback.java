@@ -24,6 +24,7 @@ public class OrderFriendCallback {
 
     public class OrderFriendCallbackExpress {
         private int id;
+        private int user_contact_id;
         private String ship_name;
         private String ship_avatar;
         private int ship_user_id;
@@ -113,6 +114,10 @@ public class OrderFriendCallback {
         public void setReserve_time(String reserve_time) {
             this.reserve_time = reserve_time;
         }
+
+        public int getUser_contact_id() {return user_contact_id;}
+
+        public void setUser_contact_id(int user_contact_id) {this.user_contact_id = user_contact_id;}
     }
 
     public String getId() {

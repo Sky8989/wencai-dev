@@ -60,8 +60,8 @@
     <select id="selectNationUnCommitOrders" resultType="java.lang.String">
         SELECT DISTINCT oe.order_id
         FROM sftc_order o, sftc_order_express oe
-        WHERE o.id = oe.order_id AND o.region_type = 'REGION_NATION' AND o.is_cancel = 0
-              AND (oe.state = 'WAIT_FILL' OR oe.state = 'ALREADY_FILL' OR oe.state = 'PAYING') AND receive_time IS NOT NULL
+        WHERE o.id = oe.order_id AND o.region_type = 'REGION_NATION' AND o.is_cancel = 0 AND oe.receive_time IS NOT NULL
+              AND (oe.state = 'WAIT_FILL' OR oe.state = 'ALREADY_FILL' OR oe.state = 'PAYING')
     </select>
 
     <!--抓取未提交的好友多包裹-->
@@ -71,7 +71,7 @@
         WHERE o.id = oe.order_id AND o.is_cancel = 0
               AND (SELECT COUNT(order_id)
                    FROM sftc_order_express
-                   WHERE order_id = o.id) > 1 AND region_type IS NULL
+                   WHERE oe.order_id = o.id) > 1 AND o.region_type IS NULL
     </select>
 
     <!--抓取同城单-->
@@ -113,13 +113,11 @@
     <!-- 添加订单 -->
     <insert id="addOrder" parameterType="com.sftc.web.model.entity.Order" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_order
-        (freight,
-         create_time, sender_province, sender_name, sender_mobile, sender_city,
+        (create_time, sender_province, sender_name, sender_mobile, sender_city,
          sender_area, sender_addr, word_message, image, voice,
          sender_user_id, gift_card_id, pay_method, distribution_method, longitude,
          latitude, order_type, voice_time, region_type)
         VALUES (
-            #{freight, jdbcType=DOUBLE},
             #{create_time, jdbcType=VARCHAR},
             #{sender_province, jdbcType=VARCHAR},
             #{sender_name, jdbcType=VARCHAR},
@@ -145,13 +143,11 @@
     <!-- 添加订单 -->
     <insert id="addOrder2" parameterType="com.sftc.web.model.entity.Order" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_order
-        (freight,
-         create_time, sender_province, sender_name, sender_mobile, sender_city,
+        (create_time, sender_province, sender_name, sender_mobile, sender_city,
          sender_area, sender_addr, supplementary_info, word_message, image, voice,
          sender_user_id, gift_card_id, pay_method, distribution_method, longitude,
-         latitude, order_type, voice_time, region_type)
+         latitude, order_type, voice_time, region_type,id)
         VALUES (
-            #{freight, jdbcType=DOUBLE},
             #{create_time, jdbcType=VARCHAR},
             #{sender_province, jdbcType=VARCHAR},
             #{sender_name, jdbcType=VARCHAR},
@@ -171,13 +167,20 @@
             #{latitude, jdbcType=DOUBLE},
             #{order_type, jdbcType=VARCHAR},
             #{voice_time, jdbcType=INTEGER},
-            #{region_type, jdbcType=VARCHAR, javaType=String}
+            #{region_type, jdbcType=VARCHAR, javaType=String},
+            #{id, jdbcType=VARCHAR, javaType=String}
         )
     </insert>
 
     <update id="updateOrderRegionType">
         UPDATE sftc_order
         SET region_type = #{region_type, jdbcType=VARCHAR}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateRegionAndDistributionById">
+        UPDATE sftc_order
+        SET region_type = #{region_type},distribution_method = #{distribution_method}
         WHERE id = #{id}
     </update>
 
@@ -264,7 +267,6 @@
         sftc_order.pay_time,
         sftc_order.pay_method,
         sftc_order.distribution_method,
-        sftc_order.freight,
         sftc_order.sender_name,
         sftc_order.sender_mobile,
         sftc_order.sender_province,
@@ -330,7 +332,7 @@
     <select id="selectOrderByPage" resultMap="orderMap" parameterType="com.sftc.web.model.entity.Order">
         SELECT * FROM sftc_order
         <where>
-            <if test="id != 0">and id = #{id}</if>
+            <if test="id != null">and id = #{id}</if>
             <if test="order_type != null">and order_type = #{order_type}</if>
             <if test="region_type != null">and region_type = #{region_type}</if>
             <if test="sender_mobile != null">and sender_mobile = #{sender_mobile}</if>

@@ -6,6 +6,7 @@ import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFTokenHelper;
+import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Token;
@@ -20,6 +21,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -36,6 +39,8 @@ import static com.sftc.tools.constant.ThirdPartyConstant.WX_AUTHORIZATION;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Resource
     private UserMapper userMapper;
 
@@ -49,7 +54,8 @@ public class UserServiceImpl implements UserService {
             "\"mobile\":\"13797393543\"" + "}," +
             "\"message\":{" + "\"content\":\"4444\"}}";
 
-    public APIResponse login(UserParam userParam) throws Exception {
+    public APIResponse login(APIRequest request) throws Exception {
+        UserParam userParam = (UserParam) request.getRequestParam();
         APIStatus status = SUCCESS;
         String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
         WXUser wxUser = APIResolve.getWxUserWithUrl(auth_url);
@@ -88,6 +94,8 @@ public class UserServiceImpl implements UserService {
                 user.setCreate_time(Long.toString(System.currentTimeMillis()));
                 //更新头像和昵称
                 if (userParam.getName() != null && userParam.getAvatar() != null) {
+                    logger.info("更新头像: " + userParam.getAvatar());
+                    logger.info("更新名字: " + userParam.getName());
                     user.setAvatar(userParam.getAvatar());
                     user.setName(userParam.getName());
                     userMapper.updateUserOfAvatar(user);
@@ -116,15 +124,11 @@ public class UserServiceImpl implements UserService {
     }
 
     //  合并后的登陆接口 前台来一个jscode
-    public APIResponse superLogin(UserParam userParam) throws Exception {
-        APIStatus status = SUCCESS;
+    public APIResponse superLogin(APIRequest request) throws Exception {
+
+        UserParam userParam = (UserParam) request.getRequestParam();
         String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
         WXUser wxUser = APIResolve.getWxUserWithUrl(auth_url);
-//        WXUser wxUser = new WXUser();
-//        wxUser.setOpenid("123");
-//        wxUser.setSession_key("66==");
-//        wxUser.setErrmsg("sadsadcuowu");
-//        wxUser.setErrcode(500);
         User user = null;
         Map<String, String> tokenInfo = new HashMap<String, String>();
         if (wxUser.getOpenid() != null) {
@@ -160,6 +164,8 @@ public class UserServiceImpl implements UserService {
 //                user.setCreate_time(Long.toString(System.currentTimeMillis()));//不更新
                 //更新头像和昵称
                 if (userParam.getName() != null && userParam.getAvatar() != null) {
+                    logger.info("更新头像: " + userParam.getAvatar());
+                    logger.info("更新名字: " + userParam.getName());
                     user.setAvatar(userParam.getAvatar());
                     user.setName(userParam.getName());
                 }
@@ -258,7 +264,8 @@ public class UserServiceImpl implements UserService {
     }
 
     // 解除绑定操作，原微信号，解除原有手机号
-    public APIResponse deleteMobile(int user_id) throws Exception {
+    public APIResponse deleteMobile(APIRequest request) throws Exception {
+        Integer user_id = TokenUtils.getInstance().getUserId();
         User user = userMapper.selectUserByUserId(user_id);
         Token tokenById = tokenMapper.getTokenById(user_id);
         if (user != null) {// 验空
@@ -312,14 +319,14 @@ public class UserServiceImpl implements UserService {
         String mobile = merchants.getJSONObject("address").getString("mobile");
         String longitude = merchants.getJSONObject("address").getString("longitude");
         String latitude = merchants.getJSONObject("address").getString("latitude");
-        String json = "{\"merchant\":{\"name\":\""+new_name+"\",\"attributes\":{},\"summary\":{},\"" +
-                "email\":\""+email+"\",\"address\":{\"type\":\"LIVE\",\"country\":\"中国\",\"province\":\""+province+"\",\"" +
-                "city\":\""+city+"\",\"region\":\""+region+"\",\"street\":\""+street+"\",\"zipcode\":\""+zipcode+"\",\"receiver\":" +
-                "\""+receiver+"\",\"mobile\":\""+mobile+"\",\"marks\":{},\"longitude\":\""+longitude+"\",\"latitude\":\""+latitude+"\",\"uuid\":\"" + uuid + "\"}}}";
+        String json = "{\"merchant\":{\"name\":\"" + new_name + "\",\"attributes\":{},\"summary\":{},\"" +
+                "email\":\"" + email + "\",\"address\":{\"type\":\"LIVE\",\"country\":\"中国\",\"province\":\"" + province + "\",\"" +
+                "city\":\"" + city + "\",\"region\":\"" + region + "\",\"street\":\"" + street + "\",\"zipcode\":\"" + zipcode + "\",\"receiver\":" +
+                "\"" + receiver + "\",\"mobile\":\"" + mobile + "\",\"marks\":{},\"longitude\":\"" + longitude + "\",\"latitude\":\"" + latitude + "\",\"uuid\":\"" + uuid + "\"}}}";
         String access_token = null;
-        if(jsonObject.getString("token")!=null && !(jsonObject.getString("token")).equals("")){
+        if (jsonObject.getString("token") != null && !(jsonObject.getString("token")).equals("")) {
             access_token = jsonObject.getString("token");
-        }else{
+        } else {
             access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
         }
         RequestBody rb = RequestBody.create(null, json);
@@ -354,10 +361,17 @@ public class UserServiceImpl implements UserService {
                 usableToken = tokenMapper.getTokenById(2188);
             }
         } else {
-            String reason = "token丢失了";
-            return APIUtil.selectErrorResponse("AuthToken is missing", reason);
+            String creat_time = Long.toString(System.currentTimeMillis());
+            String tempOpenId = SFOrderHelper.getTempOpenId();
+            String tempToken = makeToken(creat_time, tempOpenId);
+            Token token = new Token(2188, tempToken);
+            token.setGmt_expiry((System.currentTimeMillis() + 60000) + "");
+            tokenMapper.addToken(token);
+            usableToken = tokenMapper.getTokenById(2188);
         }
-        return APIUtil.getResponse(SUCCESS, usableToken.getLocal_token());
+        Map<String,String> map = new HashMap<>();
+        map.put("token",usableToken.getLocal_token());
+        return APIUtil.getResponse(SUCCESS, map);
     }
 
     /**

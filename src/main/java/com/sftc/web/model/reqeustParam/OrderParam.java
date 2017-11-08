@@ -1,52 +1,57 @@
 package com.sftc.web.model.reqeustParam;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import org.apache.ibatis.jdbc.Null;
+
+@ApiModel(value = "寄件人订单填写包装类")
 public class OrderParam {
 
-    // 寄件人姓名
+    @ApiModelProperty(name = "ship_name",value = "寄件人姓名",example = "Joel测试订单1")
     private String sender_name;
-    // 寄件人手机
+    @ApiModelProperty(name = "sender_mobile",value = "寄件人电话",example = "13691698530")
     private String sender_mobile;
-    // 寄件人省
+    @ApiModelProperty(name = "sender_province",value = "寄件人省份",example = "广东省")
     private String sender_province;
-    // 寄件人市
+    @ApiModelProperty(name = "sender_city",value = "寄件人城市",example = "深圳市")
     private String sender_city;
-    // 寄件人详细地址
+    @ApiModelProperty(name = "sender_area",value = "寄件人区域",example = "龙岗区")
     private String sender_area;
-    // 寄件人详细地址
+    @ApiModelProperty(name = "supplementary_info",value = "寄件人门牌号",example = "寄件人填写1号")
     private String supplementary_info;
-    // 门牌号
+    @ApiModelProperty(name = "sender_addr",value = "寄件人详细地址",example = "大运")
     private String sender_addr;
-    // 包裹图片
+    @ApiModelProperty(name = "image",value = "图片",example = "yqy.jpg")
     private String image;
-    // 语音
+    @ApiModelProperty(name = "voice",value = "语音",example = "你好")
     private String voice;
-    // 付款方式
+    @ApiModelProperty(name = "pay_method",value = "支付方式",example = "到付")
     private String pay_method;
-    // 配送方式
+    @ApiModelProperty(name = "distribution_method",value = "配送方式",example = "das")
     private String distribution_method;
-    // 经度
+    @ApiModelProperty(name = "longitude",value = "经度",example = "114.260976")
     private double longitude;
-    // 纬度
+    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.723223")
     private double latitude;
-    // 文字寄语
+    @ApiModelProperty(name = "word_message",value = "留言",example = "你好")
     private String word_message;
-    // 包裹数量
+    @ApiModelProperty(name = "package_count",value = "包裹数量",example = "1")
     private int package_count;
-    // 寄件人id
+    @ApiModelProperty(name = "sender_user_id",value = "寄件人id",example = "10028")
     private int sender_user_id;
-    // 礼卡表id
+    @ApiModelProperty(name = "gift_card_id",value = "贺卡id",example = "1")
     private int gift_card_id;
-    // 语音时长
+    @ApiModelProperty(name = "voice_time",value = "语音时长",example = "10")
     private int voice_time;
-    // 包裹类型
+    @ApiModelProperty(name = "package_comments",value = "快递描述",example = "补充快递信息")
     private String package_comments;
-    // 物品类型
+    @ApiModelProperty(name = "object_type",value = "物品类型",example = "dsa")
     private  String object_type;
-    // 包裹补充信息
+    @ApiModelProperty(name = "package_type",value = "包裹类型",example = "dsa")
     private  String package_type;
-    // 订单类型 普通/神秘
+    @ApiModelProperty(name = "order_type",value = "是否普通",example = "ORDER_MYSTERY")
     private String order_type;
-    // 订单地域 同城/大网
+    @ApiModelProperty(name = "region_type",value = "同城,大网",notes = "请将里面默认的String去掉，否则好友无法提交")
     private String region_type;
 
     public String getSender_name() {

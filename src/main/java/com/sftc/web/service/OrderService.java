@@ -3,9 +3,6 @@ package com.sftc.web.service;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 
-import java.util.Map;
-
-
 public interface OrderService {
 
     /**
@@ -31,12 +28,12 @@ public interface OrderService {
     /**
      * 好友填写寄件订单
      */
-    APIResponse friendFillOrder(Map rowData);
+    APIResponse friendFillOrder(APIRequest request);
 
     /**
      * 计价
      */
-    APIResponse countPrice(Object object);
+    APIResponse countPrice(APIRequest request);
 
     /**
      * 获取订单详情
@@ -69,14 +66,19 @@ public interface OrderService {
     APIResponse selectExpressDetail(APIRequest request);
 
     /**
+     * 纯走B端的同城快递详情查询
+     */
+    APIResponse selectSameExpressDetail(APIRequest request);
+
+    /**
      * 评价某个订单的单一包裹
      */
-    APIResponse evaluateSingle(Object object);
+    APIResponse evaluateSingle(APIRequest request);
 
     /**
      * 取消订单
      */
-    APIResponse cancelOrder(Object object);
+    APIResponse cancelOrder(APIRequest request);
 
     /**
      * 时间规则

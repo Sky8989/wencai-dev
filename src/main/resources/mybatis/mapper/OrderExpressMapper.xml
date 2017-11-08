@@ -37,35 +37,8 @@
             keyProperty="id">
         INSERT INTO sftc_order_express
         (ship_name, ship_mobile, ship_province, ship_city, ship_area,
-         ship_addr, order_number, package_type, object_type, package_comments, create_time, sender_user_id, order_id, state, uuid, longitude, latitude, reserve_time, order_time)
-        VALUES (
-            #{ship_name, jdbcType=VARCHAR},
-            #{ship_mobile, jdbcType=VARCHAR},
-            #{ship_province, jdbcType=VARCHAR},
-            #{ship_city, jdbcType=VARCHAR},
-            #{ship_area, jdbcType=VARCHAR},
-            #{ship_addr, jdbcType=VARCHAR},
-            #{order_number, jdbcType=VARCHAR},
-            #{package_type, jdbcType=VARCHAR},
-            #{object_type, jdbcType=VARCHAR},
-            #{package_comments, jdbcType=VARCHAR},
-            #{create_time, jdbcType=VARCHAR},
-            #{sender_user_id, jdbcType=INTEGER},
-            #{order_id, jdbcType=INTEGER},
-            #{state, jdbcType=VARCHAR},
-            #{uuid, jdbcType=VARCHAR},
-            #{longitude, jdbcType=DOUBLE},
-            #{latitude, jdbcType=DOUBLE},
-            #{reserve_time, jdbcType=VARCHAR},
-            #{order_time, jdbcType=VARCHAR}
-        )
-    </insert>
-
-    <insert id="addOrderExpress2" parameterType="com.sftc.web.model.entity.OrderExpress" useGeneratedKeys="true"
-            keyProperty="id">
-        INSERT INTO sftc_order_express
-        (ship_name, ship_mobile, ship_province, ship_city, ship_area,
-         ship_addr, supplementary_info, order_number, package_type, object_type, package_comments, create_time, sender_user_id, order_id, state, uuid, longitude, latitude, reserve_time, order_time)
+         ship_addr, supplementary_info, order_number, package_type, object_type, package_comments, create_time,
+         sender_user_id, order_id, state, uuid, longitude, latitude, reserve_time, order_time)
         VALUES (
             #{ship_name, jdbcType=VARCHAR},
             #{ship_mobile, jdbcType=VARCHAR},
@@ -87,6 +60,39 @@
             #{latitude, jdbcType=DOUBLE},
             #{reserve_time, jdbcType=VARCHAR},
             #{order_time, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="addOrderExpress2" parameterType="com.sftc.web.model.entity.OrderExpress" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO sftc_order_express
+        (ship_name, ship_mobile, ship_province, ship_city, ship_area,
+         ship_addr, supplementary_info, order_number, package_type, object_type, package_comments, create_time,
+         sender_user_id, order_id, state, uuid, longitude, latitude, reserve_time, order_time,directed_code,attributes,is_directed)
+        VALUES (
+            #{ship_name, jdbcType=VARCHAR},
+            #{ship_mobile, jdbcType=VARCHAR},
+            #{ship_province, jdbcType=VARCHAR},
+            #{ship_city, jdbcType=VARCHAR},
+            #{ship_area, jdbcType=VARCHAR},
+            #{ship_addr, jdbcType=VARCHAR},
+            #{supplementary_info, jdbcType=VARCHAR},
+            #{order_number, jdbcType=VARCHAR},
+            #{package_type, jdbcType=VARCHAR},
+            #{object_type, jdbcType=VARCHAR},
+            #{package_comments, jdbcType=VARCHAR},
+            #{create_time, jdbcType=VARCHAR},
+            #{sender_user_id, jdbcType=INTEGER},
+            #{order_id, jdbcType=INTEGER},
+            #{state, jdbcType=VARCHAR},
+            #{uuid, jdbcType=VARCHAR},
+            #{longitude, jdbcType=DOUBLE},
+            #{latitude, jdbcType=DOUBLE},
+            #{reserve_time, jdbcType=VARCHAR},
+            #{order_time, jdbcType=VARCHAR},
+            #{directed_code, jdbcType=VARCHAR},
+            #{attributes, jdbcType=VARCHAR},
+            #{is_directed, jdbcType=VARCHAR}
         )
     </insert>
 
@@ -119,6 +125,22 @@
     <update id="updateOrderExpressStatusByUUID">
         UPDATE sftc_order_express
         SET state = #{status, jdbcType=VARCHAR}
+        WHERE uuid = #{uuid}
+    </update>
+
+    <update id="updateExpressDirectedByUUID">
+        UPDATE sftc_order_express
+        set
+        <if test="status != null">state = #{status},</if>
+        <if test="directed_code != null">directed_code = #{directed_code},</if>
+        <if test="is_directed != null">is_directed = #{is_directed}</if>
+        WHERE uuid = #{uuid}
+    </update>
+
+    <update id="updateExpressAttributeSByUUID">
+        UPDATE sftc_order_express
+        set
+        <if test="attributes != null">attributes = #{attributes}</if>
         WHERE uuid = #{uuid}
     </update>
 
@@ -187,7 +209,7 @@
         SELECT * FROM sftc_order_express
         <where>
             <if test="id != 0">and id = #{id}</if>
-            <if test="order_id != 0">and order_id = #{order_id}</if>
+            <if test="order_id != null">and order_id = #{order_id}</if>
             <if test="ship_mobile != null">and ship_mobile = #{ship_mobile}</if>
             <if test="uuid != null">and uuid = #{uuid}</if>
         </where>

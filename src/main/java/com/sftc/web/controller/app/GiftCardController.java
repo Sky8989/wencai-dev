@@ -13,15 +13,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@Api(description = "礼品卡")
+@Api(description = "礼品卡相关接口")
 @RequestMapping("giftCard")
 public class GiftCardController extends BaseController {
 
-    /**
-     * 获取礼卡列表
-     */
     @ApiOperation(value = "获取礼品卡列表",httpMethod = "GET")
-    @RequestMapping(value = "/getGiftCardList", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     APIResponse getGiftCardList(HttpServletRequest request) throws Exception {
         return giftCardService.getGiftCardList(new APIRequest(request));

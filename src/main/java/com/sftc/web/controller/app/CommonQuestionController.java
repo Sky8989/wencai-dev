@@ -20,7 +20,7 @@ public class CommonQuestionController {
     private CommonQuestionService commonQuestionService;
 
     @ApiOperation(value = "常见问题", httpMethod = "GET")
-    @RequestMapping(value = "/common", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     APIResponse getCommonQuestion() throws Exception {
         return commonQuestionService.getCommonQuestion();

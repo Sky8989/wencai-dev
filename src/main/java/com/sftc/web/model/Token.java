@@ -20,8 +20,6 @@ public class Token extends Object {
     private String token;
     // 是否已经注销
     private int is_logout;
-    // 创建时间
-    private String create_at;
     // 更新时间
     private String expires_in;
     private String gmt_modified;
@@ -33,7 +31,6 @@ public class Token extends Object {
 
     private String refresh_token;
 
-    private String uuid;
     private int user_id;
 
     public Token() {
@@ -70,17 +67,16 @@ public class Token extends Object {
         this.user_id = user_id;
     }
 
-    public Token(String create_time, String create_at, String gmt_modified, String gmt_expiry,
-                 String access_token, String refresh_token, int user_id, String uuid) {
+
+    public Token(String create_time,int is_logout, String gmt_modified, String gmt_expiry,
+                 String access_token, String refresh_token, int user_id) {
         this.create_time = create_time;
         this.is_logout = is_logout;
-        this.create_at = create_at;
         this.gmt_modified = gmt_modified;
         this.gmt_expiry = gmt_expiry;
         this.access_token = access_token;
         this.refresh_token = refresh_token;
         this.user_id = user_id;
-        this.uuid = uuid;
     }
 
     public int getId() {
@@ -141,14 +137,6 @@ public class Token extends Object {
         this.user_id = user_id;
     }
 
-    public String getCreate_at() {
-        return create_at;
-    }
-
-    public void setCreate_at(String create_at) {
-        this.create_at = create_at;
-    }
-
     public String getLocal_token() {
         return local_token;
     }
@@ -175,14 +163,6 @@ public class Token extends Object {
 
     public void setRefresh_token(String refresh_token) {
         this.refresh_token = refresh_token;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
     }
 
 }

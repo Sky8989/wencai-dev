@@ -50,9 +50,12 @@ public class OrderStatusLogic {
 
         // update
         for (OrderExpressDTO oe : orderDTO.getOrderExpressList()) {
-            OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
-            orderExpress.setState(status);
-            orderExpressDao.save(orderExpress);
+//            OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
+//            orderExpress.setState(status);
+//            orderExpressDao.save(orderExpress);
+            int express_id = oe.getId();
+            //事务问题,先存在查的改为统一使用Mybatis
+            orderExpressMapper.updateOrderExpressStatus(express_id,status);
         }
         orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
         return APIUtil.getResponse(SUCCESS, orderDTO);
@@ -78,8 +81,10 @@ public class OrderStatusLogic {
             return APIUtil.submitErrorResponse("订单快递不存在", null);
 
         // update
-        orderExpress.setState(status);
-        orderExpressDao.save(orderExpress);
+//        orderExpress.setState(status);
+//        orderExpressDao.save(orderExpress);
+        //事务问题,先存在查的改为统一使用Mybatis
+        orderExpressMapper.updateOrderExpressStatusByUUID(uuid,status);
         orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
         return APIUtil.getResponse(SUCCESS, orderExpress);
     }

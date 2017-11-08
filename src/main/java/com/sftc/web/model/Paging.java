@@ -1,10 +1,15 @@
 package com.sftc.web.model;
 
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+@ApiModel(value = "好友列表请求类")
 public class Paging {
-
+    @ApiModelProperty(name = "user_id",value = "用户id",example = "10028",required = true,hidden = true)
     private int user_id;
+    @ApiModelProperty(name = "pageNum",value = "页数",example = "1",required = true)
     private int pageNum;
+    @ApiModelProperty(name = "pageSize",value = "每页数量",example = "10",required = true)
     private int pageSize;
 
     public int getUser_id() {
