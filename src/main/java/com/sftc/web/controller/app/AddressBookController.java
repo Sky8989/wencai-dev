@@ -2,10 +2,11 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.dto.AddressBookDTO;
-import com.sftc.web.model.vo.AddressBookRequestVO;
 import com.sftc.web.service.AddressBookService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ public class AddressBookController {
     @ApiOperation(value = "006添加地址簿",httpMethod = "POST")
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse addAddress(@RequestBody AddressBookRequestVO addressBookRequestVO) throws Exception {
+    APIResponse addAddress(@RequestBody Object addressBookRequestVO) throws Exception {
         APIRequest apiRequest = new APIRequest();
         apiRequest.setRequestParam(addressBookRequestVO);
         return addressBookService.addAddressBook(apiRequest);

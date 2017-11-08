@@ -44,13 +44,12 @@ public class OrderDTO extends Order {
     }
 
     public OrderDTO(String create_time, String pay_method,
-                    String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
+                    String distribution_method, String sender_name, String sender_mobile, String sender_province,
                     String sender_city, String sender_area, String sender_addr, String supplementary_info,
                     double longitude, double latitude, String order_type, int sender_user_id) {
         this.setCreate_time(create_time);
         this.setPay_method(pay_method);
         this.setDistribution_method(distribution_method);
-        this.setFreight(freight);
         this.setSender_name(sender_name);
         this.setSender_mobile(sender_mobile);
         this.setSender_province(sender_province);
@@ -64,13 +63,12 @@ public class OrderDTO extends Order {
         this.setSender_user_id(sender_user_id);
     }
     public OrderDTO(String create_time, String pay_method,
-                    String distribution_method, double freight, String sender_name, String sender_mobile, String sender_province,
+                    String distribution_method, String sender_name, String sender_mobile, String sender_province,
                     String sender_city, String sender_area, String sender_addr,
                     double longitude, double latitude, String order_type, int sender_user_id) {
         this.setCreate_time(create_time);
         this.setPay_method(pay_method);
         this.setDistribution_method(distribution_method);
-        this.setFreight(freight);
         this.setSender_name(sender_name);
         this.setSender_mobile(sender_mobile);
         this.setSender_province(sender_province);

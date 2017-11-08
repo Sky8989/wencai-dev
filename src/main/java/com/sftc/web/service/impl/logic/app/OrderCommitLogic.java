@@ -35,11 +35,9 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static com.sftc.tools.api.APIStatus.SUBMIT_FAIL;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
 import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
-import static com.sftc.tools.constant.WXConstant.WX_template_id_1;
 
 @Component
 public class OrderCommitLogic {
@@ -132,6 +130,8 @@ public class OrderCommitLogic {
 
         try {
             OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
+            if(orderDTO == null)
+                return APIUtil.selectErrorResponse("订单不存在", null);
             //后期订单和快递改为一对一之后，请求为object对象，遍历里面的order对象来提交？
             for (OrderExpressDTO orderExpressDTO : orderDTO.getOrderExpressList()) {
                 OrderExpress oe = OrderExpressFactory.dtoToEntity(orderExpressDTO);
@@ -209,7 +209,6 @@ public class OrderCommitLogic {
         }
 
         return APIUtil.getResponse(SUCCESS, null);
-
     }
 
     //////////////////// Private Method ////////////////////
@@ -243,10 +242,26 @@ public class OrderCommitLogic {
         String order_id = requestObject.getJSONObject("order").getString("order_id");
         if (order_id == null || order_id.equals(""))
             return APIUtil.paramErrorResponse("order_id不能为空");
+        if (!requestObject.containsKey("request"))
+            return APIUtil.paramErrorResponse("订单信息不完整");
+        JSONObject reqObject = requestObject.getJSONObject("request");
+        //同城下单参数增加 C 端小程序标识和订单类型表示   NORMAL/RESERVED/DIRECTED
+        reqObject.put("request_source", "C_WX_APP");
+        reqObject.put("type", "NORMAL");    //默认为普通
+
         String reserve_time = "";
         if (requestObject.getJSONObject("order").containsKey("reserve_time")) {
             reserve_time = requestObject.getJSONObject("order").getString("reserve_time");
+            if (reserve_time != null && !reserve_time.equals("")) {
+                reqObject.remove("type");   //预约单type
+                reqObject.put("type", "RESERVED");
+            }
         }
+
+        JSONObject attributeOBJ = reqObject.getJSONObject("attributes");
+        if (attributeOBJ.containsKey("source"))
+            attributeOBJ.remove("source");
+
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
         if (orderDTO == null) return APIUtil.submitErrorResponse("订单不存在", null);
 
@@ -382,13 +397,19 @@ public class OrderCommitLogic {
         JSONObject orderOBJ = requestObject.getJSONObject("order");
         if (order_id == null || order_id.equals(""))
             return APIUtil.paramErrorResponse("order_id不能为空");
-
+        String distribution = requestObject.getJSONObject("sf").getString("express_type");
         String reserve_time = (String) requestObject.getJSONObject("order").get("reserve_time");
-        Order order1 = orderDao.findOne(order_id);
-        order1.setRegion_type("REGION_NATION");
-        orderDao.save(order1);
+//        Order order1 = orderDao.findOne(order_id);
+//        order1.setRegion_type("REGION_NATION");
+//        order1.setDistribution_method(distribution);
+//        orderDao.save(order1);
+        //事务问题,先存在查的改为统一使用Mybatis
+        String region_type = "REGION_NATION";
+        orderMapper.updateRegionAndDistributionById(order_id, region_type, distribution);
 
         OrderDTO orderDto = orderMapper.selectOrderDetailByOrderIdForUpdate(order_id);
+        if(orderDto == null)
+            return APIUtil.selectErrorResponse("订单不存在", null);
 
         //增加对包裹数量的验证，确保是只有一个订单里只有一个同城包裹
         if (requestObject.getJSONObject("order").containsKey("package_count")) {
@@ -441,11 +462,13 @@ public class OrderCommitLogic {
 
             if (!oe.getState().equals("WAIT_FILL")) {
                 if (reserve_time != null && !reserve_time.equals("")) { // 预约件处理
-                    oe.setReserve_time(reserve_time);
-                    oe.setUuid(oe.getUuid());
-                    oe.setState("WAIT_HAND_OVER");
-                    OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
-                    orderExpressDao.save(orderExpress);
+//                    oe.setReserve_time(reserve_time);
+//                    oe.setUuid(oe.getUuid());
+//                    oe.setState("WAIT_HAND_OVER");
+//                    OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
+//                    orderExpressDao.save(orderExpress);
+                    //事务问题,先存在查的改为统一使用Mybatis
+                    orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), oe.getUuid(), reserve_time);
                 } else {
                     // 处理street 和 门牌号的拼接
                     Object j_address = sf.remove("j_address");
@@ -470,22 +493,41 @@ public class OrderCommitLogic {
                         order2.setRegion_type(null);
                         orderDao.save(order2);
                         String message = "下单失败";
-                        if (jsonObject.containsKey("Message")) {
+                        if (jsonObject.containsKey("Message")) {    //特殊错误信息的处理
                             message = jsonObject.getString("Message");
+                            if (message != null) {
+                                message = message.replace(" ", "");
+                                if (message.equals("人工确认")) {
+                                    message = "该地区不在服务范围内";
+                                } else if (message.equals("校验码错误") || message.equals("")) {
+                                    message = "请勿输入特殊字符";
+                                }
+                            }
                         } else if (jsonObject.containsKey("error")) {
                             message = jsonObject.getJSONObject("error").getString("message");
+                            message = message.replace(" ", "");
+                            if (message != null) {
+                                if (message.equals("人工确认")) {
+                                    message = "该地区不在服务范围内";
+                                } else if (message.equals("校验码错误") || message.equals("")) {
+                                    message = "请勿输入特殊字符";
+                                }
+                            }
                         }
                         return APIUtil.submitErrorResponse(message, jsonObject);
                     } else {
                         // 存储订单信息
+                        //事务问题,先存在查的改为统一使用Mybatis
                         String order_time = Long.toString(System.currentTimeMillis());
-                        oe.setOrder_time(order_time);
-
+//                        oe.setOrder_time(order_time);
+                        orderExpressMapper.updateOrderTime(oe.getUuid(), order_time);
                         String ordernum = jsonObject.getString("ordernum");
-                        oe.setOrder_number(ordernum);
-                        oe.setState("WAIT_HAND_OVER");
-                        OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
-                        orderExpressDao.save(orderExpress);
+                        orderExpressMapper.updateOrderNumber(oe.getId(), ordernum);
+//                        oe.setOrder_number(ordernum);
+//                        oe.setState("WAIT_HAND_OVER");
+                        orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
+//                        OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
+//                        orderExpressDao.save(orderExpress);
 
                         // 插入地址
                         //setupAddress(order, oe);
@@ -514,6 +556,10 @@ public class OrderCommitLogic {
         //处理非必传参数package里的comments
         String comments = requestOBJ.getJSONArray("packages").getJSONObject(0).containsKey("comments") ? requestOBJ.getJSONArray("packages").getJSONObject(0).getString("comments") : "";
 
+        //同城下单参数增加 C 端小程序标识和订单类型表示   NORMAL/RESERVED/DIRECTED
+        requestOBJ.put("request_source", "C_WX_APP");
+        requestOBJ.put("type", "NORMAL");    //默认为普通
+
         //处理supplementary_info非必填项的问题
         if (!sourceAddressOBJ.containsKey("supplementary_info")) {
             sourceAddressOBJ.put("supplementary_info", "");
@@ -522,14 +568,11 @@ public class OrderCommitLogic {
             targetAddressOBJ.put("supplementary_info", "");
         }
 
-        APIStatus status = SUCCESS;
-
         Order order = new Order(
                 Long.toString(System.currentTimeMillis()),
                 SFOrderHelper.getOrderId(),
                 (String) requestOBJ.get("pay_type"),
                 (String) requestOBJ.get("product_type"),
-                0.0,
                 (String) sourceAddressOBJ.get("receiver"),
                 (String) sourceAddressOBJ.get("mobile"),
                 (String) sourceAddressOBJ.get("province"),
@@ -553,8 +596,7 @@ public class OrderCommitLogic {
         order.setVoice_time(Integer.parseInt((String) orderOBJ.get("voice_time")));
         order.setRegion_type("REGION_SAME");
 
-        HttpPost post = new HttpPost();
-        post = new HttpPost(SF_REQUEST_URL);
+        HttpPost post = new HttpPost(SF_REQUEST_URL);
         post.addHeader("PushEnvelope-Device-Token", (String) requestOBJ.getJSONObject("merchant").get("access_token"));
 
         // 预约时间处理
@@ -562,6 +604,20 @@ public class OrderCommitLogic {
         if (reserve_time != null && !reserve_time.equals("")) {
             String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             requestOBJ.put("reserve_time", reserveTime);
+            // 预约单type
+            requestOBJ.put("type", "RESERVED");
+        }
+        // 面对面下单
+        int is_directed = 0;
+        JSONObject attriubuteOBJ = requestOBJ.getJSONObject("attributes");
+        if (attriubuteOBJ.containsKey("source")) {
+            if (attriubuteOBJ.getString("source").equals("DIRECTED")) {
+                // 面对面单type
+                requestOBJ.put("type", "DIRECTED");
+                is_directed = 1;
+            }
+            //移除 attributes 中的 source
+            attriubuteOBJ.remove("source");
         }
 
         JSONObject tempObject = JSONObject.fromObject(reqObject);
@@ -586,31 +642,19 @@ public class OrderCommitLogic {
             return APIUtil.submitErrorResponse(respObject.getJSONObject("error").getString("message"), respObject.getJSONObject("error"));
         }
 
-        logger.info("准备面对面下单");
-        //面对面下单
+        // 获取面对面取件码（到付）
         String directed_code = null;
-        int is_directed = 0;
         if (respObject.containsKey("request")) {
-            logger.info("包含request");
             JSONObject req = respObject.getJSONObject("request");
             if (req != null && req.containsKey("attributes")) {
-                logger.info("包含attributes");
                 JSONObject attributuOBJ = req.getJSONObject("attributes");
-                if (attributuOBJ.containsKey("source")) {
-                    if (attributuOBJ.getString("source").equals("DIRECTED")) {
-                        is_directed = 1;
-                        logger.info("面对面下单，设置`is_directed`为1");
-                    }
-                }
                 if (attributuOBJ.containsKey("directed_code")) {
-                    logger.info("包含directed_code");
                     directed_code = attributuOBJ.getString("directed_code");
-                    logger.info(directed_code);
+                    is_directed = 1;
+                    logger.info("面对面取件码:" + directed_code);
                 }
             }
         }
-        logger.info("respObject" + new Gson().toJson(respObject));
-        logger.info("面对面取件码:" + directed_code);
 
         String attrStr = null;
         if (!(respObject.containsKey("error") || respObject.containsKey("errors"))) {
@@ -654,7 +698,8 @@ public class OrderCommitLogic {
                 orderExpress.setState("PAYING");
             }
             orderExpress.setReserve_time(reserve_time);
-            orderExpressDao.save(orderExpress);
+//            orderExpressDao.save(orderExpress);
+            orderExpressMapper.addOrderExpress2(orderExpress);
             // 插入地址
             //setupAddress(order, orderExpress);
             /**
@@ -669,16 +714,16 @@ public class OrderCommitLogic {
             respObject.put("is_directed", is_directed);
 
             /// 发送微信模板消息
-            if (reqObject.getJSONObject("order").containsKey("form_id")
-                    && !"".equals(reqObject.getJSONObject("order").getString("form_id"))) {
-                String[] messageArr = new String[2];
-                messageArr[0] = respObject.getJSONObject("request").getString("request_num");
-                messageArr[1] = "您的顺丰订单下单成功(同城)！寄件人是："
-                        + (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver");
-                String form_id = reqObject.getJSONObject("order").getString("form_id");
-                messageService.sendWXTemplateMessage(Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
-                        messageArr, "", form_id, WX_template_id_1);
-            }
+//            if (reqObject.getJSONObject("order").containsKey("form_id")
+//                    && !"".equals(reqObject.getJSONObject("order").getString("form_id"))) {
+//                String[] messageArr = new String[2];
+//                messageArr[0] = respObject.getJSONObject("request").getString("request_num");
+//                messageArr[1] = "您的顺丰订单下单成功(同城)！寄件人是："
+//                        + (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver");
+//                String form_id = reqObject.getJSONObject("order").getString("form_id");
+//                messageService.sendWXTemplateMessage(Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
+//                        messageArr, "", form_id, WX_template_id_1);
+//            }
 
         } else {
             //手动操作事务回滚
@@ -686,7 +731,7 @@ public class OrderCommitLogic {
             return APIUtil.submitErrorResponse("提交失败", respObject);
         }
 
-        return APIUtil.getResponse(status, respObject);
+        return APIUtil.getResponse(SUCCESS, respObject);
     }
 
     /// 普通大网订单提交
@@ -697,6 +742,7 @@ public class OrderCommitLogic {
         JSONObject sf = requestObject.getJSONObject("sf");
         JSONObject packagesOBJ = requestObject.getJSONArray("packages").getJSONObject(0);
         String orderId = SFOrderHelper.getOrderNumber();
+        String distribution = requestObject.getJSONObject("sf").getString("express_type");
         // handle pay_method
         String pay_method = (String) sf.get("pay_method");
         if (pay_method != null && !pay_method.equals("")) {
@@ -726,8 +772,7 @@ public class OrderCommitLogic {
                 Long.toString(System.currentTimeMillis()),
                 SFOrderHelper.getOrderId(),
                 (String) sf.get("pay_method"),
-                "",
-                0,
+                distribution,
                 (String) sf.get("j_contact"),
                 (String) sf.get("j_tel"),
                 (String) sf.get("j_province"),
@@ -750,7 +795,8 @@ public class OrderCommitLogic {
         }
         order.setVoice_time(Integer.parseInt((String) orderObject.get("voice_time")));
         order.setRegion_type("REGION_NATION");
-        orderDao.save(order);
+//        orderDao.save(order);
+        orderMapper.addOrder2(order);
 
         double d_longitude = 0;
         double d_latitude = 0;
@@ -784,7 +830,8 @@ public class OrderCommitLogic {
                 d_longitude
         );
         orderExpress.setReserve_time((String) requestObject.getJSONObject("order").get("reserve_time"));
-        orderExpressDao.save(orderExpress);
+//        orderExpressDao.save(orderExpress);
+        orderExpressMapper.addOrderExpress(orderExpress);
 
         // 插入地址
 //        setupAddress(order, orderExpress);
@@ -810,10 +857,27 @@ public class OrderCommitLogic {
             // 增加对下单结果的判断  含有error Message 或者 没有ordernum 都算是提交失败
             if (responseObject.containsKey("error") || responseObject.containsKey("Message") || !responseObject.containsKey("ordernum")) {
                 String message = "下单失败";
-                if (responseObject.containsKey("Message")) {
+                if (responseObject.containsKey("Message")) {  //人工确认错误信息处理
                     message = responseObject.getString("Message");
+                    message = message.replace(" ", "");
+                    if (message != null) {
+                        if (message.equals("人工确认")) {
+                            message = "该地区不在服务范围内";
+                        } else if (message.equals("校验码错误") || message.equals("")) {
+                            message = "请勿输入特殊字符";
+                        }
+                    }
                 } else if (responseObject.containsKey("error")) {
                     message = responseObject.getJSONObject("error").getString("message");
+                    message = message.replace(" ", "");
+                    //人工确认错误信息处理
+                    if (message != null) {
+                        if (message.equals("人工确认")) {
+                            message = "该地区不在服务范围内";
+                        } else if (message.equals("校验码错误") || message.equals("")) {
+                            message = "请勿输入特殊字符";
+                        }
+                    }
                 }
                 try {
                     // 手动操作事务回滚
@@ -825,22 +889,23 @@ public class OrderCommitLogic {
             } else {
                 // 返回结果添加订单编号
                 String ordernum = responseObject.getString("ordernum");
-                orderExpress.setOrder_number(ordernum);
-                orderExpressDao.save(orderExpress);
+//                orderExpress.setOrder_number(ordernum);
+//                orderExpressDao.save(orderExpress);
+                orderExpressMapper.updateOrderNumber(orderExpress.getId(), ordernum);
             }
         } else { // 预约件
             responseObject.put("message", "大网订单预约成功");
         }
 
         /// 发送微信模板消息
-        if (orderObject.containsKey("form_id") && !"".equals(orderObject.getString("form_id"))) {
-            String[] messageArr = new String[2];
-            messageArr[0] = orderExpress.getOrder_number();
-            messageArr[1] = "您的顺丰订单下单成功(大网)！寄件人是：" + sf.get("j_contact");
-            String form_id = orderObject.getString("form_id");
-            messageService.sendWXTemplateMessage(Integer.parseInt((String) orderObject.get("sender_user_id")),
-                    messageArr, "", form_id, WX_template_id_1);
-        }
+//        if (orderObject.containsKey("form_id") && !"".equals(orderObject.getString("form_id"))) {
+//            String[] messageArr = new String[2];
+//            messageArr[0] = orderExpress.getOrder_number();
+//            messageArr[1] = "您的顺丰订单下单成功(大网)！寄件人是：" + sf.get("j_contact");
+//            String form_id = orderObject.getString("form_id");
+//            messageService.sendWXTemplateMessage(Integer.parseInt((String) orderObject.get("sender_user_id")),
+//                    messageArr, "", form_id, WX_template_id_1);
+//        }
 
         Order orderData = orderMapper.selectOrderDetailByOrderId(order.getId());
         responseObject.put("order", orderData);

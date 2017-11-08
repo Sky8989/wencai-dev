@@ -17,34 +17,34 @@ public class Address extends Object {
     @ApiModelProperty(value = "主键")
     private int id;
 
-    @ApiModelProperty(value = "用户id")
+    @ApiModelProperty(value = "用户id",hidden = true)
     private int user_id;
 
-    @ApiModelProperty(value = "地址名称",example = "悟空测试订单")
+    @ApiModelProperty(value = "地址名称",example = "悟空测试订单",required = true)
     private String name;
 
-    @ApiModelProperty(value = "用户电话",example = "13066667777")
+    @ApiModelProperty(value = "用户电话",example = "13066667777",required = true)
     private String phone;
 
-    @ApiModelProperty(value = "省份",example = "广东")
+    @ApiModelProperty(value = "省份",example = "广东",required = true)
     private String province;
 
-    @ApiModelProperty(value = "城市",example = "深圳")
+    @ApiModelProperty(value = "城市",example = "深圳",required = true)
     private String city;
 
-    @ApiModelProperty(value = "区域",example = "龙岗区")
+    @ApiModelProperty(value = "区域",example = "龙岗区",required = true)
     private String area;
 
-    @ApiModelProperty(value = "详细地址",example = "龙城广场地铁站")
+    @ApiModelProperty(value = "详细地址",example = "龙城广场地铁站",required = true)
     private String address;
 
     @ApiModelProperty(value = "补充地址",example = "118号")
     private String supplementary_info;
 
-    @ApiModelProperty(value = "经度",example = "114.260976")
+    @ApiModelProperty(value = "经度",example = "114.260976",required = true)
     private double longitude;
 
-    @ApiModelProperty(value = "纬度",example = "22.723223")
+    @ApiModelProperty(value = "纬度",example = "22.723223",required = true)
     private double latitude;
 
     @ApiModelProperty("创建时间")

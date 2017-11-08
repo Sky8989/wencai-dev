@@ -1,14 +1,10 @@
 package com.sftc.web.service.impl.logic.app;
 
 
-import com.sftc.tools.api.APIPostUtil;
-import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIStatus;
-import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.api.*;
 import com.sftc.web.dao.jpa.OrderCancelDao;
 import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.jpa.OrderExpressDao;
-import com.sftc.web.dao.mybatis.OrderCancelMapper;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.model.entity.Order;
@@ -31,35 +27,32 @@ public class OrderCancelLogic {
     private OrderMapper orderMapper;
     @Resource
     private OrderExpressMapper orderExpressMapper;
-    @Resource
-    private OrderCancelMapper orderCancelMapper;
-    @Resource
-    private OrderDao orderDao;
+
     @Resource
     private OrderExpressDao orderExpressDao;
     @Resource
     private OrderCancelDao orderCancelDao;
+
     //////////////////// Public Method ////////////////////
 
     /**
      * 取消订单
      */
     @Transactional
-    public APIResponse cancelOrder(Object object) {
-        JSONObject paramJsonObject = JSONObject.fromObject(object);
+    public APIResponse cancelOrder(APIRequest request) {
+        JSONObject paramJsonObject = JSONObject.fromObject(request.getRequestParam());
         //获取订单id，便于后续取消订单操作的取用
         String id = paramJsonObject.getString("order_id");
         paramJsonObject.remove("order_id");
         String access_token = paramJsonObject.getString("access_token");
         //对重复取消订单的情况进行处理
         Order order = orderMapper.selectOrderDetailByOrderId(id);
-//        if (order.getIs_cancel() != null && ("Cancelled".equals(order.getIs_cancel()) || !"".equals(order.getIs_cancel()))) {//is_cancel字段默认是空字符串
-//            //return APIUtil.getResponse(APIStatus.CANCEL_ORDER_FALT, null);
-//            return APIUtil.submitErrorResponse("订单已经取消，请勿重复取消操作", null);
-//        }
-        // 不同地域类型的订单 进行不同的取消方式 大网是软取消 同城是硬取消
+        if(order == null)
+            return APIUtil.selectErrorResponse("订单不存在", null);
+
+        //不同地域类型的订单 进行不同的取消方式 大网是软取消 同城是硬取消
         if ("REGION_NATION".equals(order.getRegion_type())) {// true 大网单
-            APIResponse cancelResult = cancelNATIONOrder(id);
+            APIResponse cancelResult = cancelNATIONOrder(id, "CANCELED");
             if (cancelResult.getState() == 200) {
                 addCancelRecord(id, "主动软取消", "大网");
             }
@@ -76,7 +69,7 @@ public class OrderCancelLogic {
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
             // 取消大网订单
-            cancelNATIONOrder(order_id);
+            cancelNATIONOrder(order_id, "OVERTIME");
             addCancelRecord(order_id, "超时软取消", "大网");
         }
     }
@@ -88,13 +81,14 @@ public class OrderCancelLogic {
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
             // 取消同城订单
-            Order order1 = orderDao.findOne(order_id);
-            order1.setIs_cancel(1);
-            orderDao.save(order1);
+//            Order order1 = orderDao.findOne(order_id);
+//            order1.setIs_cancel(1);
+//            orderDao.save(order1);
+            orderMapper.updateCancelOrderById(order_id); //事务问题,先存在查的改为统一使用Mybatis
             // 同城 超时未填写或者支付超时 都更新为超时OVERTIME
             List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
-            for(OrderExpress orderExpress1 : orderExpress){
-                orderExpress1.setState("CANCELED");
+            for (OrderExpress orderExpress1 : orderExpress) {
+                orderExpress1.setState("OVERTIME");
                 orderExpressDao.save(orderExpress1);
             }
             addCancelRecord(order_id, "超时软取消", "同城");
@@ -104,14 +98,15 @@ public class OrderCancelLogic {
     //////////////////// Private Method ////////////////////
 
     // 取消大网订单
-    private APIResponse cancelNATIONOrder(String order_id) {
+    private APIResponse cancelNATIONOrder(String order_id, String status) {
         try {
-            Order order = orderDao.findOne(order_id);
-            order.setIs_cancel(1);
-            orderDao.save(order);
+//            Order order = orderDao.findOne(order_id);
+//            order.setIs_cancel(1);
+//            orderDao.save(order);
+            orderMapper.updateCancelOrderById(order_id); //事务问题,先存在查的改为统一使用Mybatis
             List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
-            for(OrderExpress orderExpress1 : orderExpress){
-                orderExpress1.setState("CANCELED");
+            for (OrderExpress orderExpress1 : orderExpress) {
+                orderExpress1.setState(status);
                 orderExpressDao.save(orderExpress1);
             }
             return APIUtil.getResponse(APIStatus.SUCCESS, "订单取消成功");
@@ -125,6 +120,8 @@ public class OrderCancelLogic {
 
         List<OrderExpress> arrayList = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
+        if(order == null)
+            return APIUtil.selectErrorResponse("订单不存在", null);
 
         boolean isDidCommitToSF = order.getRegion_type() != null && !(order.getRegion_type().equals(""));
         if (isDidCommitToSF) { // 已经提交到顺丰，需要先从顺丰取消
@@ -153,11 +150,12 @@ public class OrderCancelLogic {
 
         // 订单还未提交给顺丰的情况，只更新order的信息即可
         // 订单已提交，仍然需要更新
-        Order order1 = orderDao.findOne(order_id);
-        order1.setIs_cancel(1);
-        orderDao.save(order1);
+//        Order order1 = orderDao.findOne(order_id);
+//        order1.setIs_cancel(1);
+//        orderDao.save(order1);
+        orderMapper.updateCancelOrderById(order_id); //事务问题,先存在查的改为统一使用Mybatis
         List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
-        for(OrderExpress orderExpress1 : orderExpress){
+        for (OrderExpress orderExpress1 : orderExpress) {
             orderExpress1.setState("CANCELED");
             orderExpressDao.save(orderExpress1);
         }

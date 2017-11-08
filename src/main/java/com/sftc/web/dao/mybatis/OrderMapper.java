@@ -19,7 +19,7 @@ public interface OrderMapper {
     /**
      * 插入订单 多增加门牌号信息
      */
-//    void addOrder2(Order order);
+    void addOrder2(Order order);
 
     /**
      * 更新订单区域类型
@@ -80,8 +80,14 @@ public interface OrderMapper {
     OrderDTO selectOrderDetailByUuid(@Param("uuid") String uuid);
 
     // 取消订单，更新is_cancel字段
-//    void updateCancelOrderById(String id);
+    void updateCancelOrderById(@Param("id") String id);
 
+    //根据订单id修改region_type和配送方式
+    void updateRegionAndDistributionById(
+            @Param("id") String id,
+            @Param("region_type") String region_type,
+            @Param("distribution_method") String distribution_method
+    );
 
     //  下面是cms系统用到的mapper
     List<Order> selectOrderByPage(Order order);

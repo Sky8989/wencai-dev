@@ -1,13 +1,22 @@
 package com.sftc.web.model.reqeustParam;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel(value = "我的订单列表请求包装类")
 public class MyOrderParam {
 
+    @ApiModelProperty(name = "id",value = "用户id",example = "10093",hidden = true)
     private int id;
+    @ApiModelProperty(name = "token",value = "用户access_token",example = "EyMivbd44I124lcddrBG")
     private String token;
+    @ApiModelProperty(name = "pageNum",value = "第几页",example = "1")
     private int pageNum;
+    @ApiModelProperty(name = "pageSize",value = "每页几条",example = "10")
     private int pageSize;
+    @ApiModelProperty(name = "keyword",value = "关键字")
     private String keyword;
-    //模糊查询的state关键字
+    @ApiModelProperty(name = "keyword_state",value = "关键字状态")
     private String keyword_state;
 
     public int getId() {

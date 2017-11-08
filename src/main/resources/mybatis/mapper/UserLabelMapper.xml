@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sftc.web.dao.mybatis.UserLabelMapper">
+
+    <select id="queryUserAlllabelByUID" resultType="com.sftc.web.model.chen.Label">
+        SELECT
+            id AS id,
+            label
+        FROM sftc_user_contact_label
+        WHERE user_contact_id = #{user_contact_id}
+    </select>
+
+    <update id="updateLabelByID">
+        UPDATE sftc_user_contact_label
+        SET
+        label = #{label},
+        create_time=UNIX_TIMESTAMP(NOW())*1000
+        WHERE id = #{label_id}
+    </update>
+
+    <insert id="insertLabelByid">
+        INSERT  sftc_user_contact_label
+        (label,user_contact_id,create_time)
+        VALUES
+        (#{label},#{user_contact_id},UNIX_TIMESTAMP(NOW())*1000)
+    </insert>
+</mapper>

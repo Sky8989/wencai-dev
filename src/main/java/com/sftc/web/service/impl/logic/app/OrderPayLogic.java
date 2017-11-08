@@ -34,13 +34,13 @@ public class OrderPayLogic {
     /**
      * 计价
      */
-    public APIResponse countPrice(Object object) {
+    public APIResponse countPrice(APIRequest request) {
 
-        JSONObject jsonObject = JSONObject.fromObject(object);
+        JSONObject jsonObject = JSONObject.fromObject(request.getRequestParam());
         HttpPost post = new HttpPost(SF_QUOTES_URL);
         JSONObject requestObject = jsonObject.getJSONObject("request");
-        String uuid = requestObject.getJSONObject("merchant").getString("uuid");
-        String access_token = requestObject.getJSONObject("token").getString("access_token");
+        String uuid = (String) requestObject.getJSONObject("merchant").get("uuid");
+        String access_token = (String) requestObject.getJSONObject("token").get("access_token");
 
         // 预约时间处理
         String reserve_time = (String) requestObject.getString("reserve_time");
@@ -48,10 +48,26 @@ public class OrderPayLogic {
 //            Date date = new Date();
 //            reserve_time = String.valueOf(date.getTime());
 //        }
+
+        //同城下单参数增加 C 端小程序标识和订单类型表示   NORMAL/RESERVED/DIRECTED
+        requestObject.put("request_source", "C_WX_APP");
+        requestObject.put("type", "NORMAL");    //默认为普通
+
         requestObject.remove("reserve_time");
-        if (!reserve_time.equals("")) {
+        if (reserve_time != null && !reserve_time.equals("")) {
             reserve_time = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             requestObject.put("reserve_time", reserve_time);
+            requestObject.remove("type");
+            requestObject.put("type", "RESERVED");
+        }
+
+        JSONObject attributeOBJ = requestObject.getJSONObject("attributes");
+        if (attributeOBJ.containsKey("source")) {
+            if (attributeOBJ.getString("source") != null && attributeOBJ.getString("source").equals("DIRECTED")) {
+                requestObject.remove("type");
+                requestObject.put("type", "DIRECTED");
+            }
+            attributeOBJ.remove("source");
         }
 
         boolean uuidFlag = (uuid != null) && !(uuid.equals(""));
@@ -82,10 +98,10 @@ public class OrderPayLogic {
      * 支付订单
      */
     public APIResponse payOrder(APIRequest request) {
-
-        String token = (String) request.getParameter("token");
-        String uuid = (String) request.getParameter("uuid");
-        String access_token = (String) request.getParameter("access_token");
+        JSONObject jsonObject = JSONObject.fromObject(request.getRequestParam());
+        String token = jsonObject.getString("local_token");
+        String uuid = jsonObject.getString("uuid");
+        String access_token = jsonObject.getString("access_token");
 
 
         if (token == null || token.equals(""))
@@ -100,6 +116,7 @@ public class OrderPayLogic {
 
 
         User user = userMapper.selectUserByUserId(tokenPram.getUser_id());
+        if(user == null) return APIUtil.selectErrorResponse("该token无对应的用户",null);
         String pay_url = SF_REQUEST_URL + "/" + uuid + "/js_pay?open_id=" + user.getOpen_id();
         HttpPost post = new HttpPost(pay_url);
         post.addHeader("PushEnvelope-Device-Token", access_token);

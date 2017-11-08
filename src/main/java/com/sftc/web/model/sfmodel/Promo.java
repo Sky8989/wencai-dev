@@ -1,5 +1,8 @@
 package com.sftc.web.model.sfmodel;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -10,9 +13,12 @@ package com.sftc.web.model.sfmodel;
  * @date 2017/6/2
  * @Time 下午3:52
  */
+@ApiModel(value = "优惠券兑换")
 public class Promo {
 
+    @ApiModelProperty(name = "promo_code",value = "兑换密语",example = "1")
     private String promo_code;
+    @ApiModelProperty(name = "token",value = "token",example = "EyMivbd44I124lcddrBG")
     private String token;
 
     public String getPromo_code() {
