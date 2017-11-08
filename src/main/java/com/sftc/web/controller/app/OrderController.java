@@ -153,8 +153,8 @@ public class OrderController extends BaseController {
         return orderService.selectSameExpressDetail(new APIRequest(request));
     }
 
-    @ApiOperation(value = "更改订单状态", httpMethod = "PATCH")
-    @RequestMapping(value = "/status", method = RequestMethod.PATCH)
+    @ApiOperation(value = "更改订单状态", httpMethod = "PUT")
+    @RequestMapping(value = "/status", method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse updateOrderStatus(@RequestBody OrderStatusVO rderStatusVO) throws Exception {
         APIRequest request = new APIRequest();
@@ -162,8 +162,8 @@ public class OrderController extends BaseController {
         return orderService.updateOrderStatus(request);
     }
 
-    @ApiOperation(value = "更改快递状态", httpMethod = "PATCH")
-    @RequestMapping(value = "/express/status", method = RequestMethod.PATCH)
+    @ApiOperation(value = "更改快递状态", httpMethod = "PUT")
+    @RequestMapping(value = "/express/status", method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse updateOrderExpressStatus(@RequestBody OrderExpressStatusVO orderExpressStatusVO) throws Exception {
         APIRequest request = new APIRequest();
@@ -244,8 +244,8 @@ public class OrderController extends BaseController {
     }
 
     @IgnoreToken
-    @ApiOperation(value = "设置兜底记录已读", httpMethod = "PATCH")
-    @RequestMapping(value = "/transform", method = RequestMethod.PATCH)
+    @ApiOperation(value = "设置兜底记录已读", httpMethod = "PUT")
+    @RequestMapping(value = "/transform", method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse readExpressTransform(@RequestBody OrderTransformIsReadVO orderTransformIsReadVO) throws Exception {
         APIRequest request = new APIRequest();

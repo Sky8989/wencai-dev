@@ -25,8 +25,8 @@ public class SFServiceAddressController {
     @Resource
     private SFServiceAddressService sfServiceAddressService;
 
-    @ApiOperation(value = "更新顺丰速运服务地址",httpMethod = "PATCH")
-    @RequestMapping(value = "/address", method = RequestMethod.PATCH)
+    @ApiOperation(value = "更新顺丰速运服务地址",httpMethod = "PUT")
+    @RequestMapping(value = "/address", method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse updateSFServiceAddress(HttpServletRequest request) throws Exception {
         return sfServiceAddressService.updateServiceAddress(new APIRequest(request));

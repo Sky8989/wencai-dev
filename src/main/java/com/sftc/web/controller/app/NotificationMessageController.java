@@ -29,8 +29,8 @@ public class NotificationMessageController extends BaseController {
         return notificationMessageService.getMessage(new APIRequest(request));
     }
 
-    @ApiOperation(value = "更新通知消息读取状态",httpMethod = "PATCH")
-    @RequestMapping(method = RequestMethod.PATCH)
+    @ApiOperation(value = "更新通知消息读取状态",httpMethod = "PUT")
+    @RequestMapping(method = RequestMethod.PUT)
     public @ResponseBody()
     APIResponse updateIsRead(
             @ApiParam(name = "message_id",value = "消息id",required = true,defaultValue = "141")
