@@ -21,4 +21,4 @@ public class QiniuController extends BaseController {
     Map<String, String> uptoken() throws Exception {
         return qiniuService.returnUptoken();
     }
-}
+ }

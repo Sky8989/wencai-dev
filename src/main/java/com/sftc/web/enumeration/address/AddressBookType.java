@@ -1,10 +1,15 @@
 package com.sftc.web.enumeration.address;
 
 
-
+/**
+ * sftc_address_book  
+ *  address_book_type地址簿类型
+ * @author wencai
+ * 
+ */
 public enum AddressBookType {
 	
-	SENDER("SENDER","寄件人地址簿"),
+	SENDER("sender","寄件人地址簿"),
 	SHIP("ship","收件人地址簿");
    
     

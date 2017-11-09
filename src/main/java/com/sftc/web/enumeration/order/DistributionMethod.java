@@ -1,5 +1,11 @@
 package com.sftc.web.enumeration.order;
 
+/**
+ * sftc_order
+ *  distribution_method配送方式
+ * @author wencai
+ *
+ */
 public enum DistributionMethod {
 
 

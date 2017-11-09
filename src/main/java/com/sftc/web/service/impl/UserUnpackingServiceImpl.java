@@ -6,6 +6,7 @@ import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.redis.UserUnpackingRedis;
 import com.sftc.web.model.User;
 import com.sftc.web.service.UserUnpackingService;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,14 +38,18 @@ public class UserUnpackingServiceImpl implements UserUnpackingService {
         int user_id = user.getId();
         String key = this.mosaicKey(order_id, user_id);
         String userUnpacking = userUnpackingRedis.getUserUnpacking(key);
+        JSONObject json = new JSONObject();
+
         if (userUnpacking==null){
-            if (type==0)return APIUtil.getResponse(SUCCESS, false);
+            if (type==0)
+                json.put("is_pack",false);
             else {
                 userUnpackingRedis.setUserUnpacking(key,"true");
-                return APIUtil.getResponse(SUCCESS, "");
+                json.put("pack",true);
             }
         }else
-            return APIUtil.getResponse(SUCCESS, true);
+            json.put("is_pack",true);
+        return APIUtil.getResponse(SUCCESS, json);
     }
     /**拼接redis键值对*/
     private String mosaicKey(String order_id, int user_id){

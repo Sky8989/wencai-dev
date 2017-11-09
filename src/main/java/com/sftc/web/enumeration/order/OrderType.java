@@ -1,13 +1,17 @@
 package com.sftc.web.enumeration.order;
 
 
-
+/**
+ * sftc_order
+ * @author wencai
+ *
+ */
 public enum OrderType {
 	
-	//order_type
+	//order_type订单类型
 	ORDER_BASIS("ORDER_BASIS","普通订单"),
 	ORDER_MYSTERY("ORDER_MYSTERY","好友订单"),
-	//region_type
+	//region_type区域类型
 	REGION_SAME("REGION_SAME","同城订单"),
 	REGION_NATION("REGION_SAME","大网订单");
    
