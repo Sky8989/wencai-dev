@@ -1,6 +1,11 @@
 package com.sftc.web.enumeration.express;
 
-
+/**
+ * sftc_order_express	
+ *  state订单状态
+ * @author wencai
+ *
+ */
 
 public enum OrderExpressState {
 	

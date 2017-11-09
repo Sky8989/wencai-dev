@@ -1,7 +1,12 @@
 package com.sftc.web.enumeration.express;
 
 
-
+/**
+ * sftc_order_express 
+ * 	object_type物品类型
+ * @author wencai
+ *
+ */
 public enum ObjectType {
 	
 	FILE("FILE","文件"),

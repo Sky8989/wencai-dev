@@ -1,5 +1,11 @@
 package com.sftc.web.enumeration.message;
 
+/**
+ * sftc_message 
+ *  message_type消息类型 
+ * @author wencai
+ *
+ */
 public enum MessageType {
 
 	RECEIVE_ADDRESS("RECEIVE_ADDRESS","接收到好友地址的通知（作为寄件人）"),

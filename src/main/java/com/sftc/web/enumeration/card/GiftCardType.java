@@ -1,5 +1,9 @@
 package com.sftc.web.enumeration.card;
-
+/**
+ * sftc_gift_card 
+ * type礼品卡类型
+ * @author wencai
+ */
 public enum GiftCardType {
 
 	FESTIVAL("FESTIVAL","节日必备");

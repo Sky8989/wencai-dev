@@ -1,5 +1,10 @@
 package com.sftc.web.enumeration.order;
-
+/**
+ * sftc_order
+ *  pay_method支付方式
+ * @author wencai
+ *
+ */
 public enum PayMethod {
 
 	FREIGHT_PREPAID("FREIGHT_PREPAID","寄付"),
