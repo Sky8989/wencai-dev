@@ -64,6 +64,9 @@ public class OrderExpress extends Object {
 
     // 包裹类型
     private String package_type;
+    //包裹重量
+    private String weight;
+
     // 物品类型
     private String object_type;
     // 包裹补充描述信息
@@ -106,9 +109,9 @@ public class OrderExpress extends Object {
     }
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
-                        String ship_city, String ship_area, String ship_addr, String supplementary_info, String package_type, String object_type,
+                        String ship_city, String ship_area, String ship_addr, String supplementary_info, String weight, String object_type,
                         String package_comments, String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,
-                        String directed_code, String attributes, int is_directed) {
+                        String directed_code, String attributes, int is_directed,String package_type) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -119,7 +122,7 @@ public class OrderExpress extends Object {
         this.ship_area = ship_area;
         this.ship_addr = ship_addr;
         this.supplementary_info = supplementary_info;
-        this.package_type = package_type;
+        this.weight = weight;
         this.object_type = object_type;
         this.package_comments = package_comments;//增加快递描述
         this.state = state;
@@ -131,11 +134,12 @@ public class OrderExpress extends Object {
         this.directed_code = directed_code;
         this.attributes = attributes;
         this.is_directed = is_directed;
+        this.package_type = package_type;
     }
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
-                        String ship_city, String ship_area, String ship_addr, String supplementary_info, String package_type, String object_type,
-                        String package_comments, String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude) {
+                        String ship_city, String ship_area, String ship_addr, String supplementary_info, String weight, String object_type,
+                        String package_comments, String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,String package_type) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -146,7 +150,7 @@ public class OrderExpress extends Object {
         this.ship_area = ship_area;
         this.ship_addr = ship_addr;
         this.supplementary_info = supplementary_info;
-        this.package_type = package_type;
+        this.weight = weight;
         this.object_type = object_type;
         this.package_comments = package_comments;//增加快递描述
         this.state = state;
@@ -155,11 +159,12 @@ public class OrderExpress extends Object {
         this.uuid = uuid;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.package_type = package_type;
     }
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
-                        String ship_city, String ship_area, String ship_addr, String package_type, String object_type,
-                        String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude) {
+                        String ship_city, String ship_area, String ship_addr, String weight, String object_type,
+                        String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,String package_type) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -169,7 +174,7 @@ public class OrderExpress extends Object {
         this.ship_city = ship_city;
         this.ship_area = ship_area;
         this.ship_addr = ship_addr;
-        this.package_type = package_type;
+        this.weight = weight;
         this.object_type = object_type;
         this.state = state;
         this.sender_user_id = sender_user_id;
@@ -177,6 +182,7 @@ public class OrderExpress extends Object {
         this.uuid = uuid;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.package_type = package_type;
     }
 
     public OrderExpress(String uuid, String order_id, Double longitude, Double latitude, String state) {
@@ -199,7 +205,7 @@ public class OrderExpress extends Object {
     }
 
     public OrderExpress(String order_number, String package_type, String object_type,
-                        String order_id, String create_time, int is_use, String state, String uuid, int sender_user_id, String reserve_time) {
+                        String order_id, String create_time, int is_use, String state, String uuid, int sender_user_id, String reserve_time,String weight) {
         this.order_number = order_number;
         this.package_type = package_type;
         this.object_type = object_type;
@@ -212,6 +218,7 @@ public class OrderExpress extends Object {
         this.uuid = uuid;
         this.reserve_time = reserve_time;
         this.sender_user_id = sender_user_id;
+        this.weight = weight;
     }
 
     public OrderExpress(APIRequest request) {
@@ -233,7 +240,7 @@ public class OrderExpress extends Object {
         this.ship_city = (String) request.getParameter("ship_city");
         this.ship_area = (String) request.getParameter("ship_area");
         this.ship_addr = (String) request.getParameter("ship_addr");
-        this.package_type = (String) request.getParameter("package_type");
+        this.weight = (String) request.getParameter("weight");
         this.object_type = (String) request.getParameter("object_type");
     }
 
@@ -272,6 +279,10 @@ public class OrderExpress extends Object {
     public String getOrder_number() {
         return order_number;
     }
+
+    public String getWeight() {return weight;}
+
+    public void setWeight(String weight) {this.weight = weight;}
 
     public void setOrder_number(String order_number) {
         this.order_number = order_number;

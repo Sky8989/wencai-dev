@@ -14,6 +14,7 @@
         <result column="ship_area" property="ship_area"/>
         <result column="ship_addr" property="ship_addr"/>
         <result column="package_type" property="package_type"/>
+        <result column="weight" property="weight"/>
         <result column="object_type" property="object_type"/>
         <result column="create_time" property="create_time"/>
         <result column="is_use" property="is_use"/>
@@ -38,7 +39,7 @@
         INSERT INTO sftc_order_express
         (ship_name, ship_mobile, ship_province, ship_city, ship_area,
          ship_addr, supplementary_info, order_number, package_type, object_type, package_comments, create_time,
-         sender_user_id, order_id, state, uuid, longitude, latitude, reserve_time, order_time)
+         sender_user_id, order_id, state, uuid, longitude, latitude, reserve_time, order_time,weight)
         VALUES (
             #{ship_name, jdbcType=VARCHAR},
             #{ship_mobile, jdbcType=VARCHAR},
@@ -59,7 +60,8 @@
             #{longitude, jdbcType=DOUBLE},
             #{latitude, jdbcType=DOUBLE},
             #{reserve_time, jdbcType=VARCHAR},
-            #{order_time, jdbcType=VARCHAR}
+            #{order_time, jdbcType=VARCHAR},
+            #{weight, jdbcType=VARCHAR}
         )
     </insert>
 
@@ -68,7 +70,7 @@
         INSERT INTO sftc_order_express
         (ship_name, ship_mobile, ship_province, ship_city, ship_area,
          ship_addr, supplementary_info, order_number, package_type, object_type, package_comments, create_time,
-         sender_user_id, order_id, state, uuid, longitude, latitude, reserve_time, order_time,directed_code,attributes,is_directed)
+         sender_user_id, order_id, state, uuid, longitude, latitude, reserve_time, order_time,directed_code,attributes,is_directed,weight)
         VALUES (
             #{ship_name, jdbcType=VARCHAR},
             #{ship_mobile, jdbcType=VARCHAR},
@@ -92,7 +94,8 @@
             #{order_time, jdbcType=VARCHAR},
             #{directed_code, jdbcType=VARCHAR},
             #{attributes, jdbcType=VARCHAR},
-            #{is_directed, jdbcType=VARCHAR}
+            #{is_directed, jdbcType=VARCHAR},
+            #{weight, jdbcType=VARCHAR}
         )
     </insert>
 

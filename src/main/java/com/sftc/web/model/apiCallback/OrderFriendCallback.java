@@ -31,8 +31,8 @@ public class OrderFriendCallback {
         private String uuid;
         private String state;
         private String attributes;
-        //为C端小程序的物品类型，
-        private String package_type;
+        //为C端小程序的包裹重量，
+        private String weight;
         // 包裹的类型
         private String object_type;
         //当物品类型在packageType罗列的类型之外时填写
@@ -95,9 +95,9 @@ public class OrderFriendCallback {
             this.attributes = attributes;
         }
 
-        public String getPackage_type() {return package_type;}
+        public String getWeight() {return weight;}
 
-        public void setPackage_type(String package_type) {this.package_type = package_type;}
+        public void setWeight(String weight) {this.weight = weight;}
 
         public String getObject_type() {return object_type;}
 

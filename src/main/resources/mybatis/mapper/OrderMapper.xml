@@ -286,6 +286,7 @@
         sftc_order_express.ship_city,
         sftc_order_express.ship_area,
         sftc_order_express.ship_addr,
+        sftc_order_express.weight,
         sftc_order_express.package_type,
         sftc_order_express.object_type,
         sftc_order_express.state,

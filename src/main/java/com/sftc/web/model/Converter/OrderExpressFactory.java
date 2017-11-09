@@ -22,7 +22,7 @@ public class OrderExpressFactory {
         orderExpressDTO.setShip_addr(orderExpress.getShip_addr());
         orderExpressDTO.setSender_user_id(orderExpress.getSender_user_id());
         orderExpressDTO.setSupplementary_info(orderExpress.getSupplementary_info());
-        orderExpressDTO.setPackage_type(orderExpress.getPackage_type());
+        orderExpressDTO.setWeight(orderExpress.getWeight());
         orderExpressDTO.setObject_type(orderExpress.getObject_type());
         orderExpressDTO.setPackage_comments(orderExpress.getPackage_comments());
         orderExpressDTO.setIs_use(orderExpress.getIs_use());
@@ -37,6 +37,7 @@ public class OrderExpressFactory {
         orderExpressDTO.setDirected_code(orderExpress.getDirected_code());
         orderExpressDTO.setOrder_time(orderExpress.getOrder_time());
         orderExpressDTO.setAttributes(orderExpress.getAttributes());
+        orderExpressDTO.setPackage_type(orderExpress.getPackage_type());
         return  orderExpressDTO;
     }
     public static OrderExpress dtoToEntity(OrderExpressDTO orderExpressDTO){
@@ -52,7 +53,7 @@ public class OrderExpressFactory {
         orderExpress.setShip_addr(orderExpressDTO.getShip_addr());
         orderExpress.setSender_user_id(orderExpressDTO.getSender_user_id());
         orderExpress.setSupplementary_info(orderExpressDTO.getSupplementary_info());
-        orderExpress.setPackage_type(orderExpressDTO.getPackage_type());
+        orderExpress.setWeight(orderExpressDTO.getWeight());
         orderExpress.setObject_type(orderExpressDTO.getObject_type());
         orderExpress.setPackage_comments(orderExpressDTO.getPackage_comments());
         orderExpress.setIs_use(orderExpressDTO.getIs_use());
@@ -67,6 +68,7 @@ public class OrderExpressFactory {
         orderExpress.setDirected_code(orderExpressDTO.getDirected_code());
         orderExpress.setOrder_time(orderExpressDTO.getOrder_time());
         orderExpress.setAttributes(orderExpressDTO.getAttributes());
+        orderExpress.setPackage_type(orderExpressDTO.getPackage_type());
         return  orderExpress;
     }
 }
