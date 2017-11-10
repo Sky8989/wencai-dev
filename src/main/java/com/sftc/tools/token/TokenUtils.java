@@ -22,26 +22,30 @@ public class TokenUtils {
 
     /**
      * 获取用户access_token
+     *
      * @return access_token
      */
-    public String getAccess_token(){
+    public String getAccess_token() {
         Token token = tokenMapper.getTokenById(getUserId());
-        if (token!=null)
+        if (token != null)
             return token.getAccess_token();
         else
             return null;
     }
+
     /**
      * 获取用户uuid
+     *
      * @return uuid
      */
-    public String getUserUUID(){
-        User user = tokenMapper.tokenInterceptor(getAccess_token());
-        if (user!=null)
+    public String getUserUUID() {
+        User user = tokenMapper.tokenInterceptor(getToken());
+        if (user != null)
             return user.getUuid();
         else
             return null;
     }
+
     /**
      * 获取token工具单例对象
      *
@@ -81,7 +85,6 @@ public class TokenUtils {
     private static class TokenUtilsHolder {
         private final static TokenUtils instance = new TokenUtils();
     }
-
 
 
 }
