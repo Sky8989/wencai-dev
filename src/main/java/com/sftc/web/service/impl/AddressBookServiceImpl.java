@@ -178,23 +178,17 @@ public class AddressBookServiceImpl implements AddressBookService {
             AddressBook addressBook = AddressBookFactoty.dtoToEntity(addressBookDTO);
             addressMapper.deleteAddress(addressBookDTO.getAddress_id());
             addressBookMapper.deleteAddressBookById(addressBookDTO.getId());
-            //TODO 修改地址实体的时间
-            Address address = addressBookParam.getAddress();
-            address.setCreate_time(create_time);
-            address.setUser_id(addressBookDTO.getUser_id());
-            addressDao.save(address);
-            addressBook.setAddress_id(address.getId());
-            addressBookDao.save(addressBook);
         } else {
 
             if(addressBookDTO == null) return APIUtil.selectErrorResponse("该地址簿不存在",null);
             AddressBook addressBook = AddressBookFactoty.dtoToEntity(addressBookDTO);
+            addressBookDao.save(addressBook);
+
             Address address = addressBookParam.getAddress();
+            address.setId(addressBookParam.getAddress_id());
             address.setCreate_time(create_time);
             address.setUser_id(addressBookDTO.getUser_id());
             addressDao.save(address);
-            addressBook.setAddress_id(address.getId());
-            addressBookDao.save(addressBook);
         }
 
         return APIUtil.getResponse(SUCCESS, null);
