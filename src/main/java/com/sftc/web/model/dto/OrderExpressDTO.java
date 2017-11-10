@@ -3,6 +3,7 @@ package com.sftc.web.model.dto;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.web.model.Evaluate;
 import com.sftc.web.model.Object;
+import com.sftc.web.model.PackageMessage;
 import com.sftc.web.model.entity.OrderExpress;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,8 @@ public class OrderExpressDTO extends OrderExpress {
     private Evaluate evaluate;
 
     private List<OrderExpress> orderExpressList;
+    //包裹信息  名称/重量/类型
+    private List<PackageMessage> packageMessages;
 
     public List<OrderExpress> getOrderExpressList() {
         return orderExpressList;
@@ -37,6 +40,10 @@ public class OrderExpressDTO extends OrderExpress {
     }
 
     public void setGift_card_id(int gift_card_id) {this.gift_card_id = gift_card_id;}
+
+    public List<PackageMessage> getPackageMessages() {return packageMessages;}
+
+    public void setPackageMessages(List<PackageMessage> packageMessages) {this.packageMessages = packageMessages;}
 
     public String getShip_avatar() {
         return ship_avatar;

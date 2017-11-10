@@ -4,10 +4,11 @@ package com.sftc.web.enumeration.express;
 
 public enum PackageType {
 	
-	SMALl_PACKAGE("SMALl_PACKAGE","小包裹"),
-	CENTRN_PACKAGE("CENTRN_PACKAGE","中包裹"),
-	BIG_PACKAGE("BIG_PACKAGE","大包裹");
-   
+	SMALl_PACKAGE("0","小包裹"),
+	CENTRN_PACKAGE("1","中包裹"),
+	BIG_PACKAGE("2","大包裹"),
+	HUGE_PACKAGE("3","超大包裹");
+
     
 	private String key;
 	private String value;
@@ -32,10 +33,5 @@ public enum PackageType {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
-	
-	
-	
-	
 	
 }

@@ -7,7 +7,9 @@ import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.mybatis.*;
+import com.sftc.web.enumeration.express.PackageType;
 import com.sftc.web.model.GiftCard;
+import com.sftc.web.model.PackageMessage;
 import com.sftc.web.model.User;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
@@ -18,14 +20,20 @@ import com.sftc.web.model.entity.OrderExpressTransform;
 import com.sftc.web.model.sfmodel.Orders;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.SFConstant.SF_CONSTANTS_URL;
 import static com.sftc.tools.constant.SFConstant.SF_ORDERROUTE_URL;
 import static com.sftc.tools.constant.SFConstant.SF_ORDER_SYNC_URL;
 import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
@@ -45,6 +53,8 @@ public class OrderDetailLogic {
     private OrderExpressTransformMapper orderExpressTransformMapper;
     @Resource
     private MessageMapper messageMapper;
+
+    private static final String CONSTANTS_STR = "BASICDATA";
 
     /**
      * 订单详情接口
@@ -147,6 +157,50 @@ public class OrderDetailLogic {
             // 同城订单需要access_token
             String access_token = (String) request.getParameter("access_token");
             access_token = (access_token == null || access_token.equals("") ? COMMON_ACCESSTOKEN : access_token);
+            List<OrderExpressDTO> orderExpressList = order.getOrderExpressList();
+            for (OrderExpressDTO orderExpressDTO : orderExpressList) {
+                String constantsUrl = SF_CONSTANTS_URL + CONSTANTS_STR + "?latitude="
+                        + orderExpressDTO.getLatitude() + "&longitude=" + orderExpressDTO.getLongitude();
+                HttpGet get = new HttpGet(constantsUrl);
+                get.addHeader("PushEnvelope-Device-Token", access_token);
+                String res = APIGetUtil.get(get);
+                JSONObject jsonObject = JSONObject.fromObject(res);
+                if (jsonObject.get("errors") != null || jsonObject.get("error") != null)
+                    return APIUtil.submitErrorResponse("获取常量失败", jsonObject);
+
+                try {
+                    if (jsonObject.getJSONObject("constant").getJSONObject("value").containsKey("PACKAGE_TYPE")) {
+                        JSONArray packageTypeArr = jsonObject.getJSONObject("constant").getJSONObject("value").getJSONArray("PACKAGE_TYPE");
+                        for (int i = 0; i < packageTypeArr.size(); i++) {
+                            JSONObject packageTypeOBJ = packageTypeArr.getJSONObject(i);
+                            String package_code = packageTypeOBJ.getString("code");
+                            if (package_code != null && package_code.equals(orderExpressDTO.getObject_type())) {
+                                JSONArray weightArr = packageTypeOBJ.getJSONArray("weight_segment");
+                                for (int j = 0; j < weightArr.size(); j++) {
+                                    JSONObject weightOBJ = weightArr.getJSONObject(j);
+                                    if (j == 0 && orderExpressDTO.getPackage_type().equals(PackageType.SMALl_PACKAGE.getKey())) {
+                                        PackageMessage packageMessage = new PackageMessage();
+                                        packageMessage.setName(weightOBJ.getString("name"));
+                                        packageMessage.setWeight(weightOBJ.getString("weight"));
+                                    }
+                                    if (j == 1 && orderExpressDTO.getPackage_type().equals(PackageType.CENTRN_PACKAGE.getKey())) {
+                                        weightOBJ.put("contents", "中包裹");
+                                    }
+                                    if (j == 2 && orderExpressDTO.getPackage_type().equals(PackageType.BIG_PACKAGE.getKey())) {
+                                        weightOBJ.put("contents", "大包裹");
+
+                                    }
+                                    if (j == 3 && orderExpressDTO.getPackage_type().equals(PackageType.HUGE_PACKAGE.getKey())) {
+                                        weightOBJ.put("contents", "超大包裹");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
             respObject = SFExpressHelper.getExpressDetail(uuid, access_token);
             //处理错误信息
