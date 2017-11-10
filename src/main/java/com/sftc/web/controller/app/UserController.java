@@ -39,7 +39,8 @@ public class UserController extends BaseController {
     }
 
     @IgnoreToken
-    @ApiOperation(value = "超级登录", httpMethod = "POST")
+    @ApiOperation(value = "超级登录", httpMethod = "POST",notes = "通过jscode，获取登陆信息，以及access_token和uuid，并且在旧的token失效时自动刷新。\n" +
+            "如果用户没有access_token或者access_token失效，则不会传递access_token和uuid，以此区分access_token是否有效。")
     @RequestMapping(value = "/login/pro", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse superLogin(@RequestBody UserParam userParam) throws Exception {
@@ -49,7 +50,8 @@ public class UserController extends BaseController {
     }
 
     @IgnoreToken
-    @ApiOperation(value = "解除绑定手机", httpMethod = "PUT")
+    @ApiOperation(value = "解除绑定手机", httpMethod = "PUT",notes = "解除绑定手机号，用户登陆小程序，使用原有微信号，解除旧有绑定的手机号。\n" +
+            "前端确认用户操作后，传递用户id、用户旧手机号，传递到接口。")
     @RequestMapping(value = "/mobile/unbind", method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse commonUnbind(HttpServletRequest request) throws Exception {
@@ -67,7 +69,7 @@ public class UserController extends BaseController {
     }
 
     //10-12日提出的新需求 更新个人信息
-    @ApiOperation(value = "更新个人信息", httpMethod = "PUT")
+    @ApiOperation(value = "更新个人信息", httpMethod = "PUT",notes = "更新用户信息,2017-10-12的新需求，前端需要在下单前调用")
     @RequestMapping(value = "/merchants/me", method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse updatePersonMessage(@RequestBody UserMerchantsRequestVO userMerchantsRequestVO) throws Exception {
