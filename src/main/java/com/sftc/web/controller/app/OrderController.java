@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -199,7 +200,7 @@ public class OrderController extends BaseController {
         return orderService.cancelOrder(request);
     }
 
-    @ApiOperation(value = "时间规则", httpMethod = "POST")
+    @ApiOperation(value = "获取订单基础数据", httpMethod = "POST")
     @RequestMapping(value = "/constants", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse constants(@RequestBody OrderContantsVO orderContantsVO) throws Exception {
@@ -228,8 +229,8 @@ public class OrderController extends BaseController {
     @ApiImplicitParam(name = "uuid", value = "快递uuid", defaultValue = "2c9a85895d8f0962015d90246c8c0a4f", paramType = "query", required = true)
     @RequestMapping(value = "/evaluate", method = RequestMethod.GET)
     public @ResponseBody
-    APIResponse getEvaluate(String uuid) throws Exception {
-        return evaluateService.getEvaluate(uuid);
+    APIResponse getEvaluate(HttpServletRequest httpServletRequest) throws Exception {
+        return evaluateService.getEvaluate(new APIRequest(httpServletRequest));
     }
 
     @ApiIgnore

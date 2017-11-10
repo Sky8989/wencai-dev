@@ -22,7 +22,8 @@ public class EvaluateServiceImpl implements EvaluateService {
     /**
      * 通过 uuid 去获取大网订单的快递信息 在本地数据库里
      */
-    public APIResponse getEvaluate(String uuid) {
+    public APIResponse getEvaluate(APIRequest apiRequest) {
+        String uuid = (String) apiRequest.getParameter("uuid");
         APIStatus status = APIStatus.SUCCESS;
         List<Evaluate> evaluateList =  evaluateMapper.selectByUuid(uuid);
         if (evaluateList.size() == 0){
