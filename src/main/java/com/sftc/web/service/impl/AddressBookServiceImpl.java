@@ -171,25 +171,30 @@ public class AddressBookServiceImpl implements AddressBookService {
                 address_OBJ.getString("address"),
                 supplementary_info
         );
-
+        AddressBookDTO addressBookDTO = addressBookMapper.selectByPrimaryKey(addressBookParam.getId());
         if (addressBookDTOList.size() != 0) {
-            AddressBookDTO addressBookDTO = addressBookMapper.selectByPrimaryKey(addressBookParam.getId());
+
             if(addressBookDTO == null) return APIUtil.selectErrorResponse("该地址簿不存在",null);
             AddressBook addressBook = AddressBookFactoty.dtoToEntity(addressBookDTO);
-            addressBookDao.save(addressBook);
-        } else {
-            AddressBookDTO addressBookDTO = addressBookMapper.selectByPrimaryKey(addressBookParam.getId());
-            if(addressBookDTO == null) return APIUtil.selectErrorResponse("该地址簿不存在",null);
-            AddressBook addressBook = AddressBookFactoty.dtoToEntity(addressBookDTO);
-            addressBookDao.save(addressBook);
-
-
+            addressMapper.deleteAddress(addressBookDTO.getAddress_id());
+            addressBookMapper.deleteAddressBookById(addressBookDTO.getId());
             //TODO 修改地址实体的时间
             Address address = addressBookParam.getAddress();
-            address.setId(addressBookDTO.getAddress_id());
             address.setCreate_time(create_time);
             address.setUser_id(addressBookDTO.getUser_id());
             addressDao.save(address);
+            addressBook.setAddress_id(address.getId());
+            addressBookDao.save(addressBook);
+        } else {
+
+            if(addressBookDTO == null) return APIUtil.selectErrorResponse("该地址簿不存在",null);
+            AddressBook addressBook = AddressBookFactoty.dtoToEntity(addressBookDTO);
+            Address address = addressBookParam.getAddress();
+            address.setCreate_time(create_time);
+            address.setUser_id(addressBookDTO.getUser_id());
+            addressDao.save(address);
+            addressBook.setAddress_id(address.getId());
+            addressBookDao.save(addressBook);
         }
 
         return APIUtil.getResponse(SUCCESS, null);
