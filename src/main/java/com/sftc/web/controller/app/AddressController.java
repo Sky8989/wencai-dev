@@ -49,7 +49,7 @@ public class AddressController {
         return addressService.editAddress(address);
     }
 
-    @ApiOperation(value = "地址解析",httpMethod = "GET")
+    @ApiOperation(value = "地址解析",httpMethod = "GET",notes = "地址解析接口，地址转坐标")
     @ApiImplicitParam(name = "address",value = "详细地址",paramType = "query",defaultValue = "深圳龙岗区花样年龙城广场")
     @RequestMapping(value = "/geocoder", method = RequestMethod.GET)
     public @ResponseBody

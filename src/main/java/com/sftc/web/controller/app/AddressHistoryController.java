@@ -39,7 +39,7 @@ public class AddressHistoryController {
         return addressHistoryService.selectAddressHistory(new APIRequest(request));
     }
 
-    @ApiOperation(value = "删除历史地址(删除的是地址簿中类型为address_history的地址簿)  软删除 ",httpMethod = "DELETE")
+    @ApiOperation(value = "删除历史地址",httpMethod = "DELETE",notes = "删除的是地址簿中类型为address_history的地址簿 软删除")
     @RequestMapping(method = RequestMethod.DELETE)
     public @ResponseBody
     APIResponse deleteAddress(@RequestBody AddressHistoryDeleteVO addressHistoryDeleteVO) throws Exception {

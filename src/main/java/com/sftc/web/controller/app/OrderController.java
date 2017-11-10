@@ -9,12 +9,16 @@ import com.sftc.web.model.reqeustParam.MyOrderParam;
 import com.sftc.web.model.reqeustParam.OrderParam;
 import com.sftc.web.service.EvaluateService;
 import com.sftc.web.service.OrderService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +34,7 @@ public class OrderController extends BaseController {
     @Resource
     private EvaluateService evaluateService;
 
-    @ApiOperation(value = "普通同城订单提交", httpMethod = "POST")
+    @ApiOperation(value = "普通同城订单提交", httpMethod = "POST", notes = "request为同城订单需要的参数")
     @RequestMapping(value = "/normal/same", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse placeOrder(@RequestBody OrderRequestVO orderRequestVO) throws Exception {
@@ -48,7 +52,7 @@ public class OrderController extends BaseController {
         return orderService.addNormalOrderCommit(request);
     }
 
-    @ApiOperation(value = "好友同城订单提交", httpMethod = "POST")
+    @ApiOperation(value = "好友同城订单提交", httpMethod = "POST", notes = "request为同城订单需要的参数")
     @RequestMapping(value = "/friend/same", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse friendOrderCommit(@RequestBody FriendOrderRequestVO friendOrderRequestVO) throws Exception {
@@ -67,7 +71,7 @@ public class OrderController extends BaseController {
     }
 
     @IgnoreToken
-    @ApiOperation(value = "计价接口", httpMethod = "POST")
+    @ApiOperation(value = "计价接口", httpMethod = "POST", notes = "access_token 和 uuid 要么都有，要么都没有")
     @RequestMapping(value = "/valuation", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse countPrice(@RequestBody PriceRequestVO priceRequestVO) throws Exception {
@@ -132,7 +136,9 @@ public class OrderController extends BaseController {
     }
 
     @IgnoreToken
-    @ApiOperation(value = "快递详情", httpMethod = "GET")
+    @ApiOperation(value = "快递详情", httpMethod = "GET", notes = "uuid必填，同城需要传 access_token，\n" +
+            "返回的【order】是一定会有的，同城的快递会返回【request】如果是兜底单，会返回【transform】，\n" +
+            "至于页面展不展示提示，请拿【transform】下的 is_read 字段。")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "uuid", value = "快递uuid", defaultValue = "e1d2ceda3daa", paramType = "query", required = true),
             @ApiImplicitParam(name = "access_token", value = "顺丰token", defaultValue = "EyMivbd44I124lcddrBG", paramType = "query", required = true),
@@ -145,7 +151,7 @@ public class OrderController extends BaseController {
     }
 
     @IgnoreToken
-    @ApiOperation(value = "B+C端同城专送快递详情", httpMethod = "GET")
+    @ApiOperation(value = "B+C端同城专送快递详情", httpMethod = "GET",notes = "纯走B端的快递详情")
     @ApiImplicitParam(name = "uuid",value = "uuid",defaultValue = "2c9a85895f721c3e015f782b519d23db",paramType = "query",required = true)
     @RequestMapping(value = "/express/query", method = RequestMethod.GET)
     public @ResponseBody
@@ -153,7 +159,11 @@ public class OrderController extends BaseController {
         return orderService.selectSameExpressDetail(new APIRequest(request));
     }
 
-    @ApiOperation(value = "更改订单状态", httpMethod = "PUT")
+    @ApiOperation(value = "更改订单状态", httpMethod = "PUT", notes = "该接口只适用于同城的订单，在支付完成后将订单状态改为待揽件。\n" +
+            "status 详见文档说明中的订单常量，一般只需要用到 PAYING 和 WAIT_HAND_OVER 这两个参数。\n" +
+            "调起支付前将状态改为 PAYING，支付完成后将状态改为 WAIT_HAND_OVER。\n" +
+            "当然也可以只调用用一次，支付完成后直接将状态改为 WAIT_HAND_OVER。\n" +
+            "更改状态成功后会返回订单详情。")
     @RequestMapping(value = "/status", method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse updateOrderStatus(@RequestBody OrderStatusVO rderStatusVO) throws Exception {
@@ -171,7 +181,7 @@ public class OrderController extends BaseController {
         return orderService.updateOrderExpressStatus(request);
     }
 
-    @ApiOperation(value = "评价小哥 评价顺丰订单", httpMethod = "POST")
+    @ApiOperation(value = "评价小哥 评价顺丰订单", httpMethod = "POST",notes = "这里是对某一个包裹进行单独评价")
     @RequestMapping(value = "/evaluate", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse evaluate(@RequestBody EvaluateRequestVO evaluateRequestVO) throws Exception {
@@ -199,7 +209,13 @@ public class OrderController extends BaseController {
     }
 
     @IgnoreToken
-    @ApiOperation(value = "30分钟未揽件同城单转大网单(给顺丰调用)", httpMethod = "POST")
+    @ApiOperation(value = "30分钟未揽件同城单转大网单(给顺丰调用)", httpMethod = "POST",notes = "调用场景：\n" +
+            "给顺丰同城调用的API\n" +
+            "下单三十分钟后，如果因为同城运力不足而取消订单，请调用此接口把取消的事件通知给C端服务端，我们会将同城的单转下到大网\n" +
+            "\n" +
+            "注意：\n" +
+            "并不是把所有的取消订单的事件都调该接口，而是因为运力不足而取消时，才通知我们。否则，在我们C端主动取消订单的时候\n" +
+            "这个单就会因为顺丰的事件通知，立马就被下到大网去，从而产生莫名其妙的BUG。")
     @RequestMapping(value = "/transform", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse transformOrder(@RequestBody OrderTransform orderTransform) throws Exception {
@@ -216,7 +232,8 @@ public class OrderController extends BaseController {
         return evaluateService.getEvaluate(uuid);
     }
 
-    @ApiOperation(value = "设置大网预约定时器", httpMethod = "POST")
+    @ApiIgnore
+    @ApiOperation(value = "设置大网预约定时器", httpMethod = "POST",notes = "默认自动开启该定时器,开/关 1/0")
     @RequestMapping(value = "/reserve/setup", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse setupReserveTimer(@RequestBody OrderTimeVO orderTimeVO) throws Exception {
@@ -225,7 +242,8 @@ public class OrderController extends BaseController {
         return orderService.setupReserveNationOrderCommitTimer(request);
     }
 
-    @ApiOperation(value = "设置大网超时取消定时器", httpMethod = "POST")
+    @ApiIgnore
+    @ApiOperation(value = "设置大网超时取消定时器", httpMethod = "POST",notes = "默认自动开启该定时器,开/关 1/0")
     @RequestMapping(value = "/cancel/setup", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse setupCancelNationOrderTimer(@RequestBody OrderCancelTimeVO orderCancelTimeVO) throws Exception {
@@ -234,7 +252,8 @@ public class OrderController extends BaseController {
         return orderService.setupCancelNationOrderTimer(request);
     }
 
-    @ApiOperation(value = "设置同城超时取消定时器", httpMethod = "POST")
+    @ApiIgnore
+    @ApiOperation(value = "设置同城超时取消定时器", httpMethod = "POST",notes = "默认自动开启该定时器,开/关 1/0")
     @RequestMapping(value = "/cancel/SameSetup", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse setupCancelSameOrderTimer(@RequestBody OrderCancelTimeVO orderCancelTimeVO) throws Exception {

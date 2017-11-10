@@ -33,7 +33,7 @@ public class AddressBookController {
         return addressBookService.addAddressBook(apiRequest);
     }
 
-    @ApiOperation(value = "删除地址簿 软删除",httpMethod = "DELETE")
+    @ApiOperation(value = "删除地址簿",httpMethod = "DELETE",notes = "软删除")
     @RequestMapping(method = RequestMethod.DELETE)
     public @ResponseBody
     APIResponse deleteAddress(@RequestBody AddressBookDeleteVO addressBookDeleteVO) throws Exception {

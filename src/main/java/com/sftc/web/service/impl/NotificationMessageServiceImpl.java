@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import com.sftc.tools.api.APIRequest;
@@ -78,7 +79,9 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
         return APIUtil.getResponse(SUCCESS, messageList);
     }
 
-    public APIResponse updateMessage(int id) {
+    public APIResponse updateMessage(APIRequest apiRequest) {
+        JSONObject messageOBJ = JSONObject.fromObject(apiRequest.getRequestParam());
+        int id = messageOBJ.getInt("message_id");
         messageMapper.updateIsRead(id);
         return APIUtil.getResponse(SUCCESS, null);
     }
