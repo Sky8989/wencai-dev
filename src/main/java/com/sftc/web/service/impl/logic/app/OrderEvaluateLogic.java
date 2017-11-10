@@ -5,6 +5,7 @@ import com.sftc.tools.api.APIPostUtil;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.mybatis.EvaluateMapper;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
@@ -73,7 +74,8 @@ public class OrderEvaluateLogic {
         /// 向顺丰的接口发送评价信息
         String evaluate_url = SF_REQUEST_URL + "/" + uuid + "/attributes/merchant_comment";
         HttpPut put = new HttpPut(evaluate_url);
-        put.addHeader("PushEnvelope-Device-Token", (String) requestOBJ.get("access_token"));
+//        put.addHeader("PushEnvelope-Device-Token", (String) requestOBJ.get("access_token"));
+        put.addHeader("PushEnvelope-Device-Token", SFTokenHelper.COMMON_ACCESSTOKEN);
         String res = APIPostUtil.post(str, put);
         jsonObject = JSONObject.fromObject(res);
         if (jsonObject.get("errors") != null || jsonObject.get("error") != null) {

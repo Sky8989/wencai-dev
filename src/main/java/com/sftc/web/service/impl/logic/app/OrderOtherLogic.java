@@ -43,12 +43,12 @@ public class OrderOtherLogic {
         String constantsUrl = SF_CONSTANTS_URL + paramObject.getString("constants") + "?latitude="
                 + paramObject.getString("latitude") + "&longitude=" + paramObject.getString("longitude");
         HttpGet get = new HttpGet(constantsUrl);
-        String access_token = null;
-        if(paramObject.getString("access_token")!=null&&!(paramObject.getString("access_token")).equals("")){
-            access_token = paramObject.getString("access_token");
-        }else {
-            access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
-        }
+        String access_token =  SFTokenHelper.COMMON_ACCESSTOKEN;
+//        if(paramObject.getString("access_token")!=null&&!(paramObject.getString("access_token")).equals("")){
+//            access_token = paramObject.getString("access_token");
+//        }else {
+//            access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
+//        }
         get.addHeader("PushEnvelope-Device-Token",access_token );
         String res = APIGetUtil.get(get);
         JSONObject jsonObject = JSONObject.fromObject(res);

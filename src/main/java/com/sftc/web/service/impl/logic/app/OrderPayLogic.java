@@ -3,6 +3,7 @@ package com.sftc.web.service.impl.logic.app;
 import com.google.gson.Gson;
 import com.sftc.tools.api.*;
 import com.sftc.tools.common.DateUtils;
+import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.Token;
@@ -40,9 +41,9 @@ public class OrderPayLogic {
         HttpPost post = new HttpPost(SF_QUOTES_URL);
         JSONObject requestObject = jsonObject.getJSONObject("request");
         String uuid = (String) requestObject.getJSONObject("merchant").get("uuid");
-        String access_token = (String) requestObject.getJSONObject("token").get("access_token");
-
-        // 预约时间处理
+//        String access_token = (String) requestObject.getJSONObject("token").get("access_token");
+        String access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
+                // 预约时间处理
         String reserve_time = (String) requestObject.getString("reserve_time");
 //        if(reserve_time == null || reserve_time.equals("")){
 //            Date date = new Date();
@@ -101,7 +102,8 @@ public class OrderPayLogic {
         JSONObject jsonObject = JSONObject.fromObject(request.getRequestParam());
         String token = jsonObject.getString("local_token");
         String uuid = jsonObject.getString("uuid");
-        String access_token = jsonObject.getString("access_token");
+//        String access_token = jsonObject.getString("access_token");
+        String access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
 
 
         if (token == null || token.equals(""))
