@@ -121,6 +121,7 @@ public class OrderListLogic {
                 express.setPackage_comments(oe.getPackage_comments());
                 express.setReserve_time(oe.getReserve_time());
                 express.setDirected_code(oe.getDirected_code());
+                express.setPackage_type(oe.getPackage_type());
                 //如果有异常信息，则添加异常信息
                 if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
                     express.setAttributes((oe.getAttributes()));
@@ -203,6 +204,7 @@ public class OrderListLogic {
                 express.setObject_type(oe.getObject_type());
                 express.setPackage_comments(oe.getPackage_comments());
                 express.setReserve_time(oe.getReserve_time());
+                express.setPackage_type(oe.getPackage_type());
                 express.setUser_contact_id(user_contact_id);
                 //如果有异常信息，则添加异常信息
                 if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))

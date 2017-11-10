@@ -25,6 +25,8 @@ public class OrderCallback {
         private String order_number;
         //为C端小程序的包裹重量，
         private String weight;
+        //包裹大小类型
+        private String package_type;
         // 包裹的类型
         private String object_type;
         //当物品类型在packageType罗列的类型之外时填写
@@ -56,6 +58,10 @@ public class OrderCallback {
         public void setUuid(String uuid) {
             this.uuid = uuid;
         }
+
+        public String getPackage_type() {return package_type;}
+
+        public void setPackage_type(String package_type) {this.package_type = package_type;}
 
         public String getState() {
             return state;
