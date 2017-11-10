@@ -1,5 +1,7 @@
 package com.sftc.web.dao.redis;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +13,11 @@ public class UserLabelsRedis extends BaseRedisDao {
 
     public static final String USER_LABELS_KEY = "USER_LABELS_KEY";
 
-    public String[] getUserLabelsFromRedis() {
+    public JSONArray getUserLabelsFromRedis() {
         String cache = getCache(USER_LABELS_KEY);
         if (StringUtils.isBlank(cache))
             return null;
-        return cache.split("\\|");
+        return JSONArray.fromObject(cache);
     }
 
     public void setUserLabelsFromRedis(String value) {

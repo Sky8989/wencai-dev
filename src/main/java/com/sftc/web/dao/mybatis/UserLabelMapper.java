@@ -1,6 +1,7 @@
 package com.sftc.web.dao.mybatis;
 
 import com.sftc.web.model.chen.Label;
+import com.sftc.web.model.entity.SystemLabel;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface UserLabelMapper {
     int updateLabelByID(@Param(value = "label_id") int label_id, @Param(value = "label") String label);
 
     void insertLabelByid(@Param(value = "user_contact_id") int user_contact_id, @Param(value = "label")  String label);
+
+    List<SystemLabel> querySystemLable();
 }
