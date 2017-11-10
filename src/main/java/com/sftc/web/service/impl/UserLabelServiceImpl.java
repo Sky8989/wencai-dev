@@ -4,6 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.UserLabelMapper;
+import com.sftc.web.dao.redis.UserLabelsRedis;
 import com.sftc.web.model.SwaggerRequestVO.UpdateUsrLabelVO;
 import com.sftc.web.model.SwaggerRequestVO.UserLabelVO;
 import com.sftc.web.model.chen.Label;
@@ -37,7 +38,8 @@ public class UserLabelServiceImpl implements UserLabelService {
     private UserLabelMapper userLabelMapper;
     @Autowired
     private LabelDetailsInfo labelDetailsInfo;
-
+    @Autowired
+    private UserLabelsRedis userLabelsRedis;
     /**
      * 根据用户id获取用户所有标签
      * @param apiRequest
@@ -124,8 +126,8 @@ public class UserLabelServiceImpl implements UserLabelService {
         }
         int user_contact_id = userLabelVO.getUser_contact_id();
         Label label = userLabelMapper.queryUserAlllabelByUID(user_contact_id);
-//        String[] userLabelsFromRedis = userLabelsRedis.getUserLabelsFromRedis();
-        String[] userLabelsFromRedis = null;
+        String[] userLabelsFromRedis = userLabelsRedis.getUserLabelsFromRedis();
+//        String[] userLabelsFromRedis = null;
         Label sysLabel = null;
         if (userLabelsFromRedis==null||userLabelsFromRedis.length==0){
              sysLabel = userLabelMapper.queryUserAlllabelByUID(SYSTEM_LABELID);

@@ -6,6 +6,7 @@ import com.sftc.tools.common.DateUtils;
 import com.sftc.tools.common.EmojiFilter;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFTokenHelper;
+import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.jpa.AddressBookDao;
 import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.jpa.OrderExpressDao;
@@ -326,7 +327,10 @@ public class OrderCommitLogic {
             String paramStr = gson.toJson(JSONObject.fromObject(tempJsonObj));
             // POST
             HttpPost post = new HttpPost(SF_REQUEST_URL);
-            String token = (String) requestObject.getJSONObject("request").getJSONObject("merchant").get("access_token");
+//            String token = (String) requestObject.getJSONObject("request").getJSONObject("merchant").get("access_token");
+            TokenUtils instance = TokenUtils.getInstance();
+            String token = instance.getAccess_token();
+
             post.addHeader("PushEnvelope-Device-Token", token);
             String resultStr = APIPostUtil.post(paramStr, post);
             JSONObject responseObject = JSONObject.fromObject(resultStr);
@@ -597,7 +601,11 @@ public class OrderCommitLogic {
         order.setRegion_type("REGION_SAME");
 
         HttpPost post = new HttpPost(SF_REQUEST_URL);
-        post.addHeader("PushEnvelope-Device-Token", (String) requestOBJ.getJSONObject("merchant").get("access_token"));
+        TokenUtils instance = TokenUtils.getInstance();
+        String token = instance.getAccess_token();
+
+//        post.addHeader("PushEnvelope-Device-Token", (String) requestOBJ.getJSONObject("merchant").get("access_token"));
+        post.addHeader("PushEnvelope-Device-Token", token);
 
         // 预约时间处理
         String reserve_time = orderOBJ.containsKey("reserve_time") ? orderOBJ.getString("reserve_time") : null;

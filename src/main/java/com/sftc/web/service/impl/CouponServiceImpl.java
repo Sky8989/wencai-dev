@@ -1,6 +1,7 @@
 package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
+import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.model.sfmodel.Promo;
 import com.sftc.web.service.CouponService;
 import net.sf.json.JSONArray;
@@ -34,11 +35,12 @@ public class CouponServiceImpl implements CouponService {
 
         JSONObject paramOBJ = JSONObject.fromObject(apiRequest.getRequestParam());
         if (!paramOBJ.containsKey("uuid")) return APIUtil.paramErrorResponse("Parameter missing uuid");
-        if (!paramOBJ.containsKey("token")) return APIUtil.paramErrorResponse("Parameter missing token");
+//        if (!paramOBJ.containsKey("token")) return APIUtil.paramErrorResponse("Parameter missing token");
         if (!paramOBJ.containsKey("status")) return APIUtil.paramErrorResponse("Parameter missing token");
-
+        TokenUtils tokenUtils = TokenUtils.getInstance();
+        String token = tokenUtils.getAccess_token();
         String uuid = paramOBJ.getString("uuid");
-        String token = paramOBJ.getString("token");
+//        String token = paramOBJ.getString("token");
 
         //limit offset是可选项
 //        String limit = paramOBJ.containsKey("limit") ? paramOBJ.getString("limit") : String.valueOf(20);
@@ -92,13 +94,17 @@ public class CouponServiceImpl implements CouponService {
         String promo_code = URLEncoder.encode(promo.getPromo_code(), "UTF-8");
         String coupon_exchange_url = SF_COUPON_EXCHANGE_API.replace("{promo_code}", promo_code);
 
+        TokenUtils tokenUtils = TokenUtils.getInstance();
+        String token = tokenUtils.getAccess_token();
         // 更新商户信息
-        APIResponse apiResponse = updateMerchantAddress(promo.getToken());
+//        APIResponse apiResponse = updateMerchantAddress(promo.getToken());
+        APIResponse apiResponse = updateMerchantAddress(token);
         if (apiResponse != null) return apiResponse;
 
         // 调用顺丰接口
         HttpPost httpPost = new HttpPost(coupon_exchange_url);
-        httpPost.addHeader("PushEnvelope-Device-Token", promo.getToken());
+//        httpPost.addHeader("PushEnvelope-Device-Token", promo.getToken());
+        httpPost.addHeader("PushEnvelope-Device-Token", token);
         String res = APIPostUtil.post("", httpPost);
 
         // 处理错误信息

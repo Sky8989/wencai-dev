@@ -230,10 +230,10 @@ public class OrderListLogic {
     private APIResponse syncSFExpressStatus(MyOrderParam myOrderParam) {
 
         // Verify params
-        if (myOrderParam.getToken().length() == 0) {
+//        if (myOrderParam.getToken().length() == 0) {
             //内置token
             myOrderParam.setToken(COMMON_ACCESSTOKEN);
-        } else if (myOrderParam.getId() == 0) {
+        if (myOrderParam.getId() == 0) {
             return APIUtil.paramErrorResponse("用户id不能为空");
         } else if (myOrderParam.getPageNum() < 1 || myOrderParam.getPageSize() < 1) {
             return APIUtil.paramErrorResponse("分页参数无效");
