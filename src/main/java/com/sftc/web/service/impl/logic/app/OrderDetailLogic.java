@@ -150,59 +150,6 @@ public class OrderDetailLogic {
             // 同城订单需要access_token
             String access_token = (String) request.getParameter("access_token");
             access_token = (access_token == null || access_token.equals("") ? COMMON_ACCESSTOKEN : access_token);
-            List<OrderExpressDTO> orderExpressList = order.getOrderExpressList();
-            for (OrderExpressDTO orderExpressDTO : orderExpressList) {
-                String constantsUrl = SF_CONSTANTS_URL + CONSTANTS_STR + "?latitude="
-                        + orderExpressDTO.getLatitude() + "&longitude=" + orderExpressDTO.getLongitude();
-                HttpGet get = new HttpGet(constantsUrl);
-                get.addHeader("PushEnvelope-Device-Token", access_token);
-                String res = APIGetUtil.get(get);
-                JSONObject jsonObject = JSONObject.fromObject(res);
-                if (jsonObject.get("errors") != null || jsonObject.get("error") != null)
-                    return APIUtil.submitErrorResponse("获取常量失败", jsonObject);
-
-                try {
-                    if (jsonObject.getJSONObject("constant").getJSONObject("value").containsKey("PACKAGE_TYPE")) {
-                        JSONArray packageTypeArr = jsonObject.getJSONObject("constant").getJSONObject("value").getJSONArray("PACKAGE_TYPE");
-                        for (int i = 0; i < packageTypeArr.size(); i++) {
-                            JSONObject packageTypeOBJ = packageTypeArr.getJSONObject(i);
-                            String package_code = packageTypeOBJ.getString("code");
-                            if (package_code != null && package_code.equals(orderExpressDTO.getObject_type())) {
-                                JSONArray weightArr = packageTypeOBJ.getJSONArray("weight_segment");
-                                for (int j = 0; j < weightArr.size(); j++) {
-                                    JSONObject weightOBJ = weightArr.getJSONObject(j);
-                                    if (j == 0 && orderExpressDTO.getPackage_type().equals(PackageType.SMALl_PACKAGE.getKey())) {
-                                        PackageMessage packageMessage = new PackageMessage();
-                                        packageMessage.setName(weightOBJ.getString("name"));
-                                        packageMessage.setWeight(weightOBJ.getString("weight"));
-                                        packageMessage.setType(PackageType.SMALl_PACKAGE.getKey());
-                                    }
-                                    if (j == 1 && orderExpressDTO.getPackage_type().equals(PackageType.CENTRN_PACKAGE.getKey())) {
-                                        PackageMessage packageMessage = new PackageMessage();
-                                        packageMessage.setName(weightOBJ.getString("name"));
-                                        packageMessage.setWeight(weightOBJ.getString("weight"));
-                                        packageMessage.setType(PackageType.CENTRN_PACKAGE.getKey());
-                                    }
-                                    if (j == 2 && orderExpressDTO.getPackage_type().equals(PackageType.BIG_PACKAGE.getKey())) {
-                                        PackageMessage packageMessage = new PackageMessage();
-                                        packageMessage.setName(weightOBJ.getString("name"));
-                                        packageMessage.setWeight(weightOBJ.getString("weight"));
-                                        packageMessage.setType(PackageType.BIG_PACKAGE.getKey());
-                                    }
-                                    if (j == 3 && orderExpressDTO.getPackage_type().equals(PackageType.HUGE_PACKAGE.getKey())) {
-                                        PackageMessage packageMessage = new PackageMessage();
-                                        packageMessage.setName(weightOBJ.getString("name"));
-                                        packageMessage.setWeight(weightOBJ.getString("weight"));
-                                        packageMessage.setType(PackageType.HUGE_PACKAGE.getKey());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
             respObject = SFExpressHelper.getExpressDetail(uuid, access_token);
             //处理错误信息
             if (respObject.containsKey("error") || respObject.containsKey("errors") || respObject.containsKey("ERROR")) {
@@ -236,6 +183,58 @@ public class OrderDetailLogic {
             APIResponse apiResponse = syncOrderExpress(order.getId());
             if (apiResponse != null) return apiResponse;
             order = orderMapper.selectOrderDetailByUuid(uuid);
+
+            List<OrderExpressDTO> orderExpressList = order.getOrderExpressList();
+            for (OrderExpressDTO orderExpressDTO : orderExpressList) {
+                String constantsUrl = SF_CONSTANTS_URL + CONSTANTS_STR + "?latitude="
+                        + orderExpressDTO.getLatitude() + "&longitude=" + orderExpressDTO.getLongitude();
+                HttpGet get = new HttpGet(constantsUrl);
+                get.addHeader("PushEnvelope-Device-Token", access_token);
+                String res = APIGetUtil.get(get);
+                JSONObject jsonObject = JSONObject.fromObject(res);
+                if (jsonObject.get("errors") != null || jsonObject.get("error") != null)
+                    return APIUtil.submitErrorResponse("获取常量失败", jsonObject);
+
+                try {
+                    if (jsonObject.getJSONObject("constant").getJSONObject("value").containsKey("PACKAGE_TYPE")) {
+                        JSONArray packageTypeArr = jsonObject.getJSONObject("constant").getJSONObject("value").getJSONArray("PACKAGE_TYPE");
+                        PackageMessage packageMessage = new PackageMessage();
+                        for (int i = 0; i < packageTypeArr.size(); i++) {
+                            JSONObject packageTypeOBJ = packageTypeArr.getJSONObject(i);
+                            String package_code = packageTypeOBJ.getString("code");
+                            if (package_code != null && package_code.equals(orderExpressDTO.getObject_type())) {
+                                JSONArray weightArr = packageTypeOBJ.getJSONArray("weight_segment");
+                                for (int j = 0; j < weightArr.size(); j++) {
+                                    JSONObject weightOBJ = weightArr.getJSONObject(j);
+                                    if (j == 0 && orderExpressDTO.getPackage_type().equals(PackageType.SMALl_PACKAGE.getKey())) {
+                                        packageMessage.setName(weightOBJ.getString("name"));
+                                        packageMessage.setWeight(weightOBJ.getString("weight"));
+                                        packageMessage.setType(PackageType.SMALl_PACKAGE.getKey());
+                                    }
+                                    if (j == 1 && orderExpressDTO.getPackage_type().equals(PackageType.CENTRN_PACKAGE.getKey())) {
+                                        packageMessage.setName(weightOBJ.getString("name"));
+                                        packageMessage.setWeight(weightOBJ.getString("weight"));
+                                        packageMessage.setType(PackageType.CENTRN_PACKAGE.getKey());
+                                    }
+                                    if (j == 2 && orderExpressDTO.getPackage_type().equals(PackageType.BIG_PACKAGE.getKey())) {
+                                        packageMessage.setName(weightOBJ.getString("name"));
+                                        packageMessage.setWeight(weightOBJ.getString("weight"));
+                                        packageMessage.setType(PackageType.BIG_PACKAGE.getKey());
+                                    }
+                                    if (j == 3 && orderExpressDTO.getPackage_type().equals(PackageType.HUGE_PACKAGE.getKey())) {
+                                        packageMessage.setName(weightOBJ.getString("name"));
+                                        packageMessage.setWeight(weightOBJ.getString("weight"));
+                                        packageMessage.setType(PackageType.HUGE_PACKAGE.getKey());
+                                    }
+                                }
+                            }
+                        }
+                        orderExpressDTO.setPackageMessage(packageMessage);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         respObject.put("order", order);
