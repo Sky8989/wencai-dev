@@ -68,6 +68,10 @@
         SELECT * from sftc_address WHERE user_id=#{id}
     </select>
 
+    <delete id="deleteAddressById" parameterType="int">
+        DELETE FROM sftc_address WHERE id = #{id}
+    </delete>
+
     <!-- 地址列表 -->
     <select id="addressList" parameterType="java.util.Map" resultType="com.sftc.web.model.entity.Address">
         select * FROM sftc_address WHERE user_id=#{user_id} limit #{pageOffset},#{pageSize};

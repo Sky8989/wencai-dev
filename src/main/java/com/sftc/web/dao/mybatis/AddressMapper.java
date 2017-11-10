@@ -22,6 +22,8 @@ public interface AddressMapper {
 
     void updateByPrimaryKey(Address address);
 
+    void deleteAddressById(@Param("id") int id);
+
     /**
      * 根据手机号码和经纬度查询地址
      */
