@@ -1,10 +1,13 @@
 package com.sftc.web.service;
 
 
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.SwaggerRequestVO.UserUnpackingVO;
 
 import javax.servlet.http.HttpServletRequest;
 
 public interface UserUnpackingService {
-    APIResponse unpacking(String order_id, HttpServletRequest request, int type);
+
+    APIResponse unpacking(APIRequest apiRequest);
 }

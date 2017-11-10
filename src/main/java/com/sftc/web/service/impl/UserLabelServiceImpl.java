@@ -1,15 +1,18 @@
 package com.sftc.web.service.impl;
 
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.UserLabelMapper;
-import com.sftc.web.dao.redis.UserLabelsRedis;
+import com.sftc.web.model.SwaggerRequestVO.UpdateUsrLabelVO;
+import com.sftc.web.model.SwaggerRequestVO.UserLabelVO;
 import com.sftc.web.model.chen.Label;
 import com.sftc.web.model.entity.LabelDetailsInfo;
-import com.sftc.web.model.entity.LabelInfo;
 import com.sftc.web.service.UserLabelService;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.sftc.tools.api.APIStatus.PARAM_ERROR;
-import static com.sftc.tools.api.APIStatus.SUBMIT_FAIL;
-import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.api.APIStatus.*;
 
 /**
  * Created by CatalpaFlat on 2017/11/6.
@@ -31,54 +32,56 @@ public class UserLabelServiceImpl implements UserLabelService {
     private static final int SYSTEM_LABELID = -1;
     private static final String CUT_CHAT = "\\|";
 
-//    @Autowired
-//    private UserLabelsRedis userLabelsRedis;
 
     @Autowired
     private UserLabelMapper userLabelMapper;
-    @Autowired
-    private LabelInfo labelInfo;
     @Autowired
     private LabelDetailsInfo labelDetailsInfo;
 
     /**
      * 根据用户id获取用户所有标签
-     * @param user_contact_id
-     * @return
+     * @param apiRequest
      */
     @Override
-    public APIResponse getUserAllLabelByUCID(int user_contact_id) {
-        if (user_contact_id<1){
-            return APIUtil.getResponse(PARAM_ERROR, "用户关系id不能小于1");
+    public APIResponse getUserAllLabelByUCID(APIRequest apiRequest) {
+        UserLabelVO userLabelVO = (UserLabelVO)apiRequest.getRequestParam();
+        if (userLabelVO ==null){
+            return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());
         }
+        int user_contact_id = userLabelVO.getUser_contact_id();
+
         Label label = userLabelMapper.queryUserAlllabelByUID(user_contact_id);
+        JSONObject json = new JSONObject();
         if (label!=null){
             String str = label.getLabel();
             if (!StringUtils.isBlank(str)){
                 String[] split = str.split(CUT_CHAT);
-                labelInfo.setLabels(split);
+                json.put("labels",split);
             }else{
-                labelInfo.setLabels(new String[0]);
+                json.put("labels","");
             }
-
-            labelInfo.setLabel_id(label.getId());
+            json.put("label_id",label.getId());
         }else {
-            labelInfo.setLabel_id(null);
-            labelInfo.setLabels(null);
+            json.put("labels","");
+            json.put("label_id","");
         }
-        return APIUtil.getResponse(SUCCESS, labelInfo);
+        return APIUtil.getResponse(SUCCESS, json);
     }
 
     /**
      * 根据标签id修改个人标签
-     * @param label_id
-     * @param labels
-     * @param type
-     * @return
+     * @param apiRequest
      */
     @Override
     @Transactional
-    public APIResponse updateUsrLabelByLID(int label_id, String labels, int type) {
+    public APIResponse updateUsrLabelByLID(APIRequest apiRequest) {
+        UpdateUsrLabelVO updateUsrLabelVO = (UpdateUsrLabelVO)apiRequest.getRequestParam();
+        if (updateUsrLabelVO ==null){
+            return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());
+        }
+        String labels = updateUsrLabelVO.getLabels();
+        int label_id = updateUsrLabelVO.getLabel_id();
+        int type = updateUsrLabelVO.getType();
 
         StringBuffer stf = new StringBuffer();
 
@@ -96,28 +99,30 @@ public class UserLabelServiceImpl implements UserLabelService {
         if (type==0){
             userLabelMapper.insertLabelByid(label_id,stf.toString());
         }else {
-            int  result = -1;
+            int  result;
             if(StringUtils.isBlank(stf.toString()))
                  result = userLabelMapper.updateLabelByID(label_id,null);
             else
                 result = userLabelMapper.updateLabelByID(label_id,stf.toString());
 
             if (result<0)
-                return APIUtil.getResponse(SUBMIT_FAIL, "修改标签错误");
+                return APIUtil.getResponse(PARAM_ERROR, "修改标签错误");
         }
         return APIUtil.getResponse(SUCCESS,"");
     }
 
     /**
      * 根据用户好友关系id获取用户系统以及自定义标签
-     * @param user_contact_id
+     * @param apiRequest
      * @return
      */
     @Override
-    public APIResponse getUserLabelDetailsByUCID(int user_contact_id) {
-        if (user_contact_id<1){
-            return APIUtil.getResponse(PARAM_ERROR, "用户关系id不能小于1");
+    public APIResponse getUserLabelDetailsByUCID(APIRequest apiRequest) {
+        UserLabelVO userLabelVO = (UserLabelVO)apiRequest.getRequestParam();
+        if (userLabelVO ==null){
+            return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());
         }
+        int user_contact_id = userLabelVO.getUser_contact_id();
         Label label = userLabelMapper.queryUserAlllabelByUID(user_contact_id);
 //        String[] userLabelsFromRedis = userLabelsRedis.getUserLabelsFromRedis();
         String[] userLabelsFromRedis = null;
@@ -159,4 +164,5 @@ public class UserLabelServiceImpl implements UserLabelService {
         labelDetailsInfo.setUserSyslabels(user_SysLists);
         return APIUtil.getResponse(SUCCESS, labelDetailsInfo);
     }
+
 }
