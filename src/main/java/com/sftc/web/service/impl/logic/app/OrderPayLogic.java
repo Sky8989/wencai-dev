@@ -40,11 +40,16 @@ public class OrderPayLogic {
         JSONObject jsonObject = JSONObject.fromObject(request.getRequestParam());
         HttpPost post = new HttpPost(SF_QUOTES_URL);
         JSONObject requestObject = jsonObject.getJSONObject("request");
-        String uuid = (String) requestObject.getJSONObject("merchant").get("uuid");
+//        String uuid = (String) requestObject.getJSONObject("merchant").get("uuid");
+        String uuid = SFTokenHelper.COMMON_UUID;
+        requestObject.getJSONObject("merchant").put("uuid",uuid);
+
 //        String access_token = (String) requestObject.getJSONObject("token").get("access_token");
         String access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
+        requestObject.getJSONObject("merchant").put("access_token", access_token);
                 // 预约时间处理
         String reserve_time = (String) requestObject.getString("reserve_time");
+//        String reserve_time = "";
 //        if(reserve_time == null || reserve_time.equals("")){
 //            Date date = new Date();
 //            reserve_time = String.valueOf(date.getTime());
