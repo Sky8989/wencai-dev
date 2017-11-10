@@ -12,23 +12,33 @@ import java.io.Serializable;
 @ApiModel(value = "标签")
 public class Label implements Serializable{
     @ApiModelProperty(value = "用户标签id")
-    private String id;
-    @ApiModelProperty(value = "标签内容",example = "标签1|标签2|标签3|")
-    private String label;
+    private int id;
+    @ApiModelProperty(value = "系统标签id",example = "标签1|标签2|标签3|")
+    private String system_label_ids;
+    @ApiModelProperty(value = "自定义标签",example = " [{\"name\" : \"1234\",\"is_selected\" : true}]")
+    private String custom_labels;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getLabel() {
-        return label;
+    public String getSystem_label_ids() {
+        return system_label_ids;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setSystem_label_ids(String system_label_ids) {
+        this.system_label_ids = system_label_ids;
+    }
+
+    public String getCustom_labels() {
+        return custom_labels;
+    }
+
+    public void setCustom_labels(String custom_labels) {
+        this.custom_labels = custom_labels;
     }
 }

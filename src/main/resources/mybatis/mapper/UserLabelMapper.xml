@@ -6,8 +6,7 @@
 
     <select id="queryUserAlllabelByUID" resultType="com.sftc.web.model.chen.Label">
         SELECT
-            id AS id,
-            label
+            id,system_label_ids,custom_labels
         FROM sftc_user_contact_label
         WHERE user_contact_id = #{user_contact_id}
     </select>
@@ -15,15 +14,20 @@
     <update id="updateLabelByID">
         UPDATE sftc_user_contact_label
         SET
-        label = #{label},
-        create_time=UNIX_TIMESTAMP(NOW())*1000
+        system_label_ids = #{system_label_ids},
+        custom_labels = #{custom_labels},
+        update_time=UNIX_TIMESTAMP(NOW())*1000
         WHERE id = #{label_id}
     </update>
 
     <insert id="insertLabelByid">
         INSERT  sftc_user_contact_label
-        (label,user_contact_id,create_time)
+        (label,user_contact_id,system_label_ids,custom_labels,create_time)
         VALUES
         (#{label},#{user_contact_id},UNIX_TIMESTAMP(NOW())*1000)
     </insert>
+
+    <select id="querySystemLable" resultType="com.sftc.web.model.entity.SystemLabel">
+        SELECT id,system_label FROM sftc_system_label
+    </select>
 </mapper>
