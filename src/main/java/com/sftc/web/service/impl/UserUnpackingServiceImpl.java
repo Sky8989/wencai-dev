@@ -1,9 +1,11 @@
 package com.sftc.web.service.impl;
 
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.redis.UserUnpackingRedis;
+import com.sftc.web.model.SwaggerRequestVO.UserUnpackingVO;
 import com.sftc.web.model.User;
 import com.sftc.web.service.UserUnpackingService;
 import net.sf.json.JSONObject;
@@ -14,6 +16,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 
+import java.util.Map;
+
+import static com.sftc.tools.api.APIStatus.PARAM_ERROR;
 import static com.sftc.tools.api.APIStatus.SELECT_FAIL;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 
@@ -29,13 +34,23 @@ public class UserUnpackingServiceImpl implements UserUnpackingService {
     private static final String HEARD_TOKEN = "token";
 
     @Override
-    public APIResponse unpacking(String order_id, HttpServletRequest request, int type) {
-        String token = request.getHeader(HEARD_TOKEN);
+    public APIResponse unpacking(APIRequest apiRequest) {
+        UserUnpackingVO userUnpackingVO = (UserUnpackingVO) apiRequest.getRequestParam();
+
+        Map header = apiRequest.getHeader();
+
+        String token = (String) header.get(HEARD_TOKEN);
+
         User user = tokenMapper.tokenInterceptor(token);
         if (user==null){
-            return APIUtil.getResponse(SELECT_FAIL, "没有此用户");
+            return APIUtil.paramErrorResponse(SELECT_FAIL.getMessage());
+        }
+        if(userUnpackingVO==null){
+            return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());
         }
         int user_id = user.getId();
+        String order_id = userUnpackingVO.getOrder_id();
+        int type = userUnpackingVO.getType();
         String key = this.mosaicKey(order_id, user_id);
         String userUnpacking = userUnpackingRedis.getUserUnpacking(key);
         JSONObject json = new JSONObject();
