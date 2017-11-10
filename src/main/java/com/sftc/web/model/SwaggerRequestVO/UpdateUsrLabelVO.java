@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class UpdateUsrLabelVO {
     @ApiModelProperty(name = "label_id", value = "标签id", required = true,example = "8")
     private int label_id;
-    @ApiModelProperty(name = "system_labels", value = "系统标签数组", required = true,example = "[\"系统标签5\",\"2837193\",\"879789\"]")
+    @ApiModelProperty(name = "system_labels", value = "系统标签id数组", required = true,example = "[1,2,3]")
     private String system_labels;
     @ApiModelProperty(name = "custom_labels", value = "自定义标签json数组", required = true,example = "[{\"name\":\"1234456\",\"is_selected\":\"true\"}]")
     private String custom_labels;

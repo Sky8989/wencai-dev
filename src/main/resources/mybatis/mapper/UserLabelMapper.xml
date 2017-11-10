@@ -22,9 +22,9 @@
 
     <insert id="insertLabelByid">
         INSERT  sftc_user_contact_label
-        (label,user_contact_id,system_label_ids,custom_labels,create_time)
+        (system_label_ids,user_contact_id,,custom_labels,create_time)
         VALUES
-        (#{label},#{user_contact_id},UNIX_TIMESTAMP(NOW())*1000)
+        (#{system_label_ids},#{user_contact_id},#{custom_labels},UNIX_TIMESTAMP(NOW())*1000)
     </insert>
 
     <select id="querySystemLable" resultType="com.sftc.web.model.entity.SystemLabel">

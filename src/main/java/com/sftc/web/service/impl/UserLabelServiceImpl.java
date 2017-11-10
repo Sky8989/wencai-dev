@@ -37,6 +37,7 @@ public class UserLabelServiceImpl implements UserLabelService {
     private UserLabelMapper userLabelMapper;
     @Autowired
     private UserLabelsRedis userLabelsRedis;
+
     /**
      * 根据用户id获取用户所有标签
      * @param apiRequest
@@ -49,6 +50,7 @@ public class UserLabelServiceImpl implements UserLabelService {
         }
         int user_contact_id = userLabelVO.getUser_contact_id();
         JSONArray userLabelsFromRedis = userLabelsRedis.getUserLabelsFromRedis();
+//        JSONArray userLabelsFromRedis = null;
         if (userLabelsFromRedis==null||userLabelsFromRedis.size()<1){
             List<SystemLabel> system_labels =  userLabelMapper.querySystemLable();
             userLabelsFromRedis = JSONArray.fromObject(system_labels);
@@ -64,12 +66,12 @@ public class UserLabelServiceImpl implements UserLabelService {
         if (label!=null){
             String str = label.getSystem_label_ids();
             if (!StringUtils.isBlank(str)){
-                String[] split = str.split(CUT_CHAT);;
+                String[] split = str.split(CUT_CHAT);
                 Map<String,String> sys_map = new HashMap<>();
                 Arrays.asList(userLabelsFromRedis.toArray()).forEach(sysLabel ->{
                     JSONObject sys_json = (JSONObject)sysLabel;
                     String id = sys_json.getString("id");
-                    if (Arrays.binarySearch(split,id) >= 0 ){
+                    if (Arrays.asList(split).contains(id) ){
                         String system_label = sys_json.getString("system_label");
                         sys_map.put(id,system_label);
                     }
@@ -80,9 +82,9 @@ public class UserLabelServiceImpl implements UserLabelService {
             }
 
             String custom_labels = label.getCustom_labels();
-            JSONObject custom_json = null;
+            JSONArray custom_json = null;
             if (!StringUtils.isBlank(custom_labels)){
-                custom_json = JSONObject.fromObject(custom_labels);
+                custom_json = JSONArray.fromObject(custom_labels);
                 json.put("custom_labels",custom_json);
             }else
                 json.put("custom_labels","");
@@ -108,39 +110,32 @@ public class UserLabelServiceImpl implements UserLabelService {
             return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());
         }
         String system_labels = updateUsrLabelVO.getSystem_labels();
-        if(StringUtils.isBlank(system_labels)){
-            
+        StringBuffer stf = new StringBuffer();
+        if(!StringUtils.isBlank(system_labels)){
+            JSONArray jsonArray = JSONArray.fromObject(system_labels);
+            for (int i=0;i<jsonArray.size();i++){
+                stf.append(jsonArray.get(i));
+                if (i!=jsonArray.size()-1){
+                    stf.append("|");
+                }
+            }
+            updateUsrLabelVO.setSystem_labels(stf.toString());
         }
+        int type = updateUsrLabelVO.getType();
+        int label_id = updateUsrLabelVO.getLabel_id();
 
-//        String labels = updateUsrLabelVO.getLabels();
-//        int label_id = updateUsrLabelVO.getLabel_id();
-//        int type = updateUsrLabelVO.getType();
-//
-//        StringBuffer stf = new StringBuffer();
-//
-//        if (!StringUtils.isBlank(labels)){
-//            JSONArray jsonArray = JSONArray.fromObject(labels);
-//            for (int i=0;i<jsonArray.size();i++){
-//                stf.append(jsonArray.get(i));
-//                if (i!=jsonArray.size()-1){
-//                    stf.append("|");
-//                }
-//            }
-//        }else {
-//            stf = null;
-//        }
-//        if (type==0){
-//            userLabelMapper.insertLabelByid(label_id,stf.toString());
-//        }else {
-//            int  result;
-//            if(StringUtils.isBlank(stf.toString()))
-//                 result = userLabelMapper.updateLabelByID(label_id,null);
-//            else
-//                result = userLabelMapper.updateLabelByID(label_id,stf.toString());
-//
-//            if (result<0)
-//                return APIUtil.getResponse(PARAM_ERROR, "修改标签错误");
-//        }
+        if (type==0){
+            userLabelMapper.insertLabelByid(label_id,updateUsrLabelVO.getSystem_labels(),updateUsrLabelVO.getCustom_labels());
+        }else {
+            int  result;
+            if(StringUtils.isBlank(stf.toString()))
+                 result = userLabelMapper.updateLabelByID(label_id,null,updateUsrLabelVO.getCustom_labels());
+            else
+                result = userLabelMapper.updateLabelByID(label_id,stf.toString(),updateUsrLabelVO.getCustom_labels());
+
+            if (result<0)
+                return APIUtil.getResponse(PARAM_ERROR, "修改标签错误");
+        }
         return APIUtil.getResponse(SUCCESS,"");
     }
 
@@ -157,6 +152,7 @@ public class UserLabelServiceImpl implements UserLabelService {
         }
         int user_contact_id = userLabelVO.getUser_contact_id();
         JSONArray userLabelsFromRedis = userLabelsRedis.getUserLabelsFromRedis();
+//        JSONArray userLabelsFromRedis = null;
         if (userLabelsFromRedis==null||userLabelsFromRedis.size()<1){
             List<SystemLabel> system_labels =  userLabelMapper.querySystemLable();
             userLabelsFromRedis = JSONArray.fromObject(system_labels);
@@ -174,47 +170,4 @@ public class UserLabelServiceImpl implements UserLabelService {
         return APIUtil.getResponse(SUCCESS, json);
     }
 
-    @Test
-    public void test(){
-//        List<SystemLabel> system_labels =  new ArrayList<>();
-//        SystemLabel systemLabel1 = new SystemLabel();
-//        systemLabel1.setId("1");
-//        systemLabel1.setSystem_label("我是1");
-//        system_labels.add(systemLabel1);
-//        SystemLabel systemLabel2 = new SystemLabel();
-//        systemLabel2.setId("2");
-//        systemLabel2.setSystem_label("我是2");
-//        system_labels.add(systemLabel2);
-//        SystemLabel systemLabel3 = new SystemLabel();
-//        systemLabel3.setId("3");
-//        systemLabel3.setSystem_label("我是3");
-//        system_labels.add(systemLabel3);
-//        SystemLabel systemLabel4 = new SystemLabel();
-//        systemLabel4.setId("4");
-//        systemLabel4.setSystem_label("我是4");
-//        system_labels.add(systemLabel4);
-//
-//        JSONArray userLabelsFromRedis = JSONArray.fromObject(system_labels);
-////        Arrays.asList(userLabelsFromRedis.toArray()).forEach(sysLabel ->{
-////                JSONObject sys_json = (JSONObject)sysLabel;
-////            System.out.println(sys_json.getString("system_label"));
-////         });
-//        JSONObject json = new JSONObject();
-//        String sys_ids = "1|2|3";
-//        if (!StringUtils.isBlank(sys_ids)) {
-//            String[] split = sys_ids.split(CUT_CHAT);
-//            Map<String,String> sys_map = new HashMap<>();
-//            Arrays.asList(userLabelsFromRedis.toArray()).forEach(sysLabel ->{
-//                JSONObject sys_json = (JSONObject)sysLabel;
-//                String id = sys_json.getString("id");
-//                if (Arrays.binarySearch(split,id) >= 0 ){
-//                    String system_label = sys_json.getString("system_label");
-//                    sys_map.put(id,system_label);
-//                    System.out.println("id:"+id+",system_label:"+system_label);
-//                }
-//            });
-//            json.put("system_labels",sys_map);
-//            System.out.println(json.toString());
-//        }
-    }
 }

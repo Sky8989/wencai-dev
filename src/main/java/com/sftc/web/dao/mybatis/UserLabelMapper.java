@@ -10,9 +10,9 @@ public interface UserLabelMapper {
 
     Label queryUserAlllabelByUID(@Param(value = "user_contact_id") int user_contact_id);
 
-    int updateLabelByID(@Param(value = "label_id") int label_id, @Param(value = "label") String label);
+    int updateLabelByID(@Param(value = "label_id") int label_id,@Param(value = "system_label_ids") String system_label_ids, @Param(value = "custom_labels") String custom_labels);
 
-    void insertLabelByid(@Param(value = "user_contact_id") int user_contact_id, @Param(value = "label")  String label);
+    void insertLabelByid(@Param(value = "user_contact_id") int user_contact_id, @Param(value = "system_labels")  String system_labels, @Param(value = "custom_labels") String custom_labels);
 
     List<SystemLabel> querySystemLable();
 }
