@@ -415,22 +415,6 @@ public class OrderCommitLogic {
         if(orderDto == null)
             return APIUtil.selectErrorResponse("订单不存在", null);
 
-        //增加对包裹数量的验证，确保是只有一个订单里只有一个同城包裹
-        if (requestObject.getJSONObject("order").containsKey("package_count")) {
-            int package_count = requestObject.getJSONObject("order").getInt("package_count");
-            int real_count = 0;
-            //遍历包裹信息，确定有多少个包裹已被填写
-            for (OrderExpressDTO oe : orderDto.getOrderExpressList()) {
-                if (oe.getShip_province() != null && !"".equals(oe.getShip_province())) {//如果有省份信息，则表明已填写
-                    real_count++;
-                }
-            }
-//            if (real_count != package_count) //数据库的已填写包裹数和客户端的包裹数不一致
-////                return APIUtil.submitErrorResponse("包裹信息有变化，请返回列表刷新订单！OrderDTO infomation has been changed,please check again!", null);
-//                return APIUtil.submitErrorResponse("包裹信息有变化，请返回列表刷新订单！", null);
-        }
-
-
         for (OrderExpressDTO oe : orderDto.getOrderExpressList()) {
             // 拼接大网订单地址参数
             JSONObject sf = requestObject.getJSONObject("sf");
