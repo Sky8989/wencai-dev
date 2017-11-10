@@ -20,22 +20,15 @@ import com.sftc.web.model.entity.OrderExpressTransform;
 import com.sftc.web.model.sfmodel.Orders;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.SFConstant.SF_CONSTANTS_URL;
-import static com.sftc.tools.constant.SFConstant.SF_ORDERROUTE_URL;
-import static com.sftc.tools.constant.SFConstant.SF_ORDER_SYNC_URL;
+import static com.sftc.tools.constant.SFConstant.*;
 import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
 
 @Component
@@ -182,16 +175,25 @@ public class OrderDetailLogic {
                                         PackageMessage packageMessage = new PackageMessage();
                                         packageMessage.setName(weightOBJ.getString("name"));
                                         packageMessage.setWeight(weightOBJ.getString("weight"));
+                                        packageMessage.setType(PackageType.SMALl_PACKAGE.getKey());
                                     }
                                     if (j == 1 && orderExpressDTO.getPackage_type().equals(PackageType.CENTRN_PACKAGE.getKey())) {
-                                        weightOBJ.put("contents", "中包裹");
+                                        PackageMessage packageMessage = new PackageMessage();
+                                        packageMessage.setName(weightOBJ.getString("name"));
+                                        packageMessage.setWeight(weightOBJ.getString("weight"));
+                                        packageMessage.setType(PackageType.CENTRN_PACKAGE.getKey());
                                     }
                                     if (j == 2 && orderExpressDTO.getPackage_type().equals(PackageType.BIG_PACKAGE.getKey())) {
-                                        weightOBJ.put("contents", "大包裹");
-
+                                        PackageMessage packageMessage = new PackageMessage();
+                                        packageMessage.setName(weightOBJ.getString("name"));
+                                        packageMessage.setWeight(weightOBJ.getString("weight"));
+                                        packageMessage.setType(PackageType.BIG_PACKAGE.getKey());
                                     }
                                     if (j == 3 && orderExpressDTO.getPackage_type().equals(PackageType.HUGE_PACKAGE.getKey())) {
-                                        weightOBJ.put("contents", "超大包裹");
+                                        PackageMessage packageMessage = new PackageMessage();
+                                        packageMessage.setName(weightOBJ.getString("name"));
+                                        packageMessage.setWeight(weightOBJ.getString("weight"));
+                                        packageMessage.setType(PackageType.HUGE_PACKAGE.getKey());
                                     }
                                 }
                             }
@@ -201,7 +203,6 @@ public class OrderDetailLogic {
                     e.printStackTrace();
                 }
             }
-
             respObject = SFExpressHelper.getExpressDetail(uuid, access_token);
             //处理错误信息
             if (respObject.containsKey("error") || respObject.containsKey("errors") || respObject.containsKey("ERROR")) {
