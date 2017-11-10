@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 public interface EvaluateService {
-    public APIResponse getEvaluate(String uuid);
+    public APIResponse getEvaluate(APIRequest request);
 //CMS  分页查询 评价信息
-    public APIResponse selectEvaluateListByPage(APIRequest apiRequest);
+    public APIResponse selectEvaluateListByPage(APIRequest request);
 }

@@ -31,7 +31,9 @@ public class AddressController {
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody
     APIResponse addAddress(@RequestBody Address address) throws Exception {
-        return addressService.addAddress(address);
+        APIRequest request = new APIRequest();
+        request.setRequestParam(address);
+        return addressService.addAddress(request);
     }
 
     @ApiOperation(value = "我的收件人地址",httpMethod = "GET")
@@ -46,7 +48,9 @@ public class AddressController {
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody
     APIResponse editAddress(@RequestBody Address address) throws Exception {
-        return addressService.editAddress(address);
+        APIRequest request = new APIRequest();
+        request.setRequestParam(address);
+        return addressService.editAddress(request);
     }
 
     @ApiOperation(value = "地址解析",httpMethod = "GET",notes = "地址解析接口，地址转坐标")

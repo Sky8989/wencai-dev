@@ -32,8 +32,10 @@ public class AddressServiceImpl implements AddressService {
     @Resource
     private AddressResolutionMapper addressResolutionMapper;
 
-    public APIResponse addAddress(Address address) {
+    public APIResponse addAddress(APIRequest request) {
         APIStatus status = SUCCESS;
+        JSONObject paramOBJ = JSONObject.fromObject(request.getRequestParam());
+        Address address = (Address) JSONObject.toBean(paramOBJ,Address.class);
         address.setCreate_time(Long.toString(System.currentTimeMillis()));
         try {
             Integer user_id = TokenUtils.getInstance().getUserId();
@@ -62,8 +64,10 @@ public class AddressServiceImpl implements AddressService {
         return APIUtil.getResponse(status, addressList);
     }
 
-    public APIResponse editAddress(Address address) {
+    public APIResponse editAddress(APIRequest request) {
         APIStatus status = SUCCESS;
+        JSONObject paramOBJ = JSONObject.fromObject(request.getRequestParam());
+        Address address = (Address) JSONObject.toBean(paramOBJ,Address.class);
         try {
             Integer user_id = TokenUtils.getInstance().getUserId();
             address.setUser_id(user_id);
