@@ -8,39 +8,33 @@ import com.sftc.web.dao.redis.UserLabelsRedis;
 import com.sftc.web.model.SwaggerRequestVO.UpdateUsrLabelVO;
 import com.sftc.web.model.SwaggerRequestVO.UserLabelVO;
 import com.sftc.web.model.chen.Label;
-import com.sftc.web.model.entity.LabelDetailsInfo;
 import com.sftc.web.model.entity.SystemLabel;
 import com.sftc.web.service.UserLabelService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 import static com.sftc.tools.api.APIStatus.*;
 
-/**
- * Created by CatalpaFlat on 2017/11/6.
- */
+
 @Service
 public class UserLabelServiceImpl implements UserLabelService {
 
-    private static final int SYSTEM_LABELID = -1;
     private static final String CUT_CHAT = "\\|";
 
 
-    @Autowired
+    @Resource
     private UserLabelMapper userLabelMapper;
-    @Autowired
+    @Resource
     private UserLabelsRedis userLabelsRedis;
 
     /**
      * 根据用户id获取用户所有标签
-     * @param apiRequest
      */
     @Override
     public APIResponse getUserAllLabelByUCID(APIRequest apiRequest) {
@@ -67,22 +61,29 @@ public class UserLabelServiceImpl implements UserLabelService {
             String str = label.getSystem_label_ids();
             if (!StringUtils.isBlank(str)){
                 String[] split = str.split(CUT_CHAT);
-                Map<String,String> sys_map = new HashMap<>();
+                JSONArray jsonArray = new JSONArray();
                 Arrays.asList(userLabelsFromRedis.toArray()).forEach(sysLabel ->{
                     JSONObject sys_json = (JSONObject)sysLabel;
                     String id = sys_json.getString("id");
+                    Integer integer = Integer.valueOf(id);
+                    String system_label = sys_json.getString("system_label");
+                    JSONObject jsonObject = new JSONObject();
                     if (Arrays.asList(split).contains(id) ){
-                        String system_label = sys_json.getString("system_label");
-                        sys_map.put(id,system_label);
+                        jsonObject.put("is_selected",true);
+                    }else{
+                        jsonObject.put("is_selected",false);
                     }
+                    jsonObject.put("id",integer);
+                    jsonObject.put("system_label",system_label);
+                    jsonArray.add(jsonObject);
                 });
-                json.put("system_labels",sys_map);
+                json.put("system_labels",jsonArray);
             }else{
                 json.put("system_labels","");
             }
 
             String custom_labels = label.getCustom_labels();
-            JSONArray custom_json = null;
+            JSONArray custom_json;
             if (!StringUtils.isBlank(custom_labels)){
                 custom_json = JSONArray.fromObject(custom_labels);
                 json.put("custom_labels",custom_json);
@@ -100,7 +101,6 @@ public class UserLabelServiceImpl implements UserLabelService {
 
     /**
      * 根据标签id修改个人标签
-     * @param apiRequest
      */
     @Override
     @Transactional
@@ -110,7 +110,7 @@ public class UserLabelServiceImpl implements UserLabelService {
             return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());
         }
         String system_labels = updateUsrLabelVO.getSystem_labels();
-        StringBuffer stf = new StringBuffer();
+        StringBuilder stf = new StringBuilder();
         if(!StringUtils.isBlank(system_labels)){
             JSONArray jsonArray = JSONArray.fromObject(system_labels);
             for (int i=0;i<jsonArray.size();i++){
@@ -141,8 +141,6 @@ public class UserLabelServiceImpl implements UserLabelService {
 
     /**
      * 根据用户好友关系id获取用户系统以及自定义标签
-     * @param apiRequest
-     * @return
      */
     @Override
     public APIResponse getUserLabelDetailsByUCID(APIRequest apiRequest) {
@@ -159,7 +157,7 @@ public class UserLabelServiceImpl implements UserLabelService {
         }
         JSONObject json = new JSONObject();
         //装载系统标签
-        json.put("sysLabels",userLabelsFromRedis);
+//        json.put("sysLabels",userLabelsFromRedis);
 
         Label label = userLabelMapper.queryUserAlllabelByUID(user_contact_id);
 
