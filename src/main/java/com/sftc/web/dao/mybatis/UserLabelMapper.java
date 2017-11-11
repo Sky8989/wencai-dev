@@ -14,7 +14,7 @@ public interface UserLabelMapper {
 
     void insertLabelByUCID(
             @Param(value = "user_contact_id") int user_contact_id,
-            @Param(value = "system_labels") String system_labels,
+            @Param(value = "system_label_ids") String system_label_ids,
             @Param(value = "custom_labels") String custom_labels
     );
 
