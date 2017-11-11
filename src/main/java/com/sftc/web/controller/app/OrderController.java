@@ -73,7 +73,7 @@ public class OrderController extends BaseController {
         return orderService.friendFillOrder(request);
     }
 
-    @ApiOperation(value = "寄件人填写订单", httpMethod = "POST"，notes = "请将请求体中region_type的默认参数string去掉")
+    @ApiOperation(value = "寄件人填写订单", httpMethod = "POST",notes = "请将请求体中region_type的默认参数string去掉")
     @RequestMapping(value = "sender/fill", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse friendPlaceOrder(@RequestBody OrderParam orderParam) throws Exception {
