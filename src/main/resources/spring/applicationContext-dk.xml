@@ -16,8 +16,6 @@
         <property name="SF_SAME_DOMAIN_DEV" value="${sf-api.domain.same.dev}"/>
         <property name="SF_SAME_DOMAIN_STAGE" value="${sf-api.domain.same.stage}"/>
         <property name="SF_SAME_DOMAIN_PRODUCT" value="${sf-api.domain.same.product}"/>
-        <property name="SF_NATION_DOMAIN_DEV" value="${sf-api.domain.nation.dev}"/>
-        <property name="SF_NATION_DOMAIN_PRODUCT" value="${sf-api.domain.nation.product}"/>
         <property name="SF_SAME_COMMON_TOKEN_USERNAME" value="${sf-api.same.common.username}"/>
         <property name="SF_SAME_COMMON_TOKEN_PASSWORD" value="${sf-api.same.common.password}"/>
     </bean>

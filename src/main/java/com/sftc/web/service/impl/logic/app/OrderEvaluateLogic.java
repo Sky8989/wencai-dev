@@ -46,29 +46,10 @@ public class OrderEvaluateLogic {
         JSONObject attributes = jsonObjectParam.getJSONObject("request").getJSONObject("attributes");
         String uuid = requestOBJ.getString("uuid");
         OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
-        boolean isNationFlag = false;
         if (orderExpress == null) {
             return APIUtil.selectErrorResponse("该uuid无对应快递信息，请检查uuid", request);
         } else {
             Order order = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
-            if (order != null && "REGION_NATION".equals(order.getRegion_type())) {
-                isNationFlag = true;
-            }
-        }
-
-        ///如果 订单是大网单 则不请求顺丰接口，只保存在自己数据库中
-        if (isNationFlag) {
-            /// 评价成功后，向评价表存入 评价记录
-            Evaluate evaluate = new Evaluate();
-            evaluate.setMerchant_comments(attributes.getString("merchant_comments"));
-            evaluate.setMerchant_score(attributes.getString("merchant_score"));
-            evaluate.setMerchant_tags(attributes.getString("merchant_tags"));
-            evaluate.setOrderExpress_id(orderExpress.getId());
-            evaluate.setUuid(uuid);
-            evaluate.setUser_id(requestOBJ.getInt("user_id"));
-            evaluate.setCreate_time(Long.toString(System.currentTimeMillis()));
-            evaluateMapper.addEvaluate(evaluate);
-            return APIUtil.getResponse(SUCCESS, evaluate);
         }
 
         /// 向顺丰的接口发送评价信息

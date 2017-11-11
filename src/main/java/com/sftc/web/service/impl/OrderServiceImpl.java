@@ -2,7 +2,6 @@ package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.SwaggerOrderVO.FriendFillVO;
 import com.sftc.web.service.OrderService;
 import com.sftc.web.service.impl.logic.app.*;
 import com.sftc.web.service.impl.logic.cms.CMSOrderListLogic;
@@ -26,8 +25,6 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private OrderListLogic orderListLogic;
     @Resource
-    private OrderTransformLogic orderTransformLogic;
-    @Resource
     private OrderPayLogic orderPayLogic;
     @Resource
     private OrderEvaluateLogic orderEvaluateLogic;
@@ -47,24 +44,8 @@ public class OrderServiceImpl implements OrderService {
         return orderCommitLogic.friendOrderCommit(request);
     }
 
-    public APIResponse setupReserveNationOrderCommitTimer(APIRequest request) {
-        return orderTimerLogic.setupReserveNationOrderCommitTimer(request);
-    }
-
-    public APIResponse setupCancelNationOrderTimer(APIRequest request) {
-        return orderTimerLogic.setupCancelNationOrderTimer(request);
-    }
-
     public APIResponse setupCancelSameOrderTimer(APIRequest request) {
         return orderTimerLogic.setupCancelSameOrderTimer(request);
-    }
-
-    public APIResponse transformOrderFromSameToNation(APIRequest request) {
-        return orderTransformLogic.transformOrderFromSameToNation(request);
-    }
-
-    public APIResponse readExpressTransform(APIRequest request) {
-        return orderTransformLogic.readExpressTransform(request);
     }
 
     public APIResponse countPrice(APIRequest request) {

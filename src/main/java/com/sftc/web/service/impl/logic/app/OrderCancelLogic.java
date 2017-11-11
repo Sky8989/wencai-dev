@@ -52,28 +52,8 @@ public class OrderCancelLogic {
         if(order == null)
             return APIUtil.selectErrorResponse("订单不存在", null);
 
-        //不同地域类型的订单 进行不同的取消方式 大网是软取消 同城是硬取消
-        if ("REGION_NATION".equals(order.getRegion_type())) {// true 大网单
-            APIResponse cancelResult = cancelNATIONOrder(id, "CANCELED");
-            if (cancelResult.getState() == 200) {
-                addCancelRecord(id, "主动软取消", "大网");
-            }
-            return cancelResult;
-        } else { // false 同城单 或者 未提交单
             return cancelSAMEOrder(id, access_token);
-        }
-    }
 
-    /**
-     * 取消大网超时订单
-     */
-    public void cancelNationUnCommitOrder(String order_id, long timeOutInterval) {
-        Order order = orderMapper.selectOrderDetailByOrderId(order_id);
-        if (Long.parseLong(order.getCreate_time()) + timeOutInterval < System.currentTimeMillis()) { // 超时
-            // 取消大网订单
-            cancelNATIONOrder(order_id, "OVERTIME");
-            addCancelRecord(order_id, "超时软取消", "大网");
-        }
     }
 
     /**
@@ -98,24 +78,6 @@ public class OrderCancelLogic {
     }
 
     //////////////////// Private Method ////////////////////
-
-    // 取消大网订单
-    private APIResponse cancelNATIONOrder(String order_id, String status) {
-        try {
-//            Order order = orderDao.findOne(order_id);
-//            order.setIs_cancel(1);
-//            orderDao.save(order);
-            orderMapper.updateCancelOrderById(order_id); //事务问题,先存在查的改为统一使用Mybatis
-            List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
-            for (OrderExpress orderExpress1 : orderExpress) {
-                orderExpress1.setState(status);
-                orderExpressDao.save(orderExpress1);
-            }
-            return APIUtil.getResponse(APIStatus.SUCCESS, "订单取消成功");
-        } catch (Exception e) {
-            return APIUtil.logicErrorResponse("数据库操作异常", e);
-        }
-    }
 
     // 取消同城订单 与 未提交单
     private APIResponse cancelSAMEOrder(String order_id, String access_token) {

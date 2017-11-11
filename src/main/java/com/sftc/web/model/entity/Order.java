@@ -55,7 +55,7 @@ public class Order extends Object {
     private int voice_time;
     // 订单类型 普通 神秘
     private String order_type;
-    // 订单地域 同城 大网
+    // 订单地域 同城
     private String region_type;
     //新添加 is_cancel
     private int is_cancel;

@@ -2,16 +2,12 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIUtil;
-import com.sftc.tools.common.ControllerHelper;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.SwaggerRequestVO.DeleteTokenVO;
-import com.sftc.web.model.SwaggerRequestVO.RefreshTokenVO;
 import com.sftc.web.service.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +22,7 @@ import javax.annotation.Resource;
 public class TokenController extends BaseController {
     @Resource
     private TokenService tokenService;
-    
+
     @IgnoreToken
     @ApiOperation(value = "删除token表整行数据/前端请除token使用", httpMethod = "DELETE")
     @RequestMapping(method = RequestMethod.DELETE)
@@ -35,15 +31,6 @@ public class TokenController extends BaseController {
         APIRequest apiRequest = new APIRequest();
         apiRequest.setRequestParam(deleteTokenVO);
         return tokenService.deleteToken(apiRequest);
-    }
-
-    @ApiOperation(value = "1.app端的接口，手机号登陆和微信登陆共用，参数区分2.刷新token", httpMethod = "POST")
-    @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse login(@RequestBody RefreshTokenVO refreshTokenVO) throws Exception {
-        APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(refreshTokenVO);
-        return tokenService.token(apiRequest);
     }
 
 //    @RequestMapping(value = "/token2", method = RequestMethod.POST)

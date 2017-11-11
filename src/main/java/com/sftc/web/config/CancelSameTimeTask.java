@@ -58,5 +58,10 @@ public class CancelSameTimeTask extends TimerTask implements InitializingBean{
         for (String order_id : orderIds) {
             orderCancelLogic.cancelSameUnCommitOrder(order_id, timeOutIntervalForSame);
         }
+        //好友多包裹的订单 超时更新为DANKAL_OVERTIME 而不是CANCELED
+        List<String> orderIds2 = orderMapper.selectMutilExpressOrders();
+        for (String order_id : orderIds2) {
+            orderCancelLogic.cancelSameUnCommitOrder(order_id, timeOutIntervalForSame);
+        }
     }
 }

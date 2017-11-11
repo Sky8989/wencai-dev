@@ -16,7 +16,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 
@@ -36,35 +35,6 @@ public class TokenServiceImpl implements TokenService {
 
     @Resource
     private TokenMapper tokenMapper;
-
-    /**
-     * token机制的中控器
-     *
-     * @param apiRequest
-     * @return
-     * @throws Exception
-     */
-    public APIResponse token(APIRequest apiRequest) throws Exception {
-        JSONObject paramOBJ = JSONObject.fromObject(apiRequest.getRequestParam());
-        ///当有参数system_refresh_token时，提供token刷新服务
-
-        if (paramOBJ.containsKey("system_refresh_token")) {
-
-            if (!"".equals(paramOBJ.getString("system_refresh_token"))) {
-                return this.refreshToken(paramOBJ.getString("system_refresh_token"));
-            } else {
-                return APIUtil.paramErrorResponse("system_refresh_token can't been ''");
-            }
-
-        } else if (paramOBJ.containsKey("mobileLogin")) {
-            this.mobileGetToken(paramOBJ.getJSONObject("mobileLogin"));
-        } else if (paramOBJ.containsKey("wxLogin")) {
-            this.WXGetToken(paramOBJ.getJSONObject("wxLogin"));
-        }
-
-        return APIUtil.paramErrorResponse("Param_error");
-
-    }
 
     /**
      * @param apiRequest

@@ -263,45 +263,7 @@ public class UserServiceImpl implements UserService {
         return JSONObject.fromObject(res);
     }
 
-    // 解除绑定操作，原微信号，解除原有手机号
-    public APIResponse deleteMobile(APIRequest request) throws Exception {
-        Integer user_id = TokenUtils.getInstance().getUserId();
-        User user = userMapper.selectUserByUserId(user_id);
-        Token tokenById = tokenMapper.getTokenById(user_id);
-        if (user != null) {// 验空
-            if (user.getMobile() != null && !"".equals(user.getMobile())) {
-                //清除 手机号 uuid access_token 和 refresh_token
-                user.setMobile("");
-                user.setUuid("");
-                userMapper.updateUser(user);
-                tokenById.setAccess_token("");
-                tokenById.setRefresh_token("");
-                tokenMapper.updateToken(tokenById);
-                return APIUtil.getResponse(SUCCESS, user_id + "用户解除手机绑定成功");
-            } else {// 无手机号
-                return APIUtil.submitErrorResponse("该用户未绑定手机号，请勿进行操作", null);
-            }
-        } else {
-            return APIUtil.submitErrorResponse("无该用户，请检查参数", null);
-        }
-    }
-
-    // 修改手机号码 即重新绑定新手机号
-    public APIResponse updateMobile(APIRequest apiRequest) throws Exception {
-        Object requestParam = apiRequest.getRequestParam();
-        // 1 验证手机号可用性
-        JSONObject jsonObject = JSONObject.fromObject(requestParam);
-        String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
-        int user_id = jsonObject.getInt("user_id");
-        User user = userMapper.selectUserByPhone(mobile);
-        if (user != null) {
-            return APIUtil.submitErrorResponse("手机号已被人使用过，请检查手机号", mobile);
-        }
-        // 2 走注册流程
-        return messageService.register(apiRequest);
-    }
-
-    //10-12日提出的新需求 更新个人信息
+    //更新个人信息
     public APIResponse updatePersonMessage(APIRequest apiRequest) throws Exception {
         Object requestParam = apiRequest.getRequestParam();
         JSONObject jsonObject = JSONObject.fromObject(requestParam);
@@ -339,39 +301,6 @@ public class UserServiceImpl implements UserService {
         okhttp3.Response response = client.newCall(request).execute();
         if (response.code() == 200) return APIUtil.getResponse(SUCCESS, response.message());//正常情况返回null
         return APIUtil.logicErrorResponse("更新个人信息失败", response.body());
-    }
-
-    //生成临时token  2017-10-23
-    public APIResponse getTemporaryToken() throws Exception {
-        //2188用户用于发放临时token
-        Token usableToken = tokenMapper.getTokenById(2188);
-        if (usableToken != null) {
-            long dataTime = System.currentTimeMillis();
-            long tempTime = Long.parseLong(usableToken.getGmt_expiry());
-            //如果没有过期直接返回
-            if (dataTime < tempTime || dataTime == tempTime) {
-                usableToken = tokenMapper.getTokenById(2188);
-            } else {//如果过期重新创建新的返回
-                String creat_time = Long.toString(System.currentTimeMillis());
-                String tempOpenId = SFOrderHelper.getTempOpenId();
-                String tempToken = makeToken(creat_time, tempOpenId);
-                Token token = new Token(2188, tempToken);
-                token.setGmt_expiry((System.currentTimeMillis() + 60000) + "");
-                tokenMapper.updateToken(token);
-                usableToken = tokenMapper.getTokenById(2188);
-            }
-        } else {
-            String creat_time = Long.toString(System.currentTimeMillis());
-            String tempOpenId = SFOrderHelper.getTempOpenId();
-            String tempToken = makeToken(creat_time, tempOpenId);
-            Token token = new Token(2188, tempToken);
-            token.setGmt_expiry((System.currentTimeMillis() + 60000) + "");
-            tokenMapper.addToken(token);
-            usableToken = tokenMapper.getTokenById(2188);
-        }
-        Map<String,String> map = new HashMap<>();
-        map.put("token",usableToken.getLocal_token());
-        return APIUtil.getResponse(SUCCESS, map);
     }
 
     /**

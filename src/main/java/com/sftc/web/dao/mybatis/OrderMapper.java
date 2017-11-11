@@ -55,16 +55,6 @@ public interface OrderMapper {
     OrderDTO selectOrderDetailByExpressId(int express_id);
 
     /**
-     * 查询大网预约订单列表
-     */
-    List<String> selectNationReserveOrders();
-
-    /**
-     * 查询大网未提交的订单列表
-     */
-    List<String> selectNationUnCommitOrders();
-
-    /**
      * 查询好友多包裹未提交的订单列表
      */
     List<String> selectMutilExpressOrders();

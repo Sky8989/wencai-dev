@@ -87,35 +87,6 @@ public class SFConstant {
      */
     public static String SF_ORDER_SYNC_URL = SF_SAME_DOMAIN + "requests/{uuid}/status?batch=true";
 
-
-    /////////////// 大网用户相关 ///////////////
-
-    /**
-     * 获取token
-     */
-    public static final String SF_TOKEN_URL = SF_NATION_DOMAIN_PRODUCT + "token";
-
-
-    /////////////// 大网订单相关 ///////////////
-
-    /**
-     * 大网订单根地址
-     */
-    private static final String SF_NATION_ORDER_URL = SF_NATION_DOMAIN_PRODUCT + "api/sforderservice/";
-    /**
-     * 创建订单
-     */
-    public static final String SF_CREATEORDER_URL = SF_NATION_ORDER_URL + "ordercreate";
-//    /**
-//     * 计价
-//     */
-//    public static final String SF_COUNT_PRICE = SF_NATION_ORDER_URL + "OrderFreightQuery";
-    /**
-     * 路由地址
-     */
-    public static final String SF_ORDERROUTE_URL = SF_NATION_ORDER_URL + "OrderRouteQuery?orderid=";
-
-
     public static void setEnvironment(SFEnvironment environment) {
         SFConstant.environment = environment;
 

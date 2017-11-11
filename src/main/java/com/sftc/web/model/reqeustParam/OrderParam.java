@@ -51,7 +51,7 @@ public class OrderParam {
     private  String package_type;
     @ApiModelProperty(name = "order_type",value = "是否普通",example = "ORDER_MYSTERY")
     private String order_type;
-    @ApiModelProperty(name = "region_type",value = "同城,大网",notes = "请将里面默认的String去掉，否则好友无法提交")
+    @ApiModelProperty(name = "region_type",value = "同城",notes = "请将里面默认的String去掉，否则好友无法提交")
     private String region_type;
 
     public String getSender_name() {
