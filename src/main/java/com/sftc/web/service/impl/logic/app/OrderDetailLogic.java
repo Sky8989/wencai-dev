@@ -24,6 +24,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -184,16 +185,22 @@ public class OrderDetailLogic {
             if (apiResponse != null) return apiResponse;
             order = orderMapper.selectOrderDetailByUuid(uuid);
 
+
             List<OrderExpressDTO> orderExpressList = order.getOrderExpressList();
-            for (OrderExpressDTO orderExpressDTO : orderExpressList) {
+            if (order.getLatitude() == 0 || order.getLongitude() == 0){
+                Map<String,String> map = new HashMap<>();
+                map.put("reason","寄件人经纬度参数缺失");
+                return APIUtil.submitErrorResponse("寄件人经纬度参数缺失",map);
+            };
+            for (OrderExpressDTO orderExpressDTO : orderExpressList) {  //获取订单基础数据
                 String constantsUrl = SF_CONSTANTS_URL + CONSTANTS_STR + "?latitude="
-                        + orderExpressDTO.getLatitude() + "&longitude=" + orderExpressDTO.getLongitude();
+                        + order.getLatitude() + "&longitude=" + order.getLongitude();
                 HttpGet get = new HttpGet(constantsUrl);
                 get.addHeader("PushEnvelope-Device-Token", access_token);
                 String res = APIGetUtil.get(get);
                 JSONObject jsonObject = JSONObject.fromObject(res);
                 if (jsonObject.get("errors") != null || jsonObject.get("error") != null)
-                    return APIUtil.submitErrorResponse("获取常量失败", jsonObject);
+                    return APIUtil.submitErrorResponse("获取订单基础数据失败", jsonObject);
 
                 try {
                     if (jsonObject.getJSONObject("constant").getJSONObject("value").containsKey("PACKAGE_TYPE")) {
@@ -202,10 +209,11 @@ public class OrderDetailLogic {
                         for (int i = 0; i < packageTypeArr.size(); i++) {
                             JSONObject packageTypeOBJ = packageTypeArr.getJSONObject(i);
                             String package_code = packageTypeOBJ.getString("code");
-                            if (package_code != null && package_code.equals(orderExpressDTO.getObject_type())) {
+                            if (package_code != null && package_code.equals(orderExpressDTO.getObject_type())) {  //获取物品类型与快递相同的数组
                                 JSONArray weightArr = packageTypeOBJ.getJSONArray("weight_segment");
                                 for (int j = 0; j < weightArr.size(); j++) {
                                     JSONObject weightOBJ = weightArr.getJSONObject(j);
+                                    //根据包裹大小类型添加包裹信息    0/1/2/3 --对应-- 小/中/大/超大
                                     if (j == 0 && orderExpressDTO.getPackage_type().equals(PackageType.SMALl_PACKAGE.getKey())) {
                                         packageMessage.setName(weightOBJ.getString("name"));
                                         packageMessage.setWeight(weightOBJ.getString("weight"));
