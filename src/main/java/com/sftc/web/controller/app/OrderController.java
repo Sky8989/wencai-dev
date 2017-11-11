@@ -73,7 +73,7 @@ public class OrderController extends BaseController {
         return orderService.friendFillOrder(request);
     }
 
-    @ApiOperation(value = "寄件人填写订单", httpMethod = "POST")
+    @ApiOperation(value = "寄件人填写订单", httpMethod = "POST"，notes = "请将请求体中region_type的默认参数string去掉")
     @RequestMapping(value = "sender/fill", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse friendPlaceOrder(@RequestBody OrderParam orderParam) throws Exception {
@@ -100,7 +100,7 @@ public class OrderController extends BaseController {
         return orderService.selectOrderDetail(new APIRequest(request));
     }
 
-    @ApiOperation(value = "我的订单列表", httpMethod = "POST")
+    @ApiOperation(value = "我的订单列表", httpMethod = "POST",notes = "测试接口若出现错误，删除key_words、key_state再试试")
     @RequestMapping(value = "/my", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse myOrder(@RequestBody MyOrderParam myOrderParam) throws Exception {
@@ -109,7 +109,7 @@ public class OrderController extends BaseController {
         return orderService.getMyOrderList(request);
     }
 
-    @ApiOperation(value = "我的好友圈订单列表", httpMethod = "POST")
+    @ApiOperation(value = "我的好友圈订单列表", httpMethod = "POST",notes = "测试接口若出现错误，删除key_words、key_state再试试")
     @RequestMapping(value = "/list/friend", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse friendOrder(@RequestBody MyOrderParam myOrderParam) throws Exception {
