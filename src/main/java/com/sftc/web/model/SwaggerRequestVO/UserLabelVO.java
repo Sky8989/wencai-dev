@@ -5,8 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(value = "用户标签")
 public class UserLabelVO {
-   @ApiModelProperty(value = "用户好友关系id",example = "156",required = true)
-   private int user_contact_id;
+    @ApiModelProperty(value = "用户好友关系id", example = "156", required = true)
+    private int user_contact_id;
 
     public int getUser_contact_id() {
         return user_contact_id;

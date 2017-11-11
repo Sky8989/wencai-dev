@@ -1,25 +1,30 @@
 package com.sftc.web.service.impl;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.UserLabelMapper;
-import com.sftc.web.dao.redis.UserLabelsRedis;
-import com.sftc.web.model.SwaggerRequestVO.UpdateUsrLabelVO;
+import com.sftc.web.dao.redis.UserLabelsRedisDao;
+import com.sftc.web.model.SwaggerRequestVO.UpdateUserContactLabelVO;
 import com.sftc.web.model.SwaggerRequestVO.UserLabelVO;
-import com.sftc.web.model.chen.Label;
+import com.sftc.web.model.dto.SystemLabelDTO;
+import com.sftc.web.model.entity.Label;
+import com.sftc.web.model.dto.LabelDTO;
 import com.sftc.web.model.entity.SystemLabel;
 import com.sftc.web.service.UserLabelService;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import static com.sftc.tools.api.APIStatus.*;
+import static com.sftc.tools.api.APIStatus.PARAM_ERROR;
+import static com.sftc.tools.api.APIStatus.SUCCESS;
 
 
 @Service
@@ -27,145 +32,110 @@ public class UserLabelServiceImpl implements UserLabelService {
 
     private static final String CUT_CHAT = "\\|";
 
-
     @Resource
     private UserLabelMapper userLabelMapper;
     @Resource
-    private UserLabelsRedis userLabelsRedis;
+    private UserLabelsRedisDao userLabelsRedisDao;
 
     /**
      * 根据用户id获取用户所有标签
      */
-    @Override
-    public APIResponse getUserAllLabelByUCID(APIRequest apiRequest) {
-        UserLabelVO userLabelVO = (UserLabelVO)apiRequest.getRequestParam();
-        if (userLabelVO ==null){
+    public APIResponse getUserContactLabels(APIRequest apiRequest) {
+
+        UserLabelVO userLabelVO = (UserLabelVO) apiRequest.getRequestParam();
+        if (userLabelVO == null)
             return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());
-        }
         int user_contact_id = userLabelVO.getUser_contact_id();
-        JSONArray userLabelsFromRedis = userLabelsRedis.getUserLabelsFromRedis();
-//        JSONArray userLabelsFromRedis = null;
-        if (userLabelsFromRedis==null||userLabelsFromRedis.size()<1){
-            List<SystemLabel> system_labels =  userLabelMapper.querySystemLable();
-            userLabelsFromRedis = JSONArray.fromObject(system_labels);
-        }
-        Label label = userLabelMapper.queryUserAlllabelByUID(user_contact_id);
-        JSONObject json = new JSONObject();
+        if (user_contact_id <= 0) return APIUtil.paramErrorResponse("参数无效");
 
-        setJSON(userLabelsFromRedis, label, json);
-        return APIUtil.getResponse(SUCCESS, json);
+        JSONObject responseObject = userLabelsRedisDao.getUserContactLabels(user_contact_id);
+        responseObject = responseObject == null ? getUserContactLabelsByUCID(user_contact_id) : responseObject;
+
+        return APIUtil.getResponse(SUCCESS, responseObject);
     }
-
-    private void setJSON(JSONArray userLabelsFromRedis, Label label, JSONObject json) {
-        if (label!=null){
-            String str = label.getSystem_label_ids();
-            if (!StringUtils.isBlank(str)){
-                String[] split = str.split(CUT_CHAT);
-                JSONArray jsonArray = new JSONArray();
-                Arrays.asList(userLabelsFromRedis.toArray()).forEach(sysLabel ->{
-                    JSONObject sys_json = (JSONObject)sysLabel;
-                    String id = sys_json.getString("id");
-                    Integer integer = Integer.valueOf(id);
-                    String system_label = sys_json.getString("system_label");
-                    JSONObject jsonObject = new JSONObject();
-                    if (Arrays.asList(split).contains(id) ){
-                        jsonObject.put("is_selected",true);
-                    }else{
-                        jsonObject.put("is_selected",false);
-                    }
-                    jsonObject.put("id",integer);
-                    jsonObject.put("system_label",system_label);
-                    jsonArray.add(jsonObject);
-                });
-                json.put("system_labels",jsonArray);
-            }else{
-                json.put("system_labels","");
-            }
-
-            String custom_labels = label.getCustom_labels();
-            JSONArray custom_json;
-            if (!StringUtils.isBlank(custom_labels)){
-                custom_json = JSONArray.fromObject(custom_labels);
-                json.put("custom_labels",custom_json);
-            }else
-                json.put("custom_labels","");
-            json.put("label_id",label.getId());
-        }else {
-            json.put("label_id","");
-            json.put("system_labels","");
-            json.put("custom_labels","");
-        }
-    }
-
-
 
     /**
      * 根据标签id修改个人标签
      */
-    @Override
-    @Transactional
-    public APIResponse updateUsrLabelByLID(APIRequest apiRequest) {
-        UpdateUsrLabelVO updateUsrLabelVO = (UpdateUsrLabelVO)apiRequest.getRequestParam();
-        if (updateUsrLabelVO ==null){
+    public APIResponse updateUserContactLabels(APIRequest apiRequest) {
+
+        UpdateUserContactLabelVO updateUserContactLabelVO = (UpdateUserContactLabelVO) apiRequest.getRequestParam();
+        if (updateUserContactLabelVO == null) {
             return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());
         }
-        String system_labels = updateUsrLabelVO.getSystem_labels();
-        StringBuilder stf = new StringBuilder();
-        if(!StringUtils.isBlank(system_labels)){
-            JSONArray jsonArray = JSONArray.fromObject(system_labels);
-            for (int i=0;i<jsonArray.size();i++){
-                stf.append(jsonArray.get(i));
-                if (i!=jsonArray.size()-1){
-                    stf.append("|");
-                }
+        int user_contact_id = updateUserContactLabelVO.getUser_contact_id();
+        if (user_contact_id <= 0) return APIUtil.paramErrorResponse("Parameter `user_contact_id` missing.");
+
+        List<Integer> systemLabels = updateUserContactLabelVO.getSystem_labels();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < systemLabels.size(); i++) {
+            sb.append(systemLabels.get(i));
+            if (i != systemLabels.size() - 1) {
+                sb.append("|");
             }
-            updateUsrLabelVO.setSystem_labels(stf.toString());
         }
-        int type = updateUsrLabelVO.getType();
-        int label_id = updateUsrLabelVO.getLabel_id();
+        String system_labels = sb.toString();
+        String custom_labels = new Gson().toJson(updateUserContactLabelVO.getCustom_labels());
 
-        if (type==0){
-            userLabelMapper.insertLabelByid(label_id,updateUsrLabelVO.getSystem_labels(),updateUsrLabelVO.getCustom_labels());
-        }else {
-            int  result;
-            if(StringUtils.isBlank(stf.toString()))
-                 result = userLabelMapper.updateLabelByID(label_id,null,updateUsrLabelVO.getCustom_labels());
-            else
-                result = userLabelMapper.updateLabelByID(label_id,stf.toString(),updateUsrLabelVO.getCustom_labels());
-
-            if (result<0)
-                return APIUtil.getResponse(PARAM_ERROR, "修改标签错误");
+        Label label = userLabelMapper.queryUserAllLabelByUID(user_contact_id);
+        if (label != null) {
+            userLabelMapper.updateLabelByUCID(user_contact_id, system_labels, custom_labels);
+            userLabelsRedisDao.removeUserContactLabelsCache(user_contact_id);
+        } else {
+            userLabelMapper.insertLabelByUCID(user_contact_id, system_labels, custom_labels);
         }
-        return APIUtil.getResponse(SUCCESS,"");
+
+        JSONObject responseObject = getUserContactLabelsByUCID(user_contact_id);
+        return APIUtil.getResponse(SUCCESS, responseObject);
     }
 
-    /**
-     * 根据用户好友关系id获取用户系统以及自定义标签
-     */
-    @Override
-    public APIResponse getUserLabelDetailsByUCID(APIRequest apiRequest) {
-        UserLabelVO userLabelVO = (UserLabelVO)apiRequest.getRequestParam();
-        if (userLabelVO ==null){
-            return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());
+    // 根据好友联系人ID查好友标签
+    @Transactional
+    private JSONObject getUserContactLabelsByUCID(int user_contact_id) {
+
+        Label label = userLabelMapper.queryUserAllLabelByUID(user_contact_id);
+
+        // 选中标签
+        List<String> selectedLabels = new ArrayList<>();
+        // 系统标签
+        List<LabelDTO> sysLabels = new ArrayList<>();
+        List<SystemLabel> systemLabels = userLabelsRedisDao.getSystemLabels();
+        if (systemLabels == null) {
+            systemLabels = userLabelMapper.querySystemLabels();
+            if (systemLabels != null) {
+                userLabelsRedisDao.setSystemLabelsCache(systemLabels);
+            }
         }
-        int user_contact_id = userLabelVO.getUser_contact_id();
-        JSONArray userLabelsFromRedis = userLabelsRedis.getUserLabelsFromRedis();
-//        JSONArray userLabelsFromRedis = null;
-        if (userLabelsFromRedis==null||userLabelsFromRedis.size()<1){
-            List<SystemLabel> system_labels =  userLabelMapper.querySystemLable();
-            userLabelsFromRedis = JSONArray.fromObject(system_labels);
+        if (systemLabels != null) {
+            List<String> system_selected_ids = label == null ? new ArrayList<>() : Arrays.asList(label.getSystem_label_ids().split(CUT_CHAT));
+            for (SystemLabel systemLabel : systemLabels) {
+                // entity to dto.
+                SystemLabelDTO tmpLabel = new SystemLabelDTO();
+                tmpLabel.setId(systemLabel.getId());
+                tmpLabel.setName(systemLabel.getSystem_label());
+                boolean isSeleted = system_selected_ids.contains(systemLabel.getId() + "");
+                tmpLabel.setSelected(isSeleted);
+                if (isSeleted)
+                    selectedLabels.add(systemLabel.getSystem_label());
+                sysLabels.add(tmpLabel);
+            }
         }
-        JSONObject json = new JSONObject();
-        //装载系统标签
-//        json.put("sysLabels",userLabelsFromRedis);
+        // 自定义标签
+        List<LabelDTO> customLabels = label == null ? new ArrayList<>() : new Gson().fromJson(label.getCustom_labels(), new TypeToken<List<LabelDTO>>() {
+        }.getType());
+        for (LabelDTO tmpLabel : customLabels) {
+            if (tmpLabel.isSelected()) {
+                selectedLabels.add(tmpLabel.getName());
+            }
+        }
 
-        Label label = userLabelMapper.queryUserAlllabelByUID(user_contact_id);
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("user_contact_id", user_contact_id);
+        responseObject.put("selected_labels", selectedLabels);
+        responseObject.put("system_labels", sysLabels);
+        responseObject.put("custom_labels", customLabels);
+        userLabelsRedisDao.setUserContactLabelsCache(user_contact_id, responseObject);
 
-
-        //装载用户使用的系统标签，以及自定义标签
-        setJSON(userLabelsFromRedis, label, json);
-
-        return APIUtil.getResponse(SUCCESS, json);
+        return responseObject;
     }
-
 }

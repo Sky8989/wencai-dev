@@ -1,8 +1,5 @@
 package com.sftc.web.model.entity;
 
-import com.sftc.web.model.dto.OrderDTO;
-import com.sftc.web.model.entity.Order;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -16,7 +13,7 @@ public class Message {
     // 消息类型 RECEIVE_EXPRESS / RECEIVE_ADDRESS，收到快递 / 收到好友地址
     private String message_type;
     // 是否已读
-    private  int is_read;
+    private int is_read;
     // 快递编号
     private int express_id;
     // 用户编号
@@ -71,14 +68,6 @@ public class Message {
     public void setCreate_time(String create_time) {
         this.create_time = create_time;
     }
-
-//    public Order getOrder() {
-//        return order;
-//    }
-//
-//    public void setOrder(Order order) {
-//        this.order = order;
-//    }
 
     public Message(String message_type, int is_read, int express_id, int user_id) {
         this.message_type = message_type;
