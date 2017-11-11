@@ -67,11 +67,20 @@ public class UserLabelServiceImpl implements UserLabelService {
         if (user_contact_id <= 0) return APIUtil.paramErrorResponse("Parameter `user_contact_id` missing.");
 
         List<Integer> systemLabels = updateUserContactLabelVO.getSystem_labels();
+        List<SystemLabel> systemLabelsRedis = userLabelsRedisDao.getSystemLabels();
+        if (systemLabelsRedis == null) {
+            systemLabelsRedis = userLabelMapper.querySystemLabels();
+            if (systemLabelsRedis != null) {
+                userLabelsRedisDao.setSystemLabelsCache(systemLabelsRedis);
+            }
+        }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < systemLabels.size(); i++) {
-            sb.append(systemLabels.get(i));
-            if (i != systemLabels.size() - 1) {
-                sb.append("|");
+            if (systemLabelsRedis.contains(systemLabels.get(i))){
+                sb.append(systemLabels.get(i));
+                if (i != systemLabels.size() - 1) {
+                    sb.append("|");
+                }
             }
         }
         String system_labels = sb.toString();
