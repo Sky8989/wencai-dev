@@ -36,7 +36,6 @@ public class UserLabelServiceImpl implements UserLabelService {
     private UserLabelMapper userLabelMapper;
     @Resource
     private UserLabelsRedisDao userLabelsRedisDao;
-
     /**
      * 根据用户id获取用户所有标签
      */
@@ -67,6 +66,7 @@ public class UserLabelServiceImpl implements UserLabelService {
         if (user_contact_id <= 0) return APIUtil.paramErrorResponse("Parameter `user_contact_id` missing.");
 
         List<Integer> systemLabels = updateUserContactLabelVO.getSystem_labels();
+
         List<SystemLabel> systemLabelsRedis = userLabelsRedisDao.getSystemLabels();
         if (systemLabelsRedis == null) {
             systemLabelsRedis = userLabelMapper.querySystemLabels();
@@ -74,15 +74,24 @@ public class UserLabelServiceImpl implements UserLabelService {
                 userLabelsRedisDao.setSystemLabelsCache(systemLabelsRedis);
             }
         }
+
+        List<Integer>  lists = new ArrayList<>();
+        if (systemLabelsRedis!=null){
+            for(SystemLabel systemLabel:systemLabelsRedis){
+                lists.add(systemLabel.getId());
+            }
+        }
+
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < systemLabels.size(); i++) {
-            if (systemLabelsRedis.contains(systemLabels.get(i))){
+            if (lists.contains(systemLabels.get(i))){
                 sb.append(systemLabels.get(i));
                 if (i != systemLabels.size() - 1) {
                     sb.append("|");
                 }
             }
         }
+
         String system_labels = sb.toString();
         String custom_labels = new Gson().toJson(updateUserContactLabelVO.getCustom_labels());
 
