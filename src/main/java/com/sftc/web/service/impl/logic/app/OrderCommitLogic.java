@@ -1,16 +1,41 @@
 package com.sftc.web.service.impl.logic.app;
 
+import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
+import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
+import static com.sftc.tools.constant.WXConstant.WX_template_id_1;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.http.client.methods.HttpPost;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
 import com.google.gson.Gson;
-import com.sftc.tools.api.*;
+import com.sftc.tools.api.APIPostUtil;
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.common.DateUtils;
 import com.sftc.tools.common.EmojiFilter;
+import com.sftc.tools.constant.OrderConstant;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.jpa.AddressBookDao;
 import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.jpa.OrderExpressDao;
-import com.sftc.web.dao.mybatis.*;
+import com.sftc.web.dao.mybatis.AddressBookMapper;
+import com.sftc.web.dao.mybatis.AddressHistoryMapper;
+import com.sftc.web.dao.mybatis.AddressMapper;
+import com.sftc.web.dao.mybatis.OrderExpressMapper;
+import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.model.Converter.OrderExpressFactory;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.dto.OrderDTO;
@@ -24,21 +49,8 @@ import com.sftc.web.model.sfmodel.Coordinate;
 import com.sftc.web.model.sfmodel.Source;
 import com.sftc.web.model.sfmodel.Target;
 import com.sftc.web.service.MessageService;
+
 import net.sf.json.JSONObject;
-import org.apache.http.client.methods.HttpPost;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-
-import javax.annotation.Resource;
-import java.util.List;
-
-import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
-import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
 
 @Component
 public class OrderCommitLogic {
@@ -235,167 +247,189 @@ public class OrderCommitLogic {
     }
 
     /// 好友同城订单提交
-    @Transactional
-    private APIResponse friendSameOrderCommit(JSONObject requestObject) {
-        // Param
-        if (!requestObject.containsKey("order"))
-            return APIUtil.paramErrorResponse("订单信息不完整");
-        String order_id = requestObject.getJSONObject("order").getString("order_id");
-        if (order_id == null || order_id.equals(""))
-            return APIUtil.paramErrorResponse("order_id不能为空");
-        if (!requestObject.containsKey("request"))
-            return APIUtil.paramErrorResponse("订单信息不完整");
-        JSONObject reqObject = requestObject.getJSONObject("request");
-        //同城下单参数增加 C 端小程序标识和订单类型表示   NORMAL/RESERVED/DIRECTED
-        reqObject.put("request_source", "C_WX_APP");
-        reqObject.put("type", "NORMAL");    //默认为普通
+  	@Transactional
+  	private APIResponse friendSameOrderCommit(JSONObject requestObject) {
+  		Integer user_id = TokenUtils.getInstance().getUserId();
+  		String request_num = ""; // 订单号
+  		String uuid = ""; // 请求顺丰下单接口 返回的uuid
+  		// Param
+  		if (!requestObject.containsKey("order"))
+  			return APIUtil.paramErrorResponse("订单信息不完整");
+  		String order_id = requestObject.getJSONObject("order").getString("order_id");
+  		if (order_id == null || order_id.equals(""))
+  			return APIUtil.paramErrorResponse("order_id不能为空");
+  		if (!requestObject.containsKey("request"))
+  			return APIUtil.paramErrorResponse("订单信息不完整");
+  		JSONObject reqObject = requestObject.getJSONObject("request");
+  		// 同城下单参数增加 C 端小程序标识和订单类型表示 NORMAL/RESERVED/DIRECTED
+  		reqObject.put("request_source", "C_WX_APP");
+  		reqObject.put("type", "NORMAL"); // 默认为普通
 
-        String reserve_time = "";
-        if (requestObject.getJSONObject("order").containsKey("reserve_time")) {
-            reserve_time = requestObject.getJSONObject("order").getString("reserve_time");
-            if (reserve_time != null && !reserve_time.equals("")) {
-                reqObject.remove("type");   //预约单type
-                reqObject.put("type", "RESERVED");
-            }
-        }
+  		String reserve_time = "";
+  		if (requestObject.getJSONObject("order").containsKey("reserve_time")) {
+  			reserve_time = requestObject.getJSONObject("order").getString("reserve_time");
+  			if (reserve_time != null && !reserve_time.equals("")) {
+  				reqObject.remove("type"); // 预约单type
+  				reqObject.put("type", "RESERVED");
+  			}
+  		}
 
-        JSONObject attributeOBJ = reqObject.getJSONObject("attributes");
-        if (attributeOBJ.containsKey("source"))
-            attributeOBJ.remove("source");
+  		JSONObject attributeOBJ = reqObject.getJSONObject("attributes");
+  		if (attributeOBJ.containsKey("source"))
+  			attributeOBJ.remove("source");
 
-        OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
-        if (orderDTO == null) return APIUtil.submitErrorResponse("订单不存在", null);
+  		OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
+  		String sendName = orderDTO.getSender_name();
+  		if (orderDTO == null)
+  			return APIUtil.submitErrorResponse("订单不存在", null);
 
-        //增加对包裹数量的验证，确保是只有一个订单里只有一个同城包裹
-        //后期更新订单与包裹一对一，但是好友件同城可以多包裹，同城订单走这个逻辑？
-        if (orderDTO.getOrderExpressList().size() != 1)
-            return APIUtil.submitErrorResponse("Order infomation has been changed, please check again!", null);
+  		// 增加对包裹数量的验证，确保是只有一个订单里只有一个同城包裹
+  		// 后期更新订单与包裹一对一，但是好友件同城可以多包裹，同城订单走这个逻辑？
+  		if (orderDTO.getOrderExpressList().size() != 1)
+  			return APIUtil.submitErrorResponse("Order infomation has been changed, please check again!", null);
 
-        for (OrderExpressDTO oeDto : orderDTO.getOrderExpressList()) {
-            OrderExpress oe = OrderExpressFactory.dtoToEntity(oeDto);
-            // 拼接同城订单参数中的 source 和 target
-            Source source = new Source();
-            Address address = new Address();
-            address.setProvince(orderDTO.getSender_province());
-            address.setCity(orderDTO.getSender_city());
-            address.setRegion(orderDTO.getSender_area());
-            address.setStreet(orderDTO.getSender_addr());
-            address.setReceiver(orderDTO.getSender_name());
-            address.setMobile(orderDTO.getSender_mobile());
-            Coordinate coordinate = new Coordinate();
-            coordinate.setLongitude(orderDTO.getLongitude());
-            coordinate.setLatitude(orderDTO.getLatitude());
-            source.setAddress(address);
-            source.setCoordinate(coordinate);
+  		for (OrderExpressDTO oeDto : orderDTO.getOrderExpressList()) {
+  			OrderExpress oe = OrderExpressFactory.dtoToEntity(oeDto);
+  			// 拼接同城订单参数中的 source 和 target
+  			Source source = new Source();
+  			Address address = new Address();
+  			address.setProvince(orderDTO.getSender_province());
+  			address.setCity(orderDTO.getSender_city());
+  			address.setRegion(orderDTO.getSender_area());
+  			address.setStreet(orderDTO.getSender_addr());
+  			address.setReceiver(orderDTO.getSender_name());
+  			address.setMobile(orderDTO.getSender_mobile());
+  			Coordinate coordinate = new Coordinate();
+  			coordinate.setLongitude(orderDTO.getLongitude());
+  			coordinate.setLatitude(orderDTO.getLatitude());
+  			source.setAddress(address);
+  			source.setCoordinate(coordinate);
 
-            Target target = new Target();
-            Address targetAddress = new Address();
-            targetAddress.setProvince(oe.getShip_province());
-            targetAddress.setCity(oe.getShip_city());
-            targetAddress.setRegion(oe.getShip_area());
-            targetAddress.setStreet(oe.getShip_addr());
-            targetAddress.setReceiver(oe.getShip_name());
-            targetAddress.setMobile(oe.getShip_mobile());
-            Coordinate targetCoordinate = new Coordinate();
-            targetCoordinate.setLongitude(oe.getLongitude());
-            targetCoordinate.setLatitude(oe.getLatitude());
-            target.setAddress(targetAddress);
-            target.setCoordinate(targetCoordinate);
+  			Target target = new Target();
+  			Address targetAddress = new Address();
+  			targetAddress.setProvince(oe.getShip_province());
+  			targetAddress.setCity(oe.getShip_city());
+  			targetAddress.setRegion(oe.getShip_area());
+  			targetAddress.setStreet(oe.getShip_addr());
+  			targetAddress.setReceiver(oe.getShip_name());
+  			targetAddress.setMobile(oe.getShip_mobile());
+  			Coordinate targetCoordinate = new Coordinate();
+  			targetCoordinate.setLongitude(oe.getLongitude());
+  			targetCoordinate.setLatitude(oe.getLatitude());
+  			target.setAddress(targetAddress);
+  			target.setCoordinate(targetCoordinate);
 
-            requestObject.getJSONObject("request").put("source", source);
-            requestObject.getJSONObject("request").put("target", target);
-            if (reserve_time != null && !reserve_time.equals("")) {
-                String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-                requestObject.getJSONObject("request").put("reserve_time", reserveTime);
-            }
+  			requestObject.getJSONObject("request").put("source", source);
+  			requestObject.getJSONObject("request").put("target", target);
+  			if (reserve_time != null && !reserve_time.equals("")) {
+  				String reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserve_time,
+  						"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+  				requestObject.getJSONObject("request").put("reserve_time", reserveTime);
+  			}
 
-            // TODO 把门牌号加到下单的参数json中
-            Object removeStreet = requestObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").remove("street");
-            String newStreet = removeStreet.toString() + orderDTO.getSupplementary_info();
-            requestObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").put("street", newStreet);
-            Object removeStreet2 = requestObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").remove("street");
-            String newStreet2 = removeStreet2.toString() + oe.getSupplementary_info();
-            requestObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").put("street", newStreet2);
+  			// TODO 把门牌号加到下单的参数json中
+  			Object removeStreet = requestObject.getJSONObject("request").getJSONObject("source")
+  					.getJSONObject("address").remove("street");
+  			String newStreet = removeStreet.toString() + orderDTO.getSupplementary_info();
+  			requestObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").put("street",
+  					newStreet);
+  			Object removeStreet2 = requestObject.getJSONObject("request").getJSONObject("target")
+  					.getJSONObject("address").remove("street");
+  			String newStreet2 = removeStreet2.toString() + oe.getSupplementary_info();
+  			requestObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").put("street",
+  					newStreet2);
 
-            /// Request
-            Object tempObj = JSONObject.toBean(requestObject);
-            // tempJsonObj 是为了保证对顺丰接口的请求体的完整，不能包含其它的键值对，例如接口的请求参数"order"
-            JSONObject tempJsonObj = JSONObject.fromObject(tempObj);
-            tempJsonObj.remove("order");
+  			/// Request
+  			Object tempObj = JSONObject.toBean(requestObject);
+  			// tempJsonObj 是为了保证对顺丰接口的请求体的完整，不能包含其它的键值对，例如接口的请求参数"order"
+  			JSONObject tempJsonObj = JSONObject.fromObject(tempObj);
+  			tempJsonObj.remove("order");
 
-            // Param
-            String paramStr = gson.toJson(JSONObject.fromObject(tempJsonObj));
-            // POST
-            HttpPost post = new HttpPost(SF_REQUEST_URL);
-//            String token = (String) requestObject.getJSONObject("request").getJSONObject("merchant").get("access_token");
-            TokenUtils instance = TokenUtils.getInstance();
-            String token = instance.getAccess_token();
-            String userUUID = instance.getUserUUID();
-            requestObject.getJSONObject("request").getJSONObject("merchant").put("access_token",token);
-            requestObject.getJSONObject("request").getJSONObject("merchant").put("uuid",userUUID);
+  			// Param
+  			String paramStr = gson.toJson(JSONObject.fromObject(tempJsonObj));
+  			// POST
+  			HttpPost post = new HttpPost(SF_REQUEST_URL);
+  			String token = (String) requestObject.getJSONObject("request").getJSONObject("merchant")
+  					.get("access_token");
+  			post.addHeader("PushEnvelope-Device-Token", token);
+  			String resultStr = APIPostUtil.post(paramStr, post);
+  			JSONObject responseObject = JSONObject.fromObject(resultStr);
 
-            post.addHeader("PushEnvelope-Device-Token", token);
-            String resultStr = APIPostUtil.post(paramStr, post);
-            JSONObject responseObject = JSONObject.fromObject(resultStr);
+  			// if (!responseObject.containsKey("error")) {
+  			if (!(responseObject.containsKey("error") || responseObject.containsKey("errors"))) {
+  				uuid = (String) responseObject.getJSONObject("request").get("uuid");
+  				request_num = responseObject.getJSONObject("request").getString("request_num");
 
-//            if (!responseObject.containsKey("error")) {
-            if (!(responseObject.containsKey("error") || responseObject.containsKey("errors"))) {
-                String uuid = (String) responseObject.getJSONObject("request").get("uuid");
-                String request_num = responseObject.getJSONObject("request").getString("request_num");
+  				// /// 数据库操作
+  				// // 订单表更新订单区域类型
+  				// Order order1 = orderDao.findOne(order_id);
+  				// order1.setRegion_type("REGION_SAME");
+  				// orderDao.save(order1);
+  				// // 快递表更新uuid和预约时间
+  				// oe.setUuid(uuid);
+  				// oe.setReserve_time(reserve_time);
+  				//// orderExpressDao.save(oe);
+  				// String order_time =
+  				// Long.toString(System.currentTimeMillis());
+  				// oe.setOrder_time(order_time);
+  				// oe.setOrder_number(request_num);
+  				// oe.setState(responseObject.getJSONObject("request").getString("status"));
+  				// //更新订单状态
+  				// orderExpressDao.save(oe);
 
-//                /// 数据库操作
-//                // 订单表更新订单区域类型
-//                Order order1 = orderDao.findOne(order_id);
-//                order1.setRegion_type("REGION_SAME");
-//                orderDao.save(order1);
-//                // 快递表更新uuid和预约时间
-//                oe.setUuid(uuid);
-//                oe.setReserve_time(reserve_time);
-////                orderExpressDao.save(oe);
-//                String order_time = Long.toString(System.currentTimeMillis());
-//                oe.setOrder_time(order_time);
-//                oe.setOrder_number(request_num);
-//                oe.setState(responseObject.getJSONObject("request").getString("status"));
-//                //更新订单状态
-//                orderExpressDao.save(oe);
+  				/// 数据库操作
+  				// 订单表更新订单区域类型
+  				orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
+  				// 快递表更新uuid和预约时间
+  				orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
+  				String order_tiem = Long.toString(System.currentTimeMillis());
+  				orderExpressMapper.updateOrderTime(uuid, order_tiem);
+  				orderExpressMapper.updateOrderNumber(oe.getId(), request_num);
+  				// 更新订单状态
+  				orderExpressMapper.updateOrderExpressStatus(oe.getId(),
+  						responseObject.getJSONObject("request").getString("status"));
 
-                /// 数据库操作
-                // 订单表更新订单区域类型
-                orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
-                // 快递表更新uuid和预约时间
-                orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
-                String order_tiem = Long.toString(System.currentTimeMillis());
-                orderExpressMapper.updateOrderTime(uuid, order_tiem);
-                orderExpressMapper.updateOrderNumber(oe.getId(), request_num);
-                //更新订单状态
-                orderExpressMapper.updateOrderExpressStatus(oe.getId(), responseObject.getJSONObject("request").getString("status"));
+  				// 插入地址
+  				// setupAddress(order, oe);
+  				// 使用新的地址插入工具
+  				// setupAddress2(order, oe);
 
-                // 插入地址
-                //setupAddress(order, oe);
-                //使用新的地址插入工具
-                //setupAddress2(order, oe);
+  			} else { // error
+  				String message;
+  				try {
+  					if (responseObject.containsKey("error")) {
+  						message = responseObject.getJSONObject("error").getString("message");
+  					} else {
+  						message = responseObject.getJSONArray("errors").getJSONObject(0).getString("message");
+  					}
+  					// 手动操作事务回滚
+  					// TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+  				} catch (Exception e) {
+  					message = "下单失败";
+  				}
+  				return APIUtil.submitErrorResponse(message, responseObject);
+  			}
+  		}
 
-            } else { // error
-                String message;
-                try {
-                    if (responseObject.containsKey("error")) {
-                        message = responseObject.getJSONObject("error").getString("message");
-                    } else {
-                        message = responseObject.getJSONArray("errors").getJSONObject(0).getString("message");
-                    }
-                    //手动操作事务回滚
-//                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                } catch (Exception e) {
-                    message = "下单失败";
-                }
-                return APIUtil.submitErrorResponse(message, responseObject);
-            }
-        }
+  		String path = ""; // 好友同城微信模板跳转链接
+  		// 发送微信模板消息
+  		if (requestObject.getJSONObject("order").containsKey("form_id")
+  				&& !"".equals(requestObject.getJSONObject("order").getString("form_id"))) {
+  			String[] messageArr = new String[2];
+  			if ((order_id != null && !"".equals(order_id)) && (uuid != null && !"".equals(uuid))) {
+  				path = OrderConstant.MYSTERY_REGION_SAME_LINK + "?uuid=" + uuid + "&order_id=" + order_id;
+  			}
+  			this.logger.info("----好友同城微信模板跳转链接--" + path);
+  			messageArr[0] = request_num;
+  			messageArr[1] = "您的顺丰订单下单成功(好友同城)！寄件人是：" + sendName;
+  			String form_id = requestObject.getJSONObject("order").getString("form_id");
+  			messageService.sendWXTemplateMessage(user_id, messageArr, path, form_id, WX_template_id_1);
+  		}
+  		orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
+  		return APIUtil.getResponse(SUCCESS, orderDTO);
+  	}
 
-        orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
-
-        return APIUtil.getResponse(SUCCESS, orderDTO);
-    }
+  	
 
     /// 好友大网订单提交
     private synchronized APIResponse friendNationOrderCommit(JSONObject requestObject) {

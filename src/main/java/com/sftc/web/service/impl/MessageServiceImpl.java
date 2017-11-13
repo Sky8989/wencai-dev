@@ -27,6 +27,7 @@ import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.*;
+import static com.sftc.tools.constant.WXConstant.*;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {
@@ -270,38 +271,38 @@ public class MessageServiceImpl implements MessageService {
      * @param messageArr 消息内容数据的数组
      * @param pagePath   跳转页面的路径
      */
-//    public void sendWXTemplateMessage(int touser_id, String[] messageArr, String pagePath, String form_id, String template_id) {
-//        User user = userMapper.selectUserByUserId(touser_id);
-//
-//        // 构造 data 的数据体
-//        JSONObject dataBody = new JSONObject();
-//        for (int i = 0; messageArr.length > i; i++) {
-//            System.out.println(messageArr[i]);
-//            JSONObject keyword = new JSONObject();
-//            keyword.put("value", messageArr[i]);
-//            keyword.put("color", "#666666");
-//            dataBody.put("keyword" + (i + 1), keyword);
-//        }
-//
-//        // 构造模板消息数据
-//        JSONObject messageBody = new JSONObject();
-//        messageBody.put("touser", user.getOpen_id());
-//        messageBody.put("template_id", template_id);
-//        messageBody.put("page", pagePath);
-//        messageBody.put("form_id", form_id);
-//        messageBody.put("emphasis_keyword", "keyword1.DATA");
-//        messageBody.put("data", dataBody.toString());
-//        String postStr = messageBody.toString();
-//        String postURL = WX_SEND_MESSAGE_PATH + WX_ACCESS_TOKEN;
-//        HttpPost httpPost = new HttpPost(postURL);
-//        String resultStr = APIPostUtil.post(postStr, httpPost);
-//        JSONObject resultJSONObject = JSONObject.fromObject(resultStr);
-//        if (resultJSONObject.containsKey("errcode") && resultJSONObject.getInt("errcode") != 0) {
-//            logger.error(resultStr);
-//        } else {
-//            logger.info(resultStr);
-//        }
-//    }
+    public void sendWXTemplateMessage(int touser_id, String[] messageArr, String pagePath, String form_id, String template_id) {
+        User user = userMapper.selectUserByUserId(touser_id);
+
+        // 构造 data 的数据体
+        JSONObject dataBody = new JSONObject();
+        for (int i = 0; messageArr.length > i; i++) {
+            System.out.println(messageArr[i]);
+            JSONObject keyword = new JSONObject();
+            keyword.put("value", messageArr[i]);
+            keyword.put("color", "#666666");
+            dataBody.put("keyword" + (i + 1), keyword);
+        }
+
+        // 构造模板消息数据
+        JSONObject messageBody = new JSONObject();
+        messageBody.put("touser", user.getOpen_id());
+        messageBody.put("template_id", template_id);
+        messageBody.put("page", pagePath);
+        messageBody.put("form_id", form_id);
+        messageBody.put("emphasis_keyword", "keyword1.DATA");
+        messageBody.put("data", dataBody.toString());
+        String postStr = messageBody.toString();
+        String postURL = WX_SEND_MESSAGE_PATH + WX_ACCESS_TOKEN;
+        HttpPost httpPost = new HttpPost(postURL);
+        String resultStr = APIPostUtil.post(postStr, httpPost);
+        JSONObject resultJSONObject = JSONObject.fromObject(resultStr);
+        if (resultJSONObject.containsKey("errcode") && resultJSONObject.getInt("errcode") != 0) {
+            logger.error(resultStr);
+        } else {
+            logger.info(resultStr);
+        }
+    }
 
     /**
      * 获取图片验证码
