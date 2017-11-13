@@ -187,11 +187,12 @@ public class OrderDetailLogic {
 
 
             List<OrderExpressDTO> orderExpressList = order.getOrderExpressList();
-            if (order.getLatitude() == 0 || order.getLongitude() == 0){
-                Map<String,String> map = new HashMap<>();
-                map.put("reason","寄件人经纬度参数缺失");
-                return APIUtil.submitErrorResponse("寄件人经纬度参数缺失",map);
-            };
+            if (order.getLatitude() == 0 || order.getLongitude() == 0) {
+                Map<String, String> map = new HashMap<>();
+                map.put("reason", "寄件人经纬度参数缺失");
+                return APIUtil.submitErrorResponse("寄件人经纬度参数缺失", map);
+            }
+            ;
             for (OrderExpressDTO orderExpressDTO : orderExpressList) {  //获取订单基础数据
                 String constantsUrl = SF_CONSTANTS_URL + CONSTANTS_STR + "?latitude="
                         + order.getLatitude() + "&longitude=" + order.getLongitude();
@@ -229,7 +230,7 @@ public class OrderDetailLogic {
                                         packageMessage.setWeight(weightOBJ.getString("weight"));
                                         packageMessage.setType(PackageType.BIG_PACKAGE.getKey());
                                     }
-                                    if (j == 3 && orderExpressDTO.getPackage_type().equals(PackageType.HUGE_PACKAGE.getKey())) {
+                                    if (j == 3 || j == 4 || j == 5 && orderExpressDTO.getPackage_type().equals(PackageType.HUGE_PACKAGE.getKey())) {
                                         packageMessage.setName(weightOBJ.getString("name"));
                                         packageMessage.setWeight(weightOBJ.getString("weight"));
                                         packageMessage.setType(PackageType.HUGE_PACKAGE.getKey());
