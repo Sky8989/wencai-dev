@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sftc.web.model.dao.mybatis.UserContactMapper">
+<mapper namespace="com.sftc.web.dao.mybatis.UserContactMapper">
 
     <resultMap id="friendMap" type="com.sftc.web.model.entity.UserContact">
         <id column="id" property="id"/>
