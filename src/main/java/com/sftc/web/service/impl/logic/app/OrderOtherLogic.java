@@ -30,10 +30,10 @@ public class OrderOtherLogic {
     @Resource
     private QiniuService qiniuService;
 
-    private static final String PACKAGE_SMALL_ICON = "https://sf.dankal.cn/icn_package_small.png";
-    private static final String PACKAGE_MIDDLE_ICON = "https://sf.dankal.cn/icn_package_middle.png";
-    private static final String PACKAGE_BIG_ICON = "https://sf.dankal.cn/icn_package_big%20.png";
-    private static final String PACKAGE_SUPER_BIG_ICON = "https://sf.dankal.cn/icn_package_super.png";
+    private static final String PACKAGE_SMALL_ICON = "https://sf.dankal.cn/icn_package_small_copy.png";
+    private static final String PACKAGE_MIDDLE_ICON = "https://sf.dankal.cn/icn_package_middle_copy.png";
+    private static final String PACKAGE_BIG_ICON = "https://sf.dankal.cn/icn_package_big_copy.png";
+    private static final String PACKAGE_SUPER_BIG_ICON = "https://sf.dankal.cn/icn_package_super_copy.png";
 
     /**
      * 预约时间规则 (获取订单常量)
@@ -90,18 +90,22 @@ public class OrderOtherLogic {
                                     if (j == 0) {
                                         weightOBJ.put("contents", "小包裹");
                                         weightOBJ.put("package_icon", PACKAGE_SMALL_ICON);
+                                        weightOBJ.put("package_icon_selected", "icn_package_small_selected");
                                     }
                                     if (j == 1) {
                                         weightOBJ.put("contents", "中包裹");
                                         weightOBJ.put("package_icon", PACKAGE_MIDDLE_ICON);
+                                        weightOBJ.put("package_icon_selected", "icn_package_middle_selected");
                                     }
                                     if (j == 2) {
                                         weightOBJ.put("contents", "大包裹");
                                         weightOBJ.put("package_icon", PACKAGE_BIG_ICON);
+                                        weightOBJ.put("package_icon_selected", "icn_package_big_selected");
                                     }
                                     if (j == 3) {
                                         weightOBJ.put("contents", "超大包裹");
                                         weightOBJ.put("package_icon", PACKAGE_SUPER_BIG_ICON);
+                                        weightOBJ.put("package_icon_selected", "icn_package_super_selected");
                                     }
                                 }
                             }
