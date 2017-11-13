@@ -7,8 +7,8 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.token.TokenUtils;
-import com.sftc.web.model.dao.jpa.OrderExpressDao;
-import com.sftc.web.model.dao.mybatis.*;
+import com.sftc.web.dao.jpa.OrderExpressDao;
+import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.entity.Evaluate;
 import com.sftc.web.model.entity.User;
 import com.sftc.web.model.entity.UserContact;
@@ -18,7 +18,7 @@ import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.vo.swaggerOrderVO.MyOrderParam;
-import com.sftc.web.model.sfmodel.Orders;
+import com.sftc.web.model.sfdo.Orders;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -178,7 +178,7 @@ public class OrderListLogic {
             //增加支付类型
             callback.setPay_method(orderDTO.getPay_method());
             // expressList
-            List<FriendOrderListDTO.OrderFriendCallbackExpress> expressList = new ArrayList<FriendOrderListDTO.OrderFriendCallbackExpress>();
+            List<FriendOrderListDTO.OrderFriendCallbackExpress> expressList = new ArrayList<>();
             HashSet flagSetIsEvaluated = new HashSet();
             for (OrderExpress oe : orderDTO.getOrderExpressList()) {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());

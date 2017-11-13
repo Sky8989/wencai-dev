@@ -1,6 +1,6 @@
 package com.sftc.web.model.entity;
 
-import com.sftc.web.model.Object;
+import com.sftc.web.model.others.Object;
 
 import javax.servlet.http.HttpServletRequest;
 

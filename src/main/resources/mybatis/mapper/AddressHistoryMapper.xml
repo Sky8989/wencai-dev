@@ -14,7 +14,7 @@
         <association property="address" column="address_id" select="selectAddress"/>
     </resultMap>
 
-    <insert id="insertAddressHistory" parameterType="com.sftc.web.model.entity. AddressHistory">
+    <insert id="insertAddressHistory" parameterType="com.sftc.web.model.entity.AddressHistory">
         INSERT INTO sftc_address_history (user_id, address_id, is_delete, is_mystery, create_time)
         VALUES (
         #{user_id, jdbcType=INTEGER},

@@ -1,4 +1,4 @@
-package com.sftc.web.model.sfmodel;
+package com.sftc.web.model.sfdo;
 
 
 public class Coupon {

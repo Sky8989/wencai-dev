@@ -1,7 +1,6 @@
 package com.sftc.web.model.entity;
 
-import com.sftc.web.model.Object;
-import com.sftc.web.model.entity.User;
+import com.sftc.web.model.others.Object;
 
 /**
  * Created by IntelliJ IDEA.

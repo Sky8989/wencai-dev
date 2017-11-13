@@ -1,6 +1,6 @@
 package com.sftc.web.dao.jpa;
 
-import com.sftc.web.model.CommonQuestion;
+import com.sftc.web.model.entity.CommonQuestion;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 

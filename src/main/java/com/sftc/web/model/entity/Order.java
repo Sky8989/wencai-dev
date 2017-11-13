@@ -1,7 +1,7 @@
 package com.sftc.web.model.entity;
 
 import com.sftc.tools.sf.SFOrderHelper;
-import com.sftc.web.model.Object;
+import com.sftc.web.model.others.Object;
 import com.sftc.web.model.vo.swaggerOrderVO.OrderParam;
 import io.swagger.annotations.ApiModel;
 

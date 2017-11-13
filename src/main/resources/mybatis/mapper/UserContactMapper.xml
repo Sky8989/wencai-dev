@@ -107,20 +107,20 @@
     </select>
 
     <!-- 查询用户关系 byuser_id friend_id-->
-    <select id="selectByUserIdAndShipId" parameterType="com.sftc.web.model.UserContactNew"
-            resultType="com.sftc.web.model.UserContactNew">
+    <select id="selectByUserIdAndShipId" parameterType="com.sftc.web.model.entity.UserContactNew"
+            resultType="com.sftc.web.model.entity.UserContactNew">
         SELECT *
         FROM sftc_user_contact
         WHERE user_id = #{user_id} AND friend_id = #{friend_id}
     </select>
 
     <!-- 插入用户关系-->
-    <insert id="insertUserContact" parameterType="com.sftc.web.model.UserContactNew" useGeneratedKeys="true">
+    <insert id="insertUserContact" parameterType="com.sftc.web.model.entity.UserContactNew" useGeneratedKeys="true">
         INSERT INTO sftc_user_contact (user_id, friend_id, is_tag_star, lntimacy, create_time)
         VALUES (#{user_id}, #{friend_id}, #{is_tag_star}, #{lntimacy}, #{create_time});
     </insert>
 
-    <update id="updateUserContactLntimacy" parameterType="com.sftc.web.model.UserContactNew">
+    <update id="updateUserContactLntimacy" parameterType="com.sftc.web.model.entity.UserContactNew">
         UPDATE sftc_user_contact
         SET lntimacy = lntimacy + 1
         WHERE id = #{id}
@@ -146,8 +146,8 @@
 
 
     <!--下面是cms系统用到的mapper-->
-    <select id="selectByPage" resultType="com.sftc.web.model.UserContactNew"
-            parameterType="com.sftc.web.model.UserContactNew">
+    <select id="selectByPage" resultType="com.sftc.web.model.entity.UserContactNew"
+            parameterType="com.sftc.web.model.entity.UserContactNew">
         SELECT * FROM sftc_user_contact
         <where>
             <if test="user_id != 0">and user_id = #{user_id}</if>

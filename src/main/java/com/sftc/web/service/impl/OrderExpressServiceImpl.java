@@ -5,7 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
-import com.sftc.web.model.dao.mybatis.OrderExpressMapper;
+import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.entity.OrderExpressTransform;
 import com.sftc.web.service.OrderExpressService;

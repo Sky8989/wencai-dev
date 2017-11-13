@@ -3,8 +3,8 @@ package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
 import com.sftc.tools.token.TokenUtils;
-import com.sftc.web.model.dao.mybatis.AddressMapper;
-import com.sftc.web.model.dao.mybatis.AddressResolutionMapper;
+import com.sftc.web.dao.mybatis.AddressMapper;
+import com.sftc.web.dao.mybatis.AddressResolutionMapper;
 import com.sftc.web.model.entity.AddressResolution;
 import com.sftc.web.model.entity.Address;
 import com.sftc.web.service.AddressService;

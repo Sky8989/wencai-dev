@@ -1,7 +1,7 @@
 package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
-import com.sftc.web.model.dao.mybatis.UserContactLabelMapper;
+import com.sftc.web.dao.mybatis.UserContactLabelMapper;
 import com.sftc.web.model.entity.UserContactLabel;
 import com.sftc.web.service.UserContactLabelService;
 import org.springframework.stereotype.Service;

@@ -90,7 +90,7 @@
     </bean>
     <!-- 自动加载mapper文件夹下的文件，然后进行一系列操作 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.sftc.web.model.dao.mybatis"/>
+        <property name="basePackage" value="com.sftc.web.dao.mybatis"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
     </bean>
     <!--慢SQL记录-->

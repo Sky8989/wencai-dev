@@ -1,4 +1,4 @@
-package com.sftc.web.model.sfmodel;
+package com.sftc.web.model.sfdo;
 
 /**
  * Created by Administrator on 2017/5/18.

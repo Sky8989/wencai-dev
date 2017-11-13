@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.sftc.tools.api.*;
 import com.sftc.tools.common.DateUtils;
 import com.sftc.tools.sf.SFTokenHelper;
-import com.sftc.web.model.dao.mybatis.TokenMapper;
-import com.sftc.web.model.dao.mybatis.UserMapper;
+import com.sftc.web.dao.mybatis.TokenMapper;
+import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.entity.Token;
 import com.sftc.web.model.entity.User;
 import net.sf.json.JSONObject;
@@ -46,7 +46,7 @@ public class OrderPayLogic {
         String access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
         requestObject.getJSONObject("merchant").put("access_token", access_token);
                 // 预约时间处理
-        String reserve_time = (String) requestObject.getString("reserve_time");
+        String reserve_time = requestObject.getString("reserve_time");
 //        String reserve_time = "";
 //        if(reserve_time == null || reserve_time.equals("")){
 //            Date date = new Date();

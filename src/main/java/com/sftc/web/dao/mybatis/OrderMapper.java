@@ -2,7 +2,7 @@ package com.sftc.web.dao.mybatis;
 
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.reqeustParam.MyOrderParam;
+import com.sftc.web.model.vo.swaggerOrderVO.MyOrderParam;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

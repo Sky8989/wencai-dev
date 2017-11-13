@@ -1,7 +1,6 @@
 package com.sftc.web.model.entity;
 
-import com.sftc.web.model.Object;
-import com.sftc.web.model.entity.Address;
+import com.sftc.web.model.others.Object;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 

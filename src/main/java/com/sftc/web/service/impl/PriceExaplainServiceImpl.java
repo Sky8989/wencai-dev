@@ -3,7 +3,7 @@ package com.sftc.web.service.impl;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
-import com.sftc.web.model.dao.mybatis.PriceExaplainMapper;
+import com.sftc.web.dao.mybatis.PriceExaplainMapper;
 import com.sftc.web.model.vo.swaggerRequestVO.PriceExaplainVO;
 import com.sftc.web.model.entity.PriceExplain;
 import com.sftc.web.service.PriceExaplainService;

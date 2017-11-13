@@ -5,7 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
-import com.sftc.web.model.dao.mybatis.GiftCardMapper;
+import com.sftc.web.dao.mybatis.GiftCardMapper;
 import com.sftc.web.model.entity.GiftCard;
 import com.sftc.web.model.dto.GiftCardList;
 import com.sftc.web.service.GiftCardService;

@@ -2,7 +2,7 @@ package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
 import com.sftc.tools.token.TokenUtils;
-import com.sftc.web.model.sfmodel.Promo;
+import com.sftc.web.model.sfdo.Promo;
 import com.sftc.web.service.CouponService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;

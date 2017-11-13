@@ -1,4 +1,4 @@
-package com.sftc.web.model.wechat;
+package com.sftc.web.model.others;
 
 
 /**

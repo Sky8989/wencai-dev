@@ -1,10 +1,10 @@
 package com.sftc.web.dao.mybatis;
 
+import com.sftc.web.model.dto.FriendRecordDTO;
 import com.sftc.web.model.vo.swaggerRequestVO.Paging;
 import com.sftc.web.model.entity.UserContact;
-import com.sftc.web.model.UserContactNew;
-import com.sftc.web.model.apiCallback.ContactCallback;
-import com.sftc.web.model.reqeustParam.UserContactParam;
+import com.sftc.web.model.entity.UserContactNew;
+import com.sftc.web.model.vo.swaggerRequestVO.UserContactParam;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +25,7 @@ public interface UserContactMapper {
 
     UserContact friendDetail(@Param("user_id") int user_id, @Param("friend_id") int friend);
 
-    List<ContactCallback> selectCirclesContact(UserContactParam userContactParam);
+    List<FriendRecordDTO> selectCirclesContact(UserContactParam userContactParam);
 
     UserContactNew selectByUserIdAndShipId(UserContactNew userContactNew);
 

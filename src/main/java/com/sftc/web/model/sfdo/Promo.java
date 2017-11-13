@@ -1,4 +1,4 @@
-package com.sftc.web.model.sfmodel;
+package com.sftc.web.model.sfdo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
  *
  * @author _KeMing
  * @version 1.0
- * @Package com.sftc.web.model.sfmodel
+ * @Package com.sftc.web.model.sfdo
  * @Description:
  * @date 2017/6/2
  * @Time 下午3:52

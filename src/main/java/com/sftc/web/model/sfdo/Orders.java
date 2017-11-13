@@ -1,11 +1,11 @@
-package com.sftc.web.model.sfmodel;
+package com.sftc.web.model.sfdo;
 
 /**
  * Created by IntelliJ IDEA.
  *
  * @author _KeMing
  * @version 1.0
- * @Package com.sftc.web.model.sfmodel
+ * @Package com.sftc.web.model.sfdo
  * @Description:
  * @date 2017/5/27
  * @Time 上午1:24

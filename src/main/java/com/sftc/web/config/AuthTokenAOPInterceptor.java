@@ -2,7 +2,7 @@ package com.sftc.web.config;
 
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
-import com.sftc.web.model.dao.mybatis.TokenMapper;
+import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.model.entity.Token;
 import com.sftc.web.model.entity.User;
 import org.aspectj.lang.ProceedingJoinPoint;
