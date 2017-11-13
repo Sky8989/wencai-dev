@@ -12,6 +12,8 @@ public class FriendOrderMessage {
     private String order_id;
     @ApiModelProperty(name = "reserve_time",value = "预约时间",example = "1501497840000")
     private String reserve_time;
+    @ApiModelProperty(name = "form_id",value = "表单Id",example = "1501497840000")
+    private String form_id;
 
     public String getOrder_id() {
         return order_id;
