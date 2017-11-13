@@ -32,7 +32,7 @@ public class OrderOtherLogic {
 
     private static final String PACKAGE_SMALL_ICON = "https://sf.dankal.cn/icn_package_small_copy.png";
     private static final String PACKAGE_MIDDLE_ICON = "https://sf.dankal.cn/icn_package_middle_copy.png";
-    private static final String PACKAGE_BIG_ICON = "https://sf.dankal.cn/icn_package_big_copy.png";
+    private static final String PACKAGE_BIG_ICON = "https://sf.dankal.cn/icn_package_big_copy%20.png";
     private static final String PACKAGE_SUPER_BIG_ICON = "https://sf.dankal.cn/icn_package_super_copy.png";
     private static final String PACKAGE_SMALL_ICON_SELECTED = "https://sf.dankal.cn/icn_package_small_selected.png";
     private static final String PACKAGE_MIDDLE_ICON_SELECTED = "https://sf.dankal.cn/icn_package_middle_selected.png";
