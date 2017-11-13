@@ -4,29 +4,23 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.TokenMapper;
-import com.sftc.web.dao.redis.UserUnpackingRedis;
+import com.sftc.web.dao.redis.UserUnpackingRedisDao;
 import com.sftc.web.model.SwaggerRequestVO.UserUnpackingVO;
 import com.sftc.web.model.User;
 import com.sftc.web.service.UserUnpackingService;
 import net.sf.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-
 import java.util.Map;
 
-import static com.sftc.tools.api.APIStatus.PARAM_ERROR;
-import static com.sftc.tools.api.APIStatus.SELECT_FAIL;
-import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.api.APIStatus.*;
 
 @Service
 public class UserUnpackingServiceImpl implements UserUnpackingService {
 
-    @Autowired
-    private UserUnpackingRedis userUnpackingRedis;
+    @Resource
+    private UserUnpackingRedisDao userUnpackingRedis;
     @Resource
     private TokenMapper tokenMapper;
 
@@ -38,8 +32,9 @@ public class UserUnpackingServiceImpl implements UserUnpackingService {
         UserUnpackingVO userUnpackingVO = (UserUnpackingVO) apiRequest.getRequestParam();
 
         Map header = apiRequest.getHeader();
-
-        String token = (String) header.get(HEARD_TOKEN);
+        String token = null;
+        if (header.size()!=0)
+             token = (String) header.get(HEARD_TOKEN);
 
         User user = tokenMapper.tokenInterceptor(token);
         if (user==null){
@@ -68,10 +63,10 @@ public class UserUnpackingServiceImpl implements UserUnpackingService {
     }
     /**拼接redis键值对*/
     private String mosaicKey(String order_id, int user_id){
-        StringBuffer str = new StringBuffer();
-        str.append(order_id);
-        str.append(DELIMITER);
-        str.append(user_id);
-        return str.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(order_id);
+        sb.append(DELIMITER);
+        sb.append(user_id);
+        return sb.toString();
     }
 }

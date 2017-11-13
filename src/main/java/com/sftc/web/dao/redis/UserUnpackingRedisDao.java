@@ -3,7 +3,7 @@ package com.sftc.web.dao.redis;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserUnpackingRedis  extends BaseRedisDao {
+public class UserUnpackingRedisDao  extends BaseRedisDao {
 
     public String getUserUnpacking(String key) {
         return getCache(key);
