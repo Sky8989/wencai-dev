@@ -34,6 +34,10 @@ public class OrderOtherLogic {
     private static final String PACKAGE_MIDDLE_ICON = "https://sf.dankal.cn/icn_package_middle_copy.png";
     private static final String PACKAGE_BIG_ICON = "https://sf.dankal.cn/icn_package_big_copy.png";
     private static final String PACKAGE_SUPER_BIG_ICON = "https://sf.dankal.cn/icn_package_super_copy.png";
+    private static final String PACKAGE_SMALL_ICON_SELECTED = "https://sf.dankal.cn/icn_package_small_selected.png";
+    private static final String PACKAGE_MIDDLE_ICON_SELECTED = "https://sf.dankal.cn/icn_package_middle_selected.png";
+    private static final String PACKAGE_BIG_ICON_SELECTED = "https://sf.dankal.cn/icn_package_big_selected.png";
+    private static final String PACKAGE_SUPER_BIG_ICON_SELECTED = "https://sf.dankal.cn/icn_package_super_selected.png";
 
     /**
      * 预约时间规则 (获取订单常量)
@@ -82,35 +86,29 @@ public class OrderOtherLogic {
                         JSONArray packageTypeArr = jsonObject.getJSONObject("constant").getJSONObject("value").getJSONArray("PACKAGE_TYPE");
                         for (int i = 0; i < packageTypeArr.size(); i++) {
                             JSONObject packageTypeOBJ = packageTypeArr.getJSONObject(i);
-                            if (packageTypeOBJ.containsKey("weight_segment") && (packageTypeOBJ.getJSONArray("weight_segment").size() != 0
-                                    && packageTypeOBJ.getJSONArray("weight_segment").size() < 5)) {
+                            if (packageTypeOBJ.containsKey("weight_segment") && (packageTypeOBJ.getJSONArray("weight_segment").size() != 0)) {
                                 JSONArray weightArr = packageTypeOBJ.getJSONArray("weight_segment");
                                 for (int j = 0; j < weightArr.size(); j++) {
                                     JSONObject weightOBJ = weightArr.getJSONObject(j);
                                     if (j == 0) {
                                         weightOBJ.put("contents", "小包裹");
                                         weightOBJ.put("package_icon", PACKAGE_SMALL_ICON);
-                                        weightOBJ.put("package_icon_selected", "icn_package_small_selected");
+                                        weightOBJ.put("package_icon_selected", PACKAGE_SMALL_ICON_SELECTED);
                                     }
                                     if (j == 1) {
                                         weightOBJ.put("contents", "中包裹");
                                         weightOBJ.put("package_icon", PACKAGE_MIDDLE_ICON);
-                                        weightOBJ.put("package_icon_selected", "icn_package_middle_selected");
+                                        weightOBJ.put("package_icon_selected", PACKAGE_MIDDLE_ICON_SELECTED);
                                     }
                                     if (j == 2) {
                                         weightOBJ.put("contents", "大包裹");
                                         weightOBJ.put("package_icon", PACKAGE_BIG_ICON);
-                                        weightOBJ.put("package_icon_selected", "icn_package_big_selected");
+                                        weightOBJ.put("package_icon_selected", PACKAGE_BIG_ICON_SELECTED);
                                     }
-                                    if (j == 3) {
+                                    if (j == 3 || j > 3) {
                                         weightOBJ.put("contents", "超大包裹");
                                         weightOBJ.put("package_icon", PACKAGE_SUPER_BIG_ICON);
-                                        weightOBJ.put("package_icon_selected", "icn_package_super_selected");
-                                    }
-                                    if (j == 4 || j == 5) {
-                                        weightOBJ.put("contents", "超大包裹");
-                                        weightOBJ.put("package_icon", PACKAGE_SUPER_BIG_ICON);
-                                        weightOBJ.put("package_icon_selected", "icn_package_super_selected");
+                                        weightOBJ.put("package_icon_selected", PACKAGE_SUPER_BIG_ICON_SELECTED);
                                     }
                                 }
                             }
