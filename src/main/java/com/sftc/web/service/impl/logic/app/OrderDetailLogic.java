@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.tools.sf.SFTokenHelper;
-import com.sftc.web.dao.mybatis.*;
+import com.sftc.web.model.dao.mybatis.*;
 import com.sftc.web.model.GiftCard;
 import com.sftc.web.model.User;
 import com.sftc.web.model.dto.OrderDTO;

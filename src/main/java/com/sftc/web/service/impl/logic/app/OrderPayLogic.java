@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.sftc.tools.api.*;
 import com.sftc.tools.common.DateUtils;
 import com.sftc.tools.sf.SFTokenHelper;
-import com.sftc.web.dao.mybatis.TokenMapper;
-import com.sftc.web.dao.mybatis.UserMapper;
+import com.sftc.web.model.dao.mybatis.TokenMapper;
+import com.sftc.web.model.dao.mybatis.UserMapper;
 import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
 import net.sf.json.JSONObject;
@@ -13,8 +13,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-
-import java.util.Date;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_QUOTES_URL;

@@ -2,9 +2,8 @@ package com.sftc.web.model.entity;
 
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.model.Object;
-import com.sftc.web.model.reqeustParam.OrderParam;
+import com.sftc.web.model.vo.swaggerOrderVO.OrderParam;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;

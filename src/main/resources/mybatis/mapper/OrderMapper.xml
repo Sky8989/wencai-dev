@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sftc.web.dao.mybatis.OrderMapper">
+<mapper namespace="com.sftc.web.model.dao.mybatis.OrderMapper">
 
     <resultMap id="orderMap" type="com.sftc.web.model.dto.OrderDTO">
         <id property="id" column="id"/>
@@ -185,7 +185,7 @@
     </update>
 
     <!-- 我的订单列表  -->
-    <select id="selectMyOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+    <select id="selectMyOrderList" parameterType="com.sftc.web.model.vo.swaggerOrderVO.MyOrderParam"
             resultMap="orderMap">
         SELECT * FROM sftc_order
         WHERE id IN (
@@ -212,7 +212,7 @@
         limit #{pageNum}, #{pageSize}
     </select>
     <!--解决多字段 转义的问题-->
-    <select id="selectMyOrderList2" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+    <select id="selectMyOrderList2" parameterType="com.sftc.web.model.vo.swaggerOrderVO.MyOrderParam"
             resultMap="orderMap">
         SELECT * FROM sftc_order
         WHERE id IN (
@@ -243,7 +243,7 @@
 
 
     <!-- 我的好友订单列表  -->
-    <select id="selectMyFriendOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+    <select id="selectMyFriendOrderList" parameterType="com.sftc.web.model.vo.swaggerOrderVO.MyOrderParam"
             resultMap="orderMap">
 
         SELECT *

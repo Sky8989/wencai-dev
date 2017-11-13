@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sftc.web.dao.mybatis.MessageMapper">
+<mapper namespace="com.sftc.web.model.dao.mybatis.MessageMapper">
 
     <!-- 新建 收到快递信息/收到好友地址 通知消息-->
     <insert id="insertMessage" parameterType="com.sftc.web.model.entity.Message" useGeneratedKeys="true">

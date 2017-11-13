@@ -2,15 +2,12 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.SwaggerRequestVO.AddressHistoryDeleteVO;
-import com.sftc.web.model.entity.Address;
+import com.sftc.web.model.vo.swaggerRequestVO.AddressHistoryDeleteVO;
 import com.sftc.web.service.AddressHistoryService;
-import com.sftc.web.service.AddressService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

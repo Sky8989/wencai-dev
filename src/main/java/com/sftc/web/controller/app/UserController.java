@@ -2,12 +2,11 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
-import com.sftc.web.model.SwaggerRequestVO.UserMerchantsRequestVO;
-import com.sftc.web.model.reqeustParam.UserParam;
-import com.sftc.web.model.SwaggerRequestVO.UserNewMobileVO;
+import com.sftc.web.model.vo.swaggerRequestVO.UserMerchantsRequestVO;
+import com.sftc.web.model.vo.swaggerRequestVO.UserParam;
+import com.sftc.web.model.vo.swaggerRequestVO.UserNewMobileVO;
 import com.sftc.web.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

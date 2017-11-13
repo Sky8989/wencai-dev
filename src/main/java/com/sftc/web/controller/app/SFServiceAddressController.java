@@ -2,7 +2,7 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.SwaggerOrderVO.SFServiceRequestVO;
+import com.sftc.web.model.vo.swaggerOrderVO.SFServiceRequestVO;
 import com.sftc.web.service.SFServiceAddressService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;

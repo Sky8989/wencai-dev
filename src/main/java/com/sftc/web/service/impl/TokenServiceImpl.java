@@ -4,8 +4,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
-import com.sftc.web.dao.mybatis.TokenMapper;
-import com.sftc.web.dao.mybatis.UserMapper;
+import com.sftc.web.model.dao.mybatis.TokenMapper;
+import com.sftc.web.model.dao.mybatis.UserMapper;
 import com.sftc.web.model.Token;
 import com.sftc.web.model.User;
 import com.sftc.web.service.TokenService;
@@ -16,7 +16,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 

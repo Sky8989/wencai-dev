@@ -7,13 +7,12 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.tools.token.TokenUtils;
-import com.sftc.web.dao.jpa.OrderExpressDao;
-import com.sftc.web.dao.mybatis.*;
+import com.sftc.web.model.dao.mybatis.*;
 import com.sftc.web.model.*;
-import com.sftc.web.model.apiCallback.ContactCallback;
+import com.sftc.web.model.dto.FriendRecordDTO;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
-import com.sftc.web.model.reqeustParam.UserContactParam;
+import com.sftc.web.model.vo.swaggerRequestVO.UserContactParam;
 import com.sftc.web.model.sfmodel.Orders;
 import com.sftc.web.service.UserContactService;
 import net.sf.json.JSONObject;
@@ -128,20 +127,20 @@ public class UserContactServiceImpl implements UserContactService {
         //修改为物理分页参数
         userContactParam.setPageNum((userContactParam.getPageNum() - 1) * userContactParam.getPageSize()); // pageNum -> startIndex
         // callback
-        List<ContactCallback> contactCallbacks = userContactMapper.selectCirclesContact(userContactParam);
-        for (ContactCallback contactCallback : contactCallbacks) {
-            User sender = userMapper.selectUserByUserId(contactCallback.getSender_user_id());
-            User receiver = userMapper.selectUserByUserId(contactCallback.getShip_user_id());
+        List<FriendRecordDTO> friendRecordDTOS = userContactMapper.selectCirclesContact(userContactParam);
+        for (FriendRecordDTO friendRecordDTO : friendRecordDTOS) {
+            User sender = userMapper.selectUserByUserId(friendRecordDTO.getSender_user_id());
+            User receiver = userMapper.selectUserByUserId(friendRecordDTO.getShip_user_id());
             if (sender != null) {
-                contactCallback.setSender_icon(sender.getAvatar());
-                contactCallback.setSender_wechatname(sender.getName());
+                friendRecordDTO.setSender_icon(sender.getAvatar());
+                friendRecordDTO.setSender_wechatname(sender.getName());
             }
             if (receiver != null) {
-                contactCallback.setShip_icon(receiver.getAvatar());
-                contactCallback.setShip_wechatname(receiver.getName());
+                friendRecordDTO.setShip_icon(receiver.getAvatar());
+                friendRecordDTO.setShip_wechatname(receiver.getName());
             }
         }
-        return APIUtil.getResponse(SUCCESS, contactCallbacks);
+        return APIUtil.getResponse(SUCCESS, friendRecordDTOS);
     }
 
     private APIResponse syncFriendExpress(UserContactParam userContactParam) {

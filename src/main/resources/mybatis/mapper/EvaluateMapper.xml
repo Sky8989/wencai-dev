@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sftc.web.dao.mybatis.EvaluateMapper">
+<mapper namespace="com.sftc.web.model.dao.mybatis.EvaluateMapper">
     <!-- 添加 订单评价信息-->
     <insert id="addEvaluate" parameterType="com.sftc.web.model.Evaluate">
         INSERT INTO sftc_evaluate

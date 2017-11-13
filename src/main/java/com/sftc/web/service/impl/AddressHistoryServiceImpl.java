@@ -1,13 +1,13 @@
 package com.sftc.web.service.impl;
 
+import com.google.gson.Gson;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.token.TokenUtils;
-import com.sftc.web.dao.jpa.AddressBookDao;
-import com.sftc.web.dao.mybatis.AddressBookMapper;
-import com.sftc.web.dao.mybatis.UserMapper;
-import com.sftc.web.model.Converter.AddressFactory;
+import com.sftc.web.model.dao.jpa.AddressBookDao;
+import com.sftc.web.model.dao.mybatis.AddressBookMapper;
+import com.sftc.web.model.dao.mybatis.UserMapper;
 import com.sftc.web.model.User;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.dto.AddressDTO;
@@ -33,6 +33,8 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
     @Resource
     private UserMapper userMapper;
 
+    private Gson gson = new Gson();
+
     /**
      * 查询历史地址
      */
@@ -54,7 +56,7 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
         for (AddressBookDTO ab : addressBookDTOList) {
             Address address = ab.getAddress();
             User user = userMapper.selectUserByUserId(address.getUser_id());
-            AddressDTO addressDTO = AddressFactory.entityToDto(address);
+            AddressDTO addressDTO = gson.fromJson(gson.toJson(address),AddressDTO.class);
             String avatar = (user == null || user.getAvatar() == null) ? DK_USER_AVATAR_DEFAULT : user.getAvatar();
             addressDTO.setAvatar(avatar);
             // handle wechatname by hxy

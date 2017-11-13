@@ -1,17 +1,19 @@
 package com.sftc.web.service.impl.logic.app;
 
 import com.google.gson.Gson;
-import com.sftc.tools.api.*;
+import com.sftc.tools.api.APIPostUtil;
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.common.DateUtils;
 import com.sftc.tools.common.EmojiFilter;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.tools.token.TokenUtils;
-import com.sftc.web.dao.jpa.AddressBookDao;
-import com.sftc.web.dao.jpa.OrderDao;
-import com.sftc.web.dao.jpa.OrderExpressDao;
-import com.sftc.web.dao.mybatis.*;
-import com.sftc.web.model.Converter.OrderExpressFactory;
+import com.sftc.web.model.dao.jpa.AddressBookDao;
+import com.sftc.web.model.dao.jpa.OrderDao;
+import com.sftc.web.model.dao.jpa.OrderExpressDao;
+import com.sftc.web.model.dao.mybatis.*;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
@@ -43,7 +45,6 @@ import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
 @Component
 public class OrderCommitLogic {
 
-    private Gson gson = new Gson();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Resource
@@ -64,6 +65,7 @@ public class OrderCommitLogic {
     private OrderDao orderDao;
     @Resource
     private OrderExpressDao orderExpressDao;
+    private Gson gson = new Gson();
     //////////////////// Public Method ////////////////////
 
     /**
@@ -131,11 +133,11 @@ public class OrderCommitLogic {
 
         try {
             OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
-            if(orderDTO == null)
+            if (orderDTO == null)
                 return APIUtil.selectErrorResponse("订单不存在", null);
             //后期订单和快递改为一对一之后，请求为object对象，遍历里面的order对象来提交？
             for (OrderExpressDTO orderExpressDTO : orderDTO.getOrderExpressList()) {
-                OrderExpress oe = OrderExpressFactory.dtoToEntity(orderExpressDTO);
+                OrderExpress oe = gson.fromJson(gson.toJson(orderExpressDTO), OrderExpress.class);
 
                 // 改为提前半小时下单，并且不下预约时间为一小时以前的单，这是为了排除服务器更新上线把定时器关了导致的时间间隔误差
                 if (oe.getReserve_time().equals("") || oe.getReserve_time() == null) {
@@ -272,7 +274,7 @@ public class OrderCommitLogic {
             return APIUtil.submitErrorResponse("Order infomation has been changed, please check again!", null);
 
         for (OrderExpressDTO oeDto : orderDTO.getOrderExpressList()) {
-            OrderExpress oe = OrderExpressFactory.dtoToEntity(oeDto);
+            OrderExpress oe = gson.fromJson(gson.toJson(oeDto), OrderExpress.class);
             // 拼接同城订单参数中的 source 和 target
             Source source = new Source();
             Address address = new Address();
@@ -331,8 +333,8 @@ public class OrderCommitLogic {
             TokenUtils instance = TokenUtils.getInstance();
             String token = instance.getAccess_token();
             String userUUID = instance.getUserUUID();
-            requestObject.getJSONObject("request").getJSONObject("merchant").put("access_token",token);
-            requestObject.getJSONObject("request").getJSONObject("merchant").put("uuid",userUUID);
+            requestObject.getJSONObject("request").getJSONObject("merchant").put("access_token", token);
+            requestObject.getJSONObject("request").getJSONObject("merchant").put("uuid", userUUID);
 
             post.addHeader("PushEnvelope-Device-Token", token);
             String resultStr = APIPostUtil.post(paramStr, post);
@@ -415,7 +417,7 @@ public class OrderCommitLogic {
         orderMapper.updateRegionAndDistributionById(order_id, region_type, distribution);
 
         OrderDTO orderDto = orderMapper.selectOrderDetailByOrderIdForUpdate(order_id);
-        if(orderDto == null)
+        if (orderDto == null)
             return APIUtil.selectErrorResponse("订单不存在", null);
 
         for (OrderExpressDTO oe : orderDto.getOrderExpressList()) {
@@ -453,11 +455,6 @@ public class OrderCommitLogic {
 
             if (!oe.getState().equals("WAIT_FILL")) {
                 if (reserve_time != null && !reserve_time.equals("")) { // 预约件处理
-//                    oe.setReserve_time(reserve_time);
-//                    oe.setUuid(oe.getUuid());
-//                    oe.setState("WAIT_HAND_OVER");
-//                    OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
-//                    orderExpressDao.save(orderExpress);
                     //事务问题,先存在查的改为统一使用Mybatis
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), oe.getUuid(), reserve_time);
                 } else {
@@ -510,15 +507,12 @@ public class OrderCommitLogic {
                         // 存储订单信息
                         //事务问题,先存在查的改为统一使用Mybatis
                         String order_time = Long.toString(System.currentTimeMillis());
-//                        oe.setOrder_time(order_time);
-                        orderExpressMapper.updateOrderTime(oe.getUuid(), order_time);
                         String ordernum = jsonObject.getString("ordernum");
+
+                        orderExpressMapper.updateOrderTime(oe.getUuid(), order_time);
                         orderExpressMapper.updateOrderNumber(oe.getId(), ordernum);
-//                        oe.setOrder_number(ordernum);
-//                        oe.setState("WAIT_HAND_OVER");
                         orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
-//                        OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
-//                        orderExpressDao.save(orderExpress);
+
 
                         // 插入地址
                         //setupAddress(order, oe);
@@ -591,8 +585,8 @@ public class OrderCommitLogic {
         TokenUtils instance = TokenUtils.getInstance();
         String token = instance.getAccess_token();
         String userUUID = instance.getUserUUID();
-        requestOBJ.getJSONObject("merchant").put("access_token",token);
-        requestOBJ.getJSONObject("merchant").put("uuid",userUUID);
+        requestOBJ.getJSONObject("merchant").put("access_token", token);
+        requestOBJ.getJSONObject("merchant").put("uuid", userUUID);
 //        post.addHeader("PushEnvelope-Device-Token", (String) requestOBJ.getJSONObject("merchant").get("access_token"));
         post.addHeader("PushEnvelope-Device-Token", token);
 

@@ -3,11 +3,6 @@ package com.sftc.web.service;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 
-import com.sftc.web.model.Result;
-import org.codehaus.jackson.map.util.JSONPObject;
-
-import java.util.Map;
-
 
 public interface MessageService {
 

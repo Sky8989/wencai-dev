@@ -2,9 +2,9 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.SwaggerRequestVO.AddressBookRequestVO;
-import com.sftc.web.model.SwaggerRequestVO.AddressBookUpdateVO;
-import com.sftc.web.model.SwaggerRequestVO.AddressBookDeleteVO;
+import com.sftc.web.model.vo.swaggerRequestVO.AddressBookRequestVO;
+import com.sftc.web.model.vo.swaggerRequestVO.AddressBookUpdateVO;
+import com.sftc.web.model.vo.swaggerRequestVO.AddressBookDeleteVO;
 import com.sftc.web.service.AddressBookService;
 import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;

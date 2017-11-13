@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sftc.web.dao.mybatis.DateRemindMapper">
+<mapper namespace="com.sftc.web.model.dao.mybatis.DateRemindMapper">
 
     <!-- 添加日期提醒  -->
     <insert id="addDateRemind" parameterType="com.sftc.web.model.DateRemind">

@@ -7,17 +7,17 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.token.TokenUtils;
-import com.sftc.web.dao.jpa.OrderExpressDao;
-import com.sftc.web.dao.mybatis.*;
+import com.sftc.web.model.dao.jpa.OrderExpressDao;
+import com.sftc.web.model.dao.mybatis.*;
 import com.sftc.web.model.Evaluate;
 import com.sftc.web.model.User;
 import com.sftc.web.model.UserContact;
-import com.sftc.web.model.apiCallback.OrderCallback;
-import com.sftc.web.model.apiCallback.OrderFriendCallback;
+import com.sftc.web.model.dto.MyOrderListDTO;
+import com.sftc.web.model.dto.FriendOrderListDTO;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
-import com.sftc.web.model.reqeustParam.MyOrderParam;
+import com.sftc.web.model.vo.swaggerOrderVO.MyOrderParam;
 import com.sftc.web.model.sfmodel.Orders;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -92,9 +92,9 @@ public class OrderListLogic {
         List<OrderDTO> orderDTOList = orderMapper.selectMyOrderList2(myOrderParam);
         if (orderDTOList.size() == 0)
             return APIUtil.selectErrorResponse("您还未创建订单", null);
-        List<OrderCallback> orderCallbacks = new ArrayList<OrderCallback>();
+        List<MyOrderListDTO> myOrderListDTOS = new ArrayList<MyOrderListDTO>();
         for (OrderDTO orderDTO : orderDTOList) {
-            OrderCallback callback = new OrderCallback();
+            MyOrderListDTO callback = new MyOrderListDTO();
             // order
             callback.setId(orderDTO.getId());
             callback.setSender_name(orderDTO.getSender_name());
@@ -107,10 +107,10 @@ public class OrderListLogic {
                 callback.setOrder_number(orderDTO.getOrderExpressList().get(0).getOrder_number());
 
             // expressList
-            List<OrderCallback.OrderCallbackExpress> expressList = new ArrayList<OrderCallback.OrderCallbackExpress>();
+            List<MyOrderListDTO.OrderCallbackExpress> expressList = new ArrayList<MyOrderListDTO.OrderCallbackExpress>();
             HashSet flagSetIsEvaluated = new HashSet();
             for (OrderExpress oe : orderDTO.getOrderExpressList()) {
-                OrderCallback.OrderCallbackExpress express = new OrderCallback().new OrderCallbackExpress();
+                MyOrderListDTO.OrderCallbackExpress express = new MyOrderListDTO().new OrderCallbackExpress();
                 express.setUuid(oe.getUuid());
                 express.setState(oe.getState());
                 express.setShip_name(oe.getShip_name());
@@ -133,10 +133,10 @@ public class OrderListLogic {
             callback.setExpressList(expressList);
             callback.setIs_evaluated(flagSetIsEvaluated.contains(1));
 
-            orderCallbacks.add(callback);
+            myOrderListDTOS.add(callback);
         }
 
-        return APIUtil.getResponse(SUCCESS, orderCallbacks);
+        return APIUtil.getResponse(SUCCESS, myOrderListDTOS);
     }
 
     /**
@@ -156,9 +156,9 @@ public class OrderListLogic {
         List<OrderDTO> orderDTOList = orderMapper.selectMyFriendOrderList(myOrderParam);
         if (orderDTOList.size() == 0)
             return APIUtil.selectErrorResponse("暂无好友订单", null);
-        List<OrderFriendCallback> orderCallbacks = new ArrayList<OrderFriendCallback>();
+        List<FriendOrderListDTO> orderCallbacks = new ArrayList<FriendOrderListDTO>();
         for (OrderDTO orderDTO : orderDTOList) {
-            OrderFriendCallback callback = new OrderFriendCallback();
+            FriendOrderListDTO callback = new FriendOrderListDTO();
             User sender = userMapper.selectUserByUserId(orderDTO.getSender_user_id());
             // order
             callback.setId(orderDTO.getId());
@@ -178,7 +178,7 @@ public class OrderListLogic {
             //增加支付类型
             callback.setPay_method(orderDTO.getPay_method());
             // expressList
-            List<OrderFriendCallback.OrderFriendCallbackExpress> expressList = new ArrayList<OrderFriendCallback.OrderFriendCallbackExpress>();
+            List<FriendOrderListDTO.OrderFriendCallbackExpress> expressList = new ArrayList<FriendOrderListDTO.OrderFriendCallbackExpress>();
             HashSet flagSetIsEvaluated = new HashSet();
             for (OrderExpress oe : orderDTO.getOrderExpressList()) {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
@@ -193,7 +193,7 @@ public class OrderListLogic {
                     if (userContact == null) user_contact_id = 0;
                     else user_contact_id = userContact.getId();
                 }
-                OrderFriendCallback.OrderFriendCallbackExpress express = new OrderFriendCallback().new OrderFriendCallbackExpress();
+                FriendOrderListDTO.OrderFriendCallbackExpress express = new FriendOrderListDTO().new OrderFriendCallbackExpress();
                 express.setId(oe.getId());
                 express.setShip_user_id(oe.getShip_user_id());
                 express.setUuid(oe.getUuid());
