@@ -30,7 +30,7 @@ public class UserUnpackingController {
     @PostMapping(value = "unpacking")
     public APIResponse unpacking(@RequestBody UserUnpackingVO userUnpackingVO,
                                  HttpServletRequest request){
-        APIRequest apiRequest = new APIRequest();
+        APIRequest apiRequest = new APIRequest(request);
         apiRequest.setRequestParam(userUnpackingVO);
        return userUnpackingService.unpacking(apiRequest);
     }
