@@ -1,13 +1,8 @@
 package com.sftc.web.model.entity;
 
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * Created by CatalpaFlat on 2017/11/6.
- */
-@Component
 public class LabelDetailsInfo {
     private String[] sysLabels;
     private List<String> userLabels;
