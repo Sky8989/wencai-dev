@@ -8,7 +8,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.model.dao.mybatis.OrderMapper;
 import com.sftc.web.model.dao.mybatis.SFServiceAddressMapper;
-import com.sftc.web.model.Express;
+import com.sftc.web.model.others.Express;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.sfmodel.SFServiceAddress;

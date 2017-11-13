@@ -2,7 +2,7 @@ package com.sftc.web.controller.cms;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.GiftCard;
+import com.sftc.web.model.entity.GiftCard;
 import com.sftc.web.service.GiftCardService;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;

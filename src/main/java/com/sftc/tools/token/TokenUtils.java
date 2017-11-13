@@ -2,8 +2,8 @@ package com.sftc.tools.token;
 
 import com.sftc.tools.spring.SpringContextHolder;
 import com.sftc.web.model.dao.mybatis.TokenMapper;
-import com.sftc.web.model.Token;
-import com.sftc.web.model.User;
+import com.sftc.web.model.entity.Token;
+import com.sftc.web.model.entity.User;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 

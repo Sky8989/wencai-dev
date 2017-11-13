@@ -1,7 +1,7 @@
-package com.sftc.web.model;
+package com.sftc.web.model.entity;
 
+import com.sftc.web.model.Object;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by IntelliJ IDEA.

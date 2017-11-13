@@ -8,7 +8,7 @@ import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.model.dao.mybatis.MessageMapper;
 import com.sftc.web.model.dao.mybatis.OrderMapper;
 import com.sftc.web.model.dao.mybatis.UserMapper;
-import com.sftc.web.model.User;
+import com.sftc.web.model.entity.User;
 import com.sftc.web.model.dto.MessageDTO;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;

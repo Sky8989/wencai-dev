@@ -1,4 +1,6 @@
-package com.sftc.web.model;
+package com.sftc.web.model.dto;
+
+import com.sftc.web.model.entity.GiftCard;
 
 import java.util.List;
 

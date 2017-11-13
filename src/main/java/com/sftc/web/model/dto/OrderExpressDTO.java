@@ -1,6 +1,6 @@
 package com.sftc.web.model.dto;
 
-import com.sftc.web.model.Evaluate;
+import com.sftc.web.model.entity.Evaluate;
 import com.sftc.web.model.entity.OrderExpress;
 import lombok.Getter;
 import lombok.Setter;

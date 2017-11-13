@@ -8,7 +8,7 @@ import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.model.dao.jpa.AddressBookDao;
 import com.sftc.web.model.dao.mybatis.AddressBookMapper;
 import com.sftc.web.model.dao.mybatis.UserMapper;
-import com.sftc.web.model.User;
+import com.sftc.web.model.entity.User;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.dto.AddressDTO;
 import com.sftc.web.model.entity.Address;

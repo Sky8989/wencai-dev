@@ -1,7 +1,6 @@
 package com.sftc.web.model.entity;
 
 import com.sftc.tools.api.APIRequest;
-import com.sftc.web.model.Evaluate;
 import com.sftc.web.model.Object;
 
 import javax.persistence.*;

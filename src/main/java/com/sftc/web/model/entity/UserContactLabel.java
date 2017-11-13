@@ -1,4 +1,6 @@
-package com.sftc.web.model;
+package com.sftc.web.model.entity;
+
+import com.sftc.web.model.Object;
 
 public class UserContactLabel extends Object {
     private int id;

@@ -1,6 +1,6 @@
 package com.sftc.web.dao.mybatis;
 
-import com.sftc.web.model.UserContactLabel;
+import com.sftc.web.model.entity.UserContactLabel;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

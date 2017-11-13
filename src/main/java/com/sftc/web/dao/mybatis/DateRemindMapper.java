@@ -1,6 +1,6 @@
 package com.sftc.web.dao.mybatis;
 
-import com.sftc.web.model.DateRemind;
+import com.sftc.web.model.entity.DateRemind;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

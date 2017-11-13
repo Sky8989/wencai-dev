@@ -1,7 +1,7 @@
 package com.sftc.web.model.dto;
 
-import com.sftc.web.model.Evaluate;
-import com.sftc.web.model.GiftCard;
+import com.sftc.web.model.entity.Evaluate;
+import com.sftc.web.model.entity.GiftCard;
 import com.sftc.web.model.entity.Order;
 import lombok.Getter;
 import lombok.Setter;

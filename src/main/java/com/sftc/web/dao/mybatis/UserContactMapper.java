@@ -1,7 +1,7 @@
 package com.sftc.web.dao.mybatis;
 
-import com.sftc.web.model.Paging;
-import com.sftc.web.model.UserContact;
+import com.sftc.web.model.vo.swaggerRequestVO.Paging;
+import com.sftc.web.model.entity.UserContact;
 import com.sftc.web.model.UserContactNew;
 import com.sftc.web.model.apiCallback.ContactCallback;
 import com.sftc.web.model.reqeustParam.UserContactParam;

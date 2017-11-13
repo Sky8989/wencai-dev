@@ -1,4 +1,4 @@
-package com.sftc.web.model;
+package com.sftc.web.model.others;
 
 /**
  * Created by samsunug on 2017/9/15.

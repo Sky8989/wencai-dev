@@ -6,7 +6,7 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.web.model.dao.mybatis.TokenMapper;
 import com.sftc.web.model.dao.redis.UserUnpackingRedisDao;
 import com.sftc.web.model.vo.swaggerRequestVO.UserUnpackingVO;
-import com.sftc.web.model.User;
+import com.sftc.web.model.entity.User;
 import com.sftc.web.service.UserUnpackingService;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,7 @@ package com.sftc.web.service;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.Token;
+import com.sftc.web.model.entity.Token;
 
 public interface UserService {
 

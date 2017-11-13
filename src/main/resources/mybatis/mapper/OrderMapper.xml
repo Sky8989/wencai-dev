@@ -38,7 +38,7 @@
         WHERE order_id = #{id}
     </select>
 
-    <select id="selectGiftCard" parameterType="int" resultType="com.sftc.web.model.GiftCard">
+    <select id="selectGiftCard" parameterType="int" resultType="com.sftc.web.model.entity.GiftCard">
         SELECT *
         FROM sftc_gift_card
         WHERE id = #{gift_card_id}

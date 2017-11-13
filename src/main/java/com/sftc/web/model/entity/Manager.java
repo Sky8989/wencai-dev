@@ -1,4 +1,4 @@
-package com.sftc.web.model;
+package com.sftc.web.model.entity;
 
 public class Manager {
 

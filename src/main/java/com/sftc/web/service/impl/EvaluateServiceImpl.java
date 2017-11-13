@@ -6,7 +6,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.model.dao.mybatis.EvaluateMapper;
-import com.sftc.web.model.Evaluate;
+import com.sftc.web.model.entity.Evaluate;
 import com.sftc.web.service.EvaluateService;
 import org.springframework.stereotype.Service;
 

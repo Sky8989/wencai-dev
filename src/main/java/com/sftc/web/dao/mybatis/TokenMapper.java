@@ -1,7 +1,7 @@
 package com.sftc.web.dao.mybatis;
 
-import com.sftc.web.model.Token;
-import com.sftc.web.model.User;
+import com.sftc.web.model.entity.Token;
+import com.sftc.web.model.entity.User;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
