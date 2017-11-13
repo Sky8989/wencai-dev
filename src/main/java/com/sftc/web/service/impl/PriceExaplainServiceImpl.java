@@ -7,23 +7,19 @@ import com.sftc.web.dao.mybatis.PriceExaplainMapper;
 import com.sftc.web.model.SwaggerRequestVO.PriceExaplainVO;
 import com.sftc.web.model.entity.PriceExplain;
 import com.sftc.web.service.PriceExaplainService;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.sftc.tools.api.APIStatus.PARAM_ERROR;
+import javax.annotation.Resource;
+
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 
 
 @Service
 public class PriceExaplainServiceImpl implements PriceExaplainService {
-    @Autowired
+    @Resource
     private PriceExaplainMapper priceExaplainMapper;
-    @Autowired
-    private PriceExplain priceExaplain;
     /**
      * 根据城市获取相对应的价格说明
-     * @param apiRequest
      */
     @Override
     public APIResponse getPriceExplainByCity(APIRequest apiRequest) {
@@ -34,6 +30,7 @@ public class PriceExaplainServiceImpl implements PriceExaplainService {
         String city = priceExaplainVO.getCity();
 
         PriceExplain priceExaplainInfo = priceExaplainMapper.queryPriceExplainByCirty(city);
+        PriceExplain priceExaplain = new PriceExplain();
         priceExaplain.setCity(city);
         if (priceExaplainInfo==null){
             priceExaplain.setDistance_price("");

@@ -2,10 +2,8 @@ package com.sftc.web.model.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.springframework.stereotype.Component;
 
 
-@Component
 @ApiModel(value = "价格说明")
 public class PriceExplain {
     @ApiModelProperty("城市")
