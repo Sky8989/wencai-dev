@@ -12,6 +12,8 @@ public class Packages {
     private String type;
     @ApiModelProperty(name = "weight",value = "包裹重量",example = "3")
     private String weight;
+    @ApiModelProperty(name = "package_type",value = "包裹大小类型",example = "0")
+    private String package_type;
     @ApiModelProperty(name = "comments",value = "包裹描述",example = "大家电测试包裹描述")
     private String comments;
 
@@ -22,6 +24,10 @@ public class Packages {
     public void setType(String type) {
         this.type = type;
     }
+
+    public String getPackage_type() {return package_type;}
+
+    public void setPackage_type(String package_type) {this.package_type = package_type;}
 
     public String getWeight() {
         return weight;

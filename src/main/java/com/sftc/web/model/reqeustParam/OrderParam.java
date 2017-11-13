@@ -47,12 +47,14 @@ public class OrderParam {
     private String package_comments;
     @ApiModelProperty(name = "object_type",value = "物品类型",example = "dsa")
     private  String object_type;
-    @ApiModelProperty(name = "package_type",value = "包裹类型",example = "dsa")
-    private  String package_type;
+    @ApiModelProperty(name = "weight",value = "包裹重量",example = "1")
+    private  String weight;
     @ApiModelProperty(name = "order_type",value = "是否普通",example = "ORDER_MYSTERY")
     private String order_type;
     @ApiModelProperty(name = "region_type",value = "同城,大网",notes = "请将里面默认的String去掉，否则好友无法提交")
     private String region_type;
+    @ApiModelProperty(name = "package_type",value = "包裹类型",example = "0")
+    private String package_type;
 
     public String getSender_name() {
         return sender_name;
@@ -93,6 +95,10 @@ public class OrderParam {
     public void setSender_area(String sender_area) {
         this.sender_area = sender_area;
     }
+
+    public String getPackage_type() {return package_type;}
+
+    public void setPackage_type(String package_type) {this.package_type = package_type;}
 
     public String getSender_addr() {
         return sender_addr;
@@ -190,13 +196,9 @@ public class OrderParam {
         this.voice_time = voice_time;
     }
 
-    public String getPackage_type() {
-        return package_type;
-    }
+    public String getWeight() {return weight;}
 
-    public void setPackage_type(String package_type) {
-        this.package_type = package_type;
-    }
+    public void setWeight(String weight) {this.weight = weight;}
 
     public String getObject_type() {
         return object_type;

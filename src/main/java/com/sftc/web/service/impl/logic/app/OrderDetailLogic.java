@@ -7,7 +7,9 @@ import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.mybatis.*;
+import com.sftc.web.enumeration.express.PackageType;
 import com.sftc.web.model.GiftCard;
+import com.sftc.web.model.PackageMessage;
 import com.sftc.web.model.User;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
@@ -22,12 +24,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.SFConstant.SF_ORDERROUTE_URL;
-import static com.sftc.tools.constant.SFConstant.SF_ORDER_SYNC_URL;
+import static com.sftc.tools.constant.SFConstant.*;
 import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
 
 @Component
@@ -45,6 +47,8 @@ public class OrderDetailLogic {
     private OrderExpressTransformMapper orderExpressTransformMapper;
     @Resource
     private MessageMapper messageMapper;
+
+    private static final String CONSTANTS_STR = "BASICDATA";
 
     /**
      * 订单详情接口
@@ -147,7 +151,6 @@ public class OrderDetailLogic {
             // 同城订单需要access_token
             String access_token = (String) request.getParameter("access_token");
             access_token = (access_token == null || access_token.equals("") ? COMMON_ACCESSTOKEN : access_token);
-
             respObject = SFExpressHelper.getExpressDetail(uuid, access_token);
             //处理错误信息
             if (respObject.containsKey("error") || respObject.containsKey("errors") || respObject.containsKey("ERROR")) {
@@ -181,6 +184,65 @@ public class OrderDetailLogic {
             APIResponse apiResponse = syncOrderExpress(order.getId());
             if (apiResponse != null) return apiResponse;
             order = orderMapper.selectOrderDetailByUuid(uuid);
+
+
+            List<OrderExpressDTO> orderExpressList = order.getOrderExpressList();
+            if (order.getLatitude() == 0 || order.getLongitude() == 0){
+                Map<String,String> map = new HashMap<>();
+                map.put("reason","寄件人经纬度参数缺失");
+                return APIUtil.submitErrorResponse("寄件人经纬度参数缺失",map);
+            };
+            for (OrderExpressDTO orderExpressDTO : orderExpressList) {  //获取订单基础数据
+                String constantsUrl = SF_CONSTANTS_URL + CONSTANTS_STR + "?latitude="
+                        + order.getLatitude() + "&longitude=" + order.getLongitude();
+                HttpGet get = new HttpGet(constantsUrl);
+                get.addHeader("PushEnvelope-Device-Token", access_token);
+                String res = APIGetUtil.get(get);
+                JSONObject jsonObject = JSONObject.fromObject(res);
+                if (jsonObject.get("errors") != null || jsonObject.get("error") != null)
+                    return APIUtil.submitErrorResponse("获取订单基础数据失败", jsonObject);
+
+                try {
+                    if (jsonObject.getJSONObject("constant").getJSONObject("value").containsKey("PACKAGE_TYPE")) {
+                        JSONArray packageTypeArr = jsonObject.getJSONObject("constant").getJSONObject("value").getJSONArray("PACKAGE_TYPE");
+                        PackageMessage packageMessage = new PackageMessage();
+                        for (int i = 0; i < packageTypeArr.size(); i++) {
+                            JSONObject packageTypeOBJ = packageTypeArr.getJSONObject(i);
+                            String package_code = packageTypeOBJ.getString("code");
+                            if (package_code != null && package_code.equals(orderExpressDTO.getObject_type())) {  //获取物品类型与快递相同的数组
+                                JSONArray weightArr = packageTypeOBJ.getJSONArray("weight_segment");
+                                for (int j = 0; j < weightArr.size(); j++) {
+                                    JSONObject weightOBJ = weightArr.getJSONObject(j);
+                                    //根据包裹大小类型添加包裹信息    0/1/2/3 --对应-- 小/中/大/超大
+                                    if (j == 0 && orderExpressDTO.getPackage_type().equals(PackageType.SMALl_PACKAGE.getKey())) {
+                                        packageMessage.setName(weightOBJ.getString("name"));
+                                        packageMessage.setWeight(weightOBJ.getString("weight"));
+                                        packageMessage.setType(PackageType.SMALl_PACKAGE.getKey());
+                                    }
+                                    if (j == 1 && orderExpressDTO.getPackage_type().equals(PackageType.CENTRN_PACKAGE.getKey())) {
+                                        packageMessage.setName(weightOBJ.getString("name"));
+                                        packageMessage.setWeight(weightOBJ.getString("weight"));
+                                        packageMessage.setType(PackageType.CENTRN_PACKAGE.getKey());
+                                    }
+                                    if (j == 2 && orderExpressDTO.getPackage_type().equals(PackageType.BIG_PACKAGE.getKey())) {
+                                        packageMessage.setName(weightOBJ.getString("name"));
+                                        packageMessage.setWeight(weightOBJ.getString("weight"));
+                                        packageMessage.setType(PackageType.BIG_PACKAGE.getKey());
+                                    }
+                                    if (j == 3 && orderExpressDTO.getPackage_type().equals(PackageType.HUGE_PACKAGE.getKey())) {
+                                        packageMessage.setName(weightOBJ.getString("name"));
+                                        packageMessage.setWeight(weightOBJ.getString("weight"));
+                                        packageMessage.setType(PackageType.HUGE_PACKAGE.getKey());
+                                    }
+                                }
+                            }
+                        }
+                        orderExpressDTO.setPackageMessage(packageMessage);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         respObject.put("order", order);

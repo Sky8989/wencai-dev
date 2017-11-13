@@ -40,7 +40,7 @@ public class OrderOtherLogic {
     private static final String PACKAGE_SUPER_BIG_ICON_SELECTED = "https://sf.dankal.cn/icn_package_super_selected.png";
 
     /**
-     * 预约时间规则 (获取订单常量)
+     * 预约时间规则 (获取订单基础数据)
      */
     public APIResponse timeConstants(APIRequest request) {
         JSONObject paramObject = JSONObject.fromObject(request.getRequestParam());
@@ -57,7 +57,7 @@ public class OrderOtherLogic {
         String res = APIGetUtil.get(get);
         JSONObject jsonObject = JSONObject.fromObject(res);
         if (jsonObject.get("errors") != null || jsonObject.get("error") != null)
-            return APIUtil.submitErrorResponse("获取常量失败", jsonObject);
+            return APIUtil.submitErrorResponse("获取订单基础数据失败", jsonObject);
 
         try {
             if (jsonObject.containsKey("constant")) {

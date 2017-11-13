@@ -23,7 +23,9 @@ public class OrderCallback {
         private String state;
         private String attributes;
         private String order_number;
-        //为C端小程序的物品类型，
+        //为C端小程序的包裹重量，
+        private String weight;
+        //包裹大小类型
         private String package_type;
         // 包裹的类型
         private String object_type;
@@ -57,6 +59,10 @@ public class OrderCallback {
             this.uuid = uuid;
         }
 
+        public String getPackage_type() {return package_type;}
+
+        public void setPackage_type(String package_type) {this.package_type = package_type;}
+
         public String getState() {
             return state;
         }
@@ -81,13 +87,9 @@ public class OrderCallback {
             this.attributes = attributes;
         }
 
-        public String getPackage_type() {
-            return package_type;
-        }
+        public String getWeight() {return weight;}
 
-        public void setPackage_type(String package_type) {
-            this.package_type = package_type;
-        }
+        public void setWeight(String weight) {this.weight = weight;}
 
         public String getObject_type() {
             return object_type;

@@ -94,7 +94,7 @@ public class SFServiceAddressServiceImpl implements SFServiceAddressService {
         // request sf param
         String senderAreaCode = getServiceAddressCode(senderArea, 4, senderCityAddress.getCode());
         String receiverAreaCode = getServiceAddressCode(receiverArea, 4, receiveCityAddress.getCode());
-        String weight = oe.getPackage_type();
+        String weight = oe.getWeight();
 
         return getServiceRate(senderAreaCode, receiverAreaCode, weight, null);
     }

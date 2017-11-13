@@ -699,6 +699,7 @@ public class OrderCommitLogic {
                 }
             }
 
+            String package_type = requestOBJ.getJSONArray("packages").getJSONObject(0).getString("package_type");
             // 插入快递表
             OrderExpress orderExpress = new OrderExpress(
                     Long.toString(System.currentTimeMillis()),
@@ -722,7 +723,8 @@ public class OrderCommitLogic {
                     targetOBJ.getJSONObject("coordinate").getDouble("longitude"),
                     directed_code,
                     attrStr,
-                    is_directed
+                    is_directed,
+                    package_type
             );
 
             if (reserve_time != null && !reserve_time.equals("")) {
@@ -743,6 +745,7 @@ public class OrderCommitLogic {
             respObject.put("order_id", order.getId());
             // 添加是否面对面下单
             respObject.put("is_directed", is_directed);
+            respObject.put("package_type", package_type);
 
             /// 发送微信模板消息
 //            if (reqObject.getJSONObject("order").containsKey("form_id")
@@ -858,7 +861,8 @@ public class OrderCommitLogic {
                 order.getId(),
                 orderId,
                 d_latitude,
-                d_longitude
+                d_longitude,
+                packagesOBJ.getString("package_type")
         );
         orderExpress.setReserve_time((String) requestObject.getJSONObject("order").get("reserve_time"));
 //        orderExpressDao.save(orderExpress);

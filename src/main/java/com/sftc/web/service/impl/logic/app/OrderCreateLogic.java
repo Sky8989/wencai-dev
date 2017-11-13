@@ -54,8 +54,8 @@ public class OrderCreateLogic {
         OrderParam orderParam = (OrderParam) request.getRequestParam();
 
         // 增加对emoji的过滤
-        if (orderParam.getPackage_type() != null && !"".equals(orderParam.getPackage_type())) {
-            boolean containsEmoji = EmojiFilter.containsEmoji(orderParam.getPackage_type());
+        if (orderParam.getWeight() != null && !"".equals(orderParam.getWeight())) {
+            boolean containsEmoji = EmojiFilter.containsEmoji(orderParam.getWeight());
             if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
         }
         if (orderParam.getObject_type() != null && !"".equals(orderParam.getObject_type())) {
@@ -77,7 +77,7 @@ public class OrderCreateLogic {
         for (int i = 0; i < orderParam.getPackage_count(); i++) {
             // 写入uuid 保证每个快递的uuid不同
             OrderExpress orderExpress = new OrderExpress();
-            orderExpress.setPackage_type(orderParam.getPackage_type());
+            orderExpress.setWeight(orderParam.getWeight());
             orderExpress.setObject_type(orderParam.getObject_type());
             orderExpress.setOrder_id(order.getId());
             orderExpress.setCreate_time(order.getCreate_time());
@@ -87,6 +87,7 @@ public class OrderCreateLogic {
             orderExpress.setOrder_id(order.getId());
             orderExpress.setPackage_comments(package_comments);
             orderExpress.setUuid(SFOrderHelper.getOrderNumber());
+            orderExpress.setPackage_type(orderParam.getPackage_type());
             orderExpressDao.save(orderExpress);//TODO:要插入包裹补充信息
         }
 
