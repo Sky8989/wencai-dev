@@ -1,5 +1,8 @@
 package com.sftc.web.model.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -12,85 +15,31 @@ public class UserContactNew {
      * 一条记录一条用户关系 这是一种单向关系
      * @Date:16:32 2017/6/25
      */
-    private int id;
-    // 用户id
-    private int user_id;
-    // 好友id
+    @Setter @Getter
+    private int id;// 用户id
+
+    @Setter @Getter
+    private int user_id; // 好友id
+
+    @Setter @Getter
     private int friend_id;
-    // 是否星标好友
-    private int is_tag_star;
-    // 亲密度
-    private int lntimacy;
-    // 创建时间
-    private String create_time;
-    // 好友备注
-    private String notes;
-    // 好友图片
-    private String picture_address;
-    // 好友手机号
-    private String mobile;
 
-    public int getId() {
-        return id;
-    }
+    private int is_tag_star;// 是否星标好友
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    @Setter @Getter
+    private int lntimacy; // 亲密度
 
-    public int getUser_id() {
-        return user_id;
-    }
+    @Setter @Getter
+    private String create_time; // 创建时间
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
+    @Setter @Getter
+    private String notes; // 好友备注
 
-    public int getFriend_id() {
-        return friend_id;
-    }
+    @Setter @Getter
+    private String picture_address;// 好友图片
 
-    public void setFriend_id(int friend_id) {
-        this.friend_id = friend_id;
-    }
-
-    public int getIs_tag_star() {
-        return is_tag_star;
-    }
-
-    public void setIs_tag_star(int is_tag_star) {
-        this.is_tag_star = is_tag_star;
-    }
-
-    public int getLntimacy() {
-        return lntimacy;
-    }
-
-    public void setLntimacy(int lntimacy) {
-        this.lntimacy = lntimacy;
-    }
-
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
-    }
-
-    public String getNotes() {return notes;}
-
-    public void setNotes(String notes) {this.notes = notes;}
-
-    public String getPicture_address() {return picture_address;}
-
-    public void setPicture_address(String picture_address) {this.picture_address = picture_address;}
-
-    public String getMobile() {return mobile;}
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
+    @Setter @Getter
+    private String mobile; // 好友手机号
 
     @Override
     public String toString() {
@@ -104,8 +53,7 @@ public class UserContactNew {
                 '}';
     }
 
-    public UserContactNew() {
-    }
+    public UserContactNew() {}
 
     /**
      * 基于HttpServletRequest作为参数的构造方法 用于cms
@@ -119,4 +67,8 @@ public class UserContactNew {
             this.id = Integer.parseInt(request.getParameter("id"));
         }
     }
+
+    public int getIs_tag_star() {return is_tag_star;}
+
+    public void setIs_tag_star(int is_tag_star) {this.is_tag_star = is_tag_star;}
 }

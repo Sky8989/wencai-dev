@@ -5,7 +5,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.vo.swaggerRequestVO.FriendListVO;
 import com.sftc.web.model.entity.UserContactLabel;
-import com.sftc.web.model.vo.swaggerRequestVO.UserContactParam;
+import com.sftc.web.model.vo.swaggerRequestVO.UserContactParamVO;
 import com.sftc.web.model.vo.swaggerRequestVO.FriendStarVO;
 import com.sftc.web.service.UserContactLabelService;
 import io.swagger.annotations.Api;
@@ -38,9 +38,9 @@ public class UserContactController extends BaseController {
     @ApiOperation(value = "好友圈来往记录",httpMethod = "POST")
     @RequestMapping(value = "/contacts", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse getContactInfo(@RequestBody UserContactParam userContactParam) throws Exception {
+    APIResponse getContactInfo(@RequestBody UserContactParamVO userContactParamVO) throws Exception {
         APIRequest request = new APIRequest();
-        request.setRequestParam(userContactParam);
+        request.setRequestParam(userContactParamVO);
         return userContactService.getContactInfo(request);
     }
 

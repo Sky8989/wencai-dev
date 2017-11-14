@@ -1,6 +1,8 @@
 package com.sftc.web.model.entity;
 
 import com.sftc.web.model.others.Object;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,28 +18,39 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class Token extends Object {
 
+    @Setter @Getter
     private int id;
-    // 创建时间
-    private String create_time;
+
+    @Setter @Getter
+    private String create_time; // 创建时间
+
+    @Setter @Getter
     private String token;
-    // 是否已经注销
-    private int is_logout;
-    // 更新时间
-    private String expires_in;
+
+    private int is_logout;// 是否已经注销
+
+    @Setter @Getter
+    private String expires_in;// 更新时间
+
+    @Setter @Getter
     private String gmt_modified;
-    // 到期时间
-    private String gmt_expiry;
-    // 属于哪个用户
-    private String local_token;
+
+    @Setter @Getter
+    private String gmt_expiry;// 到期时间
+
+    @Setter @Getter
+    private String local_token; // 属于哪个用户
+
+    @Setter @Getter
     private String access_token;
 
+    @Setter @Getter
     private String refresh_token;
 
+    @Setter @Getter
     private int user_id;
 
-    public Token() {
-
-    }
+    public Token() {}
 
     /**
      * CMS使用的构造方法
@@ -81,90 +94,7 @@ public class Token extends Object {
         this.user_id = user_id;
     }
 
-    public int getId() {
-        return id;
-    }
+    public int getIs_logout() {return is_logout;}
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public int getIs_logout() {
-        return is_logout;
-    }
-
-    public void setIs_logout(int is_logout) {
-        this.is_logout = is_logout;
-    }
-
-
-    public String getGmt_modified() {
-        return gmt_modified;
-    }
-
-    public void setGmt_modified(String gmt_modified) {
-        this.gmt_modified = gmt_modified;
-    }
-
-    public String getGmt_expiry() {
-        return gmt_expiry;
-    }
-
-    public void setGmt_expiry(String gmt_expiry) {
-        this.gmt_expiry = gmt_expiry;
-    }
-
-
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
-
-    public String getLocal_token() {
-        return local_token;
-    }
-
-    public void setLocal_token(String local_token) {
-        this.local_token = local_token;
-    }
-
-    public void setExpires_in(String expires_in) {
-        this.expires_in = expires_in;
-    }
-
-    public String getAccess_token() {
-        return access_token;
-    }
-
-    public void setAccess_token(String access_token) {
-        this.access_token = access_token;
-    }
-
-    public String getRefresh_token() {
-        return refresh_token;
-    }
-
-    public void setRefresh_token(String refresh_token) {
-        this.refresh_token = refresh_token;
-    }
-
+    public void setIs_logout(int is_logout) {this.is_logout = is_logout;}
 }

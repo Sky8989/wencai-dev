@@ -14,7 +14,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @Time 下午3:52
  */
 @ApiModel(value = "优惠券兑换")
-public class Promo {
+public class CouPonPromoVO {
 
     @ApiModelProperty(name = "promo_code",value = "兑换密语",example = "1")
     private String promo_code;

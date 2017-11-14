@@ -1,47 +1,64 @@
 package com.sftc.web.model.entity;
 
 import com.sftc.web.model.others.Object;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.servlet.http.HttpServletRequest;
 
 import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
 
 public class User extends Object {
+    @Setter @Getter
     private int id;
-    //邀请表id
-    private int invite_id;
 
+    @Setter @Getter
+    private int invite_id;//邀请表id
+
+    @Setter @Getter
     private String uuid;
-    //用户名字
-    private String name;
-    //用户手机
-    private String mobile;
-    //用户头像
-    private String avatar;
-    //用户密码
-    private String user_password;
+
+    @Setter @Getter
+    private String name;//用户名字
+
+    @Setter @Getter
+    private String mobile;//用户手机
+
+    @Setter @Getter
+    private String avatar;//用户头像
+
+    @Setter @Getter
+    private String user_password;//用户密码
+
+    @Setter @Getter
     private String open_id;
+
+    @Setter @Getter
     private String session_key;
+
+    @Setter @Getter
     private String create_time;
+
+    @Setter @Getter
     private String js_code;
+
+    @Setter @Getter
     private Object summary;
+
+    @Setter @Getter
     private Object attributes;
+
+    @Setter @Getter
     private Object tags;
 
+    @Setter @Getter
     private Token token;
 
-    //    分页参数
-    private Integer pageNumKey;
+    @Setter @Getter
+    private Integer pageNumKey; //分页参数
+
+    @Setter @Getter
     private Integer pageSizeKey;
-
-    public Token getToken() {
-        return token;
-    }
-
-    public void setToken(Token token) {
-        this.token = token;
-    }
-
 
     public User(String user_password, String open_id, String create_time) {
         this.user_password = user_password;
@@ -59,133 +76,7 @@ public class User extends Object {
         this.create_time = create_time;
     }
 
-    public User() {
-    }
-
-
-
-    public int getInvite_id() {
-        return invite_id;
-    }
-
-    public void setInvite_id(int invite_id) {
-        this.invite_id = invite_id;
-    }
-
-    public String getJs_code() {
-        return js_code;
-    }
-
-    public void setJs_code(String js_code) {
-        this.js_code = js_code;
-    }
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSession_key() {
-        return session_key;
-    }
-
-    public void setSession_key(String session_key) {
-        this.session_key = session_key;
-    }
-
-    public Object getSummary() {
-        return summary;
-    }
-
-    public void setSummary(Object summary) {
-        this.summary = summary;
-    }
-
-    public Object getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(Object attributes) {
-        this.attributes = attributes;
-    }
-
-    public Object getTags() {
-        return tags;
-    }
-
-    public void setTags(Object tags) {
-        this.tags = tags;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public String getAvatar() {
-        return avatar == null || avatar.equals("") ? DK_USER_AVATAR_DEFAULT : avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getUser_password() {
-        return user_password;
-    }
-
-    public void setUser_password(String user_password) {
-        this.user_password = user_password;
-    }
-
-    public String getOpen_id() {
-        return open_id;
-    }
-
-    public void setOpen_id(String open_id) {
-        this.open_id = open_id;
-    }
-
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
-    }
-
-    public Integer getPageNumKey() {return pageNumKey;}
-
-    public void setPageNumKey(Integer pageNumKey) {this.pageNumKey = pageNumKey;}
-
-    public Integer getPageSizeKey() {return pageSizeKey;}
-
-    public void setPageSizeKey(Integer pageSizeKey) {this.pageSizeKey = pageSizeKey;}
-
+    public User() {}
 
     /**
      * 基于HttpServletRequest作为参数的构造方法 用于cms
@@ -197,7 +88,6 @@ public class User extends Object {
         if (request.getParameter("name") != null && !"".equals(request.getParameter("name")))
         {this.name = request.getParameter("name");}
     }
-
 
     @Override
     public String toString() {

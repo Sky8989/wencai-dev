@@ -3,6 +3,8 @@ package com.sftc.web.model.entity;
 import com.sftc.web.model.others.Object;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,57 +21,26 @@ import javax.servlet.http.HttpServletRequest;
 @ApiModel(value = "礼品卡")
 public class GiftCard extends Object {
     @ApiModelProperty("主键")
+    @Setter @Getter
     private int id;
+
     @ApiModelProperty("创建时间")
+    @Setter @Getter
     private String create_time;
+
     @ApiModelProperty("名称")
+    @Setter @Getter
     private String name;
+
     @ApiModelProperty("图片")
+    @Setter @Getter
     private String icon;
+
     @ApiModelProperty("类型")
+    @Setter @Getter
     private String type;
 
     public GiftCard() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public GiftCard(HttpServletRequest request) {

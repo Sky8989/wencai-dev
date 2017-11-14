@@ -8,10 +8,10 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.mybatis.*;
-import com.sftc.web.model.dto.FriendRecordDTO;
+import com.sftc.web.model.vo.displayVO.FriendRecordVO;
 import com.sftc.web.model.entity.*;
 import com.sftc.web.model.vo.swaggerRequestVO.FriendListVO;
-import com.sftc.web.model.vo.swaggerRequestVO.UserContactParam;
+import com.sftc.web.model.vo.swaggerRequestVO.UserContactParamVO;
 import com.sftc.web.model.vo.swaggerOrderVO.Orders;
 import com.sftc.web.service.UserContactService;
 import net.sf.json.JSONObject;
@@ -103,54 +103,54 @@ public class UserContactServiceImpl implements UserContactService {
      * 来往记录
      */
     public APIResponse getContactInfo(APIRequest request) {
-        UserContactParam userContactParam = (UserContactParam) request.getRequestParam();
+        UserContactParamVO userContactParamVO = (UserContactParamVO) request.getRequestParam();
         Integer user_id = TokenUtils.getInstance().getUserId();
         // handle param
-        if (userContactParam.getAccess_token() == null || userContactParam.getAccess_token().length() == 0) {
+        if (userContactParamVO.getAccess_token() == null || userContactParamVO.getAccess_token().length() == 0) {
             //传入公共token
-            userContactParam.setAccess_token(SFTokenHelper.COMMON_ACCESSTOKEN);
+            userContactParamVO.setAccess_token(SFTokenHelper.COMMON_ACCESSTOKEN);
         } else if (user_id == 0) {
             return APIUtil.paramErrorResponse("用户id不能为空");
-        } else if (userContactParam.getFriend_id() == 0) {
+        } else if (userContactParamVO.getFriend_id() == 0) {
             return APIUtil.paramErrorResponse("好友id不能为空");
-        } else if (user_id == userContactParam.getFriend_id()) {
+        } else if (user_id == userContactParamVO.getFriend_id()) {
             return APIUtil.paramErrorResponse("I believe that you can't fuck yourself !");
-        } else if (userContactParam.getPageNum() < 1 || userContactParam.getPageSize() < 1) {
+        } else if (userContactParamVO.getPageNum() < 1 || userContactParamVO.getPageSize() < 1) {
             return APIUtil.paramErrorResponse("分页参数无效");
         }
-        userContactParam.setUser_id(user_id);
-        APIResponse apiResponse = syncFriendExpress(userContactParam);
+        userContactParamVO.setUser_id(user_id);
+        APIResponse apiResponse = syncFriendExpress(userContactParamVO);
         if (apiResponse != null) return apiResponse;
 
 
         //修改为物理分页参数
-        userContactParam.setPageNum((userContactParam.getPageNum() - 1) * userContactParam.getPageSize()); // pageNum -> startIndex
+        userContactParamVO.setPageNum((userContactParamVO.getPageNum() - 1) * userContactParamVO.getPageSize()); // pageNum -> startIndex
         // callback
-        List<FriendRecordDTO> friendRecordDTOS = userContactMapper.selectCirclesContact(userContactParam);
-        for (FriendRecordDTO friendRecordDTO : friendRecordDTOS) {
-            User sender = userMapper.selectUserByUserId(friendRecordDTO.getSender_user_id());
-            User receiver = userMapper.selectUserByUserId(friendRecordDTO.getShip_user_id());
+        List<FriendRecordVO> friendRecordVOS = userContactMapper.selectCirclesContact(userContactParamVO);
+        for (FriendRecordVO friendRecordVO : friendRecordVOS) {
+            User sender = userMapper.selectUserByUserId(friendRecordVO.getSender_user_id());
+            User receiver = userMapper.selectUserByUserId(friendRecordVO.getShip_user_id());
             if (sender != null) {
-                friendRecordDTO.setSender_icon(sender.getAvatar());
-                friendRecordDTO.setSender_wechatname(sender.getName());
+                friendRecordVO.setSender_icon(sender.getAvatar());
+                friendRecordVO.setSender_wechatname(sender.getName());
             }
             if (receiver != null) {
-                friendRecordDTO.setShip_icon(receiver.getAvatar());
-                friendRecordDTO.setShip_wechatname(receiver.getName());
+                friendRecordVO.setShip_icon(receiver.getAvatar());
+                friendRecordVO.setShip_wechatname(receiver.getName());
             }
         }
-        return APIUtil.getResponse(SUCCESS, friendRecordDTOS);
+        return APIUtil.getResponse(SUCCESS, friendRecordVOS);
     }
 
-    private APIResponse syncFriendExpress(UserContactParam userContactParam) {
+    private APIResponse syncFriendExpress(UserContactParamVO userContactParamVO) {
         // handle url
         String ORDERS_URL = SF_ORDER_SYNC_URL;
         String uuids = "";
 
 
-//        List<OrderExpressDTO> orderExpressList = orderExpressMapper.selectExpressForId(userContactParam.getUser_id());
-        PageHelper.startPage(userContactParam.getPageNum(), userContactParam.getPageSize());
-        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForContactInfo(userContactParam.getUser_id(), userContactParam.getFriend_id());
+//        List<OrderExpressDTO> orderExpressList = orderExpressMapper.selectExpressForId(userContactParamVO.getUser_id());
+        PageHelper.startPage(userContactParamVO.getPageNum(), userContactParamVO.getPageSize());
+        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForContactInfo(userContactParamVO.getUser_id(), userContactParamVO.getFriend_id());
 
 
         for (OrderExpress oe : orderExpressList) { //此处订单若过多 url过长 sf接口会报414
@@ -168,9 +168,9 @@ public class UserContactServiceImpl implements UserContactService {
         // POST
         List<Orders> orderses = null;
         try {
-            String token = userContactParam.getAccess_token();
+            String token = userContactParamVO.getAccess_token();
             if (token != null && !token.equals("")) {
-                token = userContactParam.getAccess_token();
+                token = userContactParamVO.getAccess_token();
             } else {
                 token = COMMON_ACCESSTOKEN;
             }

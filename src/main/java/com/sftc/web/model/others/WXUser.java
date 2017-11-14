@@ -1,6 +1,9 @@
 package com.sftc.web.model.others;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 微信登录返回Json数据模型
  *
@@ -8,49 +11,18 @@ package com.sftc.web.model.others;
  */
 public class WXUser {
 
+    @Setter @Getter
     private String openid;
+
+    @Setter @Getter
     private String session_key;
+
+    @Setter @Getter
     private String expires_in;
+
+    @Setter @Getter
     private int errcode;
+
+    @Setter @Getter
     private String errmsg;
-
-    public String getOpenid() {
-        return openid;
-    }
-
-    public void setOpenid(String openid) {
-        this.openid = openid;
-    }
-
-    public String getSession_key() {
-        return session_key;
-    }
-
-    public void setSession_key(String session_key) {
-        this.session_key = session_key;
-    }
-
-    public String getExpires_in() {
-        return expires_in;
-    }
-
-    public void setExpires_in(String expires_in) {
-        this.expires_in = expires_in;
-    }
-
-    public Integer getErrcode() {
-        return errcode;
-    }
-
-    public void setErrcode(int errcode) {
-        this.errcode = errcode;
-    }
-
-    public String getErrmsg() {
-        return errmsg;
-    }
-
-    public void setErrmsg(String errmsg) {
-        this.errmsg = errmsg;
-    }
 }

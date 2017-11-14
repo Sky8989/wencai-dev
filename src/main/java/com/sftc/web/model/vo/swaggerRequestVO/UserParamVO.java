@@ -13,8 +13,8 @@ import io.swagger.annotations.ApiModelProperty;
  * @date 2017/5/27
  * @Time 上午10:10
  */
-@ApiModel(value = "")
-public class UserParam {
+@ApiModel(value = "用户信息请求包装类")
+public class UserParamVO {
     @ApiModelProperty(name = "bespoken_time",value = "用户id",example = "10093",hidden = true)
     private int id;
     @ApiModelProperty(name = "token",value = "用户token",example = "EyMivbd44I124lcddrBG")

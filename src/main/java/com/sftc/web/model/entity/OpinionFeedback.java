@@ -1,6 +1,8 @@
 package com.sftc.web.model.entity;
 
 import com.sftc.web.model.others.Object;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,58 +15,23 @@ import com.sftc.web.model.others.Object;
  */
 public class OpinionFeedback extends Object {
 
+    @Setter @Getter
     private int id;
-    // 创建时间
-    private String create_time;
-    // 意见反馈
-    private String feedback;
-    // 反馈时间
-    private String gmt_create;
-    // 反馈意见的用户
 
-   private User merchant;
+    @Setter @Getter
+    private String create_time;// 创建时间
 
+    @Setter @Getter
+    private String feedback;// 意见反馈
+
+    @Setter @Getter
+    private String gmt_create;// 反馈时间
+
+    @Setter @Getter
+    private User merchant; // 反馈意见的用户
+
+    @Setter @Getter
     private long user_id;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
-    }
-
-    public String getFeedback() {
-        return feedback;
-    }
-
-    public void setFeedback(String feedback) {
-        this.feedback = feedback;
-    }
-
-    public String getGmt_create() {
-        return gmt_create;
-    }
-
-    public void setGmt_create(String gmt_create) {
-        this.gmt_create = gmt_create;
-    }
-
-
-
-    public long getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
-    }
+    public OpinionFeedback() {super();}
 }

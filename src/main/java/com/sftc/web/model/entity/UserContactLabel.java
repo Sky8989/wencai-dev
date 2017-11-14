@@ -1,15 +1,21 @@
 package com.sftc.web.model.entity;
 
 import com.sftc.web.model.others.Object;
+import lombok.Getter;
+import lombok.Setter;
 
 public class UserContactLabel extends Object {
-    private int id;
-    //联系人id
+
+    @Setter @Getter
+    private int id;  //联系人id
+    @Setter @Getter
     private int user_contact_id;
-    //标签
-    private String label;
-    //创建时间
-    private String create_time;
+
+    @Setter @Getter
+    private String label;  //标签
+
+    @Setter @Getter
+    private String create_time; //创建时间
 
     public UserContactLabel(int user_contact_id, String label, String create_time) {
         this.create_time = create_time;
@@ -17,38 +23,6 @@ public class UserContactLabel extends Object {
         this.label = label;
     }
 
-    public UserContactLabel() {
-    }
+    public UserContactLabel() {}
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getUser_contact_id() {
-        return user_contact_id;
-    }
-
-    public void setUser_contact_id(int user_contact_id) {
-        this.user_contact_id = user_contact_id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
-    }
 }

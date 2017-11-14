@@ -1,6 +1,8 @@
 package com.sftc.web.model.entity;
 
 import com.sftc.web.model.others.Object;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,91 +13,36 @@ import javax.servlet.http.HttpServletRequest;
 */
 public class Evaluate extends Object {
 
+    @Setter @Getter
     private int id;
-    // 评价内容
-    private String merchant_comments;
-    // 评价分数
-    private String merchant_score;
-    // 标签的内容，逗号隔开
-    private String merchant_tags;
-    // 订单id
-    private int order_id;
-    // 评价人的用户id
-    private long user_id;
-    // 快递的id orderExpress_id
-    private int orderExpress_id;
-    // 快递的uuid
-    private String uuid;
-    // 创建时间
-    private String create_time;
+
+    @Setter @Getter
+    private String merchant_comments;// 评价内容
+
+    @Setter @Getter
+    private String merchant_score;  // 评价分数
+
+    @Setter @Getter
+    private String merchant_tags;  // 标签的内容，逗号隔开
+
+    @Setter @Getter
+    private int order_id;   // 订单id
+
+    @Setter @Getter
+    private long user_id; // 评价人的用户id
+
+    @Setter @Getter
+    private int orderExpress_id; // 快递的id orderExpress_id
+
+    @Setter @Getter
+    private String uuid; // 快递的uuid
+
+    @Setter @Getter
+    private String create_time;// 创建时间
 
     public Evaluate() {
         super();
     }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getMerchant_comments() {
-        return merchant_comments;
-    }
-
-    public void setMerchant_comments(String merchant_comments) {
-        this.merchant_comments = merchant_comments;
-    }
-
-    public String getMerchant_score() {
-        return merchant_score;
-    }
-
-    public void setMerchant_score(String merchant_score) {
-        this.merchant_score = merchant_score;
-    }
-
-    public String getMerchant_tags() {
-        return merchant_tags;
-    }
-
-    public void setMerchant_tags(String merchant_tags) {
-        this.merchant_tags = merchant_tags;
-    }
-
-    public int getOrder_id() {
-        return order_id;
-    }
-
-    public void setOrder_id(int order_id) {
-        this.order_id = order_id;
-    }
-
-    public long getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
-
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
-    }
-
-    public int getOrderExpress_id() {return orderExpress_id;}
-
-    public void setOrderExpress_id(int orderExpress_id) {this.orderExpress_id = orderExpress_id;}
-
-    public String getUuid() {return uuid;}
-
-    public void setUuid(String uuid) {this.uuid = uuid;}
 
     public Evaluate(HttpServletRequest request) {
         if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
