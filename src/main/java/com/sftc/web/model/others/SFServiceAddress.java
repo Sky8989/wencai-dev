@@ -1,4 +1,4 @@
-package com.sftc.web.model.sfdo;
+package com.sftc.web.model.others;
 
 public class SFServiceAddress {
 

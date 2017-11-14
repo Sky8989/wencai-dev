@@ -11,7 +11,7 @@ import com.sftc.web.dao.mybatis.SFServiceAddressMapper;
 import com.sftc.web.model.others.Express;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.OrderExpress;
-import com.sftc.web.model.sfdo.SFServiceAddress;
+import com.sftc.web.model.others.SFServiceAddress;
 import com.sftc.web.service.SFServiceAddressService;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.time.DateFormatUtils;

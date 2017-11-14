@@ -1,4 +1,4 @@
-package com.sftc.web.model.sfdo;
+package com.sftc.web.model.vo.swaggerOrderVO;
 
 /**
  * Created by IntelliJ IDEA.

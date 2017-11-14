@@ -2,7 +2,7 @@ package com.sftc.tools.api;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
-import com.sftc.web.model.sfdo.Orders;
+import com.sftc.web.model.vo.swaggerOrderVO.Orders;
 import com.sftc.web.model.others.WXUser;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;

@@ -15,7 +15,7 @@ import com.sftc.web.model.entity.Message;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.entity.OrderExpressTransform;
-import com.sftc.web.model.sfdo.Orders;
+import com.sftc.web.model.vo.swaggerOrderVO.Orders;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;

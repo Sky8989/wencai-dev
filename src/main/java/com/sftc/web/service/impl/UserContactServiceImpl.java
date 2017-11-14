@@ -12,7 +12,7 @@ import com.sftc.web.model.dto.FriendRecordDTO;
 import com.sftc.web.model.entity.*;
 import com.sftc.web.model.vo.swaggerRequestVO.FriendListVO;
 import com.sftc.web.model.vo.swaggerRequestVO.UserContactParam;
-import com.sftc.web.model.sfdo.Orders;
+import com.sftc.web.model.vo.swaggerOrderVO.Orders;
 import com.sftc.web.service.UserContactService;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;
