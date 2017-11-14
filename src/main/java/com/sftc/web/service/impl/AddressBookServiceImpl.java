@@ -185,7 +185,7 @@ public class AddressBookServiceImpl implements AddressBookService {
             addressBookDao.save(addressBook);
 
             Address address = addressBookParam.getAddress();
-            address.setId(addressBookParam.getAddress_id());
+            address.setId(addressBook.getAddress_id());
             address.setCreate_time(create_time);
             address.setUser_id(addressBookDTO.getUser_id());
             addressDao.save(address);
