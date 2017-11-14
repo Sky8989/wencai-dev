@@ -49,7 +49,7 @@
     </select>
 
     <!-- 好友列表 -->
-    <select id="friendList" parameterType="com.sftc.web.model.vo.swaggerRequestVO.Paging" resultMap="friendMap">
+    <select id="friendList" parameterType="com.sftc.web.model.vo.swaggerRequestVO.FriendListVO" resultMap="friendMap">
         SELECT *
         FROM sftc_user_contact
         WHERE user_id = #{user_id}

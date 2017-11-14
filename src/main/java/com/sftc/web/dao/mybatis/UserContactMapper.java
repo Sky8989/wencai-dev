@@ -1,7 +1,7 @@
 package com.sftc.web.dao.mybatis;
 
 import com.sftc.web.model.dto.FriendRecordDTO;
-import com.sftc.web.model.vo.swaggerRequestVO.Paging;
+import com.sftc.web.model.vo.swaggerRequestVO.FriendListVO;
 import com.sftc.web.model.entity.UserContact;
 import com.sftc.web.model.entity.UserContactNew;
 import com.sftc.web.model.vo.swaggerRequestVO.UserContactParam;
@@ -14,7 +14,7 @@ import java.util.List;
 public interface UserContactMapper {
 
     // 好友列表
-    List<UserContact> friendList(Paging paging);
+    List<UserContact> friendList(FriendListVO friendListVO);
 
     int selectFriendCount(int user_id);
 

@@ -2,7 +2,7 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.sfdo.Promo;
+import com.sftc.web.model.vo.swaggerRequestVO.Promo;
 import com.sftc.web.model.vo.swaggerRequestVO.CouponRequestVO;
 import com.sftc.web.service.CouponService;
 import io.swagger.annotations.Api;

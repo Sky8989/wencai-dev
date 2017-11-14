@@ -21,11 +21,12 @@ import com.sftc.web.model.entity.AddressBook;
 import com.sftc.web.model.entity.AddressHistory;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
-import com.sftc.web.model.sfdo.Address;
-import com.sftc.web.model.sfdo.Coordinate;
-import com.sftc.web.model.sfdo.Source;
-import com.sftc.web.model.sfdo.Target;
-import com.sftc.web.service.MessageService;
+import com.sftc.web.model.vo.swaggerOrderVO.OrderAddressVO;
+import com.sftc.web.model.vo.swaggerOrderVO.OrderTargetAddressVO;
+import com.sftc.web.model.vo.swaggerOrderVO.SourceAddressVO;
+import com.sftc.web.model.vo.swaggerOrderVO.TargetAddressVO;
+import com.sftc.web.model.vo.swaggerRequestVO.CoordinateVO;
+import com.sftc.web.model.vo.swaggerRequestVO.TargetCoordinateVO;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
 import org.slf4j.Logger;
@@ -57,8 +58,6 @@ public class OrderCommitLogic {
     private AddressBookDao addressBookDao;
     @Resource
     private AddressHistoryMapper addressHistoryMapper;
-    @Resource
-    private MessageService messageService;
     @Resource
     private AddressBookMapper addressBookMapper;
     @Resource
@@ -276,29 +275,29 @@ public class OrderCommitLogic {
         for (OrderExpressDTO oeDto : orderDTO.getOrderExpressList()) {
             OrderExpress oe = gson.fromJson(gson.toJson(oeDto), OrderExpress.class);
             // 拼接同城订单参数中的 source 和 target
-            Source source = new Source();
-            Address address = new Address();
+            SourceAddressVO source = new SourceAddressVO();
+            OrderAddressVO address = new OrderAddressVO();
             address.setProvince(orderDTO.getSender_province());
             address.setCity(orderDTO.getSender_city());
             address.setRegion(orderDTO.getSender_area());
             address.setStreet(orderDTO.getSender_addr());
             address.setReceiver(orderDTO.getSender_name());
             address.setMobile(orderDTO.getSender_mobile());
-            Coordinate coordinate = new Coordinate();
+            CoordinateVO coordinate = new CoordinateVO();
             coordinate.setLongitude(orderDTO.getLongitude());
             coordinate.setLatitude(orderDTO.getLatitude());
             source.setAddress(address);
             source.setCoordinate(coordinate);
 
-            Target target = new Target();
-            Address targetAddress = new Address();
+            TargetAddressVO target = new TargetAddressVO();
+            OrderTargetAddressVO targetAddress = new OrderTargetAddressVO();
             targetAddress.setProvince(oe.getShip_province());
             targetAddress.setCity(oe.getShip_city());
             targetAddress.setRegion(oe.getShip_area());
             targetAddress.setStreet(oe.getShip_addr());
             targetAddress.setReceiver(oe.getShip_name());
             targetAddress.setMobile(oe.getShip_mobile());
-            Coordinate targetCoordinate = new Coordinate();
+            TargetCoordinateVO targetCoordinate = new TargetCoordinateVO();
             targetCoordinate.setLongitude(oe.getLongitude());
             targetCoordinate.setLatitude(oe.getLatitude());
             target.setAddress(targetAddress);
@@ -364,12 +363,11 @@ public class OrderCommitLogic {
                 /// 数据库操作
                 // 订单表更新订单区域类型
                 orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
-                // 快递表更新uuid和预约时间
+                String order_time = Long.toString(System.currentTimeMillis());
+                // 快递表更新  uuid / 预约时间 / 下单时间 / 订单号 / 快递状态
                 orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
-                String order_tiem = Long.toString(System.currentTimeMillis());
-                orderExpressMapper.updateOrderTime(uuid, order_tiem);
+                orderExpressMapper.updateOrderTime(uuid, order_time);
                 orderExpressMapper.updateOrderNumber(oe.getId(), request_num);
-                //更新订单状态
                 orderExpressMapper.updateOrderExpressStatus(oe.getId(), responseObject.getJSONObject("request").getString("status"));
 
                 // 插入地址

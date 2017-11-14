@@ -4,7 +4,7 @@ package com.sftc.web.model.vo.swaggerRequestVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "好友列表请求类")
-public class Paging {
+public class FriendListVO {
     @ApiModelProperty(name = "user_id",value = "用户id",example = "10028",required = true,hidden = true)
     private int user_id;
     @ApiModelProperty(name = "pageNum",value = "页数",example = "1",required = true)

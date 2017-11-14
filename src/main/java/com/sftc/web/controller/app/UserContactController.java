@@ -3,7 +3,7 @@ package com.sftc.web.controller.app;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.BaseController;
-import com.sftc.web.model.vo.swaggerRequestVO.Paging;
+import com.sftc.web.model.vo.swaggerRequestVO.FriendListVO;
 import com.sftc.web.model.entity.UserContactLabel;
 import com.sftc.web.model.vo.swaggerRequestVO.UserContactParam;
 import com.sftc.web.model.vo.swaggerRequestVO.FriendStarVO;
@@ -29,9 +29,9 @@ public class UserContactController extends BaseController {
     @ApiOperation(value = "我的好友列表",httpMethod = "POST")
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse allFriend(@RequestBody Paging paging) throws Exception {
+    APIResponse allFriend(@RequestBody FriendListVO friendListVO) throws Exception {
         APIRequest request = new APIRequest();
-        request.setRequestParam(paging);
+        request.setRequestParam(friendListVO);
         return userContactService.getFriendList(request);
     }
 

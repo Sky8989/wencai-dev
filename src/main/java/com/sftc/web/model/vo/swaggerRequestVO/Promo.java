@@ -1,4 +1,4 @@
-package com.sftc.web.model.sfdo;
+package com.sftc.web.model.vo.swaggerRequestVO;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

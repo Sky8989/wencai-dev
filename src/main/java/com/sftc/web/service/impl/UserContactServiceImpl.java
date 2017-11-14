@@ -10,7 +10,7 @@ import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.dto.FriendRecordDTO;
 import com.sftc.web.model.entity.*;
-import com.sftc.web.model.vo.swaggerRequestVO.Paging;
+import com.sftc.web.model.vo.swaggerRequestVO.FriendListVO;
 import com.sftc.web.model.vo.swaggerRequestVO.UserContactParam;
 import com.sftc.web.model.sfdo.Orders;
 import com.sftc.web.service.UserContactService;
@@ -80,17 +80,17 @@ public class UserContactServiceImpl implements UserContactService {
      * 获取用户的好友列表
      */
     public APIResponse getFriendList(APIRequest request) {
-        Paging paging = (Paging) request.getRequestParam();
+        FriendListVO friendListVO = (FriendListVO) request.getRequestParam();
         Integer user_id = TokenUtils.getInstance().getUserId();
         // verify params
-        if (paging.getPageNum() < 1 || paging.getPageSize() < 1) {
+        if (friendListVO.getPageNum() < 1 || friendListVO.getPageSize() < 1) {
             return APIUtil.paramErrorResponse("分页参数无效");
         }
-        paging.setUser_id(user_id);
-        paging.setPageNum((paging.getPageNum() - 1) * paging.getPageSize());
+        friendListVO.setUser_id(user_id);
+        friendListVO.setPageNum((friendListVO.getPageNum() - 1) * friendListVO.getPageSize());
         List<UserContact> userContactList = null;
         try {
-            userContactList = userContactMapper.friendList(paging);
+            userContactList = userContactMapper.friendList(friendListVO);
         } catch (Exception e) {
             e.printStackTrace();
             return APIUtil.logicErrorResponse(e.getLocalizedMessage(), e);
