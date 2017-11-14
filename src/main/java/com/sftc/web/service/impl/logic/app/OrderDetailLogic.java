@@ -69,7 +69,7 @@ public class OrderDetailLogic {
         }
 
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
-
+        setPackageType(orderDTO);
         JSONObject respObject = new JSONObject();
         if (orderDTO == null) return APIUtil.getResponse(SUCCESS, null);
         List<OrderExpressDTO> orderExpress = orderDTO.getOrderExpressList();
@@ -92,7 +92,6 @@ public class OrderDetailLogic {
 
         // giftCard
         GiftCard giftCard = giftCardMapper.selectGiftCardById(orderDTO.getGift_card_id());
-
         respObject.put("order", orderMap);
         respObject.put("giftCard", giftCard);
 
