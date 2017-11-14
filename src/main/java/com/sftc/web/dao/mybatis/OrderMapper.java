@@ -2,7 +2,7 @@ package com.sftc.web.dao.mybatis;
 
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.vo.swaggerOrderVO.MyOrderParam;
+import com.sftc.web.model.vo.swaggerOrderVO.MyOrderParamVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -29,15 +29,15 @@ public interface OrderMapper {
     /**
      * 查询我的订单列表
      */
-    List<Order> selectMyOrderList(MyOrderParam param);
+    List<Order> selectMyOrderList(MyOrderParamVO param);
 
-    List<OrderDTO> selectMyOrderList2(MyOrderParam param);
+    List<OrderDTO> selectMyOrderList2(MyOrderParamVO param);
 
 
     /**
      * 查询我的好友订单列表
      */
-    List<OrderDTO> selectMyFriendOrderList(MyOrderParam param);
+    List<OrderDTO> selectMyFriendOrderList(MyOrderParamVO param);
 
     /**
      * 根据订单id查询订单详情

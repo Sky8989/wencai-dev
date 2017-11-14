@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(value = "我的订单列表请求包装类")
-public class MyOrderParam {
+public class MyOrderParamVO {
 
     @ApiModelProperty(name = "id",value = "用户id",example = "10093",hidden = true)
     private int id;

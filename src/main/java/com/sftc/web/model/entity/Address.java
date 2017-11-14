@@ -1,7 +1,7 @@
 package com.sftc.web.model.entity;
 
 import com.sftc.web.model.others.Object;
-import com.sftc.web.model.vo.swaggerOrderVO.OrderParam;
+import com.sftc.web.model.vo.swaggerOrderVO.OrderParamVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -78,18 +78,18 @@ public class Address extends Object {
         this.create_time = create_time;
     }
 
-    public Address(OrderParam orderParam) {
-        this.setUser_id(orderParam.getSender_user_id());
-        this.setName(orderParam.getSender_name());
-        this.setPhone(orderParam.getSender_mobile());
-        this.setProvince(orderParam.getSender_province());
-        this.setCity(orderParam.getSender_city());
-        this.setArea(orderParam.getSender_area());
-        this.setAddress(orderParam.getSender_addr());
-        this.setArea(orderParam.getSender_area());
-        this.setSupplementary_info(orderParam.getSupplementary_info());
-        this.setLongitude(orderParam.getLongitude());
-        this.setLatitude(orderParam.getLatitude());
+    public Address(OrderParamVO orderParamVO) {
+        this.setUser_id(orderParamVO.getSender_user_id());
+        this.setName(orderParamVO.getSender_name());
+        this.setPhone(orderParamVO.getSender_mobile());
+        this.setProvince(orderParamVO.getSender_province());
+        this.setCity(orderParamVO.getSender_city());
+        this.setArea(orderParamVO.getSender_area());
+        this.setAddress(orderParamVO.getSender_addr());
+        this.setArea(orderParamVO.getSender_area());
+        this.setSupplementary_info(orderParamVO.getSupplementary_info());
+        this.setLongitude(orderParamVO.getLongitude());
+        this.setLatitude(orderParamVO.getLatitude());
         this.setCreate_time(Long.toString(System.currentTimeMillis()));
     }
 

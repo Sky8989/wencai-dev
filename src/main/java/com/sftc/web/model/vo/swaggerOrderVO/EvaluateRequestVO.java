@@ -9,9 +9,9 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "订单评价请求信息包装类")
 public class EvaluateRequestVO {
     @ApiModelProperty(name = "request", required = true)
-    private EvaluateRequest request;
+    private EvaluateMessageVO request;
 
-    public EvaluateRequest getRequest() {return request;}
+    public EvaluateMessageVO getRequest() {return request;}
 
-    public void setRequest(EvaluateRequest request) {this.request = request;}
+    public void setRequest(EvaluateMessageVO request) {this.request = request;}
 }

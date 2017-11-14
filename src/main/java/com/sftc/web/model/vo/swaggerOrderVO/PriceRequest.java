@@ -23,7 +23,7 @@ public class PriceRequest {
     @ApiModelProperty(name = "attributes",required = true)
     private AttributesVO attributes;
     @ApiModelProperty(name = "packages",required = true)
-    private List<Packages> packages;
+    private List<PackagesVO> packages;
     @ApiModelProperty(name = "product_type",example = "JISUDA",required = true)
     private String product_type;
     @ApiModelProperty(name = "pay_type",example = "FREIGHT_COLLECT",required = true)
@@ -67,9 +67,9 @@ public class PriceRequest {
 
     public void setToken(TokenVO token) {this.token = token;}
 
-    public List<Packages> getPackages() {return packages;}
+    public List<PackagesVO> getPackages() {return packages;}
 
-    public void setPackages(List<Packages> packages) {this.packages = packages;}
+    public void setPackages(List<PackagesVO> packages) {this.packages = packages;}
 
     public String getProduct_type() {
         return product_type;

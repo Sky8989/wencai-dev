@@ -7,11 +7,11 @@ import io.swagger.annotations.ApiModelProperty;
  * Created by xf on 2017/10/21.
  */
 @ApiModel(value = "订单评价请求信息")
-public class EvaluateRequest {
+public class EvaluateMessageVO {
     @ApiModelProperty(name = "access_token",value = "顺丰access_token",example = "EyMivbd44I124lcddrBG",required = true)
     private String access_token;
     @ApiModelProperty(name = "attributes",value = "评价内容")
-    private EvaluateAttributes attributes;
+    private EvaluateAttributesVO attributes;
     @ApiModelProperty(name = "user_id",value = "用户id",example = "10093",required = true)
     private String user_id;
     @ApiModelProperty(name = "uuid",value = "快递uuid",example = "2c9a85895f24480d015f299b99c4588a",required = true)
@@ -25,11 +25,11 @@ public class EvaluateRequest {
         this.access_token = access_token;
     }
 
-    public EvaluateAttributes getAttributes() {
+    public EvaluateAttributesVO getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(EvaluateAttributes attributes) {
+    public void setAttributes(EvaluateAttributesVO attributes) {
         this.attributes = attributes;
     }
 

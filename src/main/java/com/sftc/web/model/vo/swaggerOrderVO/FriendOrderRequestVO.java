@@ -11,13 +11,13 @@ public class FriendOrderRequestVO {
     @ApiModelProperty(name = "request",required = true)
     private FriendRequestVO request;
     @ApiModelProperty(name = "order",required = true)
-    private FriendOrderMessage order;
+    private FriendOrderMessageVO order;
 
     public FriendRequestVO getRequest() {return request;}
 
     public void setRequest(FriendRequestVO request) {this.request = request;}
 
-    public FriendOrderMessage getOrder() {return order;}
+    public FriendOrderMessageVO getOrder() {return order;}
 
-    public void setOrder(FriendOrderMessage order) {this.order = order;}
+    public void setOrder(FriendOrderMessageVO order) {this.order = order;}
 }

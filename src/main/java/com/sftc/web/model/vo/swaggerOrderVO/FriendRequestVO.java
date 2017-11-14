@@ -17,9 +17,9 @@ public class FriendRequestVO {
     @ApiModelProperty(name = "attributes",required = true)
     private AttributesVO attributes;
     @ApiModelProperty(name = "friend_quote",required = true)
-    private FriendQuote quote;
+    private FriendQuoteVO quote;
     @ApiModelProperty(name = "packages",required = true)
-    private List<Packages> packages;
+    private List<PackagesVO> packages;
     @ApiModelProperty(name = "product_type",example = "JISUDA",required = true)
     private String product_type;
     @ApiModelProperty(name = "pay_type",example = "FREIGHT_COLLECT",required = true)
@@ -45,13 +45,13 @@ public class FriendRequestVO {
         this.attributes = attributes;
     }
 
-    public FriendQuote getQuote() {return quote;}
+    public FriendQuoteVO getQuote() {return quote;}
 
-    public void setQuote(FriendQuote quote) {this.quote = quote;}
+    public void setQuote(FriendQuoteVO quote) {this.quote = quote;}
 
-    public List<Packages> getPackages() {return packages;}
+    public List<PackagesVO> getPackages() {return packages;}
 
-    public void setPackages(List<Packages> packages) {this.packages = packages;}
+    public void setPackages(List<PackagesVO> packages) {this.packages = packages;}
 
     public String getProduct_type() {
         return product_type;

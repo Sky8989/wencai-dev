@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
  * Created by xf on 2017/10/21.
  */
 @ApiModel(value = "好友订单信息")
-public class FriendOrderMessage {
+public class FriendOrderMessageVO {
     @ApiModelProperty(name = "order_id",example = "C150841092812641")
     private String order_id;
     @ApiModelProperty(name = "reserve_time",value = "预约时间",example = "1501497840000")

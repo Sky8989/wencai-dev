@@ -11,7 +11,7 @@ public class OrderRequestVO {
     @ApiModelProperty(name = "request",required = true)
     private RequestVO request;
     @ApiModelProperty(name = "order",required = true)
-    private OrderMessage order;
+    private OrderMessageVO order;
 
     public RequestVO getRequest() {
         return request;
@@ -21,11 +21,11 @@ public class OrderRequestVO {
         this.request = request;
     }
 
-    public OrderMessage getOrder() {
+    public OrderMessageVO getOrder() {
         return order;
     }
 
-    public void setOrder(OrderMessage order) {
+    public void setOrder(OrderMessageVO order) {
         this.order = order;
     }
 }

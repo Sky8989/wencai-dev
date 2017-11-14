@@ -6,9 +6,9 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Created by xf on 2017/10/21.
  */
-@ApiModel(value = "验证uuid")
-public class Quote {
-    @ApiModelProperty(name = "uuid",example = "2c9a85895d97c789015d982f0b28023a",required = true)
+@ApiModel(value = "优惠券uuid")
+public class FriendCouponVO {
+    @ApiModelProperty(name = "uuid",example = "")
     private String uuid;
 
     public String getUuid() {return uuid;}

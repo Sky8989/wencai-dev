@@ -2,7 +2,7 @@ package com.sftc.web.model.entity;
 
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.model.others.Object;
-import com.sftc.web.model.vo.swaggerOrderVO.OrderParam;
+import com.sftc.web.model.vo.swaggerOrderVO.OrderParamVO;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -131,28 +131,28 @@ public class Order extends Object {
         this.sender_user_id = sender_user_id;
     }
 
-    public Order(OrderParam orderParam) {
+    public Order(OrderParamVO orderParamVO) {
         this.create_time = Long.toString(System.currentTimeMillis());
         this.id = SFOrderHelper.getOrderId();
-        this.pay_method = orderParam.getPay_method();
-        this.distribution_method = orderParam.getDistribution_method();
-        this.sender_name = orderParam.getSender_name();
-        this.sender_mobile = orderParam.getSender_mobile();
-        this.sender_province = orderParam.getSender_province();
-        this.sender_city = orderParam.getSender_city();
-        this.sender_area = orderParam.getSender_area();
-        this.sender_addr = orderParam.getSender_addr();
-        this.supplementary_info = orderParam.getSupplementary_info();
-        this.word_message = orderParam.getWord_message();
-        this.image = orderParam.getImage();
-        this.voice = orderParam.getVoice();
-        this.longitude = orderParam.getLongitude();
-        this.latitude = orderParam.getLatitude();
-        this.voice_time = orderParam.getVoice_time();
-        this.sender_user_id = orderParam.getSender_user_id();
-        this.gift_card_id = orderParam.getGift_card_id();
-        this.order_type = orderParam.getOrder_type();
-        this.region_type = orderParam.getRegion_type();
+        this.pay_method = orderParamVO.getPay_method();
+        this.distribution_method = orderParamVO.getDistribution_method();
+        this.sender_name = orderParamVO.getSender_name();
+        this.sender_mobile = orderParamVO.getSender_mobile();
+        this.sender_province = orderParamVO.getSender_province();
+        this.sender_city = orderParamVO.getSender_city();
+        this.sender_area = orderParamVO.getSender_area();
+        this.sender_addr = orderParamVO.getSender_addr();
+        this.supplementary_info = orderParamVO.getSupplementary_info();
+        this.word_message = orderParamVO.getWord_message();
+        this.image = orderParamVO.getImage();
+        this.voice = orderParamVO.getVoice();
+        this.longitude = orderParamVO.getLongitude();
+        this.latitude = orderParamVO.getLatitude();
+        this.voice_time = orderParamVO.getVoice_time();
+        this.sender_user_id = orderParamVO.getSender_user_id();
+        this.gift_card_id = orderParamVO.getGift_card_id();
+        this.order_type = orderParamVO.getOrder_type();
+        this.region_type = orderParamVO.getRegion_type();
     }
 
     /**

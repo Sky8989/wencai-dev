@@ -14,7 +14,7 @@ import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.entity.UserContactNew;
-import com.sftc.web.model.vo.swaggerOrderVO.OrderParam;
+import com.sftc.web.model.vo.swaggerOrderVO.OrderParamVO;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -51,38 +51,38 @@ public class OrderCreateLogic {
      */
     public APIResponse friendPlaceOrder(APIRequest request) {
 
-        OrderParam orderParam = (OrderParam) request.getRequestParam();
+        OrderParamVO orderParamVO = (OrderParamVO) request.getRequestParam();
 
         // 增加对emoji的过滤
-        if (orderParam.getPackage_type() != null && !"".equals(orderParam.getPackage_type())) {
-            boolean containsEmoji = EmojiFilter.containsEmoji(orderParam.getPackage_type());
+        if (orderParamVO.getPackage_type() != null && !"".equals(orderParamVO.getPackage_type())) {
+            boolean containsEmoji = EmojiFilter.containsEmoji(orderParamVO.getPackage_type());
             if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
         }
-        if (orderParam.getObject_type() != null && !"".equals(orderParam.getObject_type())) {
-            boolean containsEmoji = EmojiFilter.containsEmoji(orderParam.getObject_type());
+        if (orderParamVO.getObject_type() != null && !"".equals(orderParamVO.getObject_type())) {
+            boolean containsEmoji = EmojiFilter.containsEmoji(orderParamVO.getObject_type());
             if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
         }
-        if (orderParam.getPackage_comments() != null && !"".equals(orderParam.getPackage_comments())) {
-            boolean containsEmoji = EmojiFilter.containsEmoji(orderParam.getPackage_comments());
+        if (orderParamVO.getPackage_comments() != null && !"".equals(orderParamVO.getPackage_comments())) {
+            boolean containsEmoji = EmojiFilter.containsEmoji(orderParamVO.getPackage_comments());
             if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
         }
         // 处理package_comments 非必填参数
-        String package_comments = orderParam.getPackage_comments() != null ? orderParam.getPackage_comments() : "";
+        String package_comments = orderParamVO.getPackage_comments() != null ? orderParamVO.getPackage_comments() : "";
 
         // 插入订单表
-        Order order = new Order(orderParam);
+        Order order = new Order(orderParamVO);
         orderDao.save(order);
 
         // 插入快递表
-        for (int i = 0; i < orderParam.getPackage_count(); i++) {
+        for (int i = 0; i < orderParamVO.getPackage_count(); i++) {
             // 写入uuid 保证每个快递的uuid不同
             OrderExpress orderExpress = new OrderExpress();
-            orderExpress.setPackage_type(orderParam.getPackage_type());
-            orderExpress.setObject_type(orderParam.getObject_type());
+            orderExpress.setPackage_type(orderParamVO.getPackage_type());
+            orderExpress.setObject_type(orderParamVO.getObject_type());
             orderExpress.setOrder_id(order.getId());
             orderExpress.setCreate_time(order.getCreate_time());
             orderExpress.setState("WAIT_FILL");
-            orderExpress.setSender_user_id(orderParam.getSender_user_id());
+            orderExpress.setSender_user_id(orderParamVO.getSender_user_id());
             orderExpress.setReserve_time("");
             orderExpress.setOrder_id(order.getId());
             orderExpress.setPackage_comments(package_comments);
@@ -91,7 +91,7 @@ public class OrderCreateLogic {
         }
 
         // 插入地址表
-        //com.sftc.web.model.AddressDTO senderAddress = new com.sftc.web.model.AddressDTO(orderParam);
+        //com.sftc.web.model.AddressDTO senderAddress = new com.sftc.web.model.AddressDTO(orderParamVO);
         //addressMapper.addAddress(senderAddress);
 
         return APIUtil.getResponse(SUCCESS, order.getId());

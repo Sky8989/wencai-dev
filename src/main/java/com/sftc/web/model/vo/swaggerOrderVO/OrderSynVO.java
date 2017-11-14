@@ -10,7 +10,7 @@ package com.sftc.web.model.vo.swaggerOrderVO;
  * @date 2017/5/27
  * @Time 上午1:24
  */
-public class Orders {
+public class OrderSynVO {
 
     private String uuid;
     private String status;

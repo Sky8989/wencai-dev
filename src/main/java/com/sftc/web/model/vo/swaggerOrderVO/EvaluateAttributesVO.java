@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
  * Created by xf on 2017/10/21.
  */
 @ApiModel(value = "订单评价的内容")
-public class EvaluateAttributes {
+public class EvaluateAttributesVO {
     @ApiModelProperty(name = "merchant_comments",value = "评价内容",example = "测试评价内容")
    private String merchant_comments;
     @ApiModelProperty(name = "merchant_score",value = "评价标签",example = "5")

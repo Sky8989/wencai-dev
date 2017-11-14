@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.apache.ibatis.jdbc.Null;
 
 @ApiModel(value = "寄件人订单填写包装类")
-public class OrderParam {
+public class OrderParamVO {
 
     @ApiModelProperty(name = "ship_name",value = "寄件人姓名",example = "Joel测试订单1")
     private String sender_name;

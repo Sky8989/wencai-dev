@@ -13,9 +13,9 @@ public class OrderNationRequestVO {
     @ApiModelProperty(name = "sf",value = "下大网单发送给顺丰的信息")
     private OrderNationSfVO sf;
     @ApiModelProperty(name = "order",value = "大网单的订单信息")
-    private OrderNationMessage order;
+    private OrderNationMessageVO order;
     @ApiModelProperty(name = "packages",value = "大网单的包裹信息")
-    private List<Packages> packages;
+    private List<PackagesVO> packages;
 
     public OrderNationSfVO getSf() {
         return sf;
@@ -25,19 +25,19 @@ public class OrderNationRequestVO {
         this.sf = sf;
     }
 
-    public OrderNationMessage getOrder() {
+    public OrderNationMessageVO getOrder() {
         return order;
     }
 
-    public void setOrder(OrderNationMessage order) {
+    public void setOrder(OrderNationMessageVO order) {
         this.order = order;
     }
 
-    public List<Packages> getPackages() {
+    public List<PackagesVO> getPackages() {
         return packages;
     }
 
-    public void setPackages(List<Packages> packages) {
+    public void setPackages(List<PackagesVO> packages) {
         this.packages = packages;
     }
 }
