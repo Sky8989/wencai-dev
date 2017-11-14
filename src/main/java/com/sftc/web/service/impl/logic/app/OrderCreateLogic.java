@@ -85,6 +85,7 @@ public class OrderCreateLogic {
             orderExpress.setSender_user_id(orderParam.getSender_user_id());
             orderExpress.setReserve_time("");
             orderExpress.setOrder_id(order.getId());
+            orderExpress.setPackage_type(orderParam.getPackage_type());
             orderExpress.setPackage_comments(package_comments);
             orderExpress.setUuid(SFOrderHelper.getOrderNumber());
             orderExpress.setPackage_type(orderParam.getPackage_type());
