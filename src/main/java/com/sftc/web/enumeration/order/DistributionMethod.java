@@ -10,9 +10,10 @@ public enum DistributionMethod {
 
 
 	JISUDA("JISUDA","同城专送"),
+	KUAISUDA("KUAISUDA","同城专送 快速达"),
 	SF_MORROW("1","顺丰次日"),
 	SF_EOD("2","顺丰隔日"),
-	SF_MORROW_MORNING("5","同城专送");
+	SF_MORROW_MORNING("5","大网 顺丰次晨");
 	
 	
 	private String key;

@@ -1,5 +1,22 @@
 package com.sftc.web.service.impl.logic.app;
 
+import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
+import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
+import static com.sftc.tools.constant.WXConstant.*;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.http.client.methods.HttpPost;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
 import com.google.gson.Gson;
 import com.sftc.tools.api.APIPostUtil;
 import com.sftc.tools.api.APIRequest;
@@ -7,13 +24,18 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.common.DateUtils;
 import com.sftc.tools.common.EmojiFilter;
+import com.sftc.tools.constant.OrderConstant;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.jpa.AddressBookDao;
 import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.jpa.OrderExpressDao;
-import com.sftc.web.dao.mybatis.*;
+import com.sftc.web.dao.mybatis.AddressBookMapper;
+import com.sftc.web.dao.mybatis.AddressHistoryMapper;
+import com.sftc.web.dao.mybatis.AddressMapper;
+import com.sftc.web.dao.mybatis.OrderExpressMapper;
+import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
@@ -27,20 +49,9 @@ import com.sftc.web.model.vo.swaggerOrderVO.SourceAddressVO;
 import com.sftc.web.model.vo.swaggerOrderVO.TargetAddressVO;
 import com.sftc.web.model.vo.swaggerRequestVO.CoordinateVO;
 import com.sftc.web.model.vo.swaggerRequestVO.TargetCoordinateVO;
-import net.sf.json.JSONObject;
-import org.apache.http.client.methods.HttpPost;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import com.sftc.web.service.impl.MessageServiceImpl;
 
-import javax.annotation.Resource;
-import java.util.List;
-import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
-import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
+import net.sf.json.JSONObject;
 
 
 @Component
@@ -60,6 +71,8 @@ public class OrderCommitLogic {
     private AddressHistoryMapper addressHistoryMapper;
     @Resource
     private AddressBookMapper addressBookMapper;
+    @Resource
+    private MessageServiceImpl messageService;
     @Resource
     private OrderDao orderDao;
     @Resource
