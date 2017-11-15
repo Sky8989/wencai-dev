@@ -30,4 +30,13 @@ public class FriendOrderMessage {
     public void setReserve_time(String reserve_time) {
         this.reserve_time = reserve_time;
     }
+
+	public String getForm_id() {
+		return form_id;
+	}
+
+	public void setForm_id(String form_id) {
+		this.form_id = form_id;
+	}
+    
 }
