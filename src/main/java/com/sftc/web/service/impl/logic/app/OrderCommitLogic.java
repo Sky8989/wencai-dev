@@ -626,6 +626,7 @@ public class OrderCommitLogic {
         // 向sf下单
         String requestSFParamStr = gson.toJson(tempObject);
         JSONObject respObject = JSONObject.fromObject(APIPostUtil.post(requestSFParamStr, post));
+        String uuId = respObject.getJSONObject("request").getString("uuid");
 
         if (respObject.containsKey("error")) {
             return APIUtil.submitErrorResponse(respObject.getJSONObject("error").getString("message"), respObject.getJSONObject("error"));
@@ -705,17 +706,23 @@ public class OrderCommitLogic {
             respObject.put("is_directed", is_directed);
             respObject.put("package_type", package_type);
 
-            /// 发送微信模板消息
-//            if (reqObject.getJSONObject("order").containsKey("form_id")
-//                    && !"".equals(reqObject.getJSONObject("order").getString("form_id"))) {
-//                String[] messageArr = new String[2];
-//                messageArr[0] = respObject.getJSONObject("request").getString("request_num");
-//                messageArr[1] = "您的顺丰订单下单成功(同城)！寄件人是："
-//                        + (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver");
-//                String form_id = reqObject.getJSONObject("order").getString("form_id");
-//                messageService.sendWXTemplateMessage(Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
-//                        messageArr, "", form_id, WX_template_id_1);
-//            }
+			String path = ""; // 普通同城跳转链接
+            // 发送微信模板消息
+            if (reqObject.getJSONObject("order").containsKey("form_id")
+                    && !"".equals(reqObject.getJSONObject("order").getString("form_id"))) {
+            	if (order.getId() != "" && order.getId() != null) {
+					path = OrderConstant.BASIS_REGION_SAME_LINK + "?order_id=" + order.getId() + "&uuid=" + uuId;
+				}
+				this.logger.info("--------普通同城跳转链接 ----" + path);
+				
+                String[] messageArr = new String[2];
+                messageArr[0] = respObject.getJSONObject("request").getString("request_num");
+                messageArr[1] = "您的顺丰订单下单成功(同城)！寄件人是："
+                        + (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver");
+                String form_id = reqObject.getJSONObject("order").getString("form_id");
+                messageService.sendWXTemplateMessage(Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
+                        messageArr, path, form_id, WX_template_id_1);
+            }
 
         } else {
             //手动操作事务回滚
