@@ -69,6 +69,9 @@ public class MyOrderListVO {
 
         @Setter   @Getter
         private String directed_code;  // 取件码
+
+        @Setter   @Getter
+        private String weight;
     }
 
     public boolean isIs_gift() {return is_gift;}

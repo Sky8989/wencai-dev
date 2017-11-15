@@ -69,6 +69,8 @@ public class FriendOrderListVO {
         private String package_comments;  //当物品类型在packageType罗列的类型之外时填写
         @Setter   @Getter
         private String reserve_time;
+        @Setter   @Getter
+        private String weight;
     }
 
     public boolean isIs_gift() {return is_gift;}

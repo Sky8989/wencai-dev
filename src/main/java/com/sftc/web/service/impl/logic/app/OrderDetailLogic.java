@@ -8,7 +8,7 @@ import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.enumeration.express.PackageType;
-import com.sftc.web.model.PackageMessage;
+import com.sftc.web.model.vo.displayVO.PackageMessageVO;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
 import com.sftc.web.model.entity.*;
@@ -224,7 +224,7 @@ public class OrderDetailLogic {
             try {
                 if (jsonObject.getJSONObject("constant").getJSONObject("value").containsKey("PACKAGE_TYPE")) {
                     JSONArray packageTypeArr = jsonObject.getJSONObject("constant").getJSONObject("value").getJSONArray("PACKAGE_TYPE");
-                    PackageMessage packageMessage = new PackageMessage();
+                    PackageMessageVO packageMessage = new PackageMessageVO();
                     for (int i = 0; i < packageTypeArr.size(); i++) {
                         JSONObject packageTypeOBJ = packageTypeArr.getJSONObject(i);
                         String package_code = packageTypeOBJ.getString("code");

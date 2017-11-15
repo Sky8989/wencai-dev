@@ -1,14 +1,10 @@
-package com.sftc.web.model;
-
-import javax.servlet.http.HttpServletRequest;
-
-import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
+package com.sftc.web.model.vo.displayVO;
 
 /**
  * 快递详情添加包裹信息
  *
  */
-public class PackageMessage extends Object {
+public class PackageMessageVO extends Object {
     private String name;
     private String weight;
     private String type;

@@ -44,10 +44,6 @@ public class UserContact extends Object {
 
     public UserContact() {}
 
-    public void setUserContactLabelList(List<UserContactLabel> userContactLabelList) {
-        this.userContactLabelList = userContactLabelList;
-    }
-
     public int getIs_tag_star() {return is_tag_star;}
 
     public void setIs_tag_star(int is_tag_star) {this.is_tag_star = is_tag_star;}
