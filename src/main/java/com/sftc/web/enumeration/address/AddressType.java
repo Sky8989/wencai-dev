@@ -9,24 +9,24 @@ package com.sftc.web.enumeration.address;
  */
 public enum AddressType {
 	
-	ADDRESS_HISTORY("address_history","历史地址"),
-	ADDRESS_BOOK("address_book","地址簿");
+	address_history("address_history","历史地址"),
+	address_book("address_book","地址簿");
    
     
-	private String key;
+	private String name;
 	private String value;
 	
-	private AddressType(String key,String value) {
-		this.key = key;
+	private AddressType(String name,String value) {
+		this.name = name;
 		this.value = value;
 	}
 
-	public String getKey() {
-		return key;
+	public String getName() {
+		return name;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getValue() {
