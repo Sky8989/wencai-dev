@@ -13,4 +13,6 @@ public class SystemLabel {
     @Getter
     @Setter
     private String system_label;
+
+    public SystemLabel(){}
 }

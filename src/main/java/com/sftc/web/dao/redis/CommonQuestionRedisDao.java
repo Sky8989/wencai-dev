@@ -1,10 +1,9 @@
 package com.sftc.web.dao.redis;
 
-
 import com.github.pagehelper.util.StringUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.sftc.web.model.CommonQuestion;
+import com.sftc.web.model.entity.CommonQuestion;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -2,9 +2,8 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.SwaggerRequestVO.DistanceRequestVO;
+import com.sftc.web.model.vo.swaggerRequestVO.DistanceRequestVO;
 import com.sftc.web.model.entity.Address;
-import com.sftc.web.service.AddressHistoryService;
 import com.sftc.web.service.AddressService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

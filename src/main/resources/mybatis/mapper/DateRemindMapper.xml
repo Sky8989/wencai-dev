@@ -5,7 +5,7 @@
 <mapper namespace="com.sftc.web.dao.mybatis.DateRemindMapper">
 
     <!-- 添加日期提醒  -->
-    <insert id="addDateRemind" parameterType="com.sftc.web.model.DateRemind">
+    <insert id="addDateRemind" parameterType="com.sftc.web.model.entity.DateRemind">
         INSERT INTO sftc_date_remind
         (sftc_date_remind.describe, sftc_date_remind.date, user_id, user_contact_id, create_time)
         VALUES
@@ -13,7 +13,7 @@
     </insert>
 
     <!-- 获取好友日期提醒列表 -->
-    <select id="selectDateRemindList" parameterType="int" resultType="com.sftc.web.model.DateRemind">
+    <select id="selectDateRemindList" parameterType="int" resultType="com.sftc.web.model.entity.DateRemind">
         SELECT *
         FROM sftc_date_remind
         WHERE user_contact_id = #{id}

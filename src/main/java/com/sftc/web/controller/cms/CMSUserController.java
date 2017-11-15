@@ -3,7 +3,7 @@ package com.sftc.web.controller.cms;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.BaseController;
-import com.sftc.web.model.reqeustParam.UserParam;
+import com.sftc.web.model.vo.swaggerRequestVO.UserParamVO;
 import com.sftc.web.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +23,7 @@ public class CMSUserController extends BaseController {
     private UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ModelAndView login(@RequestBody UserParam userParam) throws Exception {
+    public ModelAndView login(@RequestBody UserParamVO userParamVO) throws Exception {
         return null;
     }
 

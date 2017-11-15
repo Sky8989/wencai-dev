@@ -6,7 +6,6 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
-import com.sftc.web.model.Converter.OrderExpressFactory;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
 import com.sftc.web.model.entity.OrderExpress;
@@ -50,9 +49,6 @@ public class OrderStatusLogic {
 
         // update
         for (OrderExpressDTO oe : orderDTO.getOrderExpressList()) {
-//            OrderExpress orderExpress = OrderExpressFactory.dtoToEntity(oe);
-//            orderExpress.setState(status);
-//            orderExpressDao.save(orderExpress);
             int express_id = oe.getId();
             //事务问题,先存在查的改为统一使用Mybatis
             orderExpressMapper.updateOrderExpressStatus(express_id,status);

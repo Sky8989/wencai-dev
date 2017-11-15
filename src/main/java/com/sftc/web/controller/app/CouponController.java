@@ -2,8 +2,8 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.sfmodel.Promo;
-import com.sftc.web.model.SwaggerRequestVO.CouponRequestVO;
+import com.sftc.web.model.vo.swaggerRequestVO.CouPonPromoVO;
+import com.sftc.web.model.vo.swaggerRequestVO.CouponRequestVO;
 import com.sftc.web.service.CouponService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,9 +35,9 @@ public class CouponController {
     @ApiOperation(value = "兑换优惠券",httpMethod = "POST")
     @RequestMapping(value="/exchange",method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse exchangeCoupon(@RequestBody Promo promo) throws Exception {
+    APIResponse exchangeCoupon(@RequestBody CouPonPromoVO couPonPromoVO) throws Exception {
         APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(promo);
+        apiRequest.setRequestParam(couPonPromoVO);
         return couponService.exchangeCoupon(apiRequest);
     }
 

@@ -7,14 +7,12 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.tools.token.TokenUtils;
-import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
-import com.sftc.web.model.*;
-import com.sftc.web.model.apiCallback.ContactCallback;
-import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.entity.OrderExpress;
-import com.sftc.web.model.reqeustParam.UserContactParam;
-import com.sftc.web.model.sfmodel.Orders;
+import com.sftc.web.model.vo.displayVO.FriendRecordVO;
+import com.sftc.web.model.entity.*;
+import com.sftc.web.model.vo.swaggerOrderVO.OrderSynVO;
+import com.sftc.web.model.vo.swaggerRequestVO.FriendListVO;
+import com.sftc.web.model.vo.swaggerRequestVO.UserContactParamVO;
 import com.sftc.web.service.UserContactService;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -82,17 +80,17 @@ public class UserContactServiceImpl implements UserContactService {
      * 获取用户的好友列表
      */
     public APIResponse getFriendList(APIRequest request) {
-        Paging paging = (Paging) request.getRequestParam();
+        FriendListVO friendListVO = (FriendListVO) request.getRequestParam();
         Integer user_id = TokenUtils.getInstance().getUserId();
         // verify params
-        if (paging.getPageNum() < 1 || paging.getPageSize() < 1) {
+        if (friendListVO.getPageNum() < 1 || friendListVO.getPageSize() < 1) {
             return APIUtil.paramErrorResponse("分页参数无效");
         }
-        paging.setUser_id(user_id);
-        paging.setPageNum((paging.getPageNum() - 1) * paging.getPageSize());
+        friendListVO.setUser_id(user_id);
+        friendListVO.setPageNum((friendListVO.getPageNum() - 1) * friendListVO.getPageSize());
         List<UserContact> userContactList = null;
         try {
-            userContactList = userContactMapper.friendList(paging);
+            userContactList = userContactMapper.friendList(friendListVO);
         } catch (Exception e) {
             e.printStackTrace();
             return APIUtil.logicErrorResponse(e.getLocalizedMessage(), e);
@@ -105,54 +103,54 @@ public class UserContactServiceImpl implements UserContactService {
      * 来往记录
      */
     public APIResponse getContactInfo(APIRequest request) {
-        UserContactParam userContactParam = (UserContactParam) request.getRequestParam();
+        UserContactParamVO userContactParamVO = (UserContactParamVO) request.getRequestParam();
         Integer user_id = TokenUtils.getInstance().getUserId();
         // handle param
-        if (userContactParam.getAccess_token() == null || userContactParam.getAccess_token().length() == 0) {
+        if (userContactParamVO.getAccess_token() == null || userContactParamVO.getAccess_token().length() == 0) {
             //传入公共token
-            userContactParam.setAccess_token(SFTokenHelper.COMMON_ACCESSTOKEN);
+            userContactParamVO.setAccess_token(SFTokenHelper.COMMON_ACCESSTOKEN);
         } else if (user_id == 0) {
             return APIUtil.paramErrorResponse("用户id不能为空");
-        } else if (userContactParam.getFriend_id() == 0) {
+        } else if (userContactParamVO.getFriend_id() == 0) {
             return APIUtil.paramErrorResponse("好友id不能为空");
-        } else if (user_id == userContactParam.getFriend_id()) {
+        } else if (user_id == userContactParamVO.getFriend_id()) {
             return APIUtil.paramErrorResponse("I believe that you can't fuck yourself !");
-        } else if (userContactParam.getPageNum() < 1 || userContactParam.getPageSize() < 1) {
+        } else if (userContactParamVO.getPageNum() < 1 || userContactParamVO.getPageSize() < 1) {
             return APIUtil.paramErrorResponse("分页参数无效");
         }
-        userContactParam.setUser_id(user_id);
-        APIResponse apiResponse = syncFriendExpress(userContactParam);
+        userContactParamVO.setUser_id(user_id);
+        APIResponse apiResponse = syncFriendExpress(userContactParamVO);
         if (apiResponse != null) return apiResponse;
 
 
         //修改为物理分页参数
-        userContactParam.setPageNum((userContactParam.getPageNum() - 1) * userContactParam.getPageSize()); // pageNum -> startIndex
+        userContactParamVO.setPageNum((userContactParamVO.getPageNum() - 1) * userContactParamVO.getPageSize()); // pageNum -> startIndex
         // callback
-        List<ContactCallback> contactCallbacks = userContactMapper.selectCirclesContact(userContactParam);
-        for (ContactCallback contactCallback : contactCallbacks) {
-            User sender = userMapper.selectUserByUserId(contactCallback.getSender_user_id());
-            User receiver = userMapper.selectUserByUserId(contactCallback.getShip_user_id());
+        List<FriendRecordVO> friendRecordVOS = userContactMapper.selectCirclesContact(userContactParamVO);
+        for (FriendRecordVO friendRecordVO : friendRecordVOS) {
+            User sender = userMapper.selectUserByUserId(friendRecordVO.getSender_user_id());
+            User receiver = userMapper.selectUserByUserId(friendRecordVO.getShip_user_id());
             if (sender != null) {
-                contactCallback.setSender_icon(sender.getAvatar());
-                contactCallback.setSender_wechatname(sender.getName());
+                friendRecordVO.setSender_icon(sender.getAvatar());
+                friendRecordVO.setSender_wechatname(sender.getName());
             }
             if (receiver != null) {
-                contactCallback.setShip_icon(receiver.getAvatar());
-                contactCallback.setShip_wechatname(receiver.getName());
+                friendRecordVO.setShip_icon(receiver.getAvatar());
+                friendRecordVO.setShip_wechatname(receiver.getName());
             }
         }
-        return APIUtil.getResponse(SUCCESS, contactCallbacks);
+        return APIUtil.getResponse(SUCCESS, friendRecordVOS);
     }
 
-    private APIResponse syncFriendExpress(UserContactParam userContactParam) {
+    private APIResponse syncFriendExpress(UserContactParamVO userContactParamVO) {
         // handle url
         String ORDERS_URL = SF_ORDER_SYNC_URL;
         String uuids = "";
 
 
-//        List<OrderExpressDTO> orderExpressList = orderExpressMapper.selectExpressForId(userContactParam.getUser_id());
-        PageHelper.startPage(userContactParam.getPageNum(), userContactParam.getPageSize());
-        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForContactInfo(userContactParam.getUser_id(), userContactParam.getFriend_id());
+//        List<OrderExpressDTO> orderExpressList = orderExpressMapper.selectExpressForId(userContactParamVO.getUser_id());
+        PageHelper.startPage(userContactParamVO.getPageNum(), userContactParamVO.getPageSize());
+        List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForContactInfo(userContactParamVO.getUser_id(), userContactParamVO.getFriend_id());
 
 
         for (OrderExpress oe : orderExpressList) { //此处订单若过多 url过长 sf接口会报414
@@ -168,32 +166,32 @@ public class UserContactServiceImpl implements UserContactService {
         ORDERS_URL = ORDERS_URL.replace("{uuid}", uuids);
 
         // POST
-        List<Orders> orderses = null;
+        List<OrderSynVO> orderSynVOS = null;
         try {
-            String token = userContactParam.getAccess_token();
+            String token = userContactParamVO.getAccess_token();
             if (token != null && !token.equals("")) {
-                token = userContactParam.getAccess_token();
+                token = userContactParamVO.getAccess_token();
             } else {
                 token = COMMON_ACCESSTOKEN;
             }
-            orderses = APIResolve.getOrderStatusWithUrl(ORDERS_URL, token);
+            orderSynVOS = APIResolve.getOrderStatusWithUrl(ORDERS_URL, token);
         } catch (Exception e) {
             return APIUtil.submitErrorResponse("正在同步来往记录订单状态，稍后重试", e);
         }
 
         // update express status
-        if (orderses != null) {
-            for (Orders orders : orderses) {
-                String uuid = orders.getUuid();
-                Order order = orderMapper.selectOrderDetailByUuid(orders.getUuid());
-                String order_status = (orders.isPayed() && orders.getStatus().equals("PAYING") &&
-                        order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orders.getStatus();
+        if (orderSynVOS != null) {
+            for (OrderSynVO orderSynVO : orderSynVOS) {
+                String uuid = orderSynVO.getUuid();
+                Order order = orderMapper.selectOrderDetailByUuid(orderSynVO.getUuid());
+                String order_status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") &&
+                        order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
 //                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
 //                orderExpress.setState(order_status);
-                if (orders.getAttributes() != null) {
-//                    orderExpress.setAttributes(orders.getAttributes());
+                if (orderSynVO.getAttributes() != null) {
+//                    orderExpress.setAttributes(orderSynVO.getAttributes());
                     //事务问题,先存在查的改为统一使用Mybatis
-                    String attributes = orders.getAttributes();
+                    String attributes = orderSynVO.getAttributes();
                     orderExpressMapper.updateExpressAttributeSByUUID(uuid, attributes);
                 }
 //                orderExpressDao.save(orderExpress);

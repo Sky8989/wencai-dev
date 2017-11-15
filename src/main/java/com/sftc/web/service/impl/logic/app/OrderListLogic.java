@@ -9,16 +9,16 @@ import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
-import com.sftc.web.model.Evaluate;
-import com.sftc.web.model.User;
-import com.sftc.web.model.UserContact;
-import com.sftc.web.model.apiCallback.OrderCallback;
-import com.sftc.web.model.apiCallback.OrderFriendCallback;
+import com.sftc.web.model.entity.Evaluate;
+import com.sftc.web.model.entity.User;
+import com.sftc.web.model.entity.UserContact;
+import com.sftc.web.model.vo.displayVO.MyOrderListVO;
+import com.sftc.web.model.vo.displayVO.FriendOrderListVO;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
-import com.sftc.web.model.reqeustParam.MyOrderParam;
-import com.sftc.web.model.sfmodel.Orders;
+import com.sftc.web.model.vo.swaggerOrderVO.MyOrderParamVO;
+import com.sftc.web.model.vo.swaggerOrderVO.OrderSynVO;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -54,18 +54,18 @@ public class OrderListLogic {
      */
     public APIResponse getMyOrderList(APIRequest request) {
         Integer user_id = TokenUtils.getInstance().getUserId();
-        MyOrderParam myOrderParam = (MyOrderParam) request.getRequestParam();
-        myOrderParam.setId(user_id);
-        APIResponse errorResponse = syncSFExpressStatus(myOrderParam);
+        MyOrderParamVO myOrderParamVO = (MyOrderParamVO) request.getRequestParam();
+        myOrderParamVO.setId(user_id);
+        APIResponse errorResponse = syncSFExpressStatus(myOrderParamVO);
         if (errorResponse != null) return errorResponse;
 
-        if (myOrderParam.getKeyword() != null && !myOrderParam.getKeyword().equals("")) {
+        if (myOrderParamVO.getKeyword() != null && !myOrderParamVO.getKeyword().equals("")) {
             boolean flag = true;
             // 访问 状态模糊关键字 字典 匹配到对应关键字
             Map<String, String> map = SFOrderHelper.getKeywordMap();
             for (Map.Entry entry : map.entrySet()) {
-                if (myOrderParam.getKeyword().equals(entry.getKey())) {
-                    myOrderParam.setKeyword_state((String) entry.getValue());
+                if (myOrderParamVO.getKeyword().equals(entry.getKey())) {
+                    myOrderParamVO.setKeyword_state((String) entry.getValue());
                     flag = false;
                 }
             }
@@ -73,28 +73,28 @@ public class OrderListLogic {
             if (flag) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("%");
-                char keywords[] = myOrderParam.getKeyword().toCharArray();
+                char keywords[] = myOrderParamVO.getKeyword().toCharArray();
                 for (char key : keywords) {
                     sb.append(key);
                     sb.append("%");
                 }
-                myOrderParam.setKeyword(sb.toString());
+                myOrderParamVO.setKeyword(sb.toString());
             } else {
                 //两种状态值二选一
-                myOrderParam.setKeyword(null);
+                myOrderParamVO.setKeyword(null);
             }
         }
 
         // pageNum -> startIndex
-        myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());
+        myOrderParamVO.setPageNum((myOrderParamVO.getPageNum() - 1) * myOrderParamVO.getPageSize());
         // select
-//        List<OrderDTO> orderList = orderMapper.selectMyOrderList(myOrderParam);
-        List<OrderDTO> orderDTOList = orderMapper.selectMyOrderList2(myOrderParam);
+//        List<OrderDTO> orderList = orderMapper.selectMyOrderList(myOrderParamVO);
+        List<OrderDTO> orderDTOList = orderMapper.selectMyOrderList2(myOrderParamVO);
         if (orderDTOList.size() == 0)
             return APIUtil.selectErrorResponse("您还未创建订单", null);
-        List<OrderCallback> orderCallbacks = new ArrayList<OrderCallback>();
+        List<MyOrderListVO> myOrderListVOS = new ArrayList<MyOrderListVO>();
         for (OrderDTO orderDTO : orderDTOList) {
-            OrderCallback callback = new OrderCallback();
+            MyOrderListVO callback = new MyOrderListVO();
             // order
             callback.setId(orderDTO.getId());
             callback.setSender_name(orderDTO.getSender_name());
@@ -107,10 +107,10 @@ public class OrderListLogic {
                 callback.setOrder_number(orderDTO.getOrderExpressList().get(0).getOrder_number());
 
             // expressList
-            List<OrderCallback.OrderCallbackExpress> expressList = new ArrayList<OrderCallback.OrderCallbackExpress>();
+            List<MyOrderListVO.OrderCallbackExpress> expressList = new ArrayList<MyOrderListVO.OrderCallbackExpress>();
             HashSet flagSetIsEvaluated = new HashSet();
             for (OrderExpress oe : orderDTO.getOrderExpressList()) {
-                OrderCallback.OrderCallbackExpress express = new OrderCallback().new OrderCallbackExpress();
+                MyOrderListVO.OrderCallbackExpress express = new MyOrderListVO().new OrderCallbackExpress();
                 express.setUuid(oe.getUuid());
                 express.setState(oe.getState());
                 express.setShip_name(oe.getShip_name());
@@ -134,10 +134,10 @@ public class OrderListLogic {
             callback.setExpressList(expressList);
             callback.setIs_evaluated(flagSetIsEvaluated.contains(1));
 
-            orderCallbacks.add(callback);
+            myOrderListVOS.add(callback);
         }
 
-        return APIUtil.getResponse(SUCCESS, orderCallbacks);
+        return APIUtil.getResponse(SUCCESS, myOrderListVOS);
     }
 
     /**
@@ -145,21 +145,21 @@ public class OrderListLogic {
      */
     public APIResponse getMyFriendCircleOrderList(APIRequest request) {
         Integer user_id = TokenUtils.getInstance().getUserId();
-        MyOrderParam myOrderParam = (MyOrderParam) request.getRequestParam();
-        myOrderParam.setId(user_id);
+        MyOrderParamVO myOrderParamVO = (MyOrderParamVO) request.getRequestParam();
+        myOrderParamVO.setId(user_id);
 
-        APIResponse errorResponse = syncSFExpressStatus(myOrderParam);
+        APIResponse errorResponse = syncSFExpressStatus(myOrderParamVO);
         if (errorResponse != null) return errorResponse;
 
         // pageNum -> startIndex
-        myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());
+        myOrderParamVO.setPageNum((myOrderParamVO.getPageNum() - 1) * myOrderParamVO.getPageSize());
         // select
-        List<OrderDTO> orderDTOList = orderMapper.selectMyFriendOrderList(myOrderParam);
+        List<OrderDTO> orderDTOList = orderMapper.selectMyFriendOrderList(myOrderParamVO);
         if (orderDTOList.size() == 0)
             return APIUtil.selectErrorResponse("暂无好友订单", null);
-        List<OrderFriendCallback> orderCallbacks = new ArrayList<OrderFriendCallback>();
+        List<FriendOrderListVO> orderCallbacks = new ArrayList<FriendOrderListVO>();
         for (OrderDTO orderDTO : orderDTOList) {
-            OrderFriendCallback callback = new OrderFriendCallback();
+            FriendOrderListVO callback = new FriendOrderListVO();
             User sender = userMapper.selectUserByUserId(orderDTO.getSender_user_id());
             // order
             callback.setId(orderDTO.getId());
@@ -179,7 +179,7 @@ public class OrderListLogic {
             //增加支付类型
             callback.setPay_method(orderDTO.getPay_method());
             // expressList
-            List<OrderFriendCallback.OrderFriendCallbackExpress> expressList = new ArrayList<OrderFriendCallback.OrderFriendCallbackExpress>();
+            List<FriendOrderListVO.OrderFriendCallbackExpress> expressList = new ArrayList<>();
             HashSet flagSetIsEvaluated = new HashSet();
             for (OrderExpress oe : orderDTO.getOrderExpressList()) {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
@@ -194,7 +194,7 @@ public class OrderListLogic {
                     if (userContact == null) user_contact_id = 0;
                     else user_contact_id = userContact.getId();
                 }
-                OrderFriendCallback.OrderFriendCallbackExpress express = new OrderFriendCallback().new OrderFriendCallbackExpress();
+                FriendOrderListVO.OrderFriendCallbackExpress express = new FriendOrderListVO().new OrderFriendCallbackExpress();
                 express.setId(oe.getId());
                 express.setShip_user_id(oe.getShip_user_id());
                 express.setUuid(oe.getUuid());
@@ -229,21 +229,21 @@ public class OrderListLogic {
     //////////////////// Private Method ////////////////////
 
     // 验参、同步顺丰快递订单状态
-    private APIResponse syncSFExpressStatus(MyOrderParam myOrderParam) {
+    private APIResponse syncSFExpressStatus(MyOrderParamVO myOrderParamVO) {
 
         // Verify params
-//        if (myOrderParam.getToken().length() == 0) {
+//        if (myOrderParamVO.getToken().length() == 0) {
             //内置token
-            myOrderParam.setToken(COMMON_ACCESSTOKEN);
-        if (myOrderParam.getId() == 0) {
+            myOrderParamVO.setToken(COMMON_ACCESSTOKEN);
+        if (myOrderParamVO.getId() == 0) {
             return APIUtil.paramErrorResponse("用户id不能为空");
-        } else if (myOrderParam.getPageNum() < 1 || myOrderParam.getPageSize() < 1) {
+        } else if (myOrderParamVO.getPageNum() < 1 || myOrderParamVO.getPageSize() < 1) {
             return APIUtil.paramErrorResponse("分页参数无效");
         }
 
         /// handle SF orders url
         //更新用户的同城订单，更新sf状态的订单数 >= 接口查询的
-        List<OrderExpress> orderExpressList = selectOrderExpressListForStatusUpdate(myOrderParam);
+        List<OrderExpress> orderExpressList = selectOrderExpressListForStatusUpdate(myOrderParamVO);
         if (orderExpressList == null || orderExpressList.size() == 0) return null;
         StringBuilder uuidSB = new StringBuilder();
         for (OrderExpress oe : orderExpressList) {
@@ -259,10 +259,10 @@ public class OrderListLogic {
         if (uuid.equals("")) return null;
 
         String ordersURL = SF_ORDER_SYNC_URL.replace("{uuid}", uuid.substring(0, uuid.length() - 1));
-        List<Orders> ordersList = new LinkedList<Orders>();
+        List<OrderSynVO> orderSynVOList = new LinkedList<OrderSynVO>();
         //post and fetch express status list
         HttpGet httpGet = new HttpGet(ordersURL);
-        httpGet.addHeader("PushEnvelope-Device-Token", myOrderParam.getToken());
+        httpGet.addHeader("PushEnvelope-Device-Token", myOrderParamVO.getToken());
         String resultStr = APIGetUtil.get(httpGet);
         JSONObject resultOBJ = JSONObject.fromObject(resultStr);
 
@@ -273,32 +273,32 @@ public class OrderListLogic {
             List list = jsonArray.subList(0, jsonArray.size());
             for (Object temp : list) {
                 JSONObject jsonObject = JSONObject.fromObject(temp);
-                Orders tempOrders = new Orders();
-                tempOrders.setUuid(jsonObject.getString("uuid"));
-                tempOrders.setStatus(jsonObject.getString("status"));
-                tempOrders.setPayed(jsonObject.getBoolean("payed"));
+                OrderSynVO tempOrderSynVO = new OrderSynVO();
+                tempOrderSynVO.setUuid(jsonObject.getString("uuid"));
+                tempOrderSynVO.setStatus(jsonObject.getString("status"));
+                tempOrderSynVO.setPayed(jsonObject.getBoolean("payed"));
                 JSONObject attributes = jsonObject.getJSONObject("attributes");
-                tempOrders.setAttributes(attributes.toString());
-                ordersList.add(tempOrders);
+                tempOrderSynVO.setAttributes(attributes.toString());
+                orderSynVOList.add(tempOrderSynVO);
             }
         }
         // 单个uudi 返回request
         if (resultOBJ.containsKey("request")) {
-            ordersList.add((Orders) resultOBJ.get("request"));
+            orderSynVOList.add((OrderSynVO) resultOBJ.get("request"));
         }
 
 
         // Update Dankal express info
-        for (Orders orders : ordersList) {
+        for (OrderSynVO orderSynVO : orderSynVOList) {
             // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
             //这个status的改动是因为是预约单 预约单支付后，派单前都是PAYING
-            Order order = orderMapper.selectOrderDetailByUuid(orders.getUuid());
+            Order order = orderMapper.selectOrderDetailByUuid(orderSynVO.getUuid());
             if (order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) {
-                String status = (orders.isPayed() && orders.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orders.getStatus();
-                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(orders.getUuid());
+                String status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
+                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(orderSynVO.getUuid());
                 orderExpress.setState(status);
-                if (orders.getAttributes() != null) {
-                    orderExpress.setAttributes(orders.getAttributes());
+                if (orderSynVO.getAttributes() != null) {
+                    orderExpress.setAttributes(orderSynVO.getAttributes());
                 }
                 orderExpressDao.save(orderExpress);
             }
@@ -308,10 +308,10 @@ public class OrderListLogic {
     }
 
     // 根据分页参数和用户id 去查查找该用户的相关快递信息
-    private List<OrderExpress> selectOrderExpressListForStatusUpdate(MyOrderParam myOrderParam) {
+    private List<OrderExpress> selectOrderExpressListForStatusUpdate(MyOrderParamVO myOrderParamVO) {
         // 查出该用户id相关的订单号 把同城的单抓出来
-        PageHelper.startPage(myOrderParam.getPageNum(), myOrderParam.getPageSize());
-        List<Integer> orderIdList = orderExpressMapper.selectOrderIdForsyncSFExpressStatus(myOrderParam.getId());
+        PageHelper.startPage(myOrderParamVO.getPageNum(), myOrderParamVO.getPageSize());
+        List<Integer> orderIdList = orderExpressMapper.selectOrderIdForsyncSFExpressStatus(myOrderParamVO.getId());
         if (orderIdList.size() == 0) return null;
         //使用mybatis的批量查询功能 将orderExpress查询出来
         List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForsyncSFExpressStatus(orderIdList);

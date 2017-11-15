@@ -5,7 +5,7 @@
 <mapper namespace="com.sftc.web.dao.mybatis.CommonQuestionMapper">
 
     <!-- 常见问题列表  -->
-    <select id="getCommonQuestion" resultType="com.sftc.web.model.CommonQuestion">
+    <select id="getCommonQuestion" resultType="com.sftc.web.model.entity.CommonQuestion">
         SELECT
             id,
             title,
@@ -13,8 +13,8 @@
         FROM sftc_common_question
     </select>
 
-    <select id="selectByPage" parameterType="com.sftc.web.model.CommonQuestion"
-            resultType="com.sftc.web.model.CommonQuestion">
+    <select id="selectByPage" parameterType="com.sftc.web.model.entity.CommonQuestion"
+            resultType="com.sftc.web.model.entity.CommonQuestion">
         SELECT * FROM sftc_common_question
         <where>
             <if test="id != 0">and id = #{id}</if>
@@ -24,18 +24,18 @@
     </select>
 
     <select id="selectListById" parameterType="int"
-            resultType="com.sftc.web.model.CommonQuestion">
+            resultType="com.sftc.web.model.entity.CommonQuestion">
         SELECT *
         FROM sftc_common_question
         WHERE id = #{id}
     </select>
 
-    <insert id="insertCommonQuestion" parameterType="com.sftc.web.model.CommonQuestion" useGeneratedKeys="true">
+    <insert id="insertCommonQuestion" parameterType="com.sftc.web.model.entity.CommonQuestion" useGeneratedKeys="true">
         INSERT INTO sftc_common_question (title, content, create_time)
         VALUES (#{title}, #{content}, #{create_time})
     </insert>
 
-    <update id="updateCommonQuestion" parameterType="com.sftc.web.model.CommonQuestion">
+    <update id="updateCommonQuestion" parameterType="com.sftc.web.model.entity.CommonQuestion">
         UPDATE sftc_common_question
         <trim prefix="set" suffixOverrides=",">
             <if test="title != null and title != ''">title = #{title},</if>

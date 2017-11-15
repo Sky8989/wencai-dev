@@ -9,10 +9,10 @@ import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
-import com.sftc.web.model.Token;
-import com.sftc.web.model.User;
-import com.sftc.web.model.reqeustParam.UserParam;
-import com.sftc.web.model.wechat.WXUser;
+import com.sftc.web.model.entity.Token;
+import com.sftc.web.model.entity.User;
+import com.sftc.web.model.vo.swaggerRequestVO.UserParamVO;
+import com.sftc.web.model.others.WXUser;
 import com.sftc.web.service.MessageService;
 import com.sftc.web.service.UserService;
 import net.sf.json.JSONObject;
@@ -55,9 +55,9 @@ public class UserServiceImpl implements UserService {
             "\"message\":{" + "\"content\":\"4444\"}}";
 
     public APIResponse login(APIRequest request) throws Exception {
-        UserParam userParam = (UserParam) request.getRequestParam();
+        UserParamVO userParamVO = (UserParamVO) request.getRequestParam();
         APIStatus status = SUCCESS;
-        String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
+        String auth_url = WX_AUTHORIZATION + userParamVO.getJs_code();
         WXUser wxUser = APIResolve.getWxUserWithUrl(auth_url);
         User user = null;
         Map<String, String> tokenInfo = new HashMap<String, String>();
@@ -75,9 +75,9 @@ public class UserServiceImpl implements UserService {
                 user2.setSession_key(wxUser.getSession_key());
                 user2.setCreate_time(Long.toString(System.currentTimeMillis()));
                 //加入头像和昵称
-                if (userParam.getName() != null && userParam.getAvatar() != null) {
-                    user2.setAvatar(userParam.getAvatar());
-                    user2.setName(userParam.getName());
+                if (userParamVO.getName() != null && userParamVO.getAvatar() != null) {
+                    user2.setAvatar(userParamVO.getAvatar());
+                    user2.setName(userParamVO.getName());
                     userMapper.insertWithAvatarAndName(user2);
                 } else {
                     userMapper.insertOpenid(user2);
@@ -93,11 +93,11 @@ public class UserServiceImpl implements UserService {
                 user.setSession_key(wxUser.getSession_key());
                 user.setCreate_time(Long.toString(System.currentTimeMillis()));
                 //更新头像和昵称
-                if (userParam.getName() != null && userParam.getAvatar() != null) {
-                    logger.info("更新头像: " + userParam.getAvatar());
-                    logger.info("更新名字: " + userParam.getName());
-                    user.setAvatar(userParam.getAvatar());
-                    user.setName(userParam.getName());
+                if (userParamVO.getName() != null && userParamVO.getAvatar() != null) {
+                    logger.info("更新头像: " + userParamVO.getAvatar());
+                    logger.info("更新名字: " + userParamVO.getName());
+                    user.setAvatar(userParamVO.getAvatar());
+                    user.setName(userParamVO.getName());
                     userMapper.updateUserOfAvatar(user);
                 }
                 Token token = tokenMapper.getTokenById(user.getId());
@@ -126,8 +126,8 @@ public class UserServiceImpl implements UserService {
     //  合并后的登陆接口 前台来一个jscode
     public APIResponse superLogin(APIRequest request) throws Exception {
 
-        UserParam userParam = (UserParam) request.getRequestParam();
-        String auth_url = WX_AUTHORIZATION + userParam.getJs_code();
+        UserParamVO userParamVO = (UserParamVO) request.getRequestParam();
+        String auth_url = WX_AUTHORIZATION + userParamVO.getJs_code();
         WXUser wxUser = APIResolve.getWxUserWithUrl(auth_url);
         User user = null;
         Map<String, String> tokenInfo = new HashMap<String, String>();
@@ -145,9 +145,9 @@ public class UserServiceImpl implements UserService {
                 user2.setSession_key(wxUser.getSession_key());
                 user2.setCreate_time(Long.toString(System.currentTimeMillis()));
                 //加入头像和昵称
-                if (userParam.getName() != null && userParam.getAvatar() != null) {
-                    user2.setAvatar(userParam.getAvatar());
-                    user2.setName(userParam.getName());
+                if (userParamVO.getName() != null && userParamVO.getAvatar() != null) {
+                    user2.setAvatar(userParamVO.getAvatar());
+                    user2.setName(userParamVO.getName());
                     userMapper.insertWithAvatarAndName(user2);
                 } else {
                     userMapper.insertOpenid(user2);
@@ -163,11 +163,11 @@ public class UserServiceImpl implements UserService {
                 user.setSession_key(wxUser.getSession_key());
 //                user.setCreate_time(Long.toString(System.currentTimeMillis()));//不更新
                 //更新头像和昵称
-                if (userParam.getName() != null && userParam.getAvatar() != null) {
-                    logger.info("更新头像: " + userParam.getAvatar());
-                    logger.info("更新名字: " + userParam.getName());
-                    user.setAvatar(userParam.getAvatar());
-                    user.setName(userParam.getName());
+                if (userParamVO.getName() != null && userParamVO.getAvatar() != null) {
+                    logger.info("更新头像: " + userParamVO.getAvatar());
+                    logger.info("更新名字: " + userParamVO.getName());
+                    user.setAvatar(userParamVO.getAvatar());
+                    user.setName(userParamVO.getName());
                 }
                 userMapper.updateUserOfAvatar(user);
                 Token token = tokenMapper.getTokenById(user.getId());

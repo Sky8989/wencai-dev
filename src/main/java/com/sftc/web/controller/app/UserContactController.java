@@ -3,14 +3,13 @@ package com.sftc.web.controller.app;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.BaseController;
-import com.sftc.web.model.Paging;
-import com.sftc.web.model.UserContactLabel;
-import com.sftc.web.model.reqeustParam.UserContactParam;
-import com.sftc.web.model.SwaggerRequestVO.FriendStarVO;
+import com.sftc.web.model.vo.swaggerRequestVO.FriendListVO;
+import com.sftc.web.model.entity.UserContactLabel;
+import com.sftc.web.model.vo.swaggerRequestVO.UserContactParamVO;
+import com.sftc.web.model.vo.swaggerRequestVO.FriendStarVO;
 import com.sftc.web.service.UserContactLabelService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -30,18 +29,18 @@ public class UserContactController extends BaseController {
     @ApiOperation(value = "我的好友列表",httpMethod = "POST")
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse allFriend(@RequestBody Paging paging) throws Exception {
+    APIResponse allFriend(@RequestBody FriendListVO friendListVO) throws Exception {
         APIRequest request = new APIRequest();
-        request.setRequestParam(paging);
+        request.setRequestParam(friendListVO);
         return userContactService.getFriendList(request);
     }
 
     @ApiOperation(value = "好友圈来往记录",httpMethod = "POST")
     @RequestMapping(value = "/contacts", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse getContactInfo(@RequestBody UserContactParam userContactParam) throws Exception {
+    APIResponse getContactInfo(@RequestBody UserContactParamVO userContactParamVO) throws Exception {
         APIRequest request = new APIRequest();
-        request.setRequestParam(userContactParam);
+        request.setRequestParam(userContactParamVO);
         return userContactService.getContactInfo(request);
     }
 

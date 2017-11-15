@@ -2,16 +2,13 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIUtil;
-import com.sftc.tools.common.ControllerHelper;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
-import com.sftc.web.model.SwaggerRequestVO.DeleteTokenVO;
-import com.sftc.web.model.SwaggerRequestVO.RefreshTokenVO;
+import com.sftc.web.model.vo.swaggerRequestVO.DeleteTokenVO;
+import com.sftc.web.model.vo.swaggerRequestVO.RefreshTokenVO;
 import com.sftc.web.service.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

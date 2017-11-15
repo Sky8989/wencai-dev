@@ -2,7 +2,7 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.DateRemind;
+import com.sftc.web.model.entity.DateRemind;
 import com.sftc.web.service.DateRemindService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

@@ -6,8 +6,8 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.GiftCardMapper;
-import com.sftc.web.model.GiftCard;
-import com.sftc.web.model.GiftCardList;
+import com.sftc.web.model.entity.GiftCard;
+import com.sftc.web.model.vo.displayVO.GiftCardListVO;
 import com.sftc.web.service.GiftCardService;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +26,12 @@ public class GiftCardServiceImpl implements GiftCardService {
     public APIResponse getGiftCardList(APIRequest request) {
 
         List<GiftCard> giftCards = giftCardMapper.giftCardList();
-        List<GiftCardList> giftCardLists = new ArrayList<GiftCardList>();
+        List<GiftCardListVO> giftCardLists = new ArrayList<GiftCardListVO>();
 
         for (GiftCard giftCard : giftCards) {
             // 遍历当前的giftCardLists数组，判断这个type的GiftCardList是否已经存在，如果存在，取出这个type的giftCardList
-            GiftCardList giftCardList = null;
-            for (GiftCardList tempList : giftCardLists) {
+            GiftCardListVO giftCardList = null;
+            for (GiftCardListVO tempList : giftCardLists) {
                 if (tempList.getType().equals(giftCard.getType())) {
                     giftCardList = tempList;
                     break;
@@ -42,7 +42,7 @@ public class GiftCardServiceImpl implements GiftCardService {
                 List<GiftCard> gitCards = giftCardList.getGiftCards();
                 gitCards.add(giftCard);
             } else { // 不存在，新建一个GiftCardList，进行赋值，再add进giftCardLists数组
-                GiftCardList list = new GiftCardList();
+                GiftCardListVO list = new GiftCardListVO();
                 List<GiftCard> gitCards = new ArrayList<GiftCard>();
                 gitCards.add(giftCard);
                 list.setType(giftCard.getType());

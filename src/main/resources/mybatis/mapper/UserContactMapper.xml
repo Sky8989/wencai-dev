@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.dao.mybatis.UserContactMapper">
 
-    <resultMap id="friendMap" type="com.sftc.web.model.UserContact">
+    <resultMap id="friendMap" type="com.sftc.web.model.entity.UserContact">
         <id column="id" property="id"/>
         <result column="user_id" property="user_id"/>
         <result column="friend_id" property="friend_id"/>
@@ -17,7 +17,7 @@
         <association property="friend_info" select="selectUser" column="friend_id"/>
     </resultMap>
 
-    <resultMap id="contactCallbackMap" type="com.sftc.web.model.apiCallback.ContactCallback">
+    <resultMap id="contactCallbackMap" type="com.sftc.web.model.vo.displayVO.FriendRecordVO">
         <id column="id" property="id"/>
         <result column="sender_name" property="sender_name"/>
         <result column="sender_user_id" property="sender_user_id"/>
@@ -44,12 +44,12 @@
         WHERE uuid = #{uuid}
     </select>
 
-    <select id="selectUser" parameterType="int" resultType="com.sftc.web.model.User">
+    <select id="selectUser" parameterType="int" resultType="com.sftc.web.model.entity.User">
         SELECT id,avatar,name,create_time FROM sftc_user WHERE id = #{friend_id}
     </select>
 
     <!-- 好友列表 -->
-    <select id="friendList" parameterType="com.sftc.web.model.Paging" resultMap="friendMap">
+    <select id="friendList" parameterType="com.sftc.web.model.vo.swaggerRequestVO.FriendListVO" resultMap="friendMap">
         SELECT *
         FROM sftc_user_contact
         WHERE user_id = #{user_id}
@@ -62,7 +62,7 @@
         WHERE user_id = #{user_id}
     </select>
 
-    <insert id="addFriend" parameterType="com.sftc.web.model.reqeustParam.UserContactParam">
+    <insert id="addFriend" parameterType="com.sftc.web.model.vo.swaggerRequestVO.UserContactParamVO">
         INSERT INTO sftc_user_contact
         (user_id, friend_id, create_time)
         VALUES
@@ -70,7 +70,7 @@
     </insert>
 
     <!-- 编辑好友  -->
-    <update id="updateFriend" parameterType="com.sftc.web.model.UserContact">
+    <update id="updateFriend" parameterType="com.sftc.web.model.entity.UserContact">
         update sftc_user_contact
         <trim prefix="set" suffixOverrides=",">
             <if test="name!=null">name=#{name},</if>
@@ -93,7 +93,7 @@
         WHERE user_id = #{user_id} AND friend_id = #{friend_id}
     </select>
 
-    <select id="selectCirclesContact" parameterType="com.sftc.web.model.reqeustParam.UserContactParam"
+    <select id="selectCirclesContact" parameterType="com.sftc.web.model.vo.swaggerRequestVO.UserContactParamVO"
             resultMap="contactCallbackMap">
         SELECT
             sftc_order_express.*,
@@ -107,20 +107,20 @@
     </select>
 
     <!-- 查询用户关系 byuser_id friend_id-->
-    <select id="selectByUserIdAndShipId" parameterType="com.sftc.web.model.UserContactNew"
-            resultType="com.sftc.web.model.UserContactNew">
+    <select id="selectByUserIdAndShipId" parameterType="com.sftc.web.model.entity.UserContactNew"
+            resultType="com.sftc.web.model.entity.UserContactNew">
         SELECT *
         FROM sftc_user_contact
         WHERE user_id = #{user_id} AND friend_id = #{friend_id}
     </select>
 
     <!-- 插入用户关系-->
-    <insert id="insertUserContact" parameterType="com.sftc.web.model.UserContactNew" useGeneratedKeys="true">
+    <insert id="insertUserContact" parameterType="com.sftc.web.model.entity.UserContactNew" useGeneratedKeys="true">
         INSERT INTO sftc_user_contact (user_id, friend_id, is_tag_star, lntimacy, create_time)
         VALUES (#{user_id}, #{friend_id}, #{is_tag_star}, #{lntimacy}, #{create_time});
     </insert>
 
-    <update id="updateUserContactLntimacy" parameterType="com.sftc.web.model.UserContactNew">
+    <update id="updateUserContactLntimacy" parameterType="com.sftc.web.model.entity.UserContactNew">
         UPDATE sftc_user_contact
         SET lntimacy = lntimacy + 1
         WHERE id = #{id}
@@ -146,8 +146,8 @@
 
 
     <!--下面是cms系统用到的mapper-->
-    <select id="selectByPage" resultType="com.sftc.web.model.UserContactNew"
-            parameterType="com.sftc.web.model.UserContactNew">
+    <select id="selectByPage" resultType="com.sftc.web.model.entity.UserContactNew"
+            parameterType="com.sftc.web.model.entity.UserContactNew">
         SELECT * FROM sftc_user_contact
         <where>
             <if test="user_id != 0">and user_id = #{user_id}</if>

@@ -38,7 +38,7 @@
         WHERE order_id = #{id}
     </select>
 
-    <select id="selectGiftCard" parameterType="int" resultType="com.sftc.web.model.GiftCard">
+    <select id="selectGiftCard" parameterType="int" resultType="com.sftc.web.model.entity.GiftCard">
         SELECT *
         FROM sftc_gift_card
         WHERE id = #{gift_card_id}
@@ -185,7 +185,7 @@
     </update>
 
     <!-- 我的订单列表  -->
-    <select id="selectMyOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+    <select id="selectMyOrderList" parameterType="com.sftc.web.model.vo.swaggerOrderVO.MyOrderParamVO"
             resultMap="orderMap">
         SELECT * FROM sftc_order
         WHERE id IN (
@@ -212,7 +212,7 @@
         limit #{pageNum}, #{pageSize}
     </select>
     <!--解决多字段 转义的问题-->
-    <select id="selectMyOrderList2" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+    <select id="selectMyOrderList2" parameterType="com.sftc.web.model.vo.swaggerOrderVO.MyOrderParamVO"
             resultMap="orderMap">
         SELECT * FROM sftc_order
         WHERE id IN (
@@ -243,7 +243,7 @@
 
 
     <!-- 我的好友订单列表  -->
-    <select id="selectMyFriendOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+    <select id="selectMyFriendOrderList" parameterType="com.sftc.web.model.vo.swaggerOrderVO.MyOrderParamVO"
             resultMap="orderMap">
 
         SELECT *

@@ -8,7 +8,7 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.jpa.CommonQuestionDao;
 import com.sftc.web.dao.mybatis.CommonQuestionMapper;
 import com.sftc.web.dao.redis.CommonQuestionRedisDao;
-import com.sftc.web.model.CommonQuestion;
+import com.sftc.web.model.entity.CommonQuestion;
 import com.sftc.web.service.CommonQuestionService;
 import org.springframework.stereotype.Service;
 

@@ -2,7 +2,6 @@ package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.SwaggerOrderVO.FriendFillVO;
 import com.sftc.web.service.OrderService;
 import com.sftc.web.service.impl.logic.app.*;
 import com.sftc.web.service.impl.logic.cms.CMSOrderListLogic;

@@ -8,16 +8,11 @@ import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.enumeration.express.PackageType;
-import com.sftc.web.model.GiftCard;
 import com.sftc.web.model.PackageMessage;
-import com.sftc.web.model.User;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
-import com.sftc.web.model.entity.Message;
-import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.entity.OrderExpress;
-import com.sftc.web.model.entity.OrderExpressTransform;
-import com.sftc.web.model.sfmodel.Orders;
+import com.sftc.web.model.entity.*;
+import com.sftc.web.model.vo.swaggerOrderVO.OrderSynVO;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpGet;
@@ -293,7 +288,7 @@ public class OrderDetailLogic {
         ORDERS_URL = ORDERS_URL.replace("{uuid}", uuids);
 
         // POST
-        List<Orders> orderses = null;
+        List<OrderSynVO> orderSynVOS = null;
         try {
             String token = user.getToken().getAccess_token();
             if (token != null && !token.equals("")) {
@@ -301,24 +296,24 @@ public class OrderDetailLogic {
             } else {
                 token = COMMON_ACCESSTOKEN;
             }
-            orderses = APIResolve.getOrderStatusWithUrl(ORDERS_URL, token);
+            orderSynVOS = APIResolve.getOrderStatusWithUrl(ORDERS_URL, token);
         } catch (Exception e) {
             return APIUtil.submitErrorResponse("正在同步订单状态，稍后重试", e);
         }
 
         // update express status
-        if (orderses != null) {
-            for (Orders orders : orderses) {
-                String uuid = orders.getUuid();
-                Order order = orderMapper.selectOrderDetailByUuid(orders.getUuid());
-                String order_status = (orders.isPayed() && orders.getStatus().equals("PAYING") &&
-                        order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orders.getStatus();
+        if (orderSynVOS != null) {
+            for (OrderSynVO orderSynVO : orderSynVOS) {
+                String uuid = orderSynVO.getUuid();
+                Order order = orderMapper.selectOrderDetailByUuid(orderSynVO.getUuid());
+                String order_status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") &&
+                        order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
 //                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
 //                orderExpress.setState(order_status);
-                if (orders.getAttributes() != null) {
-//                    orderExpress.setAttributes(orders.getAttributes());
+                if (orderSynVO.getAttributes() != null) {
+//                    orderExpress.setAttributes(orderSynVO.getAttributes());
                     //事务问题,先存在查的改为统一使用Mybatis
-                    String attributes = orders.getAttributes();
+                    String attributes = orderSynVO.getAttributes();
                     orderExpressMapper.updateExpressAttributeSByUUID(uuid, attributes);
                 }
 //                orderExpressDao.save(orderExpress);

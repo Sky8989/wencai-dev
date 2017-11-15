@@ -6,8 +6,8 @@ import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
-import com.sftc.web.model.Token;
-import com.sftc.web.model.User;
+import com.sftc.web.model.entity.Token;
+import com.sftc.web.model.entity.User;
 import com.sftc.web.service.TokenService;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.RandomStringUtils;
@@ -16,7 +16,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 
@@ -207,7 +206,6 @@ public class TokenServiceImpl implements TokenService {
     private String makeToken() {
         String str1 = Long.toString(System.currentTimeMillis());
         String str2 = RandomStringUtils.random(3, "QWERTYUIOPASDFGHJKLZXCVBNM");
-        ;
         String s = MD5Util.MD5(str1 + str2);
         return s.substring(0, s.length() - 10);
     }

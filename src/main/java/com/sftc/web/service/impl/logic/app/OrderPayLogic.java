@@ -6,15 +6,13 @@ import com.sftc.tools.common.DateUtils;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
-import com.sftc.web.model.Token;
-import com.sftc.web.model.User;
+import com.sftc.web.model.entity.Token;
+import com.sftc.web.model.entity.User;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-
-import java.util.Date;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_QUOTES_URL;
@@ -48,7 +46,7 @@ public class OrderPayLogic {
         String access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
         requestObject.getJSONObject("merchant").put("access_token", access_token);
                 // 预约时间处理
-        String reserve_time = (String) requestObject.getString("reserve_time");
+        String reserve_time = requestObject.getString("reserve_time");
 //        String reserve_time = "";
 //        if(reserve_time == null || reserve_time.equals("")){
 //            Date date = new Date();

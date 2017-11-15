@@ -2,12 +2,11 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
-import com.sftc.web.model.SwaggerRequestVO.UserMerchantsRequestVO;
-import com.sftc.web.model.reqeustParam.UserParam;
-import com.sftc.web.model.SwaggerRequestVO.UserNewMobileVO;
+import com.sftc.web.model.vo.swaggerRequestVO.UserMerchantsRequestVO;
+import com.sftc.web.model.vo.swaggerRequestVO.UserParamVO;
+import com.sftc.web.model.vo.swaggerRequestVO.UserNewMobileVO;
 import com.sftc.web.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,9 +31,9 @@ public class UserController extends BaseController {
     @ApiOperation(value = "微信登录获取open_id", httpMethod = "POST")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse login(@RequestBody UserParam userParam) throws Exception {
+    APIResponse login(@RequestBody UserParamVO userParamVO) throws Exception {
         APIRequest request = new APIRequest();
-        request.setRequestParam(userParam);
+        request.setRequestParam(userParamVO);
         return userService.login(request);
     }
 
@@ -43,9 +42,9 @@ public class UserController extends BaseController {
             "如果用户没有access_token或者access_token失效，则不会传递access_token和uuid，以此区分access_token是否有效。")
     @RequestMapping(value = "/login/pro", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse superLogin(@RequestBody UserParam userParam) throws Exception {
+    APIResponse superLogin(@RequestBody UserParamVO userParamVO) throws Exception {
         APIRequest request = new APIRequest();
-        request.setRequestParam(userParam);
+        request.setRequestParam(userParamVO);
         return userService.superLogin(request);
     }
 

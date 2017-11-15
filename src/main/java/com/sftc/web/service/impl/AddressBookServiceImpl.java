@@ -1,5 +1,6 @@
 package com.sftc.web.service.impl;
 
+import com.google.gson.Gson;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
@@ -8,7 +9,6 @@ import com.sftc.web.dao.jpa.AddressBookDao;
 import com.sftc.web.dao.jpa.AddressDao;
 import com.sftc.web.dao.mybatis.AddressBookMapper;
 import com.sftc.web.dao.mybatis.AddressMapper;
-import com.sftc.web.model.Converter.AddressBookFactoty;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.entity.Address;
 import com.sftc.web.model.entity.AddressBook;
@@ -37,11 +37,13 @@ public class AddressBookServiceImpl implements AddressBookService {
     @Resource
     private AddressDao addressDao;
 
+    private Gson gson = new Gson();
+
     public APIResponse addAddressBook(APIRequest apiRequest) {
         ///验参
         JSONObject paramObject = JSONObject.fromObject(apiRequest.getRequestParam());
         Integer user_id = TokenUtils.getInstance().getUserId();
-        if(user_id == 0) return APIUtil.paramErrorResponse("该用户不存在");
+        if (user_id == 0) return APIUtil.paramErrorResponse("该用户不存在");
         if (!paramObject.containsKey("is_delete")) return APIUtil.paramErrorResponse("地址簿参数is_delete为空");
         if (!paramObject.containsKey("is_mystery")) return APIUtil.paramErrorResponse("地址簿参数is_mystery为空");
         if (!paramObject.containsKey("address_type")) return APIUtil.paramErrorResponse("地址簿参数address_type为空");
@@ -104,8 +106,7 @@ public class AddressBookServiceImpl implements AddressBookService {
         addressBookDTO.setCreate_time(create_time);
         addressBookDTO.setAddress_id(address.getId());
         addressBookDTO.setUser_id(user_id);
-        AddressBook addressBook = AddressBookFactoty.dtoToEntity(addressBookDTO);
-
+        AddressBook addressBook = gson.fromJson(gson.toJson(addressBookDTO), AddressBook.class);
         addressBookDao.save(addressBook);
 
         addressBookDTO.setAddress(address);
@@ -122,7 +123,7 @@ public class AddressBookServiceImpl implements AddressBookService {
         Long addressBook_id = Long.parseLong(paramObject.getString("addressBook_id"));
 
         AddressBook addressBook = addressBookDao.findOne(addressBook_id);
-        if(addressBook == null) return APIUtil.selectErrorResponse("该地址簿不存在",null);
+        if (addressBook == null) return APIUtil.selectErrorResponse("该地址簿不存在", null);
         addressBook.setId(addressBook_id);
         addressBook.setIs_delete(1);
         /// 执行删除操作
@@ -174,18 +175,17 @@ public class AddressBookServiceImpl implements AddressBookService {
         AddressBookDTO addressBookDTO = addressBookMapper.selectByPrimaryKey(addressBookParam.getId());
         if (addressBookDTOList.size() != 0) {
 
-            if(addressBookDTO == null) return APIUtil.selectErrorResponse("该地址簿不存在",null);
-            AddressBook addressBook = AddressBookFactoty.dtoToEntity(addressBookDTO);
+            if (addressBookDTO == null) return APIUtil.selectErrorResponse("该地址簿不存在", null);
             addressMapper.deleteAddress(addressBookDTO.getAddress_id());
             addressBookMapper.deleteAddressBookById(addressBookDTO.getId());
         } else {
 
-            if(addressBookDTO == null) return APIUtil.selectErrorResponse("该地址簿不存在",null);
-            AddressBook addressBook = AddressBookFactoty.dtoToEntity(addressBookDTO);
+            if (addressBookDTO == null) return APIUtil.selectErrorResponse("该地址簿不存在", null);
+            AddressBook addressBook = gson.fromJson(gson.toJson(addressBookDTO), AddressBook.class);
             addressBookDao.save(addressBook);
 
             Address address = addressBookParam.getAddress();
-            address.setId(addressBookParam.getAddress_id());
+            address.setId(addressBook.getAddress_id());
             address.setCreate_time(create_time);
             address.setUser_id(addressBookDTO.getUser_id());
             addressDao.save(address);

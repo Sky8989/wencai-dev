@@ -1,7 +1,8 @@
 package com.sftc.web.model.entity;
 
-import com.sftc.web.model.Object;
-import com.sftc.web.model.entity.Order;
+import com.sftc.web.model.others.Object;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
@@ -20,58 +21,22 @@ import javax.servlet.http.HttpServletRequest;
 public class OrderCancel extends Object {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter @Getter
     private int id;
-    // 创建时间
-    private String create_time;
-    // 取消原因
-    private String reason;
-    // 问题描述
-    private String question_describe;
 
+    @Setter @Getter
+    private String create_time; // 创建时间
+
+    @Setter @Getter
+    private String reason;// 取消原因
+
+    @Setter @Getter
+    private String question_describe;// 问题描述
+
+    @Setter @Getter
     private String order_id;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    public String getQuestion_describe() {
-        return question_describe;
-    }
-
-    public void setQuestion_describe(String question_describe) {
-        this.question_describe = question_describe;
-    }
-
-    public String getOrder_id() {
-        return order_id;
-    }
-
-    public void setOrder_id(String order_id) {
-        this.order_id = order_id;
-    }
-
-    public OrderCancel() {
-    }
+    public OrderCancel() {}
 
     public OrderCancel(HttpServletRequest request) {
         if (request.getParameter("order_id") != null && !"".equals(request.getParameter("order_id")))

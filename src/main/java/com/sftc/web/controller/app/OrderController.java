@@ -4,16 +4,15 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
-import com.sftc.web.model.SwaggerOrderVO.*;
-import com.sftc.web.model.reqeustParam.MyOrderParam;
-import com.sftc.web.model.reqeustParam.OrderParam;
+import com.sftc.web.model.vo.swaggerOrderVO.MyOrderParamVO;
+import com.sftc.web.model.vo.swaggerOrderVO.OrderParamVO;
+import com.sftc.web.model.vo.swaggerOrderVO.*;
 import com.sftc.web.service.EvaluateService;
 import com.sftc.web.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -94,9 +93,9 @@ public class OrderController extends BaseController {
     @ApiOperation(value = "寄件人填写订单", httpMethod = "POST")
     @RequestMapping(value = "sender/fill", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse friendPlaceOrder(@RequestBody OrderParam orderParam) throws Exception {
+    APIResponse friendPlaceOrder(@RequestBody OrderParamVO orderParamVO) throws Exception {
         APIRequest request = new APIRequest();
-        request.setRequestParam(orderParam);
+        request.setRequestParam(orderParamVO);
         return orderService.friendPlaceOrder(request);
     }
 
@@ -121,18 +120,18 @@ public class OrderController extends BaseController {
     @ApiOperation(value = "我的订单列表", httpMethod = "POST")
     @RequestMapping(value = "/my", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse myOrder(@RequestBody MyOrderParam myOrderParam) throws Exception {
+    APIResponse myOrder(@RequestBody MyOrderParamVO myOrderParamVO) throws Exception {
         APIRequest request = new APIRequest();
-        request.setRequestParam(myOrderParam);
+        request.setRequestParam(myOrderParamVO);
         return orderService.getMyOrderList(request);
     }
 
     @ApiOperation(value = "我的好友圈订单列表", httpMethod = "POST")
     @RequestMapping(value = "/list/friend", method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse friendOrder(@RequestBody MyOrderParam myOrderParam) throws Exception {
+    APIResponse friendOrder(@RequestBody MyOrderParamVO myOrderParamVO) throws Exception {
         APIRequest request = new APIRequest();
-        request.setRequestParam(myOrderParam);
+        request.setRequestParam(myOrderParamVO);
         return orderService.getMyFriendCircleOrderList(request);
     }
 
