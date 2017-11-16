@@ -18,6 +18,8 @@ import java.net.URLEncoder;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
@@ -121,6 +123,31 @@ public class OrderOtherLogic {
         }
 
         return APIUtil.getResponse(SUCCESS, jsonObject);
+    }
+
+    /**
+     * 判断是否可同城下单
+     * TODO:顺丰接口未完成，暂时先放着
+     */
+    public APIResponse determineOrderAddress(APIRequest request) {
+        JSONObject requestOBJ = JSONObject.fromObject(request.getRequestParam());
+        if (!requestOBJ.containsKey("source")) {
+            return APIUtil.submitErrorResponse("寄件人经纬度缺失", null);
+        } else {
+            double sourceLongitude = requestOBJ.getJSONObject("source").getDouble("longitude");
+            double sourceLatitude = requestOBJ.getJSONObject("source").getDouble("latitude");
+        }
+        //TODO:Swagger 的bug,对象不可不传，而且判断null还不行
+        if (requestOBJ.containsKey("target")&&requestOBJ.getJSONObject("target").size()!=0) {
+            double targetLongitude = requestOBJ.getJSONObject("target").getDouble("longitude");
+            double targetLatitude = requestOBJ.getJSONObject("target").getDouble("latitude");
+        }
+
+        //顺丰接口
+
+        Map<String, Boolean> map = new HashMap<>();
+        map.put("determine", true);
+        return APIUtil.getResponse(SUCCESS, map);
     }
 
     /**

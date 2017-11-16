@@ -139,5 +139,9 @@ public class OrderServiceImpl implements OrderService {
         return cmsOrderListLogic.selectCanceledOrderList(request);
     }
 
+    public APIResponse determineOrderAddress(APIRequest request) {
+        return orderOtherLogic.determineOrderAddress(request);
+    }
+
 
 }

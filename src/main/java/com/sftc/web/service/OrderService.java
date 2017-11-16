@@ -134,5 +134,10 @@ public interface OrderService {
      * @return 返回APIResponse
      */
      APIResponse selectCanceledOrderList(APIRequest request);
+
+    /**
+     * 根据地址经纬度判断是否可同城下单
+     */
+    APIResponse determineOrderAddress(APIRequest request);
 }
 

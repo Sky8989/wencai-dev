@@ -140,10 +140,11 @@
         WHERE uuid = #{uuid}
     </update>
 
-    <update id="updateExpressAttributeSByUUID">
+    <update id="updateAttributesAndStatusByUUID">
         UPDATE sftc_order_express
         set
-        <if test="attributes != null">attributes = #{attributes}</if>
+        <if test="attributes != null">attributes = #{attributes},</if>
+        state = #{status}
         WHERE uuid = #{uuid}
     </update>
 

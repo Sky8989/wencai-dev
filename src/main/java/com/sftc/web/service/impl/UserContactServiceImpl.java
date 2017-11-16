@@ -186,18 +186,10 @@ public class UserContactServiceImpl implements UserContactService {
                 Order order = orderMapper.selectOrderDetailByUuid(orderSynVO.getUuid());
                 String order_status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") &&
                         order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
-//                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
-//                orderExpress.setState(order_status);
-                if (orderSynVO.getAttributes() != null) {
-//                    orderExpress.setAttributes(orderSynVO.getAttributes());
-                    //事务问题,先存在查的改为统一使用Mybatis
-                    String attributes = orderSynVO.getAttributes();
-                    orderExpressMapper.updateExpressAttributeSByUUID(uuid, attributes);
-                }
-//                orderExpressDao.save(orderExpress);
 
-                //事务问题,先存在查的改为统一使用Mybatis,这里的同步也是此情况
-                orderExpressMapper.updateOrderExpressStatusByUUID(uuid, order_status);
+                //存在锁的问题，修改语句改为一条
+                String attributes = orderSynVO.getAttributes();
+                orderExpressMapper.updateAttributesAndStatusByUUID(uuid, attributes,order_status);
             }
         }
         return null;

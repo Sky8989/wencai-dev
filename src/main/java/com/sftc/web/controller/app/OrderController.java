@@ -7,6 +7,7 @@ import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.vo.swaggerOrderVO.MyOrderParamVO;
 import com.sftc.web.model.vo.swaggerOrderVO.OrderParamVO;
 import com.sftc.web.model.vo.swaggerOrderVO.*;
+import com.sftc.web.model.vo.swaggerOrderVO.OrderAddressDetermineVO;
 import com.sftc.web.service.EvaluateService;
 import com.sftc.web.service.OrderService;
 import io.swagger.annotations.Api;
@@ -279,6 +280,15 @@ public class OrderController extends BaseController {
         APIRequest request = new APIRequest();
         request.setRequestParam(orderPictureVO);
         return orderService.screenShot(request);
+    }
+
+    @ApiOperation(value = "判断是否可同城下单", httpMethod = "POST")
+    @RequestMapping(value = "/address/determine", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse shareOrderImage(@RequestBody OrderAddressDetermineVO orderAddressDetermineVO) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(orderAddressDetermineVO);
+        return orderService.determineOrderAddress(request);
     }
 
 }

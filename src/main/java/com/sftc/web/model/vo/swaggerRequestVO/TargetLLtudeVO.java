@@ -8,9 +8,9 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(value = "收件人经纬度")
 public class TargetLLtudeVO {
-    @ApiModelProperty(name = "longitude",value = "经度",example = "114.26088879416709",required = true)
+    @ApiModelProperty(name = "longitude",value = "经度",example = "114.26088879416709")
     private String longitude;
-    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.72294328112597",required = true)
+    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.72294328112597")
     private String latitude;
 
     public String getLongitude() {
