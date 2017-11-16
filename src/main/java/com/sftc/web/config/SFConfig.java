@@ -22,16 +22,6 @@ public class SFConfig {
     public static String SF_SAME_DOMAIN_PRODUCT = "";
 
     /**
-     * 顺丰大网 开发环境域名
-     */
-    public static String SF_NATION_DOMAIN_DEV = "";
-
-    /**
-     * 顺丰大网 生产环境域名
-     */
-    public static String SF_NATION_DOMAIN_PRODUCT = "";
-
-    /**
      * 顺丰同城 生产环境的获取公共token的账号用户名
      */
     public static String SF_SAME_COMMON_TOKEN_USERNAME = "";
@@ -51,14 +41,6 @@ public class SFConfig {
 
     public void setSF_SAME_DOMAIN_PRODUCT(String sF_SAME_DOMAIN_PRODUCT) {
         SF_SAME_DOMAIN_PRODUCT = sF_SAME_DOMAIN_PRODUCT;
-    }
-
-    public void setSF_NATION_DOMAIN_DEV(String sF_NATION_DOMAIN_DEV) {
-        SF_NATION_DOMAIN_DEV = sF_NATION_DOMAIN_DEV;
-    }
-
-    public void setSF_NATION_DOMAIN_PRODUCT(String sF_NATION_DOMAIN_PRODUCT) {
-        SF_NATION_DOMAIN_PRODUCT = sF_NATION_DOMAIN_PRODUCT;
     }
 
     public void setSF_SAME_COMMON_TOKEN_USERNAME(String sF_SAME_COMMON_TOKEN_USERNAME) {

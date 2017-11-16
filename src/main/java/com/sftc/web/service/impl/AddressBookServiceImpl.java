@@ -175,9 +175,12 @@ public class AddressBookServiceImpl implements AddressBookService {
         AddressBookDTO addressBookDTO = addressBookMapper.selectByPrimaryKey(addressBookParam.getId());
         if (addressBookDTOList.size() != 0) {
 
-            if (addressBookDTO == null) return APIUtil.selectErrorResponse("该地址簿不存在", null);
+            if(addressBookDTO == null) return APIUtil.selectErrorResponse("该地址簿不存在",null);
             addressMapper.deleteAddress(addressBookDTO.getAddress_id());
             addressBookMapper.deleteAddressBookById(addressBookDTO.getId());
+            AddressBook addressBook = addressBookDao.findOne(addressBookDTOList.get(0).getId());
+            addressBook.setCreate_time(create_time);
+            addressBookDao.save(addressBook);
         } else {
 
             if (addressBookDTO == null) return APIUtil.selectErrorResponse("该地址簿不存在", null);

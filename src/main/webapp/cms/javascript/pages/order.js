@@ -155,8 +155,6 @@ function data_rendering(data) {
             dataD.order_type = "普通订单"
         }if(dataD.order_type == undefined){
             dataD.order_type = "无"
-        }if(dataD.region_type == "REGION_NATION"){
-            dataD.region_type = "大网订单"
         }if(dataD.region_type == "REGION_SAME"){
             dataD.region_type = "同城订单"
         }if(dataD.region_type == undefined){

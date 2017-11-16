@@ -43,30 +43,12 @@ public class OrderController extends BaseController {
         return orderService.addNormalOrderCommit(request);
     }
 
-    @ApiOperation(value = "普通大网订单提交", httpMethod = "POST")
-    @RequestMapping(value = "/normal/nation", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse nationOrder(@RequestBody OrderNationRequestVO orderNationRequestVO) throws Exception {
-        APIRequest request = new APIRequest();
-        request.setRequestParam(orderNationRequestVO);
-        return orderService.addNormalOrderCommit(request);
-    }
-
     @ApiOperation(value = "好友同城订单提交", httpMethod = "POST", notes = "request为同城订单需要的参数")
     @RequestMapping(value = "/friend/same", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse friendOrderCommit(@RequestBody FriendOrderRequestVO friendOrderRequestVO) throws Exception {
         APIRequest request = new APIRequest();
         request.setRequestParam(friendOrderRequestVO);
-        return orderService.addFriendOrderCommit(request);
-    }
-
-    @ApiOperation(value = "好友大网订单提交", httpMethod = "POST")
-    @RequestMapping(value = "/friend/nation", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse friendNationOrderCommit(@RequestBody FriendNationOrderRequestVO friendNationOrderRequestVO) throws Exception {
-        APIRequest request = new APIRequest();
-        request.setRequestParam(friendNationOrderRequestVO);
         return orderService.addFriendOrderCommit(request);
     }
 
@@ -90,7 +72,7 @@ public class OrderController extends BaseController {
         return orderService.friendFillOrder(request);
     }
 
-    @ApiOperation(value = "寄件人填写订单", httpMethod = "POST")
+    @ApiOperation(value = "寄件人填写订单", httpMethod = "POST",notes = "请将请求体中region_type的默认参数string去掉")
     @RequestMapping(value = "sender/fill", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse friendPlaceOrder(@RequestBody OrderParamVO orderParamVO) throws Exception {
@@ -117,7 +99,7 @@ public class OrderController extends BaseController {
         return orderService.selectOrderDetail(new APIRequest(request));
     }
 
-    @ApiOperation(value = "我的订单列表", httpMethod = "POST")
+    @ApiOperation(value = "我的订单列表", httpMethod = "POST",notes = "测试接口若出现错误，删除key_words、key_state再试试")
     @RequestMapping(value = "/my", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse myOrder(@RequestBody MyOrderParamVO myOrderParamVO) throws Exception {
@@ -126,7 +108,7 @@ public class OrderController extends BaseController {
         return orderService.getMyOrderList(request);
     }
 
-    @ApiOperation(value = "我的好友圈订单列表", httpMethod = "POST")
+    @ApiOperation(value = "我的好友圈订单列表", httpMethod = "POST",notes = "测试接口若出现错误，删除key_words、key_state再试试")
     @RequestMapping(value = "/list/friend", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse friendOrder(@RequestBody MyOrderParamVO myOrderParamVO) throws Exception {
@@ -208,23 +190,7 @@ public class OrderController extends BaseController {
         return orderService.timeConstants(request);
     }
 
-    @IgnoreToken
-    @ApiOperation(value = "30分钟未揽件同城单转大网单(给顺丰调用)", httpMethod = "POST",notes = "调用场景：\n" +
-            "给顺丰同城调用的API\n" +
-            "下单三十分钟后，如果因为同城运力不足而取消订单，请调用此接口把取消的事件通知给C端服务端，我们会将同城的单转下到大网\n" +
-            "\n" +
-            "注意：\n" +
-            "并不是把所有的取消订单的事件都调该接口，而是因为运力不足而取消时，才通知我们。否则，在我们C端主动取消订单的时候\n" +
-            "这个单就会因为顺丰的事件通知，立马就被下到大网去，从而产生莫名其妙的BUG。")
-    @RequestMapping(value = "/transform", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse transformOrder(@RequestBody OrderTransform orderTransform) throws Exception {
-        APIRequest request = new APIRequest();
-        request.setRequestParam(orderTransform);
-        return orderService.transformOrderFromSameToNation(request);
-    }
-
-    @ApiOperation(value = "获取大网订购的评价信息", httpMethod = "GET")
+    @ApiOperation(value = "获取订单评价信息", httpMethod = "GET")
     @ApiImplicitParam(name = "uuid", value = "快递uuid", defaultValue = "2c9a85895d8f0962015d90246c8c0a4f", paramType = "query", required = true)
     @RequestMapping(value = "/evaluate", method = RequestMethod.GET)
     public @ResponseBody
@@ -232,27 +198,6 @@ public class OrderController extends BaseController {
         return evaluateService.getEvaluate(new APIRequest(httpServletRequest));
     }
 
-    @ApiIgnore
-    @ApiOperation(value = "设置大网预约定时器", httpMethod = "POST",notes = "默认自动开启该定时器,开/关 1/0")
-    @RequestMapping(value = "/reserve/setup", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse setupReserveTimer(@RequestBody OrderTimeVO orderTimeVO) throws Exception {
-        APIRequest request = new APIRequest();
-        request.setRequestParam(orderTimeVO);
-        return orderService.setupReserveNationOrderCommitTimer(request);
-    }
-
-    @ApiIgnore
-    @ApiOperation(value = "设置大网超时取消定时器", httpMethod = "POST",notes = "默认自动开启该定时器,开/关 1/0")
-    @RequestMapping(value = "/cancel/setup", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse setupCancelNationOrderTimer(@RequestBody OrderCancelTimeVO orderCancelTimeVO) throws Exception {
-        APIRequest request = new APIRequest();
-        request.setRequestParam(orderCancelTimeVO);
-        return orderService.setupCancelNationOrderTimer(request);
-    }
-
-    @ApiIgnore
     @ApiOperation(value = "设置同城超时取消定时器", httpMethod = "POST",notes = "默认自动开启该定时器,开/关 1/0")
     @RequestMapping(value = "/cancel/SameSetup", method = RequestMethod.POST)
     public @ResponseBody
@@ -260,16 +205,6 @@ public class OrderController extends BaseController {
         APIRequest request = new APIRequest();
         request.setRequestParam(orderCancelTimeVO);
         return orderService.setupCancelSameOrderTimer(request);
-    }
-
-    @IgnoreToken
-    @ApiOperation(value = "设置兜底记录已读", httpMethod = "PUT")
-    @RequestMapping(value = "/transform", method = RequestMethod.PUT)
-    public @ResponseBody
-    APIResponse readExpressTransform(@RequestBody OrderTransformIsReadVO orderTransformIsReadVO) throws Exception {
-        APIRequest request = new APIRequest();
-        request.setRequestParam(orderTransformIsReadVO);
-        return orderService.readExpressTransform(request);
     }
 
     @ApiOperation(value = "订单分享图片", httpMethod = "POST")

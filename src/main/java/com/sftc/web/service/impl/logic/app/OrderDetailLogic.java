@@ -5,13 +5,12 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFExpressHelper;
-import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.enumeration.express.PackageType;
-import com.sftc.web.model.vo.displayVO.PackageMessageVO;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
 import com.sftc.web.model.entity.*;
+import com.sftc.web.model.vo.displayVO.PackageMessageVO;
 import com.sftc.web.model.vo.swaggerOrderVO.OrderSynVO;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -24,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.SFConstant.*;
+import static com.sftc.tools.constant.SFConstant.SF_CONSTANTS_URL;
+import static com.sftc.tools.constant.SFConstant.SF_ORDER_SYNC_URL;
 import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
 
 @Component
@@ -38,8 +38,6 @@ public class OrderDetailLogic {
     private UserMapper userMapper;
     @Resource
     private GiftCardMapper giftCardMapper;
-    @Resource
-    private OrderExpressTransformMapper orderExpressTransformMapper;
     @Resource
     private MessageMapper messageMapper;
 
@@ -116,33 +114,7 @@ public class OrderDetailLogic {
             respObject.put("order", order);
             return APIUtil.getResponse(SUCCESS, respObject);
         }
-
-        if (regionType.equals("REGION_NATION")) { // 大网
-
-            // 兜底单
-            OrderExpressTransform orderExpressTransform = orderExpressTransformMapper.selectExpressTransformByUUID(uuid);
-            respObject.put("transform", orderExpressTransform);
-
-            // sort
-            String sort = (String) request.getParameter("sort");
-            sort = sort == null ? "desc" : sort;
-            // GET
-            String url = SF_ORDERROUTE_URL + uuid + "&sort=" + sort;
-            HttpGet get = new HttpGet(url);
-            String access_token = SFTokenHelper.getToken();
-            get.addHeader("Authorization", "bearer " + access_token);
-            String res = APIGetUtil.get(get);
-
-            if (!res.equals("[]")) {
-                JSONArray routeList = JSONArray.fromObject(res);
-                if (routeList != null)
-                    respObject.put("sf", routeList);
-            } else {
-                respObject.put("sf", new JSONObject());
-            }
-
-        } else if (regionType.equals("REGION_SAME")) { // 同城
-
+        if (regionType.equals("REGION_SAME")) { // 同城
             // 同城订单需要access_token
             String access_token = (String) request.getParameter("access_token");
             access_token = (access_token == null || access_token.equals("") ? COMMON_ACCESSTOKEN : access_token);

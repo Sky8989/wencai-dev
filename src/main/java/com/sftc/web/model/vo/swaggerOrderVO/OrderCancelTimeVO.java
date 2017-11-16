@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Created by xf on 2017/10/21.
  */
-@ApiModel(value = "大网订单超时自动取消定时器")
+@ApiModel(value = "好友多包裹超时单自动取消定时器")
 public class OrderCancelTimeVO {
     @ApiModelProperty(name = "on", example = "1", required = true)
     private int on;

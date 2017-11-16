@@ -46,12 +46,4 @@ public class IndexController {
         request.setRequestParam(sfAccessTokenRequestVO);
         return indexService.setupCommonToken(request);
     }
-
-    @IgnoreToken
-    @ApiOperation(value = "生成临时token接口", httpMethod = "POST",notes = "获取临时Token给顺丰调用，兜底时使用")
-    @RequestMapping(value = "/token", method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse getTemporaryToken() throws Exception {
-        return userService.getTemporaryToken();
-    }
 }
