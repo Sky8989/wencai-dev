@@ -289,9 +289,10 @@ public class OrderCommitLogic {
         //后期更新订单与包裹一对一，但是好友件同城可以多包裹，同城订单走这个逻辑？
         if (orderDTO.getOrderExpressList().size() != 1)
             return APIUtil.submitErrorResponse("Order infomation has been changed, please check again!", null);
-
+        	String ship_name = "";
         for (OrderExpressDTO oeDto : orderDTO.getOrderExpressList()) {
             OrderExpress oe = gson.fromJson(gson.toJson(oeDto), OrderExpress.class);
+            ship_name += oe.getShip_name() +",";
             // 拼接同城订单参数中的 source 和 target
             SourceAddressVO source = new SourceAddressVO();
             OrderAddressVO address = new OrderAddressVO();
@@ -420,7 +421,7 @@ public class OrderCommitLogic {
   			}
   			this.logger.info("----好友同城微信模板跳转链接--" + path);
   			messageArr[0] = request_num;
-  			messageArr[1] = "您的顺丰订单下单成功(好友同城)！寄件人是：" + sendName;
+  			messageArr[1] = "您的顺丰订单下单成功！收件人是：" + ship_name;
   			String form_id = requestObject.getJSONObject("order").getString("form_id");
   			messageService.sendWXTemplateMessage(user_id, messageArr, path, form_id, WX_template_id_1);
   		}
@@ -694,6 +695,7 @@ public class OrderCommitLogic {
             }
 
             String package_type = requestOBJ.getJSONArray("packages").getJSONObject(0).getString("package_type");
+            String ship_name = targetAddressOBJ.getString("receiver");
             // 插入快递表
             OrderExpress orderExpress = new OrderExpress(
                     Long.toString(System.currentTimeMillis()),
@@ -752,8 +754,7 @@ public class OrderCommitLogic {
 				
                 String[] messageArr = new String[2];
                 messageArr[0] = respObject.getJSONObject("request").getString("request_num");
-                messageArr[1] = "您的顺丰订单下单成功(同城)！寄件人是："
-                        + (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver");
+                messageArr[1] = "您的顺丰订单下单成功！收件人是：" + ship_name;
                 String form_id = reqObject.getJSONObject("order").getString("form_id");
                 messageService.sendWXTemplateMessage( reqObject.getJSONObject("order").getInt("sender_user_id") ,
                         messageArr, path, form_id, WX_template_id_1);
