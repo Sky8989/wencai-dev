@@ -64,7 +64,7 @@ public class OrderDetailLogic {
         }
 
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
-        setPackageType(orderDTO);
+        setPackageType(orderDTO); //获取包裹信息
         JSONObject respObject = new JSONObject();
         if (orderDTO == null) return APIUtil.getResponse(SUCCESS, null);
         List<OrderExpressDTO> orderExpress = orderDTO.getOrderExpressList();
@@ -112,7 +112,7 @@ public class OrderDetailLogic {
         String regionType = order.getRegion_type();
 
         if (regionType == null || regionType.equals("")) { //增加对未提交订单的查询，此时regionType无值
-            setPackageType(order);
+            setPackageType(order);//获取包裹信息
             respObject.put("order", order);
             return APIUtil.getResponse(SUCCESS, respObject);
         }
@@ -179,7 +179,7 @@ public class OrderDetailLogic {
             APIResponse apiResponse = syncOrderExpress(order.getId());
             if (apiResponse != null) return apiResponse;
             order = orderMapper.selectOrderDetailByUuid(uuid);
-            setPackageType(order);
+            setPackageType(order);//获取包裹信息
         }
 
         respObject.put("order", order);
@@ -203,6 +203,9 @@ public class OrderDetailLogic {
         return APIUtil.getResponse(SUCCESS, respObject);
     }
 
+    /**
+     *同步基础数据，返回包裹信息
+     */
     private APIResponse setPackageType(OrderDTO order){
         List<OrderExpressDTO> orderExpressList = order.getOrderExpressList();
         String access_token = COMMON_ACCESSTOKEN;
@@ -232,7 +235,7 @@ public class OrderDetailLogic {
                             JSONArray weightArr = packageTypeOBJ.getJSONArray("weight_segment");
                             for (int j = 0; j < weightArr.size(); j++) {
                                 JSONObject weightOBJ = weightArr.getJSONObject(j);
-                                //根据包裹大小类型添加包裹信息    0/1/2/3 --对应-- 小/中/大/超大
+                                //根据包裹大小类型添加包裹信息    0/1/2/3 4 5 --对应-- 小/中/大/超大
                                 if (j == 0 && orderExpressDTO.getPackage_type().equals(PackageType.SMALl_PACKAGE.getKey())) {
                                     packageMessage.setName(weightOBJ.getString("name"));
                                     packageMessage.setWeight(weightOBJ.getString("weight"));
@@ -308,18 +311,11 @@ public class OrderDetailLogic {
                 Order order = orderMapper.selectOrderDetailByUuid(orderSynVO.getUuid());
                 String order_status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") &&
                         order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
-//                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
-//                orderExpress.setState(order_status);
-                if (orderSynVO.getAttributes() != null) {
-//                    orderExpress.setAttributes(orderSynVO.getAttributes());
-                    //事务问题,先存在查的改为统一使用Mybatis
-                    String attributes = orderSynVO.getAttributes();
-                    orderExpressMapper.updateExpressAttributeSByUUID(uuid, attributes);
-                }
-//                orderExpressDao.save(orderExpress);
 
-                //事务问题,先存在查的改为统一使用Mybatis,这里的同步也是此情况
-                orderExpressMapper.updateOrderExpressStatusByUUID(uuid, order_status);
+                    //存在锁的问题，修改语句改为一条
+                    String attributes = orderSynVO.getAttributes();
+                    orderExpressMapper.updateAttributesAndStatusByUUID(uuid, attributes,order_status);
+
             }
         }
         return null;

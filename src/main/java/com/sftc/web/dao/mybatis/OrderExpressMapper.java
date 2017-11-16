@@ -36,8 +36,8 @@ public interface OrderExpressMapper {
     void updateExpressDirectedByUUID(@Param("uuid") String uuid, @Param("status") String status,
                                      @Param("directed_code") String directed_code, @Param("is_directed") int is_directed);
 
-    //根据uuid更改订单的Attributes
-    void updateExpressAttributeSByUUID(@Param("uuid") String uuid,@Param("attributes") String attributes);
+    //根据 uuid 更改订单的 Attributes 和状态
+    void updateAttributesAndStatusByUUID(@Param("uuid") String uuid,@Param("attributes") String attributes,@Param("status") String status);
 
     // 更改 快递状态 为 取消 CANCELED
 //    void updateOrderExpressCanceled(String order_id);
