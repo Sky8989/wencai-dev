@@ -3,12 +3,13 @@ package com.sftc.web.service.impl.logic.app;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
 import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
-import static com.sftc.tools.constant.WXConstant.*;
+import static com.sftc.tools.constant.WXConstant.WX_template_id_1;
 
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -251,6 +252,9 @@ public class OrderCommitLogic {
     /// 好友同城订单提交
     @Transactional
     private APIResponse friendSameOrderCommit(JSONObject requestObject) {
+    	Integer user_id = TokenUtils.getInstance().getUserId();
+  		String request_num = ""; // 订单号
+  		String uuid = ""; // 请求顺丰下单接口 返回的uuid
         // Param
         if (!requestObject.containsKey("order"))
             return APIUtil.paramErrorResponse("订单信息不完整");
@@ -278,6 +282,7 @@ public class OrderCommitLogic {
             attributeOBJ.remove("source");
 
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
+        String sendName = orderDTO.getSender_name(); //提交订单的用户名
         if (orderDTO == null) return APIUtil.submitErrorResponse("订单不存在", null);
 
         //增加对包裹数量的验证，确保是只有一个订单里只有一个同城包裹
@@ -354,8 +359,8 @@ public class OrderCommitLogic {
 
 //            if (!responseObject.containsKey("error")) {
             if (!(responseObject.containsKey("error") || responseObject.containsKey("errors"))) {
-                String uuid = (String) responseObject.getJSONObject("request").get("uuid");
-                String request_num = responseObject.getJSONObject("request").getString("request_num");
+                 uuid = (String) responseObject.getJSONObject("request").get("uuid");
+                 request_num = responseObject.getJSONObject("request").getString("request_num");
 
 //                /// 数据库操作
 //                // 订单表更新订单区域类型
@@ -405,6 +410,21 @@ public class OrderCommitLogic {
             }
         }
 
+        String path = ""; // 好友同城微信模板跳转链接
+  		// 发送微信模板消息
+  		if (requestObject.getJSONObject("order").containsKey("form_id")
+  				&& StringUtils.isNotEmpty(requestObject.getJSONObject("order").getString("form_id"))) {
+  			String[] messageArr = new String[2];
+  			if (StringUtils.isNotEmpty(order_id) && StringUtils.isNotEmpty(uuid)) {
+  				path = OrderConstant.MYSTERY_REGION_SAME_LINK + "?uuid=" + uuid + "&order_id=" + order_id;
+  			}
+  			this.logger.info("----好友同城微信模板跳转链接--" + path);
+  			messageArr[0] = request_num;
+  			messageArr[1] = "您的顺丰订单下单成功(好友同城)！寄件人是：" + sendName;
+  			String form_id = requestObject.getJSONObject("order").getString("form_id");
+  			messageService.sendWXTemplateMessage(user_id, messageArr, path, form_id, WX_template_id_1);
+  		}
+        
         orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
 
         return APIUtil.getResponse(SUCCESS, orderDTO);
@@ -639,9 +659,10 @@ public class OrderCommitLogic {
         // 向sf下单
         String requestSFParamStr = gson.toJson(tempObject);
         JSONObject respObject = JSONObject.fromObject(APIPostUtil.post(requestSFParamStr, post));
-        String uuId = respObject.getJSONObject("request").getString("uuid");
+        String uuId = "";
 
         if (respObject.containsKey("error")) {
+        	
             return APIUtil.submitErrorResponse(respObject.getJSONObject("error").getString("message"), respObject.getJSONObject("error"));
         }
 
@@ -650,6 +671,7 @@ public class OrderCommitLogic {
         if (respObject.containsKey("request")) {
             JSONObject req = respObject.getJSONObject("request");
             if (req != null && req.containsKey("attributes")) {
+            	uuId = respObject.getJSONObject("request").getString("uuid");
                 JSONObject attributuOBJ = req.getJSONObject("attributes");
                 if (attributuOBJ.containsKey("directed_code")) {
                     directed_code = attributuOBJ.getString("directed_code");
@@ -722,8 +744,8 @@ public class OrderCommitLogic {
 			String path = ""; // 普通同城跳转链接
             // 发送微信模板消息
             if (reqObject.getJSONObject("order").containsKey("form_id")
-                    && !"".equals(reqObject.getJSONObject("order").getString("form_id"))) {
-            	if (order.getId() != "" && order.getId() != null) {
+                    && StringUtils.isNotEmpty(reqObject.getJSONObject("order").getString("form_id"))) {
+            	if (StringUtils.isNotEmpty(order.getId())) {
 					path = OrderConstant.BASIS_REGION_SAME_LINK + "?order_id=" + order.getId() + "&uuid=" + uuId;
 				}
 				this.logger.info("--------普通同城跳转链接 ----" + path);
@@ -733,7 +755,7 @@ public class OrderCommitLogic {
                 messageArr[1] = "您的顺丰订单下单成功(同城)！寄件人是："
                         + (String) reqObject.getJSONObject("request").getJSONObject("source").getJSONObject("address").get("receiver");
                 String form_id = reqObject.getJSONObject("order").getString("form_id");
-                messageService.sendWXTemplateMessage(Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
+                messageService.sendWXTemplateMessage( reqObject.getJSONObject("order").getInt("sender_user_id") ,
                         messageArr, path, form_id, WX_template_id_1);
             }
 

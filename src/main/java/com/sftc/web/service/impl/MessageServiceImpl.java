@@ -297,9 +297,9 @@ public class MessageServiceImpl implements MessageService {
         String resultStr = APIPostUtil.post(postStr, httpPost);
         JSONObject resultJSONObject = JSONObject.fromObject(resultStr);
         if (resultJSONObject.containsKey("errcode") && resultJSONObject.getInt("errcode") != 0) {
-            logger.error(resultStr);
+            logger.error("---微信模板返回错误信息---"+resultStr);
         } else {
-            logger.info(resultStr);
+            logger.info("---微信模板返回成功信息----"+resultStr);
         }
     }
 
