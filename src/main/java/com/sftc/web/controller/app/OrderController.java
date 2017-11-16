@@ -198,6 +198,7 @@ public class OrderController extends BaseController {
         return evaluateService.getEvaluate(new APIRequest(httpServletRequest));
     }
 
+    @ApiIgnore
     @ApiOperation(value = "设置同城超时取消定时器", httpMethod = "POST",notes = "默认自动开启该定时器,开/关 1/0")
     @RequestMapping(value = "/cancel/SameSetup", method = RequestMethod.POST)
     public @ResponseBody
