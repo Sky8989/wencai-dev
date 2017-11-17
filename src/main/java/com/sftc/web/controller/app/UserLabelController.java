@@ -8,9 +8,11 @@ import com.sftc.web.service.UserLabelService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 
+@ApiIgnore
 @Api(description = "用户标签")
 @RestController
 @RequestMapping(value = "label")
