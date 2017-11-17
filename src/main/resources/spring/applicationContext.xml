@@ -103,6 +103,7 @@
     <tx:advice id="txAdvice" transaction-manager="transactionManager"/>
 
     <!-- 启动Aspectj注解模式驱动AOP -->
+    <!-- 启动Aspectj注解模式驱动AOP -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
     <aop:config>
