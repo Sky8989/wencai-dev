@@ -160,7 +160,7 @@ public class JedisTemplate {
     /**
      * Return jedis connection to the pool, call different return methods depends on the conectionBroken status.
      */
-    protected void closeResource(Jedis jedis, boolean conectionBroken) {
+    public void closeResource(Jedis jedis, boolean conectionBroken) {
         try {
             if (conectionBroken) {
                 jedisPool.returnBrokenResource(jedis);
@@ -887,4 +887,5 @@ public class JedisTemplate {
             }
         });
     }
+
 }
