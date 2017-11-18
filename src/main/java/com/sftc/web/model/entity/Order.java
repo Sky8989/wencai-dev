@@ -4,6 +4,7 @@ import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.model.others.Object;
 import com.sftc.web.model.vo.swaggerOrderVO.OrderParamVO;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,71 +19,94 @@ import javax.servlet.http.HttpServletRequest;
 public class Order extends Object {
     @Id
     @Setter @Getter
+    @ApiModelProperty(name = "id",value = "订单id",example = "C1510544211749T8")
     private String id;
 
     @Setter @Getter
+    @ApiModelProperty(name = "id",value = "创建时间",example = "1510544211749")
     private String create_time;// 创建时间
 
     @Setter @Getter
+    @ApiModelProperty(name = "pay_time",value = "支付时间",example = "1510544211749")
     private String pay_time;// 支付时间
 
     @Setter @Getter
+    @ApiModelProperty(name = "pay_method",value = "付款方式",example = "FREIGHT_COLLECT")
     private String pay_method; // 付款方式
 
     @Setter @Getter
+    @ApiModelProperty(name = "distribution_method",value = "配送方式",example = "KUAISUDA")
     private String distribution_method;// 配送方式
 
     @Setter @Getter
+    @ApiModelProperty(name = "sender_name",value = "寄件人姓名",example = "123测试订单")
     private String sender_name;// 寄件人姓名
 
     @Setter @Getter
+    @ApiModelProperty(name = "sender_mobile",value = "寄件人手机",example = "13691698530")
     private String sender_mobile;// 寄件人手机
 
     @Setter @Getter
+    @ApiModelProperty(name = "sender_province",value = "寄件人省",example = "广东省")
     private String sender_province; // 寄件人省
 
     @Setter @Getter
+    @ApiModelProperty(name = "sender_city",value = "寄件人市",example = "深圳市")
     private String sender_city;// 寄件人市
 
     @Setter @Getter
-    private String sender_area;// 寄件人详细地址
+    @ApiModelProperty(name = "sender_area",value = "寄件人区域",example = "龙岗区")
+    private String sender_area;// 寄件人区域
 
     @Setter @Getter
+    @ApiModelProperty(name = "sender_addr",value = "寄件人详细地址",example = "龙城广场地铁站")
     private String sender_addr;// 寄件人详细地址
 
     @Setter @Getter
+    @ApiModelProperty(name = "supplementary_info",value = "寄件人门牌号",example = "118号")
     private String supplementary_info;// 寄件人门牌号
 
     @Setter @Getter
+    @ApiModelProperty(name = "word_message",value = "留言",example = "一句留言")
     private String word_message;
 
     @Setter @Getter
+    @ApiModelProperty(name = "image",value = "图片",example = "一张图片")
     private String image;
 
     @Setter @Getter
+    @ApiModelProperty(name = "voice",value = "语音",example = "一条语音")
     private String voice;
 
     @Setter @Getter
+    @ApiModelProperty(name = "longitude",value = "经度",example = "22.54874796811195",dataType = "double")
     private double longitude;// 经度
 
     @Setter @Getter
+    @ApiModelProperty(name = "latitude",value = "纬度",example = "114.06441301610272",dataType = "double")
     private double latitude;// 纬度
 
     @Setter @Getter
+    @ApiModelProperty(name = "sender_user_id",value = "寄件人id",example = "10093",dataType = "int")
     private int sender_user_id;
 
     @Setter @Getter
+    @ApiModelProperty(name = "gift_card_id",value = "礼品卡id",example = "17",dataType = "int")
     private int gift_card_id;
 
     @Setter @Getter
+    @ApiModelProperty(name = "voice_time",value = "语音时长",example = "10",dataType = "int")
     private int voice_time;
 
     @Setter @Getter
+    @ApiModelProperty(name = "order_type",value = "订单类型",example = "ORDER_BASIS")
     private String order_type; // 订单类型 普通 神秘
 
     @Setter @Getter
-    private String region_type;// 订单地域 同城 大网
+    @ApiModelProperty(name = "region_type",value = "订单地域 同城",example = "REGION_SAME")
+    private String region_type;// 订单地域 同城
 
+    @ApiModelProperty(name = "is_cancel",value = "是否取消",example = "0",dataType = "int")
     private int is_cancel;//新添加 is_cancel
 
     public Order() {

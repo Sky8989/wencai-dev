@@ -20,23 +20,23 @@ import javax.servlet.http.HttpServletRequest;
  */
 @ApiModel(value = "礼品卡")
 public class GiftCard extends Object {
-    @ApiModelProperty("主键")
+    @ApiModelProperty(value = "主键",example = "17",dataType = "int")
     @Setter @Getter
     private int id;
 
-    @ApiModelProperty("创建时间")
+    @ApiModelProperty(value = "创建时间",example = "1497797226111")
     @Setter @Getter
     private String create_time;
 
-    @ApiModelProperty("名称")
+    @ApiModelProperty(value = "名称",example = "祝我们合作愉快")
     @Setter @Getter
     private String name;
 
-    @ApiModelProperty("图片")
+    @ApiModelProperty(value = "图片",example = "https://sf.dankal.cn/card14.png")
     @Setter @Getter
     private String icon;
 
-    @ApiModelProperty("类型")
+    @ApiModelProperty(value = "类型",example = "节目必备")
     @Setter @Getter
     private String type;
 

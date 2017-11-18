@@ -17,35 +17,35 @@ import javax.persistence.*;
 public class AddressBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty("主键")
+    @ApiModelProperty(value = "主键",example = "2351",dataType = "long")
     @Setter @Getter
     private Long id;
 
-    @ApiModelProperty("用户id")
+    @ApiModelProperty(value = "用户id",example = "10093",dataType = "int")
     @Setter @Getter
     private int user_id;
 
-    @ApiModelProperty("地址id")
+    @ApiModelProperty(value = "地址id",example = "4678",dataType = "int")
     @Setter @Getter
     private int address_id;
 
-    @ApiModelProperty("是否删除")
+    @ApiModelProperty(value = "是否删除",example = "0",dataType = "int")
     @Setter @Getter
     private int is_delete;
 
-    @ApiModelProperty("是否神秘[废弃]")
+    @ApiModelProperty(value = "是否神秘[废弃]",example = "0",dataType = "int")
     @Setter @Getter
     private int is_mystery;
 
-    @ApiModelProperty("地址类型 address_history/address_book")
+    @ApiModelProperty(value = "地址类型 address_history/address_book",example = "address_book")
     @Setter @Getter
     private String address_type;
 
-    @ApiModelProperty("地址簿类型 sender/ship")
+    @ApiModelProperty(value = "地址簿类型 sender/ship",example = "sender")
     @Setter @Getter
     private String address_book_type;
 
-    @ApiModelProperty("创建时间")
+    @ApiModelProperty(value = "创建时间",example = "151099083243")
     @Setter @Getter
     private String create_time;
 

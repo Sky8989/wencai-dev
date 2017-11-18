@@ -16,19 +16,19 @@ public class CommonQuestion extends Object {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty("主键")
+    @ApiModelProperty(value = "主键",example = "1",dataType = "int")
     @Setter @Getter
     private int id;
 
-    @ApiModelProperty("创建时间")
+    @ApiModelProperty(value = "创建时间",example = "15014848341912")
     @Setter @Getter
     private String create_time;
 
-    @ApiModelProperty("标题")
+    @ApiModelProperty(value = "标题",example = "订单取消及退款")
     @Setter @Getter
     private String title;
 
-    @ApiModelProperty("内容")
+    @ApiModelProperty(value = "内容",example = "寄付订单取消后会进入自动退款流程，可在微信钱包的交易管理里查看所有进出账记录")
     @Setter @Getter
     private String content;
 

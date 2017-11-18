@@ -18,7 +18,7 @@ public class CouPonPromoVO {
 
     @ApiModelProperty(name = "promo_code",value = "兑换密语",example = "1")
     private String promo_code;
-    @ApiModelProperty(name = "token",value = "token",example = "EyMivbd44I124lcddrBG")
+    @ApiModelProperty(name = "token",value = "token",example = "EyMivbd44I124lcddrBG",hidden = true)
     private String token;
 
     public String getPromo_code() {

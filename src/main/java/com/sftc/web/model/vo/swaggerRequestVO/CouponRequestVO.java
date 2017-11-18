@@ -11,7 +11,7 @@ public class CouponRequestVO {
 
     @ApiModelProperty(name = "uuid",value = "用户uuid",example = "2c9a85895d82ebe7015d8d4c6cc11df6")
     private String uuid;
-    @ApiModelProperty(name = "token",value = "用户的access_token",example = "EyMivbd44I124lcddrBG")
+    @ApiModelProperty(name = "token",value = "用户的access_token",example = "EyMivbd44I124lcddrBG",hidden = true)
     private String token;
     @ApiModelProperty(name = "status",value = "优惠券状态",example = "all")
     private String status;

@@ -1,12 +1,19 @@
 package com.sftc.web.model.vo.displayVO;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * 快递详情添加包裹信息
  *
  */
+@ApiModel(value = "快递包裹信息包装类")
 public class PackageMessageVO extends Object {
+    @ApiModelProperty(name = "name",value = "名称")
     private String name;
+    @ApiModelProperty(name = "weight",value = "重量")
     private String weight;
+    @ApiModelProperty(name = "type",value = "类型")
     private String type;
 
     public String getName() {return name;}

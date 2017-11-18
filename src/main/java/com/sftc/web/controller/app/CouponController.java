@@ -4,9 +4,12 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.vo.swaggerRequestVO.CouPonPromoVO;
 import com.sftc.web.model.vo.swaggerRequestVO.CouponRequestVO;
+import com.sftc.web.model.vo.swaggerResponse.CouponsListVO;
 import com.sftc.web.service.CouponService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +26,12 @@ public class CouponController {
     @Resource
     private CouponService couponService;
 
-    @ApiOperation(value = "获取用户优惠券列表",httpMethod = "POST")
+    @ApiOperation(value = "获取用户优惠券列表",httpMethod = "POST",response = CouponsListVO.class)
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 401,message = "The query fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value="/list",method = RequestMethod.POST)
     public @ResponseBody
     APIResponse getUserCouponList(@RequestBody CouponRequestVO couponRequestVO) throws Exception {
@@ -33,6 +41,11 @@ public class CouponController {
     }
 
     @ApiOperation(value = "兑换优惠券",httpMethod = "POST")
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 402,message = "The submit fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value="/exchange",method = RequestMethod.POST)
     public @ResponseBody
     APIResponse exchangeCoupon(@RequestBody CouPonPromoVO couPonPromoVO) throws Exception {

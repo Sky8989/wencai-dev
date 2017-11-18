@@ -3,8 +3,12 @@ package com.sftc.web.controller.app;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.BaseController;
+import com.sftc.web.model.vo.displayVO.GiftCardListVO;
+import com.sftc.web.model.vo.swaggerResponse.GiftCardListRespVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,7 +21,12 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("giftCard")
 public class GiftCardController extends BaseController {
 
-    @ApiOperation(value = "获取礼品卡列表",httpMethod = "GET")
+    @ApiOperation(value = "获取礼品卡列表",httpMethod = "GET",response = GiftCardListRespVO.class)
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 401,message = "The query fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     APIResponse getGiftCardList(HttpServletRequest request) throws Exception {

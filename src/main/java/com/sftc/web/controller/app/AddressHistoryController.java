@@ -2,12 +2,11 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.vo.swaggerResponse.AddressHistoryListVO;
+import com.sftc.web.model.vo.swaggerResponse.ResponseMessageVO;
 import com.sftc.web.model.vo.swaggerRequestVO.AddressHistoryDeleteVO;
 import com.sftc.web.service.AddressHistoryService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,10 +24,15 @@ public class AddressHistoryController {
     @Resource
     private AddressHistoryService addressHistoryService;
 
-    @ApiOperation(value = "查询历史地址",httpMethod = "GET")
+    @ApiOperation(value = "查询历史地址",httpMethod = "GET",response = AddressHistoryListVO.class,produces = "application/json")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "页码",paramType = "query",defaultValue = "1"),
             @ApiImplicitParam(name = "pageSize",value = "每页数量",paramType = "query",defaultValue = "10"),
+    })
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 401,message = "The query fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
     })
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
@@ -36,7 +40,13 @@ public class AddressHistoryController {
         return addressHistoryService.selectAddressHistory(new APIRequest(request));
     }
 
-    @ApiOperation(value = "删除历史地址",httpMethod = "DELETE",notes = "删除的是地址簿中类型为address_history的地址簿 软删除")
+    @ApiOperation(value = "删除历史地址",httpMethod = "DELETE",notes = "删除的是地址簿中类型为address_history的地址簿 软删除",response = ResponseMessageVO.class)
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 401,message = "The query fails"),
+            @ApiResponse(code = 402,message = "The submit fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(method = RequestMethod.DELETE)
     public @ResponseBody
     APIResponse deleteAddress(@RequestBody AddressHistoryDeleteVO addressHistoryDeleteVO) throws Exception {

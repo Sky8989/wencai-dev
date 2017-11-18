@@ -2,6 +2,8 @@ package com.sftc.web.model.entity;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.web.model.others.Object;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,90 +12,119 @@ import javax.servlet.http.HttpServletRequest;
 
 @Entity
 @Table(name = "sftc_order_express")
+@ApiModel(value = "快递实体信息包装类")
 public class OrderExpress extends Object {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter @Getter
+    @ApiModelProperty(name = "id",value = "收件人头像",dataType = "int")
     private int id;
 
     @Setter @Getter
+    @ApiModelProperty(name = "create_time",value = "创建时间")
     private String create_time; // 创建时间
 
     @Setter @Getter
+    @ApiModelProperty(name = "order_number",value = "订单编号")
     private String order_number;// 订单编号
 
     @Setter @Getter
+    @ApiModelProperty(name = "ship_name",value = "收件人姓名")
     private String ship_name;// 收件人姓名
 
     @Setter @Getter
+    @ApiModelProperty(name = "ship_mobile",value = "收件人手机")
     private String ship_mobile; // 收件人手机
 
     @Setter @Getter
+    @ApiModelProperty(name = "ship_province",value = "收件人省")
     private String ship_province;// 收件人省
 
     @Setter @Getter
+    @ApiModelProperty(name = "ship_city",value = "收件人市")
     private String ship_city; // 收件人市
 
     @Setter @Getter
+    @ApiModelProperty(name = "ship_area",value = "收件人区")
     private String ship_area;// 收件人区
 
     @Setter @Getter
+    @ApiModelProperty(name = "ship_addr",value = "收件人详细地址")
     private String ship_addr;// 收件人详细地址
 
     @Setter @Getter
+    @ApiModelProperty(name = "supplementary_info",value = "门牌号")
     private String supplementary_info;// 门牌号
 
     @Setter @Getter
+    @ApiModelProperty(name = "directed_code",value = "取件码")
     private String directed_code;//取件码
 
+    @ApiModelProperty(name = "is_directed",value = "是否面对面下单",dataType = "int")
     private int is_directed;// 是否面对面下单
 
     @Setter @Getter
+    @ApiModelProperty(name = "attributes",value = "状态信息")
     private String attributes;
 
     @Setter @Getter
+    @ApiModelProperty(name = "weight",value = "包裹重量")
     private String weight;
 
     @Setter @Getter
+    @ApiModelProperty(name = "package_type",value = "包裹类型")
     private String package_type;// 包裹类型
 
     @Setter @Getter
+    @ApiModelProperty(name = "object_type",value = "物品类型")
     private String object_type;// 物品类型
 
     @Setter @Getter
+    @ApiModelProperty(name = "package_comments",value = "包裹补充描述信息")
     private String package_comments;// 包裹补充描述信息
 
     @Setter @Getter
+    @ApiModelProperty(name = "state",value = "订单状态")
     private String state;// 订单状态
 
     @Setter @Getter
+    @ApiModelProperty(name = "is_use",value = "是否已经填写",dataType = "int")
     private int is_use;// 是否已经填写
 
     @Setter @Getter
+    @ApiModelProperty(name = "sender_user_id",value = "寄件人id",dataType = "int")
     private int sender_user_id;
 
     @Setter @Getter
+    @ApiModelProperty(name = "reserve_time",value = "预约时间")
     private String reserve_time; //预约时间
 
     @Setter @Getter
+    @ApiModelProperty(name = "receive_time",value = "包裹获取时间")
     private String receive_time;//包裹获取时间，指好友填写地址时的时间
 
     @Setter @Getter
+    @ApiModelProperty(name = "order_time",value = "下单到顺丰的时间")
     private String order_time;// 下单到顺丰的时间 用于记录下单成功时的时间
 
     @Setter @Getter
+    @ApiModelProperty(name = "ship_user_id",value = "收件人id",dataType = "int")
     private int ship_user_id;// 收件人id(根据用户表id)
 
     @Setter @Getter
+    @ApiModelProperty(name = "latitude",value = "纬度",dataType = "double")
     private Double latitude;
 
     @Setter @Getter
+    @ApiModelProperty(name = "longitude",value = "经度",dataType = "double")
     private Double longitude;
 
     @Setter @Getter
+    @ApiModelProperty(name = "order_id",value = "订单编号")
     private String order_id;
 
     @Setter @Getter
+    @ApiModelProperty(name = "uuid",value = "快递uuid")
     private String uuid;
 
     public OrderExpress() {
