@@ -8,6 +8,10 @@ import com.sftc.web.model.vo.swaggerRequestVO.GetTokenRequestVO;
 import com.sftc.web.model.vo.swaggerRequestVO.RegisterRequestVO;
 import com.sftc.web.model.vo.swaggerRequestVO.SFLoginRequestVO;
 import com.sftc.web.model.vo.swaggerRequestVO.SMSMessageRequestVO;
+import com.sftc.web.model.vo.swaggerResponse.LoginMerchantVO;
+import com.sftc.web.model.vo.swaggerResponse.LoginRespVO;
+import com.sftc.web.model.vo.swaggerResponse.RegisterRespVO;
+import com.sftc.web.model.vo.swaggerResponse.SMSMessageRespVO;
 import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +26,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class MessageController extends BaseController {
 
     @IgnoreToken
-    @ApiOperation(value = "获取验证码【调顺丰】", httpMethod = "POST")
+    @ApiOperation(value = "获取验证码【调顺丰】", httpMethod = "POST",response = SMSMessageRespVO.class)
     @ApiResponses({
             @ApiResponse(code = 400,message = "Parameters of the abnormal"),
             @ApiResponse(code = 500,message = "System exceptions")
@@ -36,7 +40,7 @@ public class MessageController extends BaseController {
     }
 
     @IgnoreToken
-    @ApiOperation(value = "注册接口【调顺丰】", httpMethod = "POST")
+    @ApiOperation(value = "注册接口【调顺丰】", httpMethod = "POST",response = RegisterRespVO.class)
     @ApiResponses({
             @ApiResponse(code = 400,message = "Parameters of the abnormal"),
             @ApiResponse(code = 500,message = "System exceptions")
@@ -64,7 +68,7 @@ public class MessageController extends BaseController {
     }
 
     @IgnoreToken
-    @ApiOperation(value = "sf登录【调顺丰】", httpMethod = "POST")
+    @ApiOperation(value = "sf登录【调顺丰】", httpMethod = "POST",response = LoginRespVO.class)
     @ApiResponses({
             @ApiResponse(code = 400,message = "Parameters of the abnormal"),
             @ApiResponse(code = 500,message = "System exceptions")

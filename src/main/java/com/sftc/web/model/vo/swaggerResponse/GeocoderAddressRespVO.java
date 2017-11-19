@@ -15,7 +15,7 @@ import lombok.Setter;
 public class GeocoderAddressRespVO extends APIResponse{
 
     @Getter @Setter
-    @ApiModelProperty(name = "CoordinateVO",value = "经纬度")
+    @ApiModelProperty(name = "Coordinate",value = "经纬度")
     private CoordinateVO result;
 
     @Getter @Setter

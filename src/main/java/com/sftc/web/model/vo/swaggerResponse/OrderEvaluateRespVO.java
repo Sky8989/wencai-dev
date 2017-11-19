@@ -17,7 +17,7 @@ import java.util.List;
 public class OrderEvaluateRespVO extends APIResponse{
 
     @Getter @Setter
-    @ApiModelProperty(name = "addressBookDTOList",value = "历史地址列表")
+    @ApiModelProperty(name = "EvaluateAttributes",value = "订单评价列表")
     private List<EvaluateAttributes> result;
 
     @Getter @Setter

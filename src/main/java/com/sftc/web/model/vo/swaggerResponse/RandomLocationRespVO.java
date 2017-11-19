@@ -16,7 +16,7 @@ import java.util.List;
 public class RandomLocationRespVO extends APIResponse{
 
     @Getter @Setter
-    @ApiModelProperty(name = "CoordinateVO",value = "经纬度")
+    @ApiModelProperty(name = "Coordinate",value = "经纬度")
     private List<CoordinateVO> result;
 
     @Getter @Setter
