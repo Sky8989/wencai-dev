@@ -4,15 +4,17 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
+import com.sftc.web.model.vo.displayVO.MyOrderListVO;
 import com.sftc.web.model.vo.swaggerOrderVO.MyOrderParamVO;
 import com.sftc.web.model.vo.swaggerOrderVO.OrderParamVO;
 import com.sftc.web.model.vo.swaggerOrderVO.*;
+import com.sftc.web.model.vo.swaggerResponse.EvaluateMessageRespVO;
+import com.sftc.web.model.vo.swaggerResponse.OrderDetailRespVO;
+import com.sftc.web.model.vo.swaggerResponse.OrderEvaluateRespVO;
+import com.sftc.web.model.vo.swaggerResponse.ResponseMessageVO;
 import com.sftc.web.service.EvaluateService;
 import com.sftc.web.service.OrderService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +37,11 @@ public class OrderController extends BaseController {
     private EvaluateService evaluateService;
 
     @ApiOperation(value = "普通同城订单提交", httpMethod = "POST", notes = "request为同城订单需要的参数")
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 402,message = "The submit fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/normal/same", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse placeOrder(@RequestBody OrderRequestVO orderRequestVO) throws Exception {
@@ -55,6 +62,10 @@ public class OrderController extends BaseController {
 
     @IgnoreToken
     @ApiOperation(value = "计价接口", httpMethod = "POST", notes = "access_token 和 uuid 要么都有，要么都没有")
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/valuation", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse countPrice(@RequestBody PriceRequestVO priceRequestVO) throws Exception {
@@ -85,6 +96,10 @@ public class OrderController extends BaseController {
     }
 
     @ApiOperation(value = "支付订单", httpMethod = "POST")
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/pay", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse payOrder(@RequestBody OrderPayVO orderPayVO) throws Exception {
@@ -93,8 +108,13 @@ public class OrderController extends BaseController {
         return orderService.payOrder(request);
     }
 
-    @ApiOperation(value = "订单详情", httpMethod = "GET")
+    @ApiOperation(value = "订单详情", httpMethod = "GET",response = OrderDetailRespVO.class)
     @ApiImplicitParam(name = "order_id", value = "订单id", defaultValue = "C1508130348092UT", paramType = "query", required = true)
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 401,message = "The query fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     APIResponse detail(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -102,7 +122,12 @@ public class OrderController extends BaseController {
         return orderService.selectOrderDetail(new APIRequest(request));
     }
 
-    @ApiOperation(value = "我的订单列表", httpMethod = "POST",notes = "测试接口若出现错误，删除key_words、key_state再试试")
+    @ApiOperation(value = "我的订单列表", httpMethod = "POST",notes = "测试接口若出现错误，删除key_words、key_state再试试",response = MyOrderListVO.class)
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 401,message = "The query fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/my", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse myOrder(@RequestBody MyOrderParamVO myOrderParamVO) throws Exception {
@@ -130,6 +155,11 @@ public class OrderController extends BaseController {
             @ApiImplicitParam(name = "access_token", value = "顺丰token", defaultValue = "EyMivbd44I124lcddrBG", paramType = "query", required = true),
             @ApiImplicitParam(name = "sort", value = "排序方式", defaultValue = "asc", paramType = "query")
     })
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 401,message = "The query fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/express/detail", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse expressDetail(HttpServletRequest request) throws Exception {
@@ -139,6 +169,11 @@ public class OrderController extends BaseController {
     @IgnoreToken
     @ApiOperation(value = "B+C端同城专送快递详情", httpMethod = "GET",notes = "纯走B端的快递详情")
     @ApiImplicitParam(name = "uuid",value = "uuid",defaultValue = "2c9a85895f721c3e015f782b519d23db",paramType = "query",required = true)
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 401,message = "The query fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/express/query", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse sameExpressDetail(HttpServletRequest request) throws Exception {
@@ -151,6 +186,12 @@ public class OrderController extends BaseController {
             "当然也可以只调用用一次，支付完成后直接将状态改为 WAIT_HAND_OVER。\n" +
             "更改状态成功后会返回订单详情。")
     @RequestMapping(value = "/status", method = RequestMethod.PUT)
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 401,message = "The query fails"),
+            @ApiResponse(code = 402,message = "The submit fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     public @ResponseBody
     APIResponse updateOrderStatus(@RequestBody OrderStatusVO rderStatusVO) throws Exception {
         APIRequest request = new APIRequest();
@@ -158,7 +199,13 @@ public class OrderController extends BaseController {
         return orderService.updateOrderStatus(request);
     }
 
-    @ApiOperation(value = "更改快递状态", httpMethod = "PUT")
+    @ApiOperation(value = "更改快递状态", httpMethod = "PUT",response = OrderDetailRespVO.class)
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 401,message = "The query fails"),
+            @ApiResponse(code = 402,message = "The submit fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/express/status", method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse updateOrderExpressStatus(@RequestBody OrderExpressStatusVO orderExpressStatusVO) throws Exception {
@@ -167,7 +214,12 @@ public class OrderController extends BaseController {
         return orderService.updateOrderExpressStatus(request);
     }
 
-    @ApiOperation(value = "评价小哥 评价顺丰订单", httpMethod = "POST",notes = "这里是对某一个包裹进行单独评价")
+    @ApiOperation(value = "评价小哥 评价顺丰订单", httpMethod = "POST",notes = "这里是对某一个包裹进行单独评价",response = OrderEvaluateRespVO.class)
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 402,message = "The submit fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/evaluate", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse evaluate(@RequestBody EvaluateRequestVO evaluateRequestVO) throws Exception {
@@ -176,7 +228,13 @@ public class OrderController extends BaseController {
         return orderService.evaluateSingle(request);
     }
 
-    @ApiOperation(value = "取消订单", httpMethod = "POST")
+    @ApiOperation(value = "取消订单", httpMethod = "POST",response = ResponseMessageVO.class)
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 401,message = "The query fails"),
+            @ApiResponse(code = 402,message = "The submit fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/cancel", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse cancelOrder(@RequestBody OrderCancelVO orderCancelVO) throws Exception {
@@ -186,6 +244,10 @@ public class OrderController extends BaseController {
     }
 
     @ApiOperation(value = "获取订单基础数据", httpMethod = "POST")
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/constants", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse constants(@RequestBody OrderContantsVO orderContantsVO) throws Exception {
@@ -194,8 +256,13 @@ public class OrderController extends BaseController {
         return orderService.timeConstants(request);
     }
 
-    @ApiOperation(value = "获取订单评价信息", httpMethod = "GET")
+    @ApiOperation(value = "获取订单评价信息", httpMethod = "GET",response = EvaluateMessageRespVO.class)
     @ApiImplicitParam(name = "uuid", value = "快递uuid", defaultValue = "2c9a85895d8f0962015d90246c8c0a4f", paramType = "query", required = true)
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 401,message = "The query fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/evaluate", method = RequestMethod.GET)
     public @ResponseBody
     APIResponse getEvaluate(HttpServletRequest httpServletRequest) throws Exception {
@@ -213,6 +280,10 @@ public class OrderController extends BaseController {
     }
 
     @ApiOperation(value = "订单分享图片", httpMethod = "POST")
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/share/screenShot", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse shareOrderImage(@RequestBody OrderPictureVO orderPictureVO) throws Exception {

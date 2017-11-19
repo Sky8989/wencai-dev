@@ -36,6 +36,12 @@ public class NotificationMessageController extends BaseController {
     }
 
     @ApiOperation(value = "更新通知消息读取状态",httpMethod = "PUT",response = ResponseMessageVO.class)
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 401,message = "The query fails"),
+            @ApiResponse(code = 402,message = "The submit fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(method = RequestMethod.PUT)
     public @ResponseBody()
     APIResponse updateIsRead(@RequestBody UpdateIsReadVO updateIsReadVO) throws Exception {

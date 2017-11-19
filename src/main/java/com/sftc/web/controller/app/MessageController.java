@@ -8,9 +8,7 @@ import com.sftc.web.model.vo.swaggerRequestVO.GetTokenRequestVO;
 import com.sftc.web.model.vo.swaggerRequestVO.RegisterRequestVO;
 import com.sftc.web.model.vo.swaggerRequestVO.SFLoginRequestVO;
 import com.sftc.web.model.vo.swaggerRequestVO.SMSMessageRequestVO;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +23,10 @@ public class MessageController extends BaseController {
 
     @IgnoreToken
     @ApiOperation(value = "获取验证码【调顺丰】", httpMethod = "POST")
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/message", method = RequestMethod.POST)
     @ResponseBody
     public APIResponse message(@RequestBody SMSMessageRequestVO smsMessageRequestVO) throws Exception {
@@ -35,6 +37,10 @@ public class MessageController extends BaseController {
 
     @IgnoreToken
     @ApiOperation(value = "注册接口【调顺丰】", httpMethod = "POST")
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
     public APIResponse register(@RequestBody RegisterRequestVO registerRequestVO) throws Exception {
@@ -45,6 +51,10 @@ public class MessageController extends BaseController {
 
     @IgnoreToken
     @ApiOperation(value = "获取token【调顺丰】", httpMethod = "POST")
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/token", method = RequestMethod.POST)
     @ResponseBody
     public APIResponse getToken(@RequestBody GetTokenRequestVO getTokenRequestVO) throws Exception {
@@ -55,6 +65,10 @@ public class MessageController extends BaseController {
 
     @IgnoreToken
     @ApiOperation(value = "sf登录【调顺丰】", httpMethod = "POST")
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
     public APIResponse login(@RequestBody SFLoginRequestVO sfLoginRequestVO) throws Exception {
