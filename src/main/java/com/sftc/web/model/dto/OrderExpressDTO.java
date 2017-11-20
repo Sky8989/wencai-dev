@@ -32,9 +32,11 @@ public class OrderExpressDTO extends OrderExpress {
 
     @Getter
     @Setter
+    @ApiModelProperty(name = "evaluate",value = "评价信息",hidden = true)
     private Evaluate evaluate;  // 评价信息
 
     @Getter
     @Setter
+    @ApiModelProperty(name = "orderExpressList",value = "快递数组",hidden = true)
     private List<OrderExpress> orderExpressList;   //快递数组
 }

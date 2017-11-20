@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by xf on 2017/11/17.
  */
-@ApiModel(value = "订单信息响应对象")
+@ApiModel(value = "订单评价响应对象")
 public class EvaluateMessageRespVO extends APIResponse{
 
     @Getter @Setter

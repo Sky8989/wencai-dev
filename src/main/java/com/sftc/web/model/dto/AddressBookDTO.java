@@ -21,7 +21,7 @@ public class AddressBookDTO extends AddressBook {
 
     @Getter
     @Setter
-    @ApiModelProperty(name = "addressDTO",value = "地址扩展类")
+    @ApiModelProperty(name = "addressDTO",value = "地址扩展类",hidden = true)
     private AddressDTO addressDTO;
 
     @Getter
