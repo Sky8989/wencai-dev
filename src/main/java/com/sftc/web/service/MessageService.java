@@ -17,6 +17,8 @@ public interface MessageService {
 
     APIResponse sfLogin(APIRequest apiRequest);
 
+    APIResponse messageCheck(APIRequest apiRequest);
+
     /**
      * 发送微信模板消息的方法 下单成功后
      *
