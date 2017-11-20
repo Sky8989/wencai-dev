@@ -27,7 +27,8 @@
     </select>
 
     <!-- 根据order_id-->
-    <select id="findAllOrderExpressByOrderId" resultType="com.sftc.web.model.entity.OrderExpress" parameterType="java.lang.String">
+    <select id="findAllOrderExpressByOrderId" resultType="com.sftc.web.model.entity.OrderExpress"
+            parameterType="java.lang.String">
         SELECT *
         FROM sftc_order_express
         WHERE order_id = #{order_id}
@@ -39,7 +40,7 @@
         INSERT INTO sftc_order_express
         (ship_name, ship_mobile, ship_province, ship_city, ship_area,
          ship_addr, supplementary_info, order_number, package_type, object_type, package_comments, create_time,
-         sender_user_id, order_id, state, uuid, longitude, latitude, reserve_time, order_time,weight)
+         sender_user_id, order_id, route_state, uuid, longitude, latitude, reserve_time, order_time, weight)
         VALUES (
             #{ship_name, jdbcType=VARCHAR},
             #{ship_mobile, jdbcType=VARCHAR},
@@ -70,7 +71,8 @@
         INSERT INTO sftc_order_express
         (ship_name, ship_mobile, ship_province, ship_city, ship_area,
          ship_addr, supplementary_info, order_number, package_type, object_type, package_comments, create_time,
-         sender_user_id, order_id, state, uuid, longitude, latitude, reserve_time, order_time,directed_code,attributes,is_directed,weight)
+         sender_user_id, order_id, route_state, uuid, longitude, latitude, reserve_time, order_time, directed_code,
+         attributes, is_directed, weight, pay_state)
         VALUES (
             #{ship_name, jdbcType=VARCHAR},
             #{ship_mobile, jdbcType=VARCHAR},
@@ -86,7 +88,7 @@
             #{create_time, jdbcType=VARCHAR},
             #{sender_user_id, jdbcType=INTEGER},
             #{order_id, jdbcType=INTEGER},
-            #{state, jdbcType=VARCHAR},
+            #{route_state, jdbcType=VARCHAR},
             #{uuid, jdbcType=VARCHAR},
             #{longitude, jdbcType=DOUBLE},
             #{latitude, jdbcType=DOUBLE},
@@ -95,7 +97,8 @@
             #{directed_code, jdbcType=VARCHAR},
             #{attributes, jdbcType=VARCHAR},
             #{is_directed, jdbcType=VARCHAR},
-            #{weight, jdbcType=VARCHAR}
+            #{weight, jdbcType=VARCHAR},
+            #{pay_state,jdbcType=VARCHAR}
         )
     </insert>
 
@@ -110,7 +113,7 @@
             ship_area          = #{ship_area, jdbcType=VARCHAR},
             ship_addr          = #{ship_addr, jdbcType=VARCHAR},
             supplementary_info = #{supplementary_info, jdbcType=VARCHAR},
-            state              = #{state, jdbcType=VARCHAR},
+            route_state        = #{route_state, jdbcType=VARCHAR},
             longitude          = #{longitude, jdbcType=DOUBLE},
             latitude           = #{latitude, jdbcType=DOUBLE},
             is_use             = 1,
@@ -121,20 +124,21 @@
 
     <update id="updateOrderExpressStatus">
         UPDATE sftc_order_express
-        SET state = #{status, jdbcType=VARCHAR}
+        SET route_state = #{status, jdbcType=VARCHAR},
+            pay_state   = #{pay_state,jdbcType=VARCHAR}
         WHERE id = #{express_id}
     </update>
 
     <update id="updateOrderExpressStatusByUUID">
         UPDATE sftc_order_express
-        SET state = #{status, jdbcType=VARCHAR}
+        SET route_state = #{status, jdbcType=VARCHAR}
         WHERE uuid = #{uuid}
     </update>
 
     <update id="updateExpressDirectedByUUID">
         UPDATE sftc_order_express
         set
-        <if test="status != null">state = #{status},</if>
+        <if test="status != null">route_state = #{status},</if>
         <if test="directed_code != null">directed_code = #{directed_code},</if>
         <if test="is_directed != null">is_directed = #{is_directed}</if>
         WHERE uuid = #{uuid}
@@ -144,26 +148,27 @@
         UPDATE sftc_order_express
         set
         <if test="attributes != null">attributes = #{attributes},</if>
-        state = #{status}
+        route_state = #{status},
+        pay_state = #{pay_state}
         WHERE uuid = #{uuid}
     </update>
 
     <update id="updateOrderExpressCanceled" parameterType="java.lang.String">
         UPDATE sftc_order_express
-        SET state = 'CANCELED'
+        SET route_state = 'CANCELED'
         WHERE order_id = #{order_id}
     </update>
 
     <update id="updateOrderExpressOvertime" parameterType="java.lang.String">
         UPDATE sftc_order_express
-        SET state = 'OVERTIME'
+        SET route_state = 'OVERTIME'
         WHERE order_id = #{order_id}
     </update>
 
     <update id="updateOrderExpressForSF" parameterType="com.sftc.web.model.entity.OrderExpress">
         update sftc_order_express
         set
-        state=#{state, jdbcType=VARCHAR}
+        route_state=#{state, jdbcType=VARCHAR}
         <if test="attributes != null and attributes != ''">,attributes=#{attributes, jdbcType=VARCHAR}</if>
         WHERE uuid=#{uuid}
     </update>
@@ -173,7 +178,7 @@
         set
         <if test="uuid != null">uuid=#{uuid, jdbcType=VARCHAR},</if>
         <if test="reserve_time != null">reserve_time=#{reserve_time, jdbcType=VARCHAR},</if>
-        state='WAIT_HAND_OVER'
+        route_state='WAIT_HAND_OVER'
         WHERE id=#{id}
     </update>
 
@@ -182,7 +187,7 @@
         set
         <if test="uuid != null">uuid=#{uuid, jdbcType=VARCHAR},</if>
         <if test="order_number != null">order_number=#{order_number, jdbcType=VARCHAR},</if>
-        state='WAIT_HAND_OVER'
+        route_state='WAIT_HAND_OVER'
         WHERE id=#{id}
     </update>
 

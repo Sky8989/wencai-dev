@@ -25,7 +25,7 @@ public interface OrderExpressMapper {
     /**
      * 根据id更改快递状态
      */
-    void updateOrderExpressStatus(@Param("express_id") int express_id, @Param("status") String status);
+    void updateOrderExpressStatus(@Param("express_id") int express_id, @Param("status") String status,@Param("pay_state") String pay_state);
 
     /**
      * 根据uuid更改订单状态
@@ -37,7 +37,8 @@ public interface OrderExpressMapper {
                                      @Param("directed_code") String directed_code, @Param("is_directed") int is_directed);
 
     //根据 uuid 更改订单的 Attributes 和状态
-    void updateAttributesAndStatusByUUID(@Param("uuid") String uuid,@Param("attributes") String attributes,@Param("status") String status);
+    void updateAttributesAndStatusByUUID(@Param("uuid") String uuid,@Param("attributes") String attributes,
+                                         @Param("status") String status,@Param("pay_state") String pay_state);
 
     // 更改 快递状态 为 取消 CANCELED
 //    void updateOrderExpressCanceled(String order_id);

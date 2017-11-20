@@ -25,7 +25,8 @@
         <result column="ship_user_id" property="ship_user_id"/>
         <result column="create_time" property="create_time"/>
         <result column="order_id" property="order_id"/>
-        <result column="state" property="state"/>
+        <result column="route_state" property="route_state"/>
+        <result column="pay_state" property="pay_state"/>
         <result column="gift_card_id" property="gift_card_id"/>
         <result column="package_type" property="package_type"/>
         <result column="object_type" property="object_type"/>

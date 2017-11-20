@@ -89,7 +89,8 @@ public class OrderCancelLogic {
             // 同城 超时未填写或者支付超时 都更新为超时OVERTIME
             List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
             for (OrderExpress orderExpress1 : orderExpress) {
-                orderExpress1.setState("OVERTIME");
+                orderExpress1.setRoute_state("OVERTIME");
+                orderExpress1.setPay_state("WAIT_PAY");
                 orderExpressDao.save(orderExpress1);
             }
             addCancelRecord(order_id, "超时软取消", "同城");
@@ -107,7 +108,7 @@ public class OrderCancelLogic {
             orderMapper.updateCancelOrderById(order_id); //事务问题,先存在查的改为统一使用Mybatis
             List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
             for (OrderExpress orderExpress1 : orderExpress) {
-                orderExpress1.setState(status);
+                orderExpress1.setRoute_state(status);
                 orderExpressDao.save(orderExpress1);
             }
             return APIUtil.getResponse(APIStatus.SUCCESS, "订单取消成功");
@@ -157,7 +158,8 @@ public class OrderCancelLogic {
         orderMapper.updateCancelOrderById(order_id); //事务问题,先存在查的改为统一使用Mybatis
         List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
         for (OrderExpress orderExpress1 : orderExpress) {
-            orderExpress1.setState("CANCELED");
+            orderExpress1.setRoute_state("CANCELED");
+            orderExpress1.setPay_state("WAIT_PAY");
             orderExpressDao.save(orderExpress1);
         }
 

@@ -112,7 +112,7 @@ public class OrderListLogic {
             for (OrderExpress oe : orderDTO.getOrderExpressList()) {
                 MyOrderListVO.OrderCallbackExpress express = new MyOrderListVO().new OrderCallbackExpress();
                 express.setUuid(oe.getUuid());
-                express.setState(oe.getState());
+                express.setRoute_state(oe.getRoute_state());
                 express.setShip_name(oe.getShip_name());
                 express.setShip_addr(oe.getShip_addr());
                 express.setOrder_number(oe.getOrder_number());
@@ -198,7 +198,8 @@ public class OrderListLogic {
                 express.setId(oe.getId());
                 express.setShip_user_id(oe.getShip_user_id());
                 express.setUuid(oe.getUuid());
-                express.setState(oe.getState());
+                express.setRoute_state(oe.getRoute_state());
+                express.setPay_state(oe.getPay_state());
                 express.setShip_name(oe.getShip_name());
                 express.setWeight(oe.getWeight());  //增加包裹类型的三个字段
                 express.setObject_type(oe.getObject_type());
@@ -295,12 +296,20 @@ public class OrderListLogic {
             Order order = orderMapper.selectOrderDetailByUuid(orderSynVO.getUuid());
             if (order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) {
                 String status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
-                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(orderSynVO.getUuid());
-                orderExpress.setState(status);
-                if (orderSynVO.getAttributes() != null) {
-                    orderExpress.setAttributes(orderSynVO.getAttributes());
+                String pay_state = "WAIT_PAY";
+                if (orderSynVO.getStatus().equals("WAIT_REFUND")) { //待退款、已退款路由状态合并为已取消
+                    status = "CANCELED";
+                    pay_state = "WAIT_REFUND";
                 }
-                orderExpressDao.save(orderExpress);
+                if (orderSynVO.getStatus().equals("REFUNDED")) { //待退款、已退款路由状态合并为已取消
+                    status = "CANCELED";
+                    pay_state = "REFUNDED";
+                }
+                if(!status.equals("CANCELED")) pay_state = orderSynVO.isPayed()?"ALREADY_PAY" : "WAIT_PAY";
+
+                //存在锁的问题，修改语句改为一条
+                String attributes = orderSynVO.getAttributes();
+                orderExpressMapper.updateAttributesAndStatusByUUID(uuid, attributes,status,pay_state);
             }
         }
 

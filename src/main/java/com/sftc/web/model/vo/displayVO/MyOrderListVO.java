@@ -47,7 +47,10 @@ public class MyOrderListVO {
         private String uuid;
 
         @Setter   @Getter
-        private String state;
+        private String route_state;
+
+        @Setter   @Getter
+        private String pay_state;
 
         @Setter   @Getter
         private String attributes;

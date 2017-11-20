@@ -37,7 +37,10 @@ public class FriendRecordVO {
     private String order_id;   // 订单编号
 
     @Setter @Getter
-    private String state;   // 快递状态
+    private String route_state;   // 快递状态
+
+    @Setter @Getter
+    private String pay_state;   // 支付状态
 
     @Setter @Getter
     private int gift_card_id;   // 礼物卡id
