@@ -19,4 +19,8 @@ public class UserValidateVO {
     @ApiModelProperty(name = "message",value = "验证码")
     private UserSMSContentVO message;
 
+    @Getter @Setter
+    @ApiModelProperty(name = "invite",value = "邀请信息")
+    private UserInviteVO invite;
+
 }

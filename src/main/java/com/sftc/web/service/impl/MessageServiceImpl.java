@@ -289,6 +289,18 @@ public class MessageServiceImpl implements MessageService {
                 }
             }
 
+            //获取用户注册需要保存的邀请相关参数
+            JSONObject jsonInvite = jsonObject.getJSONObject("invite");  //用户注册时 相关邀请信息
+            JSONObject attributeOBJ = jsonObject.getJSONObject("merchant").getJSONObject("attributes");
+
+            String invite_code = null;
+            if (jsonObject.getJSONObject("merchant").getJSONObject("attributes").containsKey("invite_code"))
+                invite_code = jsonObject.getJSONObject("merchant").getJSONObject("attributes").getString("invite_code");
+
+            this.logger.info("--- invite_code " + invite_code);
+            jsonObject.getJSONObject("merchant").remove("attributes");
+            jsonObject.remove("invite");
+
             // 生成sf获取token的链接
             StringBuilder postUrl = new StringBuilder(SF_GET_TOKEN);
 
@@ -309,21 +321,72 @@ public class MessageServiceImpl implements MessageService {
                 tokenMapper.updateToken(token);
                 return APIUtil.getResponse(SUCCESS, resJSONObject);
             } else {    //判断错误信息
-                JSONObject errorOBJ = resJSONObject.getJSONObject("error");
-                if (errorOBJ != null && errorOBJ.containsKey("error")) {
-                    JSONObject errMesgOBJ = errorOBJ.getJSONObject("error");
+                JSONObject errMesgOBJ = resJSONObject.getJSONObject("error");
                     if (errMesgOBJ != null && errMesgOBJ.containsKey("type")) {
                         // ERROR 验证码错误 | NOT_FOUND 用户不存在
                         String type = errMesgOBJ.getString("type");
                         if (type != null && !type.equals("") && type.equals("ERROR")) {
                             Map<String, String> errorMap = new HashMap<>();
-                            map.put("reason", "Verification code error");
+                            errorMap.put("reason", "Verification code error");
                             return APIUtil.submitErrorResponse("验证码错误", errorMap);
                         } else if (type != null && !type.equals("") && type.equals("NOT_FOUND")) {
+                            // 新用户注册流程
+                            jsonObject.getJSONObject("merchant").put("attributes",attributeOBJ);
 
+                            String registerUrl = gson.toJson(jsonObject);
+                            HttpPost registerPost = new HttpPost(SF_REGISTER_URL);
+                            String resp = APIPostUtil.post(registerUrl, registerPost);
+                            JSONObject registerResp = JSONObject.fromObject(resp);
+
+                            // 注册失败 匹配error
+                            if (registerResp.containsKey("error")) {
+                                return APIUtil.submitErrorResponse("注册失败", registerResp);
+                            } else {
+                                // 注册成功
+                                JSONObject merchantJSONObject = registerResp.getJSONObject("merchant");
+                                JSONObject tokenJSONObject = registerResp.getJSONObject("token");
+
+                                UserInvite invite = null;
+                                if (invite_code != null && !invite_code.equals("")) {
+                                    String city = jsonInvite.getString("city");
+                                    String channel = jsonInvite.getString("channel");
+                                    invite = new UserInvite();
+                                    invite.setUser_id(user_id);
+
+                                    if (city != null && !"".equals(city))
+                                        invite.setCity(city);
+
+                                    if (channel != null && !"".equals(channel))
+                                        invite.setInvite_channel(channel);
+                                    invite.setInvite_code(invite_code);
+                                    invite.setCreate_time(Long.toString(System.currentTimeMillis()));
+                                    invite = userInviteDao.save(invite);
+                                    this.logger.info("invite_id = " + invite.getId());
+                                }
+
+                                // 存储 token中的access_token 到token表
+                                Token token = new Token();
+                                token.setUser_id(user_id);
+                                token.setAccess_token(tokenJSONObject.getString("access_token"));
+                                token.setRefresh_token(tokenJSONObject.getString("refresh_token"));
+                                tokenMapper.updateToken(token);
+
+                                // 存储 merchant中的uuid 到user表
+                                User user = new User();
+                                user.setId(user_id);
+                                user.setMobile(merchantJSONObject.getString("mobile"));
+                                user.setUuid(merchantJSONObject.getString("uuid"));
+                                // 推荐注册
+                                if (invite != null) {
+                                    user.setInvite_id(invite.getId());
+                                }
+                                userMapper.updateUser(user);
+
+                                // 存储用户邀请的信息到user_invite表
+                                return APIUtil.getResponse(SUCCESS, registerResp);
+                            }
                         }
                     }
-                }
                 return APIUtil.submitErrorResponse("token获取失败", resJSONObject);
             }
         } else {

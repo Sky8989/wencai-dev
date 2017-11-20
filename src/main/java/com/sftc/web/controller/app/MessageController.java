@@ -17,7 +17,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @Controller
 @Api(description = "顺丰API，包括登录、注册、获取短信、获取token等")
-@RequestMapping("user")
+@RequestMapping("sf")
 public class MessageController extends BaseController {
 
     @IgnoreToken

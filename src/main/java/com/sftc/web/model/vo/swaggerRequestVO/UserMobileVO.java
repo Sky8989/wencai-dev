@@ -15,4 +15,8 @@ public class UserMobileVO {
     @ApiModelProperty(name = "mobile",value = "手机",example = "13544185508")
     private String mobile;
 
+    @Getter @Setter
+    @ApiModelProperty(name = "attributes")
+    private UserSMSAttributesVO attributes;
+
 }
