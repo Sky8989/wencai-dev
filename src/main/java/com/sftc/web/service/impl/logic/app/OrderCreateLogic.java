@@ -1,5 +1,17 @@
 package com.sftc.web.service.impl.logic.app;
 
+import static com.sftc.tools.api.APIStatus.SUCCESS;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
@@ -7,25 +19,23 @@ import com.sftc.tools.common.EmojiFilter;
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.jpa.OrderExpressDao;
-import com.sftc.web.dao.mybatis.*;
-import com.sftc.web.model.vo.swaggerOrderVO.FriendFillVO;
-import com.sftc.web.model.entity.Message;
+import com.sftc.web.dao.mybatis.MessageMapper;
+import com.sftc.web.dao.mybatis.OrderExpressMapper;
+import com.sftc.web.dao.mybatis.OrderMapper;
+import com.sftc.web.dao.mybatis.UserContactMapper;
+import com.sftc.web.enumeration.address.AddressBookType;
+import com.sftc.web.enumeration.address.AddressType;
+import com.sftc.web.enumeration.express.OrderExpressState;
+import com.sftc.web.enumeration.message.MessageType;
 import com.sftc.web.model.dto.OrderDTO;
+import com.sftc.web.model.entity.Message;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.entity.UserContactNew;
+import com.sftc.web.model.vo.swaggerOrderVO.FriendFillVO;
 import com.sftc.web.model.vo.swaggerOrderVO.OrderParamVO;
+
 import net.sf.json.JSONObject;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.LinkedList;
-import java.util.List;
-
-import static com.sftc.tools.api.APIStatus.SUCCESS;
 
 @Transactional
 @Component
@@ -55,11 +65,11 @@ public class OrderCreateLogic {
 
         // 增加对emoji的过滤
         if (orderParamVO.getPackage_type() != null && !"".equals(orderParamVO.getPackage_type())) {
-            boolean containsEmoji = EmojiFilter.containsEmoji(orderParamVO.getPackage_type());
+            boolean containsEmoji = EmojiFilter.containsEmoji(orderParamVO.getPackage_type().getValue());
             if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
         }
         if (orderParamVO.getObject_type() != null && !"".equals(orderParamVO.getObject_type())) {
-            boolean containsEmoji = EmojiFilter.containsEmoji(orderParamVO.getObject_type());
+            boolean containsEmoji = EmojiFilter.containsEmoji(orderParamVO.getObject_type().getValue());
             if (containsEmoji) return APIUtil.paramErrorResponse("Don't input emoji");
         }
         if (orderParamVO.getPackage_comments() != null && !"".equals(orderParamVO.getPackage_comments())) {
@@ -81,7 +91,7 @@ public class OrderCreateLogic {
             orderExpress.setObject_type(orderParamVO.getObject_type());
             orderExpress.setOrder_id(order.getId());
             orderExpress.setCreate_time(order.getCreate_time());
-            orderExpress.setState("WAIT_FILL");
+            orderExpress.setState(OrderExpressState.WAIT_FILL);
             orderExpress.setSender_user_id(orderParamVO.getSender_user_id());
             orderExpress.setReserve_time("");
             orderExpress.setOrder_id(order.getId());
@@ -114,7 +124,7 @@ public class OrderCreateLogic {
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
         if (orderDTO == null)
             return APIUtil.selectErrorResponse("订单不存在", null);
-        if (orderDTO.getRegion_type() != null && !"".equals(orderDTO.getRegion_type()) && orderDTO.getRegion_type().length() != 0) {
+        if (orderDTO.getRegion_type() != null && !"".equals(orderDTO.getRegion_type())) {
             return APIUtil.submitErrorResponse("订单已经下单，现在您无法再填写信息", orderExpress.getOrder_id());
         }
 
@@ -152,7 +162,7 @@ public class OrderCreateLogic {
             orderExpress1.setLatitude(orderExpress.getLatitude());
             orderExpress1.setLongitude(orderExpress.getLongitude());
             orderExpress1.setOrder_id(orderExpress.getOrder_id());
-            orderExpress1.setState("ALREADY_FILL");
+            orderExpress1.setState(OrderExpressState.ALREADY_FILL);
             orderExpress1.setId(realList.get(0).getId());
             orderExpress1.setReceive_time(Long.toString(System.currentTimeMillis()));
             orderExpressDao.save(orderExpress1);
@@ -160,7 +170,7 @@ public class OrderCreateLogic {
             // 添加RECEIVE_ADDRESS通知消息，此时应该是寄件人收到通知
             List<Message> messageList = messageMapper.selectMessageReceiveAddress(orderDTO.getSender_user_id());
             if (messageList.isEmpty() && messageList.size() == 0) {
-                Message message = new Message("RECEIVE_ADDRESS", 0, realList.get(0).getId(), orderDTO.getSender_user_id());
+                Message message = new Message(MessageType.RECEIVE_ADDRESS, 0, realList.get(0).getId(), orderDTO.getSender_user_id());
                 messageMapper.insertMessage(message);
             } else {
                 Message message = messageList.get(0);
@@ -173,7 +183,7 @@ public class OrderCreateLogic {
             // 消息通知表插入或者更新消息
             List<Message> messageListRE = messageMapper.selectMessageReceiveExpress(orderExpress1.getShip_user_id());
             if (messageListRE.isEmpty() && messageListRE.size() == 0) {
-                Message message = new Message("RECEIVE_EXPRESS", 0, realList.get(0).getId(), orderExpress1.getShip_user_id());
+                Message message = new Message(MessageType.RECEIVE_EXPRESS, 0, realList.get(0).getId(), orderExpress1.getShip_user_id());
                 messageMapper.insertMessage(message);
             } else {
                 Message message = messageListRE.get(0);
@@ -219,7 +229,7 @@ public class OrderCreateLogic {
             String current_create_time = Long.toString(System.currentTimeMillis());
             ///插入地址映射关系 1 地址簿 1 历史地址
             // 生成 收件人的寄件人地址簿
-            orderCommitLogic.insertAddressBookUtils("address_book", "sender",
+            orderCommitLogic.insertAddressBookUtils(AddressType.address_book, AddressBookType.sender,
                     orderExpress1.getShip_user_id(),//给收件人存
                     orderExpress1.getShip_user_id(),//给收件人存
                     orderExpress1.getShip_name(), orderExpress1.getShip_mobile(), orderExpress1.getShip_province(),
@@ -228,7 +238,7 @@ public class OrderCreateLogic {
             );
 
             //提交地址同时（去重处理）保存到[寄件人]最近联系人
-            orderCommitLogic.insertAddressBookUtils("address_history", "address_history",
+            orderCommitLogic.insertAddressBookUtils(AddressType.address_history,AddressBookType.ship,
                     orderDTO.getSender_user_id(),// 给寄件人存
                     orderExpress1.getShip_user_id(),// id是收件人的 查历史地址时才能取到
                     orderExpress1.getShip_name(), orderExpress1.getShip_mobile(), orderExpress1.getShip_province(),

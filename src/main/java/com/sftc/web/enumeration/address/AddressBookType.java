@@ -9,38 +9,30 @@ package com.sftc.web.enumeration.address;
  */
 public enum AddressBookType {
 	
-	sender("sender","寄件人地址簿"),
-	ship("ship","收件人地址簿");
+	sender(0,"sender"),	//寄件人地址簿
+	ship(1,"ship");		//收件人地址簿
    
+    private int key;
+    private String value;
     
-	private String name;
-	private String value;
-	
-	private AddressBookType(String name,String value) {
-		this.name = name;
+	private AddressBookType(int key, String value) {
+		this.key = key;
 		this.value = value;
-		
 	}
-
-	public String getName() {
-		return name;
+	public int getKey() {
+		return key;
 	}
-
-	public void setName(String name) {
-		this.name = name;
+	public void setKey(int key) {
+		this.key = key;
 	}
-
 	public String getValue() {
 		return value;
 	}
-
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
-	
-	
-	
+    
+    
 	
 	
 }

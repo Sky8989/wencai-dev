@@ -9,40 +9,27 @@ package com.sftc.web.enumeration.order;
 public enum OrderType {
 	
 	//order_type订单类型
-	ORDER_BASIS("ORDER_BASIS","普通订单"),
-	ORDER_MYSTERY("ORDER_MYSTERY","好友订单"),
-	//region_type区域类型
-	REGION_SAME("REGION_SAME","同城订单"),
-	REGION_NATION("REGION_SAME","大网订单");
-   
-    
-	private String key;
+	ORDER_BASIS(0,"ORDER_BASIS"),//普通订单
+	ORDER_MYSTERY(1,"ORDER_MYSTERY");//好友订单
+
+	private int key;
 	private String value;
 	
-	private OrderType(String key,String value) {
+	private OrderType(int key,String value) {
 		this.key = key;
 		this.value = value;
 	}
 
-	public String getKey() {
+	public int getKey() {
 		return key;
 	}
-
-	public void setKey(String key) {
+	public void setKey(int key) {
 		this.key = key;
 	}
-
 	public String getValue() {
 		return value;
 	}
-
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
-	
-	
-	
-	
-	
 }

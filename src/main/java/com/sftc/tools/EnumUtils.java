@@ -28,14 +28,34 @@ public class EnumUtils {
 	 * @throws ClassNotFoundException 
 	 * @throws NoSuchFieldException 
 	 */
-	public static <T> Object enumValueOf(String str,Class<T> clazz) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException, NoSuchFieldException{
+	public static <T> Object enumValueOf(String str,Class<T> clazz) {
 		String name = clazz.getName();
 		Object obj = clazz.getClass();
-		Method method = clazz.getMethod("valueOf", String.class);
-		Object obj1 =  method.invoke(obj, str);
-		Field field  = clazz.getField(str);
-		
-		return field.get(obj1);
+		Method method;
+		Object obj1 = null;
+		Field field;
+		try {
+			method = clazz.getMethod("valueOf", String.class);
+			 obj1 =  method.invoke(obj, str);
+			 field  = clazz.getField(str);
+			 return field.get(obj1);
+		} catch (NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	/**

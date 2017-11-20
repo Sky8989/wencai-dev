@@ -1,24 +1,33 @@
 package com.sftc.web.service.impl.logic.app;
 
 
-import com.sftc.tools.api.*;
+import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.http.client.methods.HttpPost;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.sftc.tools.EnumUtils;
+import com.sftc.tools.api.APIPostUtil;
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIStatus;
+import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.jpa.OrderCancelDao;
 import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
+import com.sftc.web.enumeration.express.OrderExpressState;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderCancel;
 import com.sftc.web.model.entity.OrderExpress;
+
 import net.sf.json.JSONObject;
-import org.apache.http.client.methods.HttpPost;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.List;
-
-import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
 
 @Component
 public class OrderCancelLogic {
@@ -89,7 +98,7 @@ public class OrderCancelLogic {
             // 同城 超时未填写或者支付超时 都更新为超时OVERTIME
             List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
             for (OrderExpress orderExpress1 : orderExpress) {
-                orderExpress1.setState("OVERTIME");
+                orderExpress1.setState(OrderExpressState.OVERTIME);
                 orderExpressDao.save(orderExpress1);
             }
             addCancelRecord(order_id, "超时软取消", "同城");
@@ -107,7 +116,7 @@ public class OrderCancelLogic {
             orderMapper.updateCancelOrderById(order_id); //事务问题,先存在查的改为统一使用Mybatis
             List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
             for (OrderExpress orderExpress1 : orderExpress) {
-                orderExpress1.setState(status);
+                orderExpress1.setState((OrderExpressState)EnumUtils.enumValueOf(status, OrderExpressState.class));
                 orderExpressDao.save(orderExpress1);
             }
             return APIUtil.getResponse(APIStatus.SUCCESS, "订单取消成功");
@@ -157,7 +166,7 @@ public class OrderCancelLogic {
         orderMapper.updateCancelOrderById(order_id); //事务问题,先存在查的改为统一使用Mybatis
         List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
         for (OrderExpress orderExpress1 : orderExpress) {
-            orderExpress1.setState("CANCELED");
+            orderExpress1.setState(OrderExpressState.CANCELED);
             orderExpressDao.save(orderExpress1);
         }
 

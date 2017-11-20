@@ -1,5 +1,13 @@
 package com.sftc.web.service.impl.logic.app;
 
+import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
+
+import javax.annotation.Resource;
+
+import org.apache.http.client.methods.HttpPost;
+import org.springframework.stereotype.Component;
+
 import com.google.gson.Gson;
 import com.sftc.tools.api.APIPostUtil;
 import com.sftc.tools.api.APIRequest;
@@ -13,17 +21,13 @@ import com.sftc.web.dao.jpa.OrderExpressTransformDao;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderExpressTransformMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
+import com.sftc.web.enumeration.express.OrderExpressState;
+import com.sftc.web.enumeration.order.RegionType;
 import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.entity.OrderExpressTransform;
+
 import net.sf.json.JSONObject;
-import org.apache.http.client.methods.HttpPost;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-
-import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
 
 @Component
 public class OrderTransformLogic {
@@ -124,15 +128,14 @@ public class OrderTransformLogic {
 
                 // 更新order表
                 Order order1 = orderDao.findOne(order.getId());
-                order1.setRegion_type("REGION_NATION");
+                order1.setRegion_type(RegionType.REGION_NATION);
                 orderDao.save(order1);         // 更改订单区域类型为大网
 
                 // 更新express表
-                oe.setState("WAIT_HAND_OVER");
+                oe.setState(OrderExpressState.WAIT_HAND_OVER);
                 oe.setUuid(orderid);
                 oe.setReserve_time("");
                 oe.setOrder_number(nation_uuid);
-                oe.setState("WAIT_HAND_OVER");
                 orderExpressDao.save(oe);                     // express order_number
             }
             return APIUtil.getResponse(SUCCESS, resultObject);

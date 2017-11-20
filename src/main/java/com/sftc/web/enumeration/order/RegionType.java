@@ -1,23 +1,20 @@
-package com.sftc.web.enumeration.express;
-
+package com.sftc.web.enumeration.order;
 
 /**
- * sftc_order_express 
- *  package_type包裹类型
+ * sftc_order
  * @author wencai
  *
  */
-public enum PackageType {
+public enum RegionType {
+
+	//region_type区域类型
+		REGION_SAME(0,"REGION_SAME"),//同城订单
+		REGION_NATION(1,"REGION_NATION");//大网订单
 	
-	SMALl_PACKAGE(0,"0"),//小包裹
-	CENTRN_PACKAGE(1,"1"),//中包裹
-	BIG_PACKAGE(2,"2"),//大包裹
-	HUGE_PACKAGE(3,"3");//超大包裹
-    
 	private int key;
 	private String value;
 	
-	private PackageType(int key,String value) {
+	private RegionType(int key,String value) {
 		this.key = key;
 		this.value = value;
 	}
@@ -25,15 +22,12 @@ public enum PackageType {
 	public int getKey() {
 		return key;
 	}
-
 	public void setKey(int key) {
 		this.key = key;
 	}
-
 	public String getValue() {
 		return value;
 	}
-
 	public void setValue(String value) {
 		this.value = value;
 	}

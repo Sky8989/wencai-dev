@@ -15,11 +15,18 @@
 
     <typeHandlers>
         <!--枚举-->
-     	<typeHandler handler="org.apache.ibatis.type.EnumTypeHandler" javaType="com.sftc.web.enumeration.address.AddressType"/>
-     	<typeHandler handler="org.apache.ibatis.type.EnumTypeHandler" javaType="com.sftc.web.enumeration.address.AddressBookType"/>
-     	<typeHandler handler="org.apache.ibatis.type.EnumTypeHandler" javaType="com.sftc.web.enumeration.order.PayMethod"/>
-     	<typeHandler handler="org.apache.ibatis.type.EnumTypeHandler" javaType="com.sftc.web.enumeration.order.OrderType"/>
+     	<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.sftc.web.enumeration.address.AddressType"/>
+     	<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.sftc.web.enumeration.address.AddressBookType"/>
+     	<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.sftc.web.enumeration.order.PayMethod"/>
+     	<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.sftc.web.enumeration.order.RegionType"/>
+     	<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.sftc.web.enumeration.order.OrderType"/>
+     	<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.sftc.web.enumeration.express.ObjectType"/>
+     	<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.sftc.web.enumeration.express.OrderExpressState"/>
+     	<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.sftc.web.enumeration.express.PackageType"/>
      	<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.sftc.web.enumeration.order.DistributionMethod"/>
+     	<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.sftc.web.enumeration.order.DistributionMethod"/>
+     	<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.sftc.web.enumeration.message.MessageType"/>
+     	<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.sftc.web.enumeration.card.GiftCardType"/>
      	
      	
      	

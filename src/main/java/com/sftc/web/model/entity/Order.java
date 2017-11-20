@@ -1,14 +1,23 @@
 package com.sftc.web.model.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.servlet.http.HttpServletRequest;
+
+import com.sftc.tools.EnumUtils;
 import com.sftc.tools.sf.SFOrderHelper;
+import com.sftc.web.enumeration.order.DistributionMethod;
+import com.sftc.web.enumeration.order.OrderType;
+import com.sftc.web.enumeration.order.PayMethod;
+import com.sftc.web.enumeration.order.RegionType;
 import com.sftc.web.model.others.Object;
 import com.sftc.web.model.vo.swaggerOrderVO.OrderParamVO;
+
+import antlr.StringUtils;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
-import javax.servlet.http.HttpServletRequest;
 
 @Entity
 @Table(name = "sftc_order")
@@ -25,10 +34,10 @@ public class Order extends Object {
     private String pay_time;// 支付时间
 
     @Setter @Getter
-    private String pay_method; // 付款方式
+    private PayMethod pay_method; // 付款方式
 
     @Setter @Getter
-    private String distribution_method;// 配送方式
+    private DistributionMethod distribution_method;// 配送方式
 
     @Setter @Getter
     private String sender_name;// 寄件人姓名
@@ -76,10 +85,10 @@ public class Order extends Object {
     private int voice_time;
 
     @Setter @Getter
-    private String order_type; // 订单类型 普通 神秘
+    private OrderType order_type; // 订单类型 普通 神秘
 
     @Setter @Getter
-    private String region_type;// 订单地域 同城 大网
+    private RegionType region_type;// 订单地域 同城 大网
 
     private int is_cancel;//新添加 is_cancel
 
@@ -92,10 +101,10 @@ public class Order extends Object {
         this.latitude = latitude;
     }
 
-    public Order(String create_time, String id,String pay_method,
-                 String distribution_method, String sender_name, String sender_mobile, String sender_province,
+    public Order(String create_time, String id,PayMethod pay_method,
+    		DistributionMethod distribution_method, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,String supplementary_info,
-                 double longitude, double latitude, String order_type, int sender_user_id) {
+                 double longitude, double latitude, OrderType order_type, int sender_user_id) {
         this.create_time = create_time;
         this.id = id;
         this.pay_method = pay_method;
@@ -112,10 +121,10 @@ public class Order extends Object {
         this.order_type = order_type;
         this.sender_user_id = sender_user_id;
     }
-    public Order(String create_time, String pay_method,
-                 String distribution_method, String sender_name, String sender_mobile, String sender_province,
+    public Order(String create_time, PayMethod pay_method,
+    		DistributionMethod distribution_method, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,
-                 double longitude, double latitude, String order_type, int sender_user_id) {
+                 double longitude, double latitude, OrderType order_type, int sender_user_id) {
         this.create_time = create_time;
         this.pay_method = pay_method;
         this.distribution_method = distribution_method;
@@ -160,16 +169,16 @@ public class Order extends Object {
      * 后期便于应用扩展工厂模式 将此参数抽出
      */
     public Order(HttpServletRequest request) {
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
+        if (org.apache.commons.lang3.StringUtils.isNotEmpty(request.getParameter("id")) ) {
             this.id = request.getParameter("id");
         }
-        if (request.getParameter("order_type") != null && !"".equals(request.getParameter("order_type"))) {
-            this.order_type = request.getParameter("order_type");
+        if (org.apache.commons.lang3.StringUtils.isNotEmpty(request.getParameter("order_type"))) {
+            this.order_type = (OrderType) EnumUtils.enumValueOf( request.getParameter("order_type"),OrderType.class);
         }
-        if (request.getParameter("region_type") != null && !"".equals(request.getParameter("region_type"))) {
-            this.region_type = request.getParameter("region_type");
+        if (org.apache.commons.lang3.StringUtils.isNotEmpty(request.getParameter("region_type"))) {
+            this.region_type = (RegionType) EnumUtils.enumValueOf(request.getParameter("region_type"),RegionType.class);
         }
-        if (request.getParameter("sender_mobile") != null && !"".equals(request.getParameter("sender_mobile"))) {
+        if (org.apache.commons.lang3.StringUtils.isNotEmpty(request.getParameter("sender_mobile"))) {
             this.sender_mobile = request.getParameter("sender_mobile");
         }
     }

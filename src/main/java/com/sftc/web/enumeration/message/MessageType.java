@@ -8,23 +8,23 @@ package com.sftc.web.enumeration.message;
  */
 public enum MessageType {
 
-	RECEIVE_ADDRESS("RECEIVE_ADDRESS","接收到好友地址的通知（作为寄件人）"),
-	RECEIVE_EXPRESS("RECEIVE_EXPRESS","接收到好友包裹的通知（作为收件人）");
+	RECEIVE_ADDRESS(0,"RECEIVE_ADDRESS"),//接收到好友地址的通知（作为寄件人）
+	RECEIVE_EXPRESS(1,"RECEIVE_EXPRESS");//接收到好友包裹的通知（作为收件人）
 	
-	private String key;
+	private int key;
 	private String value;
 	
-	private MessageType(String key,String value) {
+	private MessageType(int key,String value) {
 		this.key = key;
 		this.value = value;
 		
 	}
 
-	public String getKey() {
+	public int getKey() {
 		return key;
 	}
 
-	public void setKey(String key) {
+	public void setKey(int key) {
 		this.key = key;
 	}
 

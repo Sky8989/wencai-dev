@@ -9,27 +9,25 @@ package com.sftc.web.enumeration.order;
 public enum DistributionMethod {
 
 
-	JISUDA("JISUDA","同城专送"),
-	KUAISUDA("KUAISUDA","同城专送 快速达"),
-	SF_MORROW("1","顺丰次日"),
-	SF_EOD("2","顺丰隔日"),
-	SF_MORROW_MORNING("5","大网 顺丰次晨");
+	JISUDA(0,"JISUDA"),//同城专送
+	SF_MORROW(1,"顺丰次日"),
+	SF_EOD(2,"顺丰隔日"),
+	KUAISUDA(3,"KUAISUDA"),//同城专送 快速达
+	SF_MORROW_MORNING(4,"大网 顺丰次晨");
 	
 	
-	private String key;
+	private int key;
 	private String value;
 	
-	private DistributionMethod(String key,String value) {
+	private DistributionMethod(int key,String value) {
 		this.key = key;
 		this.value = value;
-		
 	}
-
-	public String getKey() {
+	public int getKey() {
 		return key;
 	}
 
-	public void setKey(String key) {
+	public void setKey(int key) {
 		this.key = key;
 	}
 

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.google.gson.Gson;
+import com.sftc.tools.EnumUtils;
 import com.sftc.tools.api.APIPostUtil;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
@@ -37,6 +38,14 @@ import com.sftc.web.dao.mybatis.AddressHistoryMapper;
 import com.sftc.web.dao.mybatis.AddressMapper;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
+import com.sftc.web.enumeration.address.AddressBookType;
+import com.sftc.web.enumeration.address.AddressType;
+import com.sftc.web.enumeration.express.ObjectType;
+import com.sftc.web.enumeration.express.OrderExpressState;
+import com.sftc.web.enumeration.order.DistributionMethod;
+import com.sftc.web.enumeration.order.OrderType;
+import com.sftc.web.enumeration.order.PayMethod;
+import com.sftc.web.enumeration.order.RegionType;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
@@ -212,11 +221,11 @@ public class OrderCommitLogic {
                 } else {
                     // 存储快递信息
                     Order order1 = orderDao.findOne(orderDTO.getId());
-                    order1.setRegion_type("REGION_NATION");
+                    order1.setRegion_type(RegionType.REGION_NATION);
                     orderDao.save(order1);
                     String ordernum = resultObject.getString("ordernum");
                     oe.setOrder_number(ordernum);
-                    oe.setState("WAIT_HAND_OVER");
+                    oe.setState(OrderExpressState.WAIT_HAND_OVER);
                     orderExpressDao.save(oe);
                 }
             }
@@ -584,12 +593,11 @@ public class OrderCommitLogic {
         if (!targetAddressOBJ.containsKey("supplementary_info")) {
             targetAddressOBJ.put("supplementary_info", "");
         }
-
         Order order = new Order(
                 Long.toString(System.currentTimeMillis()),
                 SFOrderHelper.getOrderId(),
-                (String) requestOBJ.get("pay_type"),
-                (String) requestOBJ.get("product_type"),
+                 (PayMethod)EnumUtils.enumValueOf((String)requestOBJ.get("pay_type"),PayMethod.class),
+                (DistributionMethod)EnumUtils.enumValueOf((String) requestOBJ.get("product_type"),DistributionMethod.class),
                 (String) sourceAddressOBJ.get("receiver"),
                 (String) sourceAddressOBJ.get("mobile"),
                 (String) sourceAddressOBJ.get("province"),
@@ -599,7 +607,7 @@ public class OrderCommitLogic {
                 (String) sourceAddressOBJ.get("supplementary_info"), //增加门牌号
                 sourceOBJ.getJSONObject("coordinate").getDouble("longitude"),
                 sourceOBJ.getJSONObject("coordinate").getDouble("latitude"),
-                "ORDER_BASIS",
+                OrderType.ORDER_BASIS,
                 Integer.parseInt((String) orderOBJ.get("sender_user_id"))
         );
         order.setImage((String) orderOBJ.get("image"));
@@ -611,7 +619,7 @@ public class OrderCommitLogic {
             order.setGift_card_id(0);
         }
         order.setVoice_time(Integer.parseInt((String) orderOBJ.get("voice_time")));
-        order.setRegion_type("REGION_SAME");
+        order.setRegion_type(RegionType.REGION_SAME);
 
         HttpPost post = new HttpPost(SF_REQUEST_URL);
         TokenUtils instance = TokenUtils.getInstance();
@@ -709,9 +717,9 @@ public class OrderCommitLogic {
                     oldTargetAddressStreet,
                     targetAddressOBJ.getString("supplementary_info"),
                     requestOBJ.getJSONArray("packages").getJSONObject(0).getString("weight"),
-                    requestOBJ.getJSONArray("packages").getJSONObject(0).getString("type"),
+                   (ObjectType)EnumUtils.enumValueOf(requestOBJ.getJSONArray("packages").getJSONObject(0).getString("type"),ObjectType.class),
                     comments, //增加快递包裹描述comments
-                    "WAIT_HAND_OVER",
+                    OrderExpressState.WAIT_HAND_OVER,
                     Integer.parseInt((String) reqObject.getJSONObject("order").get("sender_user_id")),
                     order.getId(),
                     respObject.getJSONObject("request").getString("uuid"),
@@ -720,11 +728,11 @@ public class OrderCommitLogic {
                     directed_code,
                     attrStr,
                     is_directed,
-                    package_type
+                    EnumUtils.packageTypeValueOf(package_type)
             );
 
             if (reserve_time != null && !reserve_time.equals("")) {
-                orderExpress.setState("PAYING");
+                orderExpress.setState(OrderExpressState.PAYING);
             }
             orderExpress.setReserve_time(reserve_time);
 //            orderExpressDao.save(orderExpress);
@@ -806,8 +814,8 @@ public class OrderCommitLogic {
         Order order = new Order(
                 Long.toString(System.currentTimeMillis()),
                 SFOrderHelper.getOrderId(),
-                (String) sf.get("pay_method"),
-                distribution,
+                (PayMethod)EnumUtils.enumValueOf((String) sf.get("pay_method"),PayMethod.class),
+                (DistributionMethod)EnumUtils.enumValueOf(distribution,DistributionMethod.class),
                 (String) sf.get("j_contact"),
                 (String) sf.get("j_tel"),
                 (String) sf.get("j_province"),
@@ -817,7 +825,7 @@ public class OrderCommitLogic {
                 sf.getString("j_supplementary_info"),//增加门牌号
                 j_longitude,
                 j_latitude,
-                "ORDER_BASIS",
+                OrderType.ORDER_BASIS,
                 Integer.parseInt((String) orderObject.get("sender_user_id"))
         );
         order.setImage((String) orderObject.get("image"));
@@ -829,7 +837,7 @@ public class OrderCommitLogic {
             order.setGift_card_id(0);
         }
         order.setVoice_time(Integer.parseInt((String) orderObject.get("voice_time")));
-        order.setRegion_type("REGION_NATION");
+        order.setRegion_type(RegionType.REGION_NATION);
 //        orderDao.save(order);
         orderMapper.addOrder2(order);
 
@@ -855,15 +863,15 @@ public class OrderCommitLogic {
                 (String) sf.get("d_address"),
                 sf.getString("d_supplementary_info"),//增加门牌号
                 packagesOBJ.getString("weight"),
-                packagesOBJ.getString("type"),
+                (ObjectType)EnumUtils.enumValueOf(packagesOBJ.getString("type"),ObjectType.class),
                 packagesOBJ.containsKey("comments") ? packagesOBJ.getString("comments") : "",//增加快递包裹描述comments
-                "WAIT_HAND_OVER",
+                		OrderExpressState.WAIT_HAND_OVER,
                 Integer.parseInt((String) orderObject.get("sender_user_id")),
                 order.getId(),
                 orderId,
                 d_latitude,
                 d_longitude,
-                packagesOBJ.getString("package_type")
+                EnumUtils.packageTypeValueOf(packagesOBJ.getString("package_type"))
         );
         orderExpress.setReserve_time((String) requestObject.getJSONObject("order").get("reserve_time"));
 //        orderExpressDao.save(orderExpress);
@@ -972,7 +980,7 @@ public class OrderCommitLogic {
     /// 插入地址簿  要去重
     // 通用地址簿插入utils
     public void insertAddressBookUtils(
-            String address_type, String address_book_type, int user_id_sender, int user_id_ship, String name, String phone,
+    		AddressType address_type, AddressBookType address_book_type, int user_id_sender, int user_id_ship, String name, String phone,
             String province, String city, String area, String address, String supplementary_info,
             String create_time, double longitude, double latitude) {
 
@@ -1018,7 +1026,7 @@ public class OrderCommitLogic {
 //                (Double) sourceOBJ.getJSONObject("coordinate").get("latitude")
 //        );
         // 插入地址簿 收件人,不勾选保存地址簿，不用插入
-//        insertAddressBookUtils("address_book", "ship",
+//        insertAddressBookUtils("address_book", AddressBookType.SENDER,
 //                orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
 //                orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
 //                targetAddressOBJ.getString("receiver"),
@@ -1032,8 +1040,9 @@ public class OrderCommitLogic {
 //                (Double) targetOBJ.getJSONObject("coordinate").get("longitude"),
 //                (Double) targetOBJ.getJSONObject("coordinate").get("latitude")
 //        );
+    	
         // 插入历史地址
-        insertAddressBookUtils("address_history", "address_history",
+        insertAddressBookUtils(AddressType.address_history, AddressBookType.sender,
                 orderOBJ.getInt("sender_user_id"),// 这里的地址是属于寄件人的
                 0,// 这里的地址是属于寄件人的
                 targetAddressOBJ.getString("receiver"),
@@ -1067,7 +1076,7 @@ public class OrderCommitLogic {
 //                orderObject.getDouble("j_latitude")
 //        );
         // 插入地址簿 收件人,不勾选保存地址簿，不用插入
-//        insertAddressBookUtils("address_book", "ship",
+//        insertAddressBookUtils("address_book", AddressBookType.SENDER,
 //                user_id_sender,// 这里的地址是属于寄件人的
 //                user_id_sender,// 这里的地址是属于寄件人的
 //                sf.getString("d_contact"),
@@ -1082,7 +1091,7 @@ public class OrderCommitLogic {
 //                orderObject.getDouble("d_latitude")
 //        );
         // 插入历史地址
-        insertAddressBookUtils("address_history", "address_history",
+        insertAddressBookUtils(AddressType.address_history, AddressBookType.sender,
                 user_id_sender,
                 0,// 历史地址都是自己写的
                 sf.getString("d_contact"),
@@ -1115,7 +1124,7 @@ public class OrderCommitLogic {
 //                order.getLatitude()
 //        );
         // 插入地址簿 收件人,不勾选保存地址簿，不用插入
-//        insertAddressBookUtils("address_book", "ship",
+//        insertAddressBookUtils("address_book", AddressBookType.SENDER,
 //                order.getSender_user_id(),
 //                oe.getShip_user_id(),//地址是寄件人的
 //                oe.getShip_name(),
@@ -1129,7 +1138,7 @@ public class OrderCommitLogic {
 //                oe.getLongitude(),
 //                oe.getLatitude());
         // 插入历史地址
-        insertAddressBookUtils("address_history", "address_history",
+        insertAddressBookUtils(AddressType.address_history, AddressBookType.sender,
                 oe.getSender_user_id(), //这个地址是属于某个用户的地址 但是地址内容是历史地址 保存的是寄件时产生的收件人地址
                 oe.getShip_user_id(),
                 oe.getShip_name(),

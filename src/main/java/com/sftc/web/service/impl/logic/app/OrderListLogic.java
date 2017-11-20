@@ -1,6 +1,7 @@
 package com.sftc.web.service.impl.logic.app;
 
 import com.github.pagehelper.PageHelper;
+import com.sftc.tools.EnumUtils;
 import com.sftc.tools.api.APIGetUtil;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
@@ -9,6 +10,7 @@ import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
+import com.sftc.web.enumeration.express.OrderExpressState;
 import com.sftc.web.model.entity.Evaluate;
 import com.sftc.web.model.entity.User;
 import com.sftc.web.model.entity.UserContact;
@@ -168,7 +170,7 @@ public class OrderListLogic {
             if (sender != null && sender.getAvatar() != null) {
                 callback.setSender_avatar(sender.getAvatar());
             }
-            if (orderDTO.getOrderExpressList() != null && orderDTO.getOrderExpressList().size() > 0 && orderDTO.getOrderExpressList().get(0).getObject_type() != null && orderDTO.getOrderExpressList().get(0).getObject_type().length() > 0) { // powerful verify
+            if (orderDTO.getOrderExpressList() != null && orderDTO.getOrderExpressList().size() > 0 && orderDTO.getOrderExpressList().get(0).getObject_type() != null && orderDTO.getOrderExpressList().get(0).getObject_type() != null) { // powerful verify
                 callback.setObject_type(orderDTO.getOrderExpressList().get(0).getObject_type());
             }
             callback.setWord_message(orderDTO.getWord_message());
@@ -296,7 +298,7 @@ public class OrderListLogic {
             if (order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) {
                 String status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
                 OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(orderSynVO.getUuid());
-                orderExpress.setState(status);
+                orderExpress.setState((OrderExpressState)EnumUtils.enumValueOf(status,OrderExpressState.class));
                 if (orderSynVO.getAttributes() != null) {
                     orderExpress.setAttributes(orderSynVO.getAttributes());
                 }
