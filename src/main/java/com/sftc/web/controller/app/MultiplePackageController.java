@@ -2,7 +2,6 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.vo.swaggerOrderVO.BatchRequestVO;
 import com.sftc.web.model.vo.swaggerOrderVO.MultiplePackageVO;
 import com.sftc.web.service.MultiplePackageService;
 import io.swagger.annotations.Api;
