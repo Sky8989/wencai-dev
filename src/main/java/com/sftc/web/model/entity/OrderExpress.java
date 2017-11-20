@@ -64,7 +64,10 @@ public class OrderExpress extends Object {
     private String package_comments;// 包裹补充描述信息
 
     @Setter @Getter
-    private String state;// 订单状态
+    private String route_state;// 路由状态
+
+    @Setter @Getter
+    private String pay_state;// 支付状态
 
     @Setter @Getter
     private int is_use;// 是否已经填写
@@ -101,13 +104,13 @@ public class OrderExpress extends Object {
 
     public OrderExpress(int id, String state) {
         this.id = id;
-        this.state = state;
+        this.route_state = state;
     }
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String supplementary_info, String weight, String object_type,
-                        String package_comments, String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,
-                        String directed_code, String attributes, int is_directed,String package_type) {
+                        String package_comments, String route_state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,
+                        String directed_code, String attributes, int is_directed,String package_type,String pay_state) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -121,7 +124,7 @@ public class OrderExpress extends Object {
         this.weight = weight;
         this.object_type = object_type;
         this.package_comments = package_comments;//增加快递描述
-        this.state = state;
+        this.route_state = route_state;
         this.sender_user_id = sender_user_id;
         this.order_id = order_id;
         this.uuid = uuid;
@@ -131,11 +134,12 @@ public class OrderExpress extends Object {
         this.attributes = attributes;
         this.is_directed = is_directed;
         this.package_type = package_type;
+        this.pay_state = pay_state;
     }
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String supplementary_info, String weight, String object_type,
-                        String package_comments, String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,String package_type) {
+                        String package_comments, String route_state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,String package_type) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -149,7 +153,7 @@ public class OrderExpress extends Object {
         this.weight = weight;
         this.object_type = object_type;
         this.package_comments = package_comments;//增加快递描述
-        this.state = state;
+        this.route_state = route_state;
         this.sender_user_id = sender_user_id;
         this.order_id = order_id;
         this.uuid = uuid;
@@ -160,7 +164,7 @@ public class OrderExpress extends Object {
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String weight, String object_type,
-                        String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,String package_type) {
+                        String route_state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,String package_type) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -172,7 +176,7 @@ public class OrderExpress extends Object {
         this.ship_addr = ship_addr;
         this.weight = weight;
         this.object_type = object_type;
-        this.state = state;
+        this.route_state = route_state;
         this.sender_user_id = sender_user_id;
         this.order_id = order_id;
         this.uuid = uuid;
@@ -181,27 +185,27 @@ public class OrderExpress extends Object {
         this.package_type = package_type;
     }
 
-    public OrderExpress(String uuid, String order_id, Double longitude, Double latitude, String state) {
-        this.state = state;
+    public OrderExpress(String uuid, String order_id, Double longitude, Double latitude, String route_state) {
+        this.route_state = route_state;
         this.order_id = order_id;
         this.uuid = uuid;
         this.longitude = longitude;
         this.latitude = latitude;
     }
 
-    public OrderExpress(String state, String uuid) {
-        this.state = state;
+    public OrderExpress(String route_state, String uuid) {
+        this.route_state = route_state;
         this.uuid = uuid;
     }
 
-    public OrderExpress(String state, String uuid, String attributes) {
-        this.state = state;
+    public OrderExpress(String route_state, String uuid, String attributes) {
+        this.route_state = route_state;
         this.uuid = uuid;
         this.attributes = attributes;
     }
 
     public OrderExpress(String order_number, String package_type, String object_type,
-                        String order_id, String create_time, int is_use, String state, String uuid, int sender_user_id, String reserve_time,String weight) {
+                        String order_id, String create_time, int is_use, String route_state, String uuid, int sender_user_id, String reserve_time,String weight) {
         this.order_number = order_number;
         this.package_type = package_type;
         this.object_type = object_type;
@@ -210,7 +214,7 @@ public class OrderExpress extends Object {
         this.create_time = create_time;
         this.is_use = is_use;
         this.order_id = order_id;
-        this.state = state;
+        this.route_state = route_state;
         this.uuid = uuid;
         this.reserve_time = reserve_time;
         this.sender_user_id = sender_user_id;

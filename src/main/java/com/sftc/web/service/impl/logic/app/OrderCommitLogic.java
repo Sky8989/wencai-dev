@@ -195,7 +195,7 @@ public class OrderCommitLogic {
                 }
 
                 // 订单状态为其它的，不需要再次下单
-                if (!oe.getState().equals("WAIT_HAND_OVER")) continue;
+                if (!oe.getRoute_state().equals("WAIT_HAND_OVER")) continue;
                 // 订单编号不为空，说明已下单
                 if (oe.getOrder_number() != null && !oe.getOrder_number().equals("")) continue;
 
@@ -216,7 +216,7 @@ public class OrderCommitLogic {
                     orderDao.save(order1);
                     String ordernum = resultObject.getString("ordernum");
                     oe.setOrder_number(ordernum);
-                    oe.setState("WAIT_HAND_OVER");
+                    oe.setRoute_state("WAIT_HAND_OVER");
                     orderExpressDao.save(oe);
                 }
             }
@@ -362,22 +362,10 @@ public class OrderCommitLogic {
             if (!(responseObject.containsKey("error") || responseObject.containsKey("errors"))) {
                  uuid = (String) responseObject.getJSONObject("request").get("uuid");
                  request_num = responseObject.getJSONObject("request").getString("request_num");
-
-//                /// 数据库操作
-//                // 订单表更新订单区域类型
-//                Order order1 = orderDao.findOne(order_id);
-//                order1.setRegion_type("REGION_SAME");
-//                orderDao.save(order1);
-//                // 快递表更新uuid和预约时间
-//                oe.setUuid(uuid);
-//                oe.setReserve_time(reserve_time);
-////                orderExpressDao.save(oe);
-//                String order_time = Long.toString(System.currentTimeMillis());
-//                oe.setOrder_time(order_time);
-//                oe.setOrder_number(request_num);
-//                oe.setState(responseObject.getJSONObject("request").getString("status"));
-//                //更新订单状态
-//                orderExpressDao.save(oe);
+                String pay_state = null;
+                boolean payed = responseObject.getJSONObject("request").getBoolean("payed");
+                if (payed) pay_state = "ALREADY_PAY";
+                else pay_state = "WAIT_PAY";
 
                 /// 数据库操作
                 // 订单表更新订单区域类型
@@ -387,7 +375,7 @@ public class OrderCommitLogic {
                 orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
                 orderExpressMapper.updateOrderTime(uuid, order_time);
                 orderExpressMapper.updateOrderNumber(oe.getId(), request_num);
-                orderExpressMapper.updateOrderExpressStatus(oe.getId(), responseObject.getJSONObject("request").getString("status"));
+                orderExpressMapper.updateOrderExpressStatus(oe.getId(), responseObject.getJSONObject("request").getString("status"),pay_state);
 
                 // 插入地址
                 //setupAddress(order, oe);
@@ -485,7 +473,7 @@ public class OrderCommitLogic {
                 sf.put("pay_method", pay_method);
             }
 
-            if (!oe.getState().equals("WAIT_FILL")) {
+            if (!oe.getRoute_state().equals("WAIT_FILL")) {
                 if (reserve_time != null && !reserve_time.equals("")) { // 预约件处理
                     //事务问题,先存在查的改为统一使用Mybatis
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), oe.getUuid(), reserve_time);
@@ -543,7 +531,7 @@ public class OrderCommitLogic {
 
                         orderExpressMapper.updateOrderTime(oe.getUuid(), order_time);
                         orderExpressMapper.updateOrderNumber(oe.getId(), ordernum);
-                        orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
+                        orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER","");
 
 
                         // 插入地址
@@ -683,6 +671,7 @@ public class OrderCommitLogic {
         }
 
         String attrStr = null;
+        String pay_state = null;
         if (!(respObject.containsKey("error") || respObject.containsKey("errors"))) {
             // 插入订单表
             orderDao.save(order);
@@ -691,6 +680,14 @@ public class OrderCommitLogic {
                 if (req != null && req.containsKey("attributes")) {
                     JSONObject attrObj = req.getJSONObject("attributes");
                     attrStr = attrObj.toString();
+                }
+                if (req != null && req.containsKey("payed")) {
+                    boolean payed = req.getBoolean("payed");
+                    if (payed) {
+                        pay_state = "ALREADY_PAY";
+                    } else {
+                        pay_state = "WAIT_PAY";
+                    }
                 }
             }
 
@@ -720,11 +717,12 @@ public class OrderCommitLogic {
                     directed_code,
                     attrStr,
                     is_directed,
-                    package_type
+                    package_type,
+                    pay_state
             );
 
             if (reserve_time != null && !reserve_time.equals("")) {
-                orderExpress.setState("PAYING");
+                orderExpress.setRoute_state("PAYING");
             }
             orderExpress.setReserve_time(reserve_time);
 //            orderExpressDao.save(orderExpress);
@@ -742,6 +740,7 @@ public class OrderCommitLogic {
             // 添加是否面对面下单
             respObject.put("is_directed", is_directed);
             respObject.put("package_type", package_type);
+            respObject.put("pay_state", pay_state);//支付状态
 
 			String path = ""; // 普通同城跳转链接
             // 发送微信模板消息

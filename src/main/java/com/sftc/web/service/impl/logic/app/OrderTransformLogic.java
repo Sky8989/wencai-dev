@@ -99,7 +99,7 @@ public class OrderTransformLogic {
             sf.put("pay_method", pay_method);
         }
 
-        if (!oe.getState().equals("WAIT_FILL")) {
+        if (!oe.getRoute_state().equals("WAIT_FILL")) {
             // 订单提交
             String paramStr = gson.toJson(JSONObject.fromObject(sf));
             HttpPost post = new HttpPost(SF_CREATEORDER_URL);
@@ -128,11 +128,10 @@ public class OrderTransformLogic {
                 orderDao.save(order1);         // 更改订单区域类型为大网
 
                 // 更新express表
-                oe.setState("WAIT_HAND_OVER");
+                oe.setRoute_state("WAIT_HAND_OVER");
                 oe.setUuid(orderid);
                 oe.setReserve_time("");
                 oe.setOrder_number(nation_uuid);
-                oe.setState("WAIT_HAND_OVER");
                 orderExpressDao.save(oe);                     // express order_number
             }
             return APIUtil.getResponse(SUCCESS, resultObject);

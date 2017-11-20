@@ -36,6 +36,7 @@ public class OrderStatusLogic {
         // Param
         String order_id = requestObject.getString("order_id");
         String status = requestObject.getString("status");
+        String pay_state = requestObject.getString("pay_state");
 
         if (order_id == null || order_id.equals(""))
             return APIUtil.paramErrorResponse("参数order_id不能为空");
@@ -49,9 +50,9 @@ public class OrderStatusLogic {
 
         // update
         for (OrderExpressDTO oe : orderDTO.getOrderExpressList()) {
-            int express_id = oe.getId();
+            String uuid = oe.getUuid();
             //事务问题,先存在查的改为统一使用Mybatis
-            orderExpressMapper.updateOrderExpressStatus(express_id,status);
+            orderExpressMapper.updateOrderExpressStatusByUUID(uuid, status);
         }
         orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
         return APIUtil.getResponse(SUCCESS, orderDTO);
@@ -80,7 +81,7 @@ public class OrderStatusLogic {
 //        orderExpress.setState(status);
 //        orderExpressDao.save(orderExpress);
         //事务问题,先存在查的改为统一使用Mybatis
-        orderExpressMapper.updateOrderExpressStatusByUUID(uuid,status);
+        orderExpressMapper.updateOrderExpressStatusByUUID(uuid, status);
         orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
         return APIUtil.getResponse(SUCCESS, orderExpress);
     }
@@ -102,9 +103,7 @@ public class OrderStatusLogic {
                 status.equals("FINISHED") ||
                 status.equals("ABNORMAL") ||
                 status.equals("CANCELED") ||
-                status.equals("WAIT_REFUND") ||
-                status.equals("REFUNDING") ||
-                status.equals("REFUNDED")))
+                status.equals("REFUNDING")))
             return "参数status不正确";
 
         return null;

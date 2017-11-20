@@ -1,5 +1,7 @@
 package com.sftc.web.model.vo.swaggerOrderVO;
 
+import com.sftc.web.model.vo.swaggerRequestVO.DetermineSourceVO;
+import com.sftc.web.model.vo.swaggerRequestVO.DetermineTargetVO;
 import com.sftc.web.model.vo.swaggerRequestVO.SourceLLtudeVO;
 import com.sftc.web.model.vo.swaggerRequestVO.TargetLLtudeVO;
 import io.swagger.annotations.ApiModel;
@@ -15,10 +17,10 @@ public class OrderAddressDetermineVO {
 
     @Getter @Setter
     @ApiModelProperty(name = "source",value = "寄件人经纬度",required = true)
-    private SourceLLtudeVO source;
+    private DetermineSourceVO source;
 
     @Getter @Setter
     @ApiModelProperty(name = "target",value = "收件人经纬度",dataType = "TargetLLtudeVO")
-    private TargetLLtudeVO target;
+    private DetermineTargetVO target;
 
 }

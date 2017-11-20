@@ -81,7 +81,8 @@ public class OrderCreateLogic {
             orderExpress.setObject_type(orderParamVO.getObject_type());
             orderExpress.setOrder_id(order.getId());
             orderExpress.setCreate_time(order.getCreate_time());
-            orderExpress.setState("WAIT_FILL");
+            orderExpress.setRoute_state("WAIT_FILL");
+            orderExpress.setPay_state("WAIT_PAY");
             orderExpress.setSender_user_id(orderParamVO.getSender_user_id());
             orderExpress.setReserve_time("");
             orderExpress.setOrder_id(order.getId());
@@ -152,7 +153,8 @@ public class OrderCreateLogic {
             orderExpress1.setLatitude(orderExpress.getLatitude());
             orderExpress1.setLongitude(orderExpress.getLongitude());
             orderExpress1.setOrder_id(orderExpress.getOrder_id());
-            orderExpress1.setState("ALREADY_FILL");
+            orderExpress1.setRoute_state("ALREADY_FILL");
+            orderExpress1.setPay_state("WAIT_PAY");
             orderExpress1.setId(realList.get(0).getId());
             orderExpress1.setReceive_time(Long.toString(System.currentTimeMillis()));
             orderExpressDao.save(orderExpress1);
