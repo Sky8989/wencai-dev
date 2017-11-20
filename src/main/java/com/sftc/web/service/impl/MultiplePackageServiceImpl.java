@@ -30,6 +30,8 @@ import static com.sftc.tools.constant.SFConstant.SF_Multiple_QUOTES_URL;
 import static com.sftc.tools.constant.SFConstant.SF_Multiple_REQUEST_URL;
 
 /**
+ * 好友多包裹逻辑业务层
+ *
  * @author ： CatalpaFlat
  * @date ：Create in 14:13 2017/11/17
  */

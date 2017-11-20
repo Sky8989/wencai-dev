@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 好友多包裹
+ *
  * @author ： CatalpaFlat
  * @date ：Create in 14:14 2017/11/17
  */

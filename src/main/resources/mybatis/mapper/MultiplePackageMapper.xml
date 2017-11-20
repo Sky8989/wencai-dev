@@ -49,7 +49,7 @@
         FROM sftc_order_express
         WHERE order_id = #{orderId} AND ship_name IS NOT NULL ORDER BY id
     </select>
-    <update id="updateQuotesUUidById" >
+    <update id="updateQuotesUUidById">
         UPDATE sftc_order_express
         SET quote_uuid = #{quotesUuid}
         WHERE id = #{orderExpressId}
@@ -59,19 +59,19 @@
         UPDATE sftc_order_express
         SET
         <if test='uuid != null and uuid!="" '>
-         uuid = #{uuid},
+            uuid = #{uuid},
         </if>
         <if test='requestNum != null and requestNum!="" '>
-         order_number = #{requestNum},
+            order_number = #{requestNum},
         </if>
         <if test='status != null and status!="" '>
-          state = #{status},
-         </if>
+            state = #{status},
+        </if>
         <if test='orderTime != null and orderTime!="" '>
-         order_time = #{orderTime},
+            order_time = #{orderTime},
         </if>
         <if test='reserveTime != null and reserveTime!="" '>
-          reserve_time = #{reserveTime}
+            reserve_time = #{reserveTime}
         </if>
         WHERE id = #{orderExpressId}
     </update>
