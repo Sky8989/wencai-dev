@@ -1,6 +1,7 @@
 package com.sftc.web.config;
 
 import com.sftc.web.dao.mybatis.OrderMapper;
+import com.sftc.web.service.impl.logic.app.OrderCommitLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
