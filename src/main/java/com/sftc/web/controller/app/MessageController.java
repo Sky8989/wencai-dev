@@ -20,7 +20,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @Controller
 @Api(description = "顺丰API，包括登录、注册、获取短信、获取token等")
-@RequestMapping("sf")
+@RequestMapping("user")
 public class MessageController extends BaseController {
 
     @IgnoreToken
@@ -28,6 +28,16 @@ public class MessageController extends BaseController {
     @RequestMapping(value = "/message", method = RequestMethod.POST)
     @ResponseBody
     public APIResponse message(@RequestBody SMSMessageRequestVO smsMessageRequestVO) throws Exception {
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(smsMessageRequestVO);
+        return messageService.getMessage(apiRequest);
+    }
+
+    @IgnoreToken
+    @ApiOperation(value = "验证验证码【调顺丰】", httpMethod = "POST")
+    @RequestMapping(value = "/validate", method = RequestMethod.POST)
+    @ResponseBody
+    public APIResponse messageCheck(@RequestBody SMSMessageRequestVO smsMessageRequestVO) throws Exception {
         APIRequest apiRequest = new APIRequest();
         apiRequest.setRequestParam(smsMessageRequestVO);
         return messageService.getMessage(apiRequest);
