@@ -48,11 +48,11 @@
         SELECT DISTINCT oe.order_id
         FROM sftc_order o, sftc_order_express oe
         WHERE o.id = oe.order_id
-              AND o.region_type = 'REGION_NATION'
+              AND o.region_type = 1
               AND o.is_cancel = 0
               AND oe.reserve_time IS NOT NULL
               AND oe.reserve_time != ''
-              AND oe.state = 'WAIT_HAND_OVER'
+              AND oe.state = 4
               AND (oe.order_number = '' OR oe.order_number IS NULL)
     </select>
 
@@ -60,8 +60,8 @@
     <select id="selectNationUnCommitOrders" resultType="java.lang.String">
         SELECT DISTINCT oe.order_id
         FROM sftc_order o, sftc_order_express oe
-        WHERE o.id = oe.order_id AND o.region_type = 'REGION_NATION' AND o.is_cancel = 0 AND oe.receive_time IS NOT NULL
-              AND (oe.state = 'WAIT_FILL' OR oe.state = 'ALREADY_FILL' OR oe.state = 'PAYING')
+        WHERE o.id = oe.order_id AND o.region_type = 1 AND o.is_cancel = 0 AND oe.receive_time IS NOT NULL
+              AND (oe.state = 0 OR oe.state = 1 OR oe.state = 3)
     </select>
 
     <!--抓取未提交的好友多包裹-->
@@ -85,9 +85,9 @@
                     WHERE order_id = o.id))
               AND o.is_cancel = 0
               AND (
-                  (oe.state = 'WAIT_FILL' OR oe.state = 'ALREADY_FILL')
+                  (oe.state = 0 OR oe.state = 1)
                   OR
-                  (o.region_type = 'REGION_SAME' AND oe.state = 'PAYING')
+                  (o.region_type = 0 AND oe.state = 3)
               )
     </select>
 
@@ -136,7 +136,7 @@
             #{latitude, jdbcType=DOUBLE},
             #{order_type, jdbcType=INTEGER},
             #{voice_time, jdbcType=INTEGER},
-            #{region_type, jdbcType=INTEGER}
+            #{region_type, jdbcType=INTEGER, javaType=INTEGER}
         )
     </insert>
 
@@ -167,14 +167,14 @@
             #{latitude, jdbcType=DOUBLE},
             #{order_type, jdbcType=INTEGER},
             #{voice_time, jdbcType=INTEGER},
-            #{region_type, jdbcType=INTEGER},
+            #{region_type, jdbcType=INTEGER, javaType=INTEGER},
             #{id, jdbcType=VARCHAR, javaType=String}
         )
     </insert>
 
     <update id="updateOrderRegionType">
         UPDATE sftc_order
-        SET region_type = #{region_type, jdbcType=VARCHAR}
+        SET region_type = #{region_type, jdbcType=INTEGER}
         WHERE id = #{id}
     </update>
 
@@ -255,7 +255,7 @@
                      FROM sftc_order_express oe
                      WHERE (oe.sender_user_id = #{id} OR oe.ship_user_id = #{id})
                  ) AS t
-        ) AND order_type = 'ORDER_MYSTERY'
+        ) AND order_type = 1
         ORDER BY o.create_time DESC
         LIMIT #{pageNum}, #{pageSize}
     </select>

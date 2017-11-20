@@ -11,7 +11,7 @@
         <result column="is_delete" property="is_delete" jdbcType="INTEGER"/>
         <result column="is_mystery" property="is_mystery" jdbcType="INTEGER"/>
         <result column="address_type" property="address_type" jdbcType="INTEGER"/>
-        <result column="address_book_type" property="address_book_type" jdbcType="INTEGER"/> 
+        <result column="address_book_type" property="address_book_type" jdbcType="INTEGER"/>
         <result column="create_time" property="create_time" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -89,7 +89,7 @@
                 #{is_mystery,jdbcType=INTEGER},
             </if>
             <if test="address_type != null">
-                #{address_type,jdbcType=VARCHAR},
+                #{address_type,jdbcType=INTEGER},
             </if>
             <if test="address_book_type != null">
                 #{address_book_type,jdbcType=INTEGER},
@@ -114,7 +114,7 @@
                 address_id = #{address_id,jdbcType=INTEGER},
             </if>
             <if test="address_type != null">
-                address_type = #{address_type,jdbcType=VARCHAR},
+                address_type = #{address_type,jdbcType=INTEGER},
             </if>
             <if test="address_book_type != null">
                 address_book_type = #{address_book_type,jdbcType=INTEGER},
@@ -141,7 +141,7 @@
         SELECT *
         FROM sftc_address_book ab, sftc_address a
         WHERE ab.address_id=a.id AND ab.user_id=#{user_id} AND ab.is_delete=0
-        AND ab.address_type='address_book' AND ab.address_book_type = #{address_book_type}
+        AND ab.address_type=1 AND ab.address_book_type = #{address_book_type}
         ORDER BY ab.create_time desc
     </select>
 
@@ -149,7 +149,7 @@
     <select id="selectAddressHistoryListByUserId" parameterType="int" resultMap="AddressMap">
         SELECT *
         FROM sftc_address_book ab, sftc_address a
-        WHERE ab.address_id=a.id AND ab.user_id=#{user_id} AND ab.is_delete=0 AND ab.address_type='address_history'
+        WHERE ab.address_id=a.id AND ab.user_id=#{user_id} AND ab.is_delete=0 AND ab.address_type=0
         ORDER BY ab.create_time desc
         limit #{startIndex}, #{pageSize}
     </select>

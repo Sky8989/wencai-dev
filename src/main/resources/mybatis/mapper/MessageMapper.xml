@@ -12,27 +12,27 @@
     <update id="updateMessageReceiveExpress" parameterType="com.sftc.web.model.entity.Message" useGeneratedKeys="true">
         UPDATE sftc_message
         SET is_read = #{is_read}, express_id = #{express_id}, create_time = #{create_time}
-        WHERE user_id = #{user_id} AND message_type = 'RECEIVE_EXPRESS'
+        WHERE user_id = #{user_id} AND message_type = 1
     </update>
 
     <!-- 二次新建通知信息时，对原有信息进行更新，更新 express_id 和is_read 字段-->
     <update id="updateMessageReceiveAddress" parameterType="com.sftc.web.model.entity.Message" useGeneratedKeys="true">
         UPDATE sftc_message
         SET is_read = #{is_read}, express_id = #{express_id}, create_time = #{create_time}
-        WHERE user_id = #{user_id} AND message_type = 'RECEIVE_ADDRESS'
+        WHERE user_id = #{user_id} AND message_type = 0
     </update>
 
     <select id="selectMessageReceiveExpress" parameterType="int" resultType="com.sftc.web.model.entity.Message">
         SELECT *
         FROM sftc_message
-        WHERE user_id = #{user_id} AND message_type = 'RECEIVE_EXPRESS'
+        WHERE user_id = #{user_id} AND message_type = 1
         LIMIT 1
     </select>
 
     <select id="selectMessageReceiveAddress" parameterType="int" resultType="com.sftc.web.model.entity.Message">
         SELECT *
         FROM sftc_message
-        WHERE user_id = #{user_id} AND message_type = 'RECEIVE_ADDRESS'
+        WHERE user_id = #{user_id} AND message_type = 0
         LIMIT 1
     </select>
 
