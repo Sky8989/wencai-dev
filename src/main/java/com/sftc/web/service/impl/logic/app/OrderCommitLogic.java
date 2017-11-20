@@ -195,7 +195,7 @@ public class OrderCommitLogic {
                 }
 
                 // 订单状态为其它的，不需要再次下单
-                if (!oe.getState().equals("WAIT_HAND_OVER")) continue;
+                if (!oe.getRoute_state().equals("WAIT_HAND_OVER")) continue;
                 // 订单编号不为空，说明已下单
                 if (oe.getOrder_number() != null && !oe.getOrder_number().equals("")) continue;
 
@@ -216,7 +216,7 @@ public class OrderCommitLogic {
                     orderDao.save(order1);
                     String ordernum = resultObject.getString("ordernum");
                     oe.setOrder_number(ordernum);
-                    oe.setState("WAIT_HAND_OVER");
+                    oe.setRoute_state("WAIT_HAND_OVER");
                     orderExpressDao.save(oe);
                 }
             }
@@ -252,9 +252,9 @@ public class OrderCommitLogic {
     /// 好友同城订单提交
     @Transactional
     private APIResponse friendSameOrderCommit(JSONObject requestObject) {
-        Integer user_id = TokenUtils.getInstance().getUserId();
-        String request_num = ""; // 订单号
-        String uuid = ""; // 请求顺丰下单接口 返回的uuid
+    	Integer user_id = TokenUtils.getInstance().getUserId();
+  		String request_num = ""; // 订单号
+  		String uuid = ""; // 请求顺丰下单接口 返回的uuid
         // Param
         if (!requestObject.containsKey("order"))
             return APIUtil.paramErrorResponse("订单信息不完整");
@@ -289,10 +289,10 @@ public class OrderCommitLogic {
         //后期更新订单与包裹一对一，但是好友件同城可以多包裹，同城订单走这个逻辑？
         if (orderDTO.getOrderExpressList().size() != 1)
             return APIUtil.submitErrorResponse("Order infomation has been changed, please check again!", null);
-        String ship_name = "";
+        	String ship_name = "";
         for (OrderExpressDTO oeDto : orderDTO.getOrderExpressList()) {
             OrderExpress oe = gson.fromJson(gson.toJson(oeDto), OrderExpress.class);
-            ship_name += oe.getShip_name() + ",";
+            ship_name += oe.getShip_name() +",";
             // 拼接同城订单参数中的 source 和 target
             SourceAddressVO source = new SourceAddressVO();
             OrderAddressVO address = new OrderAddressVO();
@@ -360,24 +360,12 @@ public class OrderCommitLogic {
 
 //            if (!responseObject.containsKey("error")) {
             if (!(responseObject.containsKey("error") || responseObject.containsKey("errors"))) {
-                uuid = (String) responseObject.getJSONObject("request").get("uuid");
-                request_num = responseObject.getJSONObject("request").getString("request_num");
-
-//                /// 数据库操作
-//                // 订单表更新订单区域类型
-//                Order order1 = orderDao.findOne(order_id);
-//                order1.setRegion_type("REGION_SAME");
-//                orderDao.save(order1);
-//                // 快递表更新uuid和预约时间
-//                oe.setUuid(uuid);
-//                oe.setReserve_time(reserve_time);
-////                orderExpressDao.save(oe);
-//                String order_time = Long.toString(System.currentTimeMillis());
-//                oe.setOrder_time(order_time);
-//                oe.setOrder_number(request_num);
-//                oe.setState(responseObject.getJSONObject("request").getString("status"));
-//                //更新订单状态
-//                orderExpressDao.save(oe);
+                 uuid = (String) responseObject.getJSONObject("request").get("uuid");
+                 request_num = responseObject.getJSONObject("request").getString("request_num");
+                String pay_state = null;
+                boolean payed = responseObject.getJSONObject("request").getBoolean("payed");
+                if (payed) pay_state = "ALREADY_PAY";
+                else pay_state = "WAIT_PAY";
 
                 /// 数据库操作
                 // 订单表更新订单区域类型
@@ -387,7 +375,7 @@ public class OrderCommitLogic {
                 orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
                 orderExpressMapper.updateOrderTime(uuid, order_time);
                 orderExpressMapper.updateOrderNumber(oe.getId(), request_num);
-                orderExpressMapper.updateOrderExpressStatus(oe.getId(), responseObject.getJSONObject("request").getString("status"));
+                orderExpressMapper.updateOrderExpressStatus(oe.getId(), responseObject.getJSONObject("request").getString("status"),pay_state);
 
                 // 插入地址
                 //setupAddress(order, oe);
@@ -412,20 +400,20 @@ public class OrderCommitLogic {
         }
 
         String path = ""; // 好友同城微信模板跳转链接
-        // 发送微信模板消息
-        if (requestObject.getJSONObject("order").containsKey("form_id")
-                && StringUtils.isNotEmpty(requestObject.getJSONObject("order").getString("form_id"))) {
-            String[] messageArr = new String[2];
-            if (StringUtils.isNotEmpty(order_id) && StringUtils.isNotEmpty(uuid)) {
-                path = OrderConstant.MYSTERY_REGION_SAME_LINK + "?uuid=" + uuid + "&order_id=" + order_id;
-            }
-            this.logger.info("----好友同城微信模板跳转链接--" + path);
-            messageArr[0] = request_num;
-            messageArr[1] = "您的顺丰订单下单成功！收件人是：" + ship_name;
-            String form_id = requestObject.getJSONObject("order").getString("form_id");
-            messageService.sendWXTemplateMessage(user_id, messageArr, path, form_id, WX_template_id_1);
-        }
-
+  		// 发送微信模板消息
+  		if (requestObject.getJSONObject("order").containsKey("form_id")
+  				&& StringUtils.isNotEmpty(requestObject.getJSONObject("order").getString("form_id"))) {
+  			String[] messageArr = new String[2];
+  			if (StringUtils.isNotEmpty(order_id) && StringUtils.isNotEmpty(uuid)) {
+  				path = OrderConstant.MYSTERY_REGION_SAME_LINK + "?uuid=" + uuid + "&order_id=" + order_id;
+  			}
+  			this.logger.info("----好友同城微信模板跳转链接--" + path);
+  			messageArr[0] = request_num;
+  			messageArr[1] = "您的顺丰订单下单成功！收件人是：" + ship_name;
+  			String form_id = requestObject.getJSONObject("order").getString("form_id");
+  			messageService.sendWXTemplateMessage(user_id, messageArr, path, form_id, WX_template_id_1);
+  		}
+        
         orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
 
         return APIUtil.getResponse(SUCCESS, orderDTO);
@@ -485,7 +473,7 @@ public class OrderCommitLogic {
                 sf.put("pay_method", pay_method);
             }
 
-            if (!oe.getState().equals("WAIT_FILL")) {
+            if (!oe.getRoute_state().equals("WAIT_FILL")) {
                 if (reserve_time != null && !reserve_time.equals("")) { // 预约件处理
                     //事务问题,先存在查的改为统一使用Mybatis
                     orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), oe.getUuid(), reserve_time);
@@ -543,7 +531,7 @@ public class OrderCommitLogic {
 
                         orderExpressMapper.updateOrderTime(oe.getUuid(), order_time);
                         orderExpressMapper.updateOrderNumber(oe.getId(), ordernum);
-                        orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER");
+                        orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER","");
 
 
                         // 插入地址
@@ -663,7 +651,7 @@ public class OrderCommitLogic {
         String uuId = "";
 
         if (respObject.containsKey("error")) {
-
+        	
             return APIUtil.submitErrorResponse(respObject.getJSONObject("error").getString("message"), respObject.getJSONObject("error"));
         }
 
@@ -672,7 +660,7 @@ public class OrderCommitLogic {
         if (respObject.containsKey("request")) {
             JSONObject req = respObject.getJSONObject("request");
             if (req != null && req.containsKey("attributes")) {
-                uuId = respObject.getJSONObject("request").getString("uuid");
+            	uuId = respObject.getJSONObject("request").getString("uuid");
                 JSONObject attributuOBJ = req.getJSONObject("attributes");
                 if (attributuOBJ.containsKey("directed_code")) {
                     directed_code = attributuOBJ.getString("directed_code");
@@ -683,6 +671,7 @@ public class OrderCommitLogic {
         }
 
         String attrStr = null;
+        String pay_state = null;
         if (!(respObject.containsKey("error") || respObject.containsKey("errors"))) {
             // 插入订单表
             orderDao.save(order);
@@ -691,6 +680,14 @@ public class OrderCommitLogic {
                 if (req != null && req.containsKey("attributes")) {
                     JSONObject attrObj = req.getJSONObject("attributes");
                     attrStr = attrObj.toString();
+                }
+                if (req != null && req.containsKey("payed")) {
+                    boolean payed = req.getBoolean("payed");
+                    if (payed) {
+                        pay_state = "ALREADY_PAY";
+                    } else {
+                        pay_state = "WAIT_PAY";
+                    }
                 }
             }
 
@@ -720,11 +717,12 @@ public class OrderCommitLogic {
                     directed_code,
                     attrStr,
                     is_directed,
-                    package_type
+                    package_type,
+                    pay_state
             );
 
             if (reserve_time != null && !reserve_time.equals("")) {
-                orderExpress.setState("PAYING");
+                orderExpress.setRoute_state("PAYING");
             }
             orderExpress.setReserve_time(reserve_time);
 //            orderExpressDao.save(orderExpress);
@@ -742,21 +740,22 @@ public class OrderCommitLogic {
             // 添加是否面对面下单
             respObject.put("is_directed", is_directed);
             respObject.put("package_type", package_type);
+            respObject.put("pay_state", pay_state);//支付状态
 
-            String path = ""; // 普通同城跳转链接
+			String path = ""; // 普通同城跳转链接
             // 发送微信模板消息
             if (reqObject.getJSONObject("order").containsKey("form_id")
                     && StringUtils.isNotEmpty(reqObject.getJSONObject("order").getString("form_id"))) {
-                if (StringUtils.isNotEmpty(order.getId())) {
-                    path = OrderConstant.BASIS_REGION_SAME_LINK + "?order_id=" + order.getId() + "&uuid=" + uuId;
-                }
-                this.logger.info("--------普通同城跳转链接 ----" + path);
-
+            	if (StringUtils.isNotEmpty(order.getId())) {
+					path = OrderConstant.BASIS_REGION_SAME_LINK + "?order_id=" + order.getId() + "&uuid=" + uuId;
+				}
+				this.logger.info("--------普通同城跳转链接 ----" + path);
+				
                 String[] messageArr = new String[2];
                 messageArr[0] = respObject.getJSONObject("request").getString("request_num");
                 messageArr[1] = "您的顺丰订单下单成功！收件人是：" + ship_name;
                 String form_id = reqObject.getJSONObject("order").getString("form_id");
-                messageService.sendWXTemplateMessage(reqObject.getJSONObject("order").getInt("sender_user_id"),
+                messageService.sendWXTemplateMessage( reqObject.getJSONObject("order").getInt("sender_user_id") ,
                         messageArr, path, form_id, WX_template_id_1);
             }
 
