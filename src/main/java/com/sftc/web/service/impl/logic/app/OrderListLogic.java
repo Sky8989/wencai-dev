@@ -9,14 +9,10 @@ import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
-import com.sftc.web.model.entity.Evaluate;
-import com.sftc.web.model.entity.User;
-import com.sftc.web.model.entity.UserContact;
-import com.sftc.web.model.vo.displayVO.MyOrderListVO;
-import com.sftc.web.model.vo.displayVO.FriendOrderListVO;
 import com.sftc.web.model.dto.OrderDTO;
-import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.entity.OrderExpress;
+import com.sftc.web.model.entity.*;
+import com.sftc.web.model.vo.displayVO.FriendOrderListVO;
+import com.sftc.web.model.vo.displayVO.MyOrderListVO;
 import com.sftc.web.model.vo.swaggerOrderVO.MyOrderParamVO;
 import com.sftc.web.model.vo.swaggerOrderVO.OrderSynVO;
 import net.sf.json.JSONArray;
@@ -157,7 +153,7 @@ public class OrderListLogic {
         List<OrderDTO> orderDTOList = orderMapper.selectMyFriendOrderList(myOrderParamVO);
         if (orderDTOList.size() == 0)
             return APIUtil.selectErrorResponse("暂无好友订单", null);
-        List<FriendOrderListVO> orderCallbacks = new ArrayList<FriendOrderListVO>();
+        List<FriendOrderListVO> orderCallbacks = new ArrayList<>();
         for (OrderDTO orderDTO : orderDTOList) {
             FriendOrderListVO callback = new FriendOrderListVO();
             User sender = userMapper.selectUserByUserId(orderDTO.getSender_user_id());
@@ -234,8 +230,8 @@ public class OrderListLogic {
 
         // Verify params
 //        if (myOrderParamVO.getToken().length() == 0) {
-            //内置token
-            myOrderParamVO.setToken(COMMON_ACCESSTOKEN);
+        //内置token
+        myOrderParamVO.setToken(COMMON_ACCESSTOKEN);
         if (myOrderParamVO.getId() == 0) {
             return APIUtil.paramErrorResponse("用户id不能为空");
         } else if (myOrderParamVO.getPageNum() < 1 || myOrderParamVO.getPageSize() < 1) {
@@ -305,11 +301,11 @@ public class OrderListLogic {
                     status = "CANCELED";
                     pay_state = "REFUNDED";
                 }
-                if(!status.equals("CANCELED")) pay_state = orderSynVO.isPayed()?"ALREADY_PAY" : "WAIT_PAY";
+                if (!status.equals("CANCELED")) pay_state = orderSynVO.isPayed() ? "ALREADY_PAY" : "WAIT_PAY";
 
                 //存在锁的问题，修改语句改为一条
                 String attributes = orderSynVO.getAttributes();
-                orderExpressMapper.updateAttributesAndStatusByUUID(uuid, attributes,status,pay_state);
+                orderExpressMapper.updateAttributesAndStatusByUUID(orderSynVO.getUuid(), attributes, status, pay_state);
             }
         }
 
