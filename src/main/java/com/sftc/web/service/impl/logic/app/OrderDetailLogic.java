@@ -1,31 +1,51 @@
 package com.sftc.web.service.impl.logic.app;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.sftc.tools.api.*;
-import com.sftc.tools.sf.SFExpressHelper;
-import com.sftc.tools.sf.SFTokenHelper;
-import com.sftc.web.dao.mybatis.*;
-import com.sftc.web.enumeration.express.PackageType;
-import com.sftc.web.model.vo.displayVO.PackageMessageVO;
-import com.sftc.web.model.dto.OrderDTO;
-import com.sftc.web.model.dto.OrderExpressDTO;
-import com.sftc.web.model.entity.*;
-import com.sftc.web.model.vo.swaggerOrderVO.OrderSynVO;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import org.apache.http.client.methods.HttpGet;
-import org.springframework.stereotype.Component;
+import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.SFConstant.SF_CONSTANTS_URL;
+import static com.sftc.tools.constant.SFConstant.SF_ORDERROUTE_URL;
+import static com.sftc.tools.constant.SFConstant.SF_ORDER_SYNC_URL;
+import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.SFConstant.*;
-import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
+import javax.annotation.Resource;
+
+import org.apache.http.client.methods.HttpGet;
+import org.springframework.stereotype.Component;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.sftc.tools.api.APIGetUtil;
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResolve;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.sf.SFExpressHelper;
+import com.sftc.tools.sf.SFTokenHelper;
+import com.sftc.web.dao.mybatis.GiftCardMapper;
+import com.sftc.web.dao.mybatis.MessageMapper;
+import com.sftc.web.dao.mybatis.OrderExpressMapper;
+import com.sftc.web.dao.mybatis.OrderExpressTransformMapper;
+import com.sftc.web.dao.mybatis.OrderMapper;
+import com.sftc.web.dao.mybatis.UserMapper;
+import com.sftc.web.enumeration.express.PackageType;
+import com.sftc.web.enumeration.order.RegionType;
+import com.sftc.web.model.dto.OrderDTO;
+import com.sftc.web.model.dto.OrderExpressDTO;
+import com.sftc.web.model.entity.GiftCard;
+import com.sftc.web.model.entity.Message;
+import com.sftc.web.model.entity.Order;
+import com.sftc.web.model.entity.OrderExpress;
+import com.sftc.web.model.entity.OrderExpressTransform;
+import com.sftc.web.model.entity.User;
+import com.sftc.web.model.vo.displayVO.PackageMessageVO;
+import com.sftc.web.model.vo.swaggerOrderVO.OrderSynVO;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Component
 public class OrderDetailLogic {
@@ -109,7 +129,7 @@ public class OrderDetailLogic {
 
         JSONObject respObject = new JSONObject();
 
-        String regionType = order.getRegion_type();
+        RegionType regionType = order.getRegion_type();
 
         if (regionType == null || regionType.equals("")) { //增加对未提交订单的查询，此时regionType无值
             setPackageType(order);//获取包裹信息
@@ -239,22 +259,22 @@ public class OrderDetailLogic {
                                 if (j == 0 && orderExpressDTO.getPackage_type().equals(PackageType.SMALl_PACKAGE.getKey())) {
                                     packageMessage.setName(weightOBJ.getString("name"));
                                     packageMessage.setWeight(weightOBJ.getString("weight"));
-                                    packageMessage.setType(PackageType.SMALl_PACKAGE.getKey());
+                                    packageMessage.setType(PackageType.SMALl_PACKAGE);
                                 }
                                 if (j == 1 && orderExpressDTO.getPackage_type().equals(PackageType.CENTRN_PACKAGE.getKey())) {
                                     packageMessage.setName(weightOBJ.getString("name"));
                                     packageMessage.setWeight(weightOBJ.getString("weight"));
-                                    packageMessage.setType(PackageType.CENTRN_PACKAGE.getKey());
+                                    packageMessage.setType(PackageType.CENTRN_PACKAGE);
                                 }
                                 if (j == 2 && orderExpressDTO.getPackage_type().equals(PackageType.BIG_PACKAGE.getKey())) {
                                     packageMessage.setName(weightOBJ.getString("name"));
                                     packageMessage.setWeight(weightOBJ.getString("weight"));
-                                    packageMessage.setType(PackageType.BIG_PACKAGE.getKey());
+                                    packageMessage.setType(PackageType.BIG_PACKAGE);
                                 }
                                 if (j == 3 || j == 4 || j == 5 && orderExpressDTO.getPackage_type().equals(PackageType.HUGE_PACKAGE.getKey())) {
                                     packageMessage.setName(weightOBJ.getString("name"));
                                     packageMessage.setWeight(weightOBJ.getString("weight"));
-                                    packageMessage.setType(PackageType.HUGE_PACKAGE.getKey());
+                                    packageMessage.setType(PackageType.HUGE_PACKAGE);
                                 }
                             }
                         }

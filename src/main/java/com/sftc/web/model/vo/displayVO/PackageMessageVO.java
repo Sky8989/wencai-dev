@@ -1,5 +1,7 @@
 package com.sftc.web.model.vo.displayVO;
 
+import com.sftc.web.enumeration.express.PackageType;
+
 /**
  * 快递详情添加包裹信息
  *
@@ -7,7 +9,7 @@ package com.sftc.web.model.vo.displayVO;
 public class PackageMessageVO extends Object {
     private String name;
     private String weight;
-    private String type;
+    private PackageType type;
 
     public String getName() {return name;}
 
@@ -17,7 +19,7 @@ public class PackageMessageVO extends Object {
 
     public void setWeight(String weight) {this.weight = weight;}
 
-    public String getType() {return type;}
+    public PackageType getType() {return type;}
 
-    public void setType(String type) {this.type = type;}
+    public void setType(PackageType type) {this.type = type;}
 }

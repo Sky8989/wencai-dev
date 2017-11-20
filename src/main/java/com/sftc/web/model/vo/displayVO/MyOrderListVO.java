@@ -1,9 +1,16 @@
 package com.sftc.web.model.vo.displayVO;
 
+import java.util.List;
+
+import com.sftc.web.enumeration.express.ObjectType;
+import com.sftc.web.enumeration.express.OrderExpressState;
+import com.sftc.web.enumeration.express.PackageType;
+import com.sftc.web.enumeration.order.OrderType;
+import com.sftc.web.enumeration.order.PayMethod;
+import com.sftc.web.enumeration.order.RegionType;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 /**
  * 我的订单列表界面展示类
  */
@@ -18,17 +25,20 @@ public class MyOrderListVO {
     private String sender_addr;
 
     @Setter @Getter
-    private String order_type;
+    private OrderType order_type;
+//    private String order_type;
 
     @Setter @Getter
-    private String region_type;
+    private RegionType region_type;
+//    private String region_type;
 
     private boolean is_gift;
 
     private boolean is_evaluated;
 
     @Setter @Getter
-    private String pay_method;
+    private PayMethod pay_method;
+//    private String pay_method;
 
     @Setter @Getter
     private String order_number; // 单包裹的时候，从express里提出来
@@ -47,7 +57,8 @@ public class MyOrderListVO {
         private String uuid;
 
         @Setter   @Getter
-        private String state;
+        private OrderExpressState state;
+//        private String state;
 
         @Setter   @Getter
         private String attributes;
@@ -56,10 +67,12 @@ public class MyOrderListVO {
         private String order_number;
 
         @Setter   @Getter
-        private String package_type; //为C端小程序的物品类型
+        private PackageType package_type; //为C端小程序的物品类型
+//        private String package_type; //为C端小程序的物品类型
 
         @Setter   @Getter
-        private String object_type;  // 包裹的类型
+        private ObjectType object_type;  // 包裹的类型
+//        private String object_type;  // 包裹的类型
 
         @Setter   @Getter
         private String package_comments; //当物品类型在packageType罗列的类型之外时填写

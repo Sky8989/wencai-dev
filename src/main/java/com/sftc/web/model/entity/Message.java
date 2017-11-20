@@ -1,10 +1,17 @@
 package com.sftc.web.model.entity;
 
+import java.util.Date;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.sftc.web.enumeration.message.MessageType;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "sftc_message")
@@ -16,7 +23,7 @@ public class Message {
     private int id;
 
     @Setter @Getter
-    private String message_type; // 消息类型 RECEIVE_EXPRESS / RECEIVE_ADDRESS，收到快递 / 收到好友地址
+    private MessageType message_type; // 消息类型 RECEIVE_EXPRESS / RECEIVE_ADDRESS，收到快递 / 收到好友地址
 
     @Setter @Getter
     private int is_read;// 是否已读
@@ -30,7 +37,7 @@ public class Message {
     @Setter @Getter
     private String create_time; // 创建时间
 
-    public Message(String message_type, int is_read, int express_id, int user_id) {
+    public Message(MessageType message_type, int is_read, int express_id, int user_id) {
         this.message_type = message_type;
         this.is_read = is_read;
         this.express_id = express_id;

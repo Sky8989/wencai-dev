@@ -1,12 +1,21 @@
 package com.sftc.web.model.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.servlet.http.HttpServletRequest;
+
+import com.sftc.tools.EnumUtils;
 import com.sftc.tools.api.APIRequest;
+import com.sftc.web.enumeration.express.ObjectType;
+import com.sftc.web.enumeration.express.OrderExpressState;
+import com.sftc.web.enumeration.express.PackageType;
 import com.sftc.web.model.others.Object;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
-import javax.servlet.http.HttpServletRequest;
 
 @Entity
 @Table(name = "sftc_order_express")
@@ -55,16 +64,19 @@ public class OrderExpress extends Object {
     private String weight;
 
     @Setter @Getter
-    private String package_type;// 包裹类型
+    private PackageType package_type;// 包裹类型
+//    private String package_type;// 包裹类型
 
     @Setter @Getter
-    private String object_type;// 物品类型
+    private ObjectType object_type;// 物品类型
+//    private String object_type;// 物品类型
 
     @Setter @Getter
     private String package_comments;// 包裹补充描述信息
 
     @Setter @Getter
-    private String state;// 订单状态
+    private OrderExpressState state;// 订单状态
+//    private String state;// 订单状态
 
     @Setter @Getter
     private int is_use;// 是否已经填写
@@ -99,15 +111,15 @@ public class OrderExpress extends Object {
     public OrderExpress() {
     }
 
-    public OrderExpress(int id, String state) {
+    public OrderExpress(int id, OrderExpressState state) {
         this.id = id;
         this.state = state;
     }
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
-                        String ship_city, String ship_area, String ship_addr, String supplementary_info, String weight, String object_type,
-                        String package_comments, String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,
-                        String directed_code, String attributes, int is_directed,String package_type) {
+                        String ship_city, String ship_area, String ship_addr, String supplementary_info, String weight, ObjectType object_type,
+                        String package_comments, OrderExpressState state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,
+                        String directed_code, String attributes, int is_directed,PackageType package_type) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -134,8 +146,8 @@ public class OrderExpress extends Object {
     }
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
-                        String ship_city, String ship_area, String ship_addr, String supplementary_info, String weight, String object_type,
-                        String package_comments, String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,String package_type) {
+                        String ship_city, String ship_area, String ship_addr, String supplementary_info, String weight, ObjectType object_type,
+                        String package_comments, OrderExpressState state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,PackageType package_type) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -159,8 +171,8 @@ public class OrderExpress extends Object {
     }
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
-                        String ship_city, String ship_area, String ship_addr, String weight, String object_type,
-                        String state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,String package_type) {
+                        String ship_city, String ship_area, String ship_addr, String weight, ObjectType object_type,
+                        OrderExpressState state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,PackageType package_type) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -181,7 +193,7 @@ public class OrderExpress extends Object {
         this.package_type = package_type;
     }
 
-    public OrderExpress(String uuid, String order_id, Double longitude, Double latitude, String state) {
+    public OrderExpress(String uuid, String order_id, Double longitude, Double latitude, OrderExpressState state) {
         this.state = state;
         this.order_id = order_id;
         this.uuid = uuid;
@@ -189,19 +201,19 @@ public class OrderExpress extends Object {
         this.latitude = latitude;
     }
 
-    public OrderExpress(String state, String uuid) {
+    public OrderExpress(OrderExpressState state, String uuid) {
         this.state = state;
         this.uuid = uuid;
     }
 
-    public OrderExpress(String state, String uuid, String attributes) {
+    public OrderExpress(OrderExpressState state, String uuid, String attributes) {
         this.state = state;
         this.uuid = uuid;
         this.attributes = attributes;
     }
 
-    public OrderExpress(String order_number, String package_type, String object_type,
-                        String order_id, String create_time, int is_use, String state, String uuid, int sender_user_id, String reserve_time,String weight) {
+    public OrderExpress(String order_number, PackageType package_type, ObjectType object_type,
+                        String order_id, String create_time, int is_use, OrderExpressState state, String uuid, int sender_user_id, String reserve_time,String weight) {
         this.order_number = order_number;
         this.package_type = package_type;
         this.object_type = object_type;
@@ -237,7 +249,7 @@ public class OrderExpress extends Object {
         this.ship_area = (String) request.getParameter("ship_area");
         this.ship_addr = (String) request.getParameter("ship_addr");
         this.weight = (String) request.getParameter("weight");
-        this.object_type = (String) request.getParameter("object_type");
+        this.object_type = (ObjectType)EnumUtils.enumValueOf((String) request.getParameter("object_type"),ObjectType.class);
     }
 
     // cms 通过

@@ -1,6 +1,7 @@
 package com.sftc.web.service.impl;
 
 import com.google.gson.Gson;
+import com.sftc.tools.EnumUtils;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
@@ -9,6 +10,8 @@ import com.sftc.web.dao.jpa.AddressBookDao;
 import com.sftc.web.dao.jpa.AddressDao;
 import com.sftc.web.dao.mybatis.AddressBookMapper;
 import com.sftc.web.dao.mybatis.AddressMapper;
+import com.sftc.web.enumeration.address.AddressBookType;
+import com.sftc.web.enumeration.address.AddressType;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.entity.Address;
 import com.sftc.web.model.entity.AddressBook;
@@ -83,8 +86,8 @@ public class AddressBookServiceImpl implements AddressBookService {
         // 查找重复信息  去重
         List<AddressBookDTO> addressBookDTOList = addressBookMapper.selectAddressForRemoveDuplicate(
                 user_id,
-                paramObject.getString("address_type"),
-                paramObject.getString("address_book_type"),
+                (AddressType)EnumUtils.enumValueOf(paramObject.getString("address_type"),AddressType.class),
+                (AddressBookType)EnumUtils.enumValueOf( paramObject.getString("address_book_type"),AddressBookType.class),
                 address_OBJ.getString("name"),
                 address_OBJ.getString("phone"),
                 address_OBJ.getString("province"),

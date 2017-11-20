@@ -130,13 +130,13 @@
             #{voice, jdbcType=VARCHAR},
             #{sender_user_id, jdbcType=INTEGER},
             #{gift_card_id, jdbcType=INTEGER},
-            #{pay_method, jdbcType=VARCHAR},
-            #{distribution_method, jdbcType=VARCHAR},
+            #{pay_method, jdbcType=INTEGER},
+            #{distribution_method, jdbcType=INTEGER},
             #{longitude, jdbcType=DOUBLE},
             #{latitude, jdbcType=DOUBLE},
-            #{order_type, jdbcType=VARCHAR},
+            #{order_type, jdbcType=INTEGER},
             #{voice_time, jdbcType=INTEGER},
-            #{region_type, jdbcType=VARCHAR, javaType=String}
+            #{region_type, jdbcType=INTEGER}
         )
     </insert>
 
@@ -161,13 +161,13 @@
             #{voice, jdbcType=VARCHAR},
             #{sender_user_id, jdbcType=INTEGER},
             #{gift_card_id, jdbcType=INTEGER},
-            #{pay_method, jdbcType=VARCHAR},
-            #{distribution_method, jdbcType=VARCHAR},
+            #{pay_method, jdbcType=INTEGER},
+            #{distribution_method, jdbcType=INTEGER},
             #{longitude, jdbcType=DOUBLE},
             #{latitude, jdbcType=DOUBLE},
-            #{order_type, jdbcType=VARCHAR},
+            #{order_type, jdbcType=INTEGER},
             #{voice_time, jdbcType=INTEGER},
-            #{region_type, jdbcType=VARCHAR, javaType=String},
+            #{region_type, jdbcType=INTEGER},
             #{id, jdbcType=VARCHAR, javaType=String}
         )
     </insert>

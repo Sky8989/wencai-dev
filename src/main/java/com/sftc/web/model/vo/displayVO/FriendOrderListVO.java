@@ -1,9 +1,15 @@
 package com.sftc.web.model.vo.displayVO;
 
+import java.util.List;
+
+import com.sftc.web.enumeration.express.ObjectType;
+import com.sftc.web.enumeration.express.OrderExpressState;
+import com.sftc.web.enumeration.express.PackageType;
+import com.sftc.web.enumeration.order.PayMethod;
+import com.sftc.web.enumeration.order.RegionType;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 /**
  * 好友圈订单列表界面展示类
  */
@@ -23,10 +29,11 @@ public class FriendOrderListVO {
     private int sender_user_id;
 
     @Setter   @Getter
-    private String region_type;
+    private RegionType region_type;
 
     @Setter   @Getter
-    private String object_type; // 物品类型
+    private ObjectType object_type; // 物品类型
+//    private String object_type; // 物品类型
 
     @Setter   @Getter
     private String word_message;// 文字寄语
@@ -40,7 +47,8 @@ public class FriendOrderListVO {
     private boolean is_evaluated;
 
     @Setter   @Getter
-    private String pay_method;//支付类型
+    private PayMethod pay_method;//支付类型
+//    private String pay_method;//支付类型
     @Setter   @Getter
     private List<OrderFriendCallbackExpress> expressList;
 
@@ -58,13 +66,13 @@ public class FriendOrderListVO {
         @Setter   @Getter
         private String uuid;
         @Setter   @Getter
-        private String state;
+        private OrderExpressState state;
         @Setter   @Getter
         private String attributes;
         @Setter   @Getter
-        private String package_type; //为C端小程序的物品类型
+        private PackageType package_type; //为C端小程序的物品类型
         @Setter   @Getter
-        private String object_type; // 包裹的类型
+        private ObjectType object_type; // 包裹的类型
         @Setter   @Getter
         private String package_comments;  //当物品类型在packageType罗列的类型之外时填写
         @Setter   @Getter

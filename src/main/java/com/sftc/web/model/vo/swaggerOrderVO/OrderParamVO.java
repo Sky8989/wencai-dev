@@ -1,8 +1,14 @@
 package com.sftc.web.model.vo.swaggerOrderVO;
 
+import com.sftc.web.enumeration.express.ObjectType;
+import com.sftc.web.enumeration.express.PackageType;
+import com.sftc.web.enumeration.order.DistributionMethod;
+import com.sftc.web.enumeration.order.OrderType;
+import com.sftc.web.enumeration.order.PayMethod;
+import com.sftc.web.enumeration.order.RegionType;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.apache.ibatis.jdbc.Null;
 
 @ApiModel(value = "寄件人订单填写包装类")
 public class OrderParamVO {
@@ -26,9 +32,11 @@ public class OrderParamVO {
     @ApiModelProperty(name = "voice",value = "语音",example = "你好")
     private String voice;
     @ApiModelProperty(name = "pay_method",value = "支付方式",example = "到付")
-    private String pay_method;
-    @ApiModelProperty(name = "distribution_method",value = "配送方式",example = "das")
-    private String distribution_method;
+    private PayMethod pay_method;
+//    private String pay_method;
+    @ApiModelProperty(name = "distribution_method",value = "配送方式",example = "0")
+    private DistributionMethod distribution_method;
+//    private String distribution_method;
     @ApiModelProperty(name = "longitude",value = "经度",example = "114.260976")
     private double longitude;
     @ApiModelProperty(name = "latitude",value = "纬度",example = "22.723223")
@@ -45,16 +53,20 @@ public class OrderParamVO {
     private int voice_time;
     @ApiModelProperty(name = "package_comments",value = "快递描述",example = "补充快递信息")
     private String package_comments;
-    @ApiModelProperty(name = "object_type",value = "物品类型",example = "dsa")
-    private  String object_type;
+    @ApiModelProperty(name = "object_type",value = "物品类型",example = "ORDER_BASIS")
+    private  ObjectType object_type;
+//    private  String object_type;
     @ApiModelProperty(name = "weight",value = "包裹重量",example = "1")
     private  String weight;
     @ApiModelProperty(name = "order_type",value = "是否普通",example = "ORDER_MYSTERY")
-    private String order_type;
+    private OrderType order_type;
+//    private String order_type;
     @ApiModelProperty(name = "region_type",value = "同城,大网",notes = "请将里面默认的String去掉，否则好友无法提交")
-    private String region_type;
+    private RegionType region_type;
+//    private String region_type;
     @ApiModelProperty(name = "package_type",value = "包裹类型",example = "0")
-    private String package_type;
+    private PackageType package_type;
+//    private String package_type;
 
     public String getSender_name() {
         return sender_name;
@@ -96,9 +108,9 @@ public class OrderParamVO {
         this.sender_area = sender_area;
     }
 
-    public String getPackage_type() {return package_type;}
+   /* public String getPackage_type() {return package_type;}
 
-    public void setPackage_type(String package_type) {this.package_type = package_type;}
+    public void setPackage_type(String package_type) {this.package_type = package_type;}*/
 
     public String getSender_addr() {
         return sender_addr;
@@ -124,21 +136,21 @@ public class OrderParamVO {
         this.voice = voice;
     }
 
-    public String getPay_method() {
+ /*   public String getPay_method() {
         return pay_method;
     }
 
     public void setPay_method(String pay_method) {
         this.pay_method = pay_method;
-    }
+    }*/
 
-    public String getDistribution_method() {
+  /*  public String getDistribution_method() {
         return distribution_method;
     }
 
     public void setDistribution_method(String distribution_method) {
         this.distribution_method = distribution_method;
-    }
+    }*/
 
     public double getLongitude() {
         return longitude;
@@ -200,7 +212,7 @@ public class OrderParamVO {
 
     public void setWeight(String weight) {this.weight = weight;}
 
-    public String getObject_type() {
+    /*public String getObject_type() {
         return object_type;
     }
 
@@ -214,15 +226,15 @@ public class OrderParamVO {
 
     public void setOrder_type(String order_type) {
         this.order_type = order_type;
-    }
+    }*/
 
-    public String getRegion_type() {
+   /* public String getRegion_type() {
         return region_type;
     }
 
     public void setRegion_type(String region_type) {
         this.region_type = region_type;
-    }
+    }*/
 
     public String getSupplementary_info() {return supplementary_info;}
 
@@ -235,4 +247,54 @@ public class OrderParamVO {
     public void setPackage_comments(String package_comments) {
         this.package_comments = package_comments;
     }
+
+	public PayMethod getPay_method() {
+		return pay_method;
+	}
+
+	public void setPay_method(PayMethod pay_method) {
+		this.pay_method = pay_method;
+	}
+
+	public DistributionMethod getDistribution_method() {
+		return distribution_method;
+	}
+
+	public void setDistribution_method(DistributionMethod distribution_method) {
+		this.distribution_method = distribution_method;
+	}
+
+	public ObjectType getObject_type() {
+		return object_type;
+	}
+
+	public void setObject_type(ObjectType object_type) {
+		this.object_type = object_type;
+	}
+
+	public OrderType getOrder_type() {
+		return order_type;
+	}
+
+	public void setOrder_type(OrderType order_type) {
+		this.order_type = order_type;
+	}
+
+	public RegionType getRegion_type() {
+		return region_type;
+	}
+
+	public void setRegion_type(RegionType region_type) {
+		this.region_type = region_type;
+	}
+
+	public PackageType getPackage_type() {
+		return package_type;
+	}
+
+	public void setPackage_type(PackageType package_type) {
+		this.package_type = package_type;
+	}
+    
+    
 }

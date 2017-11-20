@@ -49,13 +49,13 @@
             #{ship_addr, jdbcType=VARCHAR},
             #{supplementary_info, jdbcType=VARCHAR},
             #{order_number, jdbcType=VARCHAR},
-            #{package_type, jdbcType=VARCHAR},
-            #{object_type, jdbcType=VARCHAR},
+            #{package_type, jdbcType=INTEGER},
+            #{object_type, jdbcType=INTEGER},
             #{package_comments, jdbcType=VARCHAR},
             #{create_time, jdbcType=VARCHAR},
             #{sender_user_id, jdbcType=INTEGER},
             #{order_id, jdbcType=INTEGER},
-            #{state, jdbcType=VARCHAR},
+            #{state, jdbcType=INTEGER},
             #{uuid, jdbcType=VARCHAR},
             #{longitude, jdbcType=DOUBLE},
             #{latitude, jdbcType=DOUBLE},
@@ -80,13 +80,13 @@
             #{ship_addr, jdbcType=VARCHAR},
             #{supplementary_info, jdbcType=VARCHAR},
             #{order_number, jdbcType=VARCHAR},
-            #{package_type, jdbcType=VARCHAR},
-            #{object_type, jdbcType=VARCHAR},
+            #{package_type, jdbcType=INTEGER},
+            #{object_type, jdbcType=INTEGER},
             #{package_comments, jdbcType=VARCHAR},
             #{create_time, jdbcType=VARCHAR},
             #{sender_user_id, jdbcType=INTEGER},
             #{order_id, jdbcType=INTEGER},
-            #{state, jdbcType=VARCHAR},
+            #{state, jdbcType=INTEGER},
             #{uuid, jdbcType=VARCHAR},
             #{longitude, jdbcType=DOUBLE},
             #{latitude, jdbcType=DOUBLE},
@@ -110,7 +110,7 @@
             ship_area          = #{ship_area, jdbcType=VARCHAR},
             ship_addr          = #{ship_addr, jdbcType=VARCHAR},
             supplementary_info = #{supplementary_info, jdbcType=VARCHAR},
-            state              = #{state, jdbcType=VARCHAR},
+            state              = #{state, jdbcType=INTEGER},
             longitude          = #{longitude, jdbcType=DOUBLE},
             latitude           = #{latitude, jdbcType=DOUBLE},
             is_use             = 1,
@@ -121,13 +121,13 @@
 
     <update id="updateOrderExpressStatus">
         UPDATE sftc_order_express
-        SET state = #{status, jdbcType=VARCHAR}
+        SET state = #{status, jdbcType=INTEGER}
         WHERE id = #{express_id}
     </update>
 
     <update id="updateOrderExpressStatusByUUID">
         UPDATE sftc_order_express
-        SET state = #{status, jdbcType=VARCHAR}
+        SET state = #{status, jdbcType=INTEGER}
         WHERE uuid = #{uuid}
     </update>
 
@@ -163,7 +163,7 @@
     <update id="updateOrderExpressForSF" parameterType="com.sftc.web.model.entity.OrderExpress">
         update sftc_order_express
         set
-        state=#{state, jdbcType=VARCHAR}
+        state=#{state, jdbcType=INTEGER}
         <if test="attributes != null and attributes != ''">,attributes=#{attributes, jdbcType=VARCHAR}</if>
         WHERE uuid=#{uuid}
     </update>

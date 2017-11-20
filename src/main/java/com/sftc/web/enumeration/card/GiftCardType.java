@@ -6,22 +6,22 @@ package com.sftc.web.enumeration.card;
  */
 public enum GiftCardType {
 
-	FESTIVAL("FESTIVAL","节日必备");
+	FESTIVAL(0,"FESTIVAL"); //节日必备
 	
-	private String key;
+	private int key;
 	private String value;
 	
-	private GiftCardType(String key,String value) {
+	private GiftCardType(int key,String value) {
 		this.key = key;
 		this.value = value;
 		
 	}
 
-	public String getKey() {
+	public int getKey() {
 		return key;
 	}
 
-	public void setKey(String key) {
+	public void setKey(int key) {
 		this.key = key;
 	}
 

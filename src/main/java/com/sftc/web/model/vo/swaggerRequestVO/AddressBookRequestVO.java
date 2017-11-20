@@ -1,6 +1,9 @@
 package com.sftc.web.model.vo.swaggerRequestVO;
 
+import com.sftc.web.enumeration.address.AddressBookType;
+import com.sftc.web.enumeration.address.AddressType;
 import com.sftc.web.model.entity.Address;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -15,9 +18,11 @@ public class AddressBookRequestVO {
     @ApiModelProperty(value = "是否神秘",example = "0")
     private int is_mystery;
     @ApiModelProperty(value = "地址类型",example = "address_history")
-    private String address_type;
+//    private String address_type;
+    private AddressType address_type;
     @ApiModelProperty(value = "地址簿类型",example = "sender")
-    private String address_book_type;
+    private AddressBookType address_book_type;
+//    private String address_book_type;
     @ApiModelProperty(value = "地址类")
     private Address address;
 
@@ -37,23 +42,49 @@ public class AddressBookRequestVO {
         this.is_mystery = is_mystery;
     }
 
-    public String getAddress_type() {
-        return address_type;
-    }
-
-    public void setAddress_type(String address_type) {
-        this.address_type = address_type;
-    }
-
-    public String getAddress_book_type() {
-        return address_book_type;
-    }
-
-    public void setAddress_book_type(String address_book_type) {
-        this.address_book_type = address_book_type;
-    }
+//    public String getAddress_type() {
+//        return address_type;
+//    }
+//
+//    public void setAddress_type(String address_type) {
+//        this.address_type = address_type;
+//    }
+//
+//    public String getAddress_book_type() {
+//        return address_book_type;
+//    }
+//
+//    public void setAddress_book_type(String address_book_type) {
+//        this.address_book_type = address_book_type;
+//    }
+    
 
     public Address getAddress() {return address;}
 
-    public void setAddress(Address address) {this.address = address;}
+    public AddressType getAddress_type() {
+		return address_type;
+	}
+
+	public void setAddress_type(AddressType address_type) {
+		this.address_type = address_type;
+	}
+
+	/*public AddressType getAddress_book_type() {
+		return address_book_type;
+	}
+
+	public void setAddress_book_type(AddressType address_book_type) {
+		this.address_book_type = address_book_type;
+	}*/
+
+	
+	public void setAddress(Address address) {this.address = address;}
+
+	public AddressBookType getAddress_book_type() {
+		return address_book_type;
+	}
+
+	public void setAddress_book_type(AddressBookType address_book_type) {
+		this.address_book_type = address_book_type;
+	}
 }

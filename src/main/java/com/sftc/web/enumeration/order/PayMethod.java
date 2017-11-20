@@ -7,33 +7,26 @@ package com.sftc.web.enumeration.order;
  */
 public enum PayMethod {
 
-	FREIGHT_PREPAID("FREIGHT_PREPAID","寄付"),
-	FREIGHT_COLLECT("FREIGHT_COLLECT","到付");
+	FREIGHT_PREPAID(0,"FREIGHT_PREPAID"),//寄付
+	FREIGHT_COLLECT(1,"FREIGHT_COLLECT");//到付
 	
-	private String key;
+	private int key;
 	private String value;
 	
-	private PayMethod(String key,String value) {
+	private PayMethod(int key,String value) {
 		this.key = key;
 		this.value = value;
-		
 	}
-
-	public String getKey() {
+	public int getKey() {
 		return key;
 	}
-
-	public void setKey(String key) {
+	public void setKey(int key) {
 		this.key = key;
 	}
-
 	public String getValue() {
 		return value;
 	}
-
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
-	
 }
