@@ -109,6 +109,7 @@ public class OrderListLogic {
                 MyOrderListVO.OrderCallbackExpress express = new MyOrderListVO().new OrderCallbackExpress();
                 express.setUuid(oe.getUuid());
                 express.setRoute_state(oe.getRoute_state());
+                express.setPay_state(oe.getPay_state());
                 express.setShip_name(oe.getShip_name());
                 express.setShip_addr(oe.getShip_addr());
                 express.setOrder_number(oe.getOrder_number());
