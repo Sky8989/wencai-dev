@@ -14,12 +14,12 @@ public class OrderDTO extends Order {
 
     @Getter
     @Setter
-    @ApiModelProperty(name = "giftCard",value = "贺卡")
+    @ApiModelProperty(name = "giftCard",value = "贺卡",hidden = true)
     private GiftCard giftCard;   // 贺卡
 
     @Getter
     @Setter
-    @ApiModelProperty(name = "evaluate",value = "订单评价信息")
+    @ApiModelProperty(name = "evaluate",value = "订单评价信息",hidden = true)
     private Evaluate evaluate;   // 订单评价信息
 
     @Getter

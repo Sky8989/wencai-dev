@@ -5,13 +5,8 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.vo.displayVO.MyOrderListVO;
-import com.sftc.web.model.vo.swaggerOrderVO.MyOrderParamVO;
-import com.sftc.web.model.vo.swaggerOrderVO.OrderParamVO;
 import com.sftc.web.model.vo.swaggerOrderVO.*;
-import com.sftc.web.model.vo.swaggerResponse.EvaluateMessageRespVO;
-import com.sftc.web.model.vo.swaggerResponse.OrderDetailRespVO;
-import com.sftc.web.model.vo.swaggerResponse.OrderEvaluateRespVO;
-import com.sftc.web.model.vo.swaggerResponse.ResponseMessageVO;
+import com.sftc.web.model.vo.swaggerResponse.*;
 import com.sftc.web.service.EvaluateService;
 import com.sftc.web.service.OrderService;
 import io.swagger.annotations.*;
@@ -184,7 +179,7 @@ public class OrderController extends BaseController {
             "status 详见文档说明中的订单常量，一般只需要用到 PAYING 和 WAIT_HAND_OVER 这两个参数。\n" +
             "调起支付前将状态改为 PAYING，支付完成后将状态改为 WAIT_HAND_OVER。\n" +
             "当然也可以只调用用一次，支付完成后直接将状态改为 WAIT_HAND_OVER。\n" +
-            "更改状态成功后会返回订单详情。")
+            "更改状态成功后会返回订单详情。",response = OrderStateRespVO.class)
     @RequestMapping(value = "/status", method = RequestMethod.PUT)
     @ApiResponses({
             @ApiResponse(code = 400,message = "Parameters of the abnormal"),
@@ -193,13 +188,13 @@ public class OrderController extends BaseController {
             @ApiResponse(code = 500,message = "System exceptions")
     })
     public @ResponseBody
-    APIResponse updateOrderStatus(@RequestBody OrderStatusVO rderStatusVO) throws Exception {
+    APIResponse updateOrderStatus(@RequestBody OrderStatusVO orderStatusVO) throws Exception {
         APIRequest request = new APIRequest();
-        request.setRequestParam(rderStatusVO);
+        request.setRequestParam(orderStatusVO);
         return orderService.updateOrderStatus(request);
     }
 
-    @ApiOperation(value = "更改快递状态", httpMethod = "PUT",response = OrderDetailRespVO.class)
+    @ApiOperation(value = "更改快递状态", httpMethod = "PUT",response = OrderExpressStateRespVO.class)
     @ApiResponses({
             @ApiResponse(code = 400,message = "Parameters of the abnormal"),
             @ApiResponse(code = 401,message = "The query fails"),
