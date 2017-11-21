@@ -11,8 +11,6 @@ public interface OrderExpressMapper {
 
     List<OrderExpress> selectExpressForId(int id);
 
-    void addOrderExpress(OrderExpress orderExpress);
-
     void addOrderExpress2(OrderExpress orderExpress);//多增加门牌号信息
 
     void updateOrderExpressForSF(OrderExpress orderExpress);
