@@ -2,7 +2,7 @@ package com.sftc.web.model.entity;
 
 import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.model.others.Object;
-import com.sftc.web.model.vo.swaggerOrderVO.OrderParamVO;
+import com.sftc.web.model.vo.swaggerOrderRequest.OrderParamVO;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;

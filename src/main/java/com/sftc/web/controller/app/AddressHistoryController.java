@@ -2,7 +2,7 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.vo.swaggerRequestVO.AddressHistoryDeleteVO;
+import com.sftc.web.model.vo.swaggerRequest.AddressHistoryDeleteVO;
 import com.sftc.web.service.AddressHistoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

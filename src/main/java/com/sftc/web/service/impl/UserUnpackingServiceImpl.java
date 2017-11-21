@@ -5,7 +5,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.redis.UserUnpackingRedisDao;
-import com.sftc.web.model.vo.swaggerRequestVO.UserUnpackingVO;
+import com.sftc.web.model.vo.swaggerRequest.UserUnpackingVO;
 import com.sftc.web.model.entity.User;
 import com.sftc.web.service.UserUnpackingService;
 import net.sf.json.JSONObject;
