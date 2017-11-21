@@ -18,14 +18,14 @@ import java.util.List;
 public class MultiplePackageVO {
     @Getter
     @Setter
-    @ApiModelProperty(name = "orderID", value = "订单id", example = "C1509504431473V4", required = true)
+    @ApiModelProperty(name = "order_id", value = "订单id", example = "C1509504431473V4", required = true)
     @NotBlank(message = "orderID不能为空")
-    private String orderID;
+    private String order_id;
 
     @Getter
     @Setter
-    @ApiModelProperty(name = "packagesVO", value = "包裹", required = true)
-    private List<BatchPackagesVO> packagesVO;
+    @ApiModelProperty(name = "packages", value = "包裹", required = true)
+    private List<BatchPackagesVO> packages;
 
     @Getter
     @Setter
