@@ -8,6 +8,7 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.common.DateUtils;
 import com.sftc.tools.constant.OrderConstant;
 import com.sftc.tools.sf.SFTokenHelper;
+import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.mybatis.MultiplePackageMapper;
 import com.sftc.web.model.dto.MultiplePackageDTO;
 import com.sftc.web.model.vo.swaggerOrderVO.BatchPackagesVO;
@@ -320,10 +321,10 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         if (StringUtils.isBlank(openID)) {
             return APIUtil.selectErrorResponse("open_id为空", null);
         }
-        String pay_url = SF_REQUEST_URL + "/" + groupUUId + "/js_pay?open_id=" + openID;
+        String pay_url = SF_Multiple_REQUEST_URL + "/" + groupUUId + "/js_pay?open_id=" + openID;
         HttpPost post = new HttpPost(pay_url);
         //获取公共access_token
-        String accessToken = SFTokenHelper.COMMON_ACCESSTOKEN;
+        String accessToken = TokenUtils.getInstance().getAccess_token();
         post.addHeader("PushEnvelope-Device-Token", accessToken);
         String res = APIPostUtil.post("", post);
         JSONObject resultObject = JSONObject.fromObject(res);
