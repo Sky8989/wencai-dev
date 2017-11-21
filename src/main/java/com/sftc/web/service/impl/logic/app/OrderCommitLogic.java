@@ -1,23 +1,5 @@
 package com.sftc.web.service.impl.logic.app;
 
-import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
-import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
-import static com.sftc.tools.constant.WXConstant.WX_template_id_1;
-
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.methods.HttpPost;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-
 import com.google.gson.Gson;
 import com.sftc.tools.api.APIPostUtil;
 import com.sftc.tools.api.APIRequest;
@@ -32,11 +14,7 @@ import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.jpa.AddressBookDao;
 import com.sftc.web.dao.jpa.OrderDao;
 import com.sftc.web.dao.jpa.OrderExpressDao;
-import com.sftc.web.dao.mybatis.AddressBookMapper;
-import com.sftc.web.dao.mybatis.AddressHistoryMapper;
-import com.sftc.web.dao.mybatis.AddressMapper;
-import com.sftc.web.dao.mybatis.OrderExpressMapper;
-import com.sftc.web.dao.mybatis.OrderMapper;
+import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.dto.AddressBookDTO;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
@@ -51,8 +29,23 @@ import com.sftc.web.model.vo.swaggerOrderVO.TargetAddressVO;
 import com.sftc.web.model.vo.swaggerRequestVO.CoordinateVO;
 import com.sftc.web.model.vo.swaggerRequestVO.TargetCoordinateVO;
 import com.sftc.web.service.impl.MessageServiceImpl;
-
 import net.sf.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.methods.HttpPost;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.SFConstant.SF_CREATEORDER_URL;
+import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
+import static com.sftc.tools.constant.WXConstant.WX_template_id_1;
 
 
 @Component
@@ -252,9 +245,9 @@ public class OrderCommitLogic {
     /// 好友同城订单提交
     @Transactional
     private APIResponse friendSameOrderCommit(JSONObject requestObject) {
-    	Integer user_id = TokenUtils.getInstance().getUserId();
-  		String request_num = ""; // 订单号
-  		String uuid = ""; // 请求顺丰下单接口 返回的uuid
+        Integer user_id = TokenUtils.getInstance().getUserId();
+        String request_num = ""; // 订单号
+        String uuid = ""; // 请求顺丰下单接口 返回的uuid
         // Param
         if (!requestObject.containsKey("order"))
             return APIUtil.paramErrorResponse("订单信息不完整");
@@ -289,10 +282,10 @@ public class OrderCommitLogic {
         //后期更新订单与包裹一对一，但是好友件同城可以多包裹，同城订单走这个逻辑？
         if (orderDTO.getOrderExpressList().size() != 1)
             return APIUtil.submitErrorResponse("Order infomation has been changed, please check again!", null);
-        	String ship_name = "";
+        String ship_name = "";
         for (OrderExpressDTO oeDto : orderDTO.getOrderExpressList()) {
             OrderExpress oe = gson.fromJson(gson.toJson(oeDto), OrderExpress.class);
-            ship_name += oe.getShip_name() +",";
+            ship_name += oe.getShip_name() + ",";
             // 拼接同城订单参数中的 source 和 target
             SourceAddressVO source = new SourceAddressVO();
             OrderAddressVO address = new OrderAddressVO();
@@ -360,9 +353,9 @@ public class OrderCommitLogic {
 
 //            if (!responseObject.containsKey("error")) {
             if (!(responseObject.containsKey("error") || responseObject.containsKey("errors"))) {
-                 uuid = (String) responseObject.getJSONObject("request").get("uuid");
-                 request_num = responseObject.getJSONObject("request").getString("request_num");
-                String pay_state = null;
+                uuid = (String) responseObject.getJSONObject("request").get("uuid");
+                request_num = responseObject.getJSONObject("request").getString("request_num");
+                String pay_state = "WAIT_PAY";
                 boolean payed = responseObject.getJSONObject("request").getBoolean("payed");
                 if (payed) pay_state = "ALREADY_PAY";
                 else pay_state = "WAIT_PAY";
@@ -375,7 +368,7 @@ public class OrderCommitLogic {
                 orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
                 orderExpressMapper.updateOrderTime(uuid, order_time);
                 orderExpressMapper.updateOrderNumber(oe.getId(), request_num);
-                orderExpressMapper.updateOrderExpressStatus(oe.getId(), responseObject.getJSONObject("request").getString("status"),pay_state);
+                orderExpressMapper.updateOrderExpressStatus(oe.getId(), responseObject.getJSONObject("request").getString("status"), pay_state);
 
                 // 插入地址
                 //setupAddress(order, oe);
@@ -400,20 +393,20 @@ public class OrderCommitLogic {
         }
 
         String path = ""; // 好友同城微信模板跳转链接
-  		// 发送微信模板消息
-  		if (requestObject.getJSONObject("order").containsKey("form_id")
-  				&& StringUtils.isNotEmpty(requestObject.getJSONObject("order").getString("form_id"))) {
-  			String[] messageArr = new String[2];
-  			if (StringUtils.isNotEmpty(order_id) && StringUtils.isNotEmpty(uuid)) {
-  				path = OrderConstant.MYSTERY_REGION_SAME_LINK + "?uuid=" + uuid + "&order_id=" + order_id;
-  			}
-  			this.logger.info("----好友同城微信模板跳转链接--" + path);
-  			messageArr[0] = request_num;
-  			messageArr[1] = "您的顺丰订单下单成功！收件人是：" + ship_name;
-  			String form_id = requestObject.getJSONObject("order").getString("form_id");
-  			messageService.sendWXTemplateMessage(user_id, messageArr, path, form_id, WX_template_id_1);
-  		}
-        
+        // 发送微信模板消息
+        if (requestObject.getJSONObject("order").containsKey("form_id")
+                && StringUtils.isNotEmpty(requestObject.getJSONObject("order").getString("form_id"))) {
+            String[] messageArr = new String[2];
+            if (StringUtils.isNotEmpty(order_id) && StringUtils.isNotEmpty(uuid)) {
+                path = OrderConstant.MYSTERY_REGION_SAME_LINK + "?uuid=" + uuid + "&order_id=" + order_id;
+            }
+            this.logger.info("----好友同城微信模板跳转链接--" + path);
+            messageArr[0] = request_num;
+            messageArr[1] = "您的顺丰订单下单成功！收件人是：" + ship_name;
+            String form_id = requestObject.getJSONObject("order").getString("form_id");
+            messageService.sendWXTemplateMessage(user_id, messageArr, path, form_id, WX_template_id_1);
+        }
+
         orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
 
         return APIUtil.getResponse(SUCCESS, orderDTO);
@@ -531,7 +524,7 @@ public class OrderCommitLogic {
 
                         orderExpressMapper.updateOrderTime(oe.getUuid(), order_time);
                         orderExpressMapper.updateOrderNumber(oe.getId(), ordernum);
-                        orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER","");
+                        orderExpressMapper.updateOrderExpressStatus(oe.getId(), "WAIT_HAND_OVER", "");
 
 
                         // 插入地址
@@ -651,7 +644,7 @@ public class OrderCommitLogic {
         String uuId = "";
 
         if (respObject.containsKey("error")) {
-        	
+
             return APIUtil.submitErrorResponse(respObject.getJSONObject("error").getString("message"), respObject.getJSONObject("error"));
         }
 
@@ -660,7 +653,7 @@ public class OrderCommitLogic {
         if (respObject.containsKey("request")) {
             JSONObject req = respObject.getJSONObject("request");
             if (req != null && req.containsKey("attributes")) {
-            	uuId = respObject.getJSONObject("request").getString("uuid");
+                uuId = respObject.getJSONObject("request").getString("uuid");
                 JSONObject attributuOBJ = req.getJSONObject("attributes");
                 if (attributuOBJ.containsKey("directed_code")) {
                     directed_code = attributuOBJ.getString("directed_code");
@@ -742,20 +735,20 @@ public class OrderCommitLogic {
             respObject.put("package_type", package_type);
             respObject.put("pay_state", pay_state);//支付状态
 
-			String path = ""; // 普通同城跳转链接
+            String path = ""; // 普通同城跳转链接
             // 发送微信模板消息
             if (reqObject.getJSONObject("order").containsKey("form_id")
                     && StringUtils.isNotEmpty(reqObject.getJSONObject("order").getString("form_id"))) {
-            	if (StringUtils.isNotEmpty(order.getId())) {
-					path = OrderConstant.BASIS_REGION_SAME_LINK + "?order_id=" + order.getId() + "&uuid=" + uuId;
-				}
-				this.logger.info("--------普通同城跳转链接 ----" + path);
-				
+                if (StringUtils.isNotEmpty(order.getId())) {
+                    path = OrderConstant.BASIS_REGION_SAME_LINK + "?order_id=" + order.getId() + "&uuid=" + uuId;
+                }
+                this.logger.info("--------普通同城跳转链接 ----" + path);
+
                 String[] messageArr = new String[2];
                 messageArr[0] = respObject.getJSONObject("request").getString("request_num");
                 messageArr[1] = "您的顺丰订单下单成功！收件人是：" + ship_name;
                 String form_id = reqObject.getJSONObject("order").getString("form_id");
-                messageService.sendWXTemplateMessage( reqObject.getJSONObject("order").getInt("sender_user_id") ,
+                messageService.sendWXTemplateMessage(reqObject.getJSONObject("order").getInt("sender_user_id"),
                         messageArr, path, form_id, WX_template_id_1);
             }
 
