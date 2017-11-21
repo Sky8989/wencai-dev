@@ -118,7 +118,6 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         HttpPost post = new HttpPost(SF_Multiple_QUOTES_URL);
         // 下单设置请求头
         post.addHeader("PushEnvelope-Device-Token", accessToken);
-        post.addHeader("PushEnvelope-Device-Token", uuid);
 
         String res = APIPostUtil.post(gson.toJson(sfRequestJson), post);
 
@@ -220,16 +219,16 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
 
         LoggerFactory.getLogger(this.getClass().getName()).info("sfRequestJson:" + sfRequestJson);
 
+        /*---------------------------------------------------------------- sf请求 --------------------------------------------------------------------------------*/
         Gson gson = new Gson();
         HttpPost post = new HttpPost(SF_Multiple_REQUEST_URL);
         // 下单设置请求头
         post.addHeader("PushEnvelope-Device-Token", accessToken);
-        post.addHeader("PushEnvelope-Device-Token", uuid);
 
         String res = APIPostUtil.post(gson.toJson(sfRequestJson), post);
 
         if (StringUtils.isBlank(res)) {
-            return APIUtil.submitErrorResponse("下单失败", "顺风返回体为空");
+            return APIUtil.submitErrorResponse("下单失败", "sf返回体为空");
         }
 
         JSONObject sfResponeObject = JSONObject.fromObject(res);
@@ -241,12 +240,12 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         /*-------------------------------------------------- 修改数据库表sftc_order_express--------------------------------------------------------*/
         String keyRequests = "requests";
         if (!sfResponeObject.containsKey(keyRequests)) {
-            return APIUtil.submitErrorResponse("下单失败", "顺风返回体requests为空");
+            return APIUtil.submitErrorResponse("下单失败", "sf返回体requests为空");
         }
 
         JSONArray sfResponeRequestsArray = sfResponeObject.getJSONArray("requests");
         if (sfResponeRequestsArray == null || sfResponeRequestsArray.size() < 1) {
-            return APIUtil.submitErrorResponse("下单失败", "顺风返回体requests为空");
+            return APIUtil.submitErrorResponse("下单失败", "sf返回体requests为空");
         }
         int mapSize = sfResponeRequestsArray.size() * 6;
         Map<String, Object> map = new HashMap<>(mapSize);
