@@ -51,7 +51,7 @@ public class OrderParamVO {
     private  String weight;
     @ApiModelProperty(name = "order_type",value = "是否普通",example = "ORDER_MYSTERY")
     private String order_type;
-    @ApiModelProperty(name = "region_type",value = "同城,大网",notes = "请将里面默认的String去掉，否则好友无法提交")
+    @ApiModelProperty(name = "region_type",value = "同城",notes = "请将里面默认的String去掉，否则好友无法提交")
     private String region_type;
     @ApiModelProperty(name = "package_type",value = "包裹类型",example = "0")
     private String package_type;

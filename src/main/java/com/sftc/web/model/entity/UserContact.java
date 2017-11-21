@@ -39,9 +39,6 @@ public class UserContact extends Object {
     @Setter @Getter
     private List<UserContactLabel> userContactLabelList;
 
-    @Setter @Getter
-    private List<DateRemind> dateRemindList;
-
     public UserContact() {}
 
     public int getIs_tag_star() {return is_tag_star;}

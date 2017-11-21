@@ -86,30 +86,9 @@ public interface OrderService {
     APIResponse timeConstants(APIRequest request);
 
     /**
-     * 兜底
-     * 根据同城订单的uuid，把原本同城的单下到大网
-     */
-    APIResponse transformOrderFromSameToNation(APIRequest request);
-
-    /**
-     * 设置大网预约单定时器开关
-     */
-    APIResponse setupReserveNationOrderCommitTimer(APIRequest request);
-
-    /**
-     * 设置大网取消超时订单定时器开关
-     */
-    APIResponse setupCancelNationOrderTimer(APIRequest request);
-
-    /**
-     * 设置大网取消超时订单定时器开关
+     * 设置同城取消超时订单定时器开关
      */
     APIResponse setupCancelSameOrderTimer(APIRequest request);
-
-    /**
-     * 设置兜底记录已读
-     */
-    APIResponse readExpressTransform(APIRequest request);
 
     /**
      * 订单分享界面截图

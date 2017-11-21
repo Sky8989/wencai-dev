@@ -35,37 +35,6 @@
     </select>
 
     <!-- 普通下单 -->
-    <insert id="addOrderExpress" parameterType="com.sftc.web.model.entity.OrderExpress" useGeneratedKeys="true"
-            keyProperty="id">
-        INSERT INTO sftc_order_express
-        (ship_name, ship_mobile, ship_province, ship_city, ship_area,
-         ship_addr, supplementary_info, order_number, package_type, object_type, package_comments, create_time,
-         sender_user_id, order_id, route_state, uuid, longitude, latitude, reserve_time, order_time, weight)
-        VALUES (
-            #{ship_name, jdbcType=VARCHAR},
-            #{ship_mobile, jdbcType=VARCHAR},
-            #{ship_province, jdbcType=VARCHAR},
-            #{ship_city, jdbcType=VARCHAR},
-            #{ship_area, jdbcType=VARCHAR},
-            #{ship_addr, jdbcType=VARCHAR},
-            #{supplementary_info, jdbcType=VARCHAR},
-            #{order_number, jdbcType=VARCHAR},
-            #{package_type, jdbcType=VARCHAR},
-            #{object_type, jdbcType=VARCHAR},
-            #{package_comments, jdbcType=VARCHAR},
-            #{create_time, jdbcType=VARCHAR},
-            #{sender_user_id, jdbcType=INTEGER},
-            #{order_id, jdbcType=INTEGER},
-            #{route_state, jdbcType=VARCHAR},
-            #{uuid, jdbcType=VARCHAR},
-            #{longitude, jdbcType=DOUBLE},
-            #{latitude, jdbcType=DOUBLE},
-            #{reserve_time, jdbcType=VARCHAR},
-            #{order_time, jdbcType=VARCHAR},
-            #{weight, jdbcType=VARCHAR}
-        )
-    </insert>
-
     <insert id="addOrderExpress2" parameterType="com.sftc.web.model.entity.OrderExpress" useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO sftc_order_express
@@ -222,17 +191,6 @@
             <if test="order_id != null">and order_id = #{order_id}</if>
             <if test="ship_mobile != null">and ship_mobile = #{ship_mobile}</if>
             <if test="uuid != null">and uuid = #{uuid}</if>
-        </where>
-    </select>
-
-
-    <select id="selectOrderExpressTransformList" resultType="com.sftc.web.model.entity.OrderExpressTransform"
-            parameterType="com.sftc.web.model.entity.OrderExpressTransform">
-        SELECT * FROM sftc_order_express_transform
-        <where>
-            <if test="express_id != null and express_id != 0">and express_id = #{express_id}</if>
-            <if test="same_uuid != null and same_uuid != '' ">and same_uuid = #{same_uuid}</if>
-            <if test="nation_uuid != null and nation_uuid != '' ">and nation_uuid = #{nation_uuid}</if>
         </where>
     </select>
 

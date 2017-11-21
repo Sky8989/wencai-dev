@@ -25,8 +25,6 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private OrderListLogic orderListLogic;
     @Resource
-    private OrderTransformLogic orderTransformLogic;
-    @Resource
     private OrderPayLogic orderPayLogic;
     @Resource
     private OrderEvaluateLogic orderEvaluateLogic;
@@ -46,26 +44,9 @@ public class OrderServiceImpl implements OrderService {
         return orderCommitLogic.friendOrderCommit(request);
     }
 
-    public APIResponse setupReserveNationOrderCommitTimer(APIRequest request) {
-        return orderTimerLogic.setupReserveNationOrderCommitTimer(request);
-    }
-
-    public APIResponse setupCancelNationOrderTimer(APIRequest request) {
-        return orderTimerLogic.setupCancelNationOrderTimer(request);
-    }
-
     public APIResponse setupCancelSameOrderTimer(APIRequest request) {
         return orderTimerLogic.setupCancelSameOrderTimer(request);
     }
-
-    public APIResponse transformOrderFromSameToNation(APIRequest request) {
-        return orderTransformLogic.transformOrderFromSameToNation(request);
-    }
-
-    public APIResponse readExpressTransform(APIRequest request) {
-        return orderTransformLogic.readExpressTransform(request);
-    }
-
     public APIResponse countPrice(APIRequest request) {
         return orderPayLogic.countPrice(request);
     }
@@ -81,7 +62,6 @@ public class OrderServiceImpl implements OrderService {
     public synchronized APIResponse friendFillOrder(APIRequest request) {
         return orderCreateLogic.friendFillOrder(request);
     }
-
     public APIResponse selectOrderDetail(APIRequest request) {
         return orderDetailLogic.selectOrderDetail(request);
     }
