@@ -56,7 +56,7 @@
             #{create_time, jdbcType=VARCHAR},
             #{sender_user_id, jdbcType=INTEGER},
             #{order_id, jdbcType=INTEGER},
-            #{state, jdbcType=VARCHAR},
+            #{route_state, jdbcType=VARCHAR},
             #{uuid, jdbcType=VARCHAR},
             #{longitude, jdbcType=DOUBLE},
             #{latitude, jdbcType=DOUBLE},
@@ -131,7 +131,8 @@
 
     <update id="updateOrderExpressStatusByUUID">
         UPDATE sftc_order_express
-        SET route_state = #{status, jdbcType=VARCHAR}
+        SET route_state = #{route_state, jdbcType=VARCHAR},
+        <if test="pay_state != null">pay_state = #{pay_state}</if>
         WHERE uuid = #{uuid}
     </update>
 

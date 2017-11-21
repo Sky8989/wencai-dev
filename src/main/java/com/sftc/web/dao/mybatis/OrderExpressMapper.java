@@ -30,7 +30,9 @@ public interface OrderExpressMapper {
     /**
      * 根据uuid更改订单状态
      */
-    void updateOrderExpressStatusByUUID(@Param("uuid") String uuid, @Param("status") String status);
+    void updateOrderExpressStatusByUUID(@Param("uuid") String uuid,
+                                        @Param("route_state") String route_state,
+                                        @Param("pay_state")String pay_state);
 
     //根据uuid更改订单的状态和取件码以及取件码的状态
     void updateExpressDirectedByUUID(@Param("uuid") String uuid, @Param("status") String status,
