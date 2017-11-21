@@ -65,7 +65,7 @@
             order_number = #{requestNum},
         </if>
         <if test='status != null and status!="" '>
-            pay_state = #{status},
+            route_state = #{status},
         </if>
         <if test='orderTime != null and orderTime!="" '>
             order_time = #{orderTime},
