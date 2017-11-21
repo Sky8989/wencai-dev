@@ -3,6 +3,7 @@ package com.sftc.web.controller.app;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.web.model.vo.swaggerOrderVO.MultiplePackagePayVO;
 import com.sftc.web.model.vo.swaggerOrderVO.MultiplePackageVO;
 import com.sftc.web.service.MultiplePackageService;
 import io.swagger.annotations.Api;
@@ -58,9 +59,9 @@ public class MultiplePackageController {
         return multiplePackageService.batchPlaceOrder(request);
     }
 
-//    @ApiOperation(value = "批量支付", httpMethod = HttpMethod.POST)
-//    @PostMapping(value = "placeOrder")
-    public APIResponse batchPay(@RequestBody @Valid MultiplePackageVO multiplePackageVO, BindingResult result) {
+    @ApiOperation(value = "批量支付", httpMethod = HttpMethod.POST)
+    @PostMapping(value = "pay")
+    public APIResponse batchPay(@RequestBody @Valid MultiplePackagePayVO multiplePackageVO, BindingResult result) {
         APIResponse errorMap = validRequestParms(result);
         if (errorMap != null) {
             return errorMap;

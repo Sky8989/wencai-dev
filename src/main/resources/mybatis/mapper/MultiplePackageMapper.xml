@@ -81,4 +81,8 @@
         SET group_uuid = #{groupUUId}
         WHERE id = #{orderId}
     </update>
+
+    <select id="queryUserOpenIDByGroupUUId" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT open_id FROM sftc_order so JOIN sftc_user su on so.sender_user_id = su.id WHERE so.group_uuid = #{groupUUId}
+    </select>
 </mapper>

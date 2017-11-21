@@ -11,6 +11,7 @@ import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.mybatis.MultiplePackageMapper;
 import com.sftc.web.model.dto.MultiplePackageDTO;
 import com.sftc.web.model.vo.swaggerOrderVO.BatchPackagesVO;
+import com.sftc.web.model.vo.swaggerOrderVO.MultiplePackagePayVO;
 import com.sftc.web.model.vo.swaggerOrderVO.MultiplePackageVO;
 import com.sftc.web.service.MultiplePackageService;
 import net.sf.json.JSONArray;
@@ -27,8 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.SFConstant.SF_Multiple_QUOTES_URL;
-import static com.sftc.tools.constant.SFConstant.SF_Multiple_REQUEST_URL;
+import static com.sftc.tools.constant.SFConstant.*;
 import static com.sftc.tools.constant.WXConstant.WX_template_id_1;
 
 /**
@@ -309,17 +309,39 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
 
     @Override
     public APIResponse batchPay(APIRequest request) {
+        //获取请求参数对象
+        MultiplePackagePayVO requestParam = (MultiplePackagePayVO) request.getRequestParam();
+        if (requestParam == null) {
+            return APIUtil.paramErrorResponse("请求参数为空");
+        }
+        //group_uuid
+        String groupUUId = requestParam.getGroup_uuid();
+        String openID = multiplePackageMapper.queryUserOpenIDByGroupUUId(groupUUId);
+        if (StringUtils.isBlank(openID)) {
+            return APIUtil.selectErrorResponse("open_id为空", null);
+        }
+        String pay_url = SF_REQUEST_URL + "/" + groupUUId + "/js_pay?open_id=" + openID;
+        HttpPost post = new HttpPost(pay_url);
+        //获取公共access_token
+        String accessToken = SFTokenHelper.COMMON_ACCESSTOKEN;
+        post.addHeader("PushEnvelope-Device-Token", accessToken);
+        String res = APIPostUtil.post("", post);
+        JSONObject resultObject = JSONObject.fromObject(res);
+        String str = "error";
+        if (resultObject.containsKey(str)) {
+            return APIUtil.submitErrorResponse("支付失败，请查看返回值", resultObject);
+        }
 
-        return null;
+        return APIUtil.getResponse(SUCCESS, resultObject);
     }
 
     /**
      * 拼接寄件人请求json
      *
-     * @param requestPOJO   前端请求体对象
-     * @param sfRequestJson sf请求体
-     * @param uuid          公共请求uuid
-     * @param sourceInfo    寄件人信息
+     * @param requestPOJO 前端请求体对象
+     *                    param sfRequestJson sf请求体
+     * @param uuid        公共请求uuid
+     * @param sourceInfo  寄件人信息
      * @return 预约时间
      */
     private String mosaicSourceRequestJson(MultiplePackageVO requestPOJO, JSONObject sfRequestJson, String uuid, MultiplePackageDTO sourceInfo) {
