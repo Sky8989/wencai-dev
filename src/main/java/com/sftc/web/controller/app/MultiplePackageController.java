@@ -2,12 +2,14 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.model.vo.swaggerOrderVO.MultiplePackageVO;
 import com.sftc.web.service.MultiplePackageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import javax.ws.rs.HttpMethod;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,12 +63,12 @@ public class MultiplePackageController {
 
     private APIResponse validRequestParms(BindingResult result) {
         if (result.hasErrors()) {
-            JSONArray jsonArray = new JSONArray();
             List<ObjectError> allErrors = result.getAllErrors();
+            List<String> lists = new ArrayList<>();
             for (ObjectError objectError : allErrors) {
-                jsonArray.add(objectError.getDefaultMessage());
+                lists.add(objectError.getDefaultMessage());
             }
-            return APIUtil.paramErrorResponse(jsonArray.toString());
+            return APIUtil.submitErrorResponse("请求体不完整",lists);
         }
         return null;
     }
