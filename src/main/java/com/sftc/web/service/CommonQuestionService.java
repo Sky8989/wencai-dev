@@ -33,4 +33,7 @@ public interface CommonQuestionService {
      * CMS 删除礼品卡信息
      */
     APIResponse deleteCommonQuestion(int id) throws Exception;
+
+	APIResponse selectListPaging(APIRequest apiRequest);
+
 }

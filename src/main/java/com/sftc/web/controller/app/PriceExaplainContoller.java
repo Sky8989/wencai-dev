@@ -1,14 +1,22 @@
 package com.sftc.web.controller.app;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.entity.PriceExplain;
 import com.sftc.web.model.vo.swaggerRequestVO.PriceExaplainVO;
 import com.sftc.web.service.PriceExaplainService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 @Api(description = "价格说明")
 @RestController
@@ -24,4 +32,22 @@ public class PriceExaplainContoller {
         apiRequest.setRequestParam(priceExaplainVO);
         return priceExaplainService.getPriceExplainByCity(apiRequest);
     }
+    
+    @ApiOperation(value = "新增(修改)价格说明", httpMethod = "POST")
+    @RequestMapping(value="addOrUpdate",method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse addCommonQuestion(@RequestBody PriceExplain priceExplain) throws Exception {
+         if(priceExplain != null && priceExplain.getId() != 0){
+        	 return priceExaplainService.updatePriceExplain(priceExplain);
+         }else{
+        	 return priceExaplainService.addPriceExplain(priceExplain);
+         }
+    	
+    }
+    @ApiOperation(value = "删除常见问题", httpMethod = "DELETE")
+    @RequestMapping(method = RequestMethod.DELETE)
+    public @ResponseBody
+    APIResponse deleteCommonQuestion(@RequestBody int id) throws Exception {
+    		return priceExaplainService.deletePriceExplain(id);
+    	}
 }

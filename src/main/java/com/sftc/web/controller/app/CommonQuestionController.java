@@ -1,15 +1,21 @@
 package com.sftc.web.controller.app;
 
-import com.sftc.tools.api.APIResponse;
-import com.sftc.web.service.CommonQuestionService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.entity.CommonQuestion;
+import com.sftc.web.model.vo.swaggerRequestVO.commonQuestion.CommonQuestionVo;
+import com.sftc.web.service.CommonQuestionService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @Controller
 @Api(description = "常见问题相关接口")
@@ -25,4 +31,32 @@ public class CommonQuestionController {
     APIResponse getCommonQuestion() throws Exception {
         return commonQuestionService.getCommonQuestion();
     }
+    @ApiOperation(value = "新增(修改)常见问题", httpMethod = "POST")
+    @RequestMapping(method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse addCommonQuestion(@RequestBody CommonQuestion commonQuestion) throws Exception {
+         if(commonQuestion != null && commonQuestion.getId() != 0){
+        	 return commonQuestionService.updateCommonQuestion(commonQuestion);
+         }else{
+        	 return commonQuestionService.addCommonQuestion(commonQuestion);
+         }
+    	
+    }
+    @ApiOperation(value = "删除常见问题", httpMethod = "DELETE")
+    @RequestMapping(method = RequestMethod.DELETE)
+    public @ResponseBody
+    APIResponse deleteCommonQuestion(@RequestBody int id) throws Exception {
+    		return commonQuestionService.deleteCommonQuestion(id);
+    	}
+    
+    @ApiOperation(value = "查询常见问题List", httpMethod = "POST")
+    @RequestMapping(value="list",method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse findCommonQuestion(@RequestBody CommonQuestionVo commonQuestionVo) throws Exception {
+    	APIRequest apiRequest = new APIRequest();
+    	apiRequest.setRequestParam(commonQuestionVo);
+    	return commonQuestionService.selectListPaging(apiRequest);
+    }
+    	
+    
 }

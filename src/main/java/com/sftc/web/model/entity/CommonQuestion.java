@@ -11,24 +11,25 @@ import javax.servlet.http.HttpServletRequest;
 
 @Entity
 @Table(name = "sftc_common_question")
-@ApiModel(value = "常见问题")
+@ApiModel(value = "常见问题 新增不用传id，修改时传id")
 public class CommonQuestion extends Object {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty("主键")
+    @ApiModelProperty(name="主键",required=false)
     @Setter @Getter
     private int id;
 
-    @ApiModelProperty("创建时间")
+ 
+    @ApiModelProperty(name="时间",hidden=true)
     @Setter @Getter
     private String create_time;
 
-    @ApiModelProperty("标题")
+    @ApiModelProperty(name="标题",example = "问题标题")
     @Setter @Getter
     private String title;
 
-    @ApiModelProperty("内容")
+    @ApiModelProperty(name="内容",example = "问题答案")
     @Setter @Getter
     private String content;
 

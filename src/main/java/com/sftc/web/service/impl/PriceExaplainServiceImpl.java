@@ -1,23 +1,28 @@
 package com.sftc.web.service.impl;
 
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIUtil;
-import com.sftc.web.dao.mybatis.PriceExaplainMapper;
-import com.sftc.web.model.vo.swaggerRequestVO.PriceExaplainVO;
-import com.sftc.web.model.entity.PriceExplain;
-import com.sftc.web.service.PriceExaplainService;
-import org.springframework.stereotype.Service;
+import static com.sftc.tools.api.APIStatus.SUCCESS;
 
 import javax.annotation.Resource;
 
-import static com.sftc.tools.api.APIStatus.SUCCESS;
+import org.springframework.stereotype.Service;
+
+import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.APIStatus;
+import com.sftc.tools.api.APIUtil;
+import com.sftc.web.dao.jpa.PriceExplainDao;
+import com.sftc.web.dao.mybatis.PriceExaplainMapper;
+import com.sftc.web.model.entity.PriceExplain;
+import com.sftc.web.model.vo.swaggerRequestVO.PriceExaplainVO;
+import com.sftc.web.service.PriceExaplainService;
 
 
-@Service
+@Service("priceExaplainService")
 public class PriceExaplainServiceImpl implements PriceExaplainService {
     @Resource
     private PriceExaplainMapper priceExaplainMapper;
+    @Resource
+    private PriceExplainDao priceExplainDao;
     /**
      * 根据城市获取相对应的价格说明
      */
@@ -42,5 +47,46 @@ public class PriceExaplainServiceImpl implements PriceExaplainService {
         return APIUtil.getResponse(SUCCESS, priceExaplain);
 
     }
+    /**
+     * 价格说明 通过id删除
+     */
+	@Override
+	public APIResponse deletePriceExplain(int id) {
+		 if(priceExaplainMapper.deletePriceExplain(id) > 0){
+	    	   return APIUtil.getResponse(APIStatus.SUCCESS, id);
+	       }else{
+	    	   return APIUtil.getResponse(APIStatus.PARAM_ERROR, new String("删除失败，不存在id="+id));
+	       }
+	}
+	/**
+	 * 新增价格说明
+	 */
+	@Override
+	public APIResponse addPriceExplain(PriceExplain priceExplain) {
+		if(priceExplain != null){
+			priceExplain.setCreate_time(Long.toString(System.currentTimeMillis()));
+			priceExplain.setUpdate_time(Long.toString(System.currentTimeMillis()));
+			priceExplainDao.save(priceExplain);
+			return APIUtil.getResponse(APIStatus.SUCCESS, priceExplain);
+		}else{
+			return APIUtil.getResponse(APIStatus.PARAM_ERROR,"对象为空");
+		}
+	}
+	/**
+	 * 修改价格说明
+	 */
+	@Override
+	public APIResponse updatePriceExplain(PriceExplain priceExplain) {
+		if(priceExplain != null){
+			priceExplain.setUpdate_time(Long.toString(System.currentTimeMillis()));
+		}
+		if(priceExaplainMapper.updatePriceExplain(priceExplain) > 0 ){
+        	return APIUtil.getResponse(APIStatus.SUCCESS, priceExplain);
+        }else{
+        	return APIUtil.getResponse(APIStatus.PARAM_ERROR, new String("修改失败,不存在id="+priceExplain.getId()));
+        }
+	}
+    
+    
 
 }
