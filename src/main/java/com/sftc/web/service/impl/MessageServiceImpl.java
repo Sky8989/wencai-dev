@@ -101,8 +101,8 @@ public class MessageServiceImpl implements MessageService {
         JSONObject jsonObject = JSONObject.fromObject(requestParam);  //调用顺丰注册接口的请求参数
         JSONObject jsonInvite = jsonObject.getJSONObject("invite");  //用户注册时 相关邀请信息
 
-        String invite_code = null ;
-        if(jsonObject.getJSONObject("merchant").getJSONObject("attributes").containsKey("invite_code"))
+        String invite_code = null;
+        if (jsonObject.getJSONObject("merchant").getJSONObject("attributes").containsKey("invite_code"))
             invite_code = jsonObject.getJSONObject("merchant").getJSONObject("attributes").getString("invite_code");
 
 
@@ -130,10 +130,10 @@ public class MessageServiceImpl implements MessageService {
                 invite = new UserInvite();
                 invite.setUser_id(user_id);
 
-                if(city != null && !"".equals(city))
+                if (city != null && !"".equals(city))
                     invite.setCity(city);
 
-                if(channel != null && !"".equals(channel))
+                if (channel != null && !"".equals(channel))
                     invite.setInvite_channel(channel);
                 invite.setInvite_code(invite_code);
                 invite.setCreate_time(Long.toString(System.currentTimeMillis()));
@@ -151,7 +151,7 @@ public class MessageServiceImpl implements MessageService {
             // 存储 merchant中的uuid 到user表
             User user = new User();
             user.setId(user_id);
-           user.setMobile(merchantJSONObject.getString("mobile"));
+            user.setMobile(merchantJSONObject.getString("mobile"));
             user.setUuid(merchantJSONObject.getString("uuid"));
             // 推荐注册
             if (invite != null) {
@@ -161,7 +161,7 @@ public class MessageServiceImpl implements MessageService {
 
             // 存储用户邀请的信息到user_invite表
             return APIUtil.getResponse(SUCCESS, resJSONObject);
-       }
+        }
     }
 
     /**
@@ -264,6 +264,139 @@ public class MessageServiceImpl implements MessageService {
     }
 
     /**
+     * 验证短信验证码
+     */
+    public APIResponse messageCheck(APIRequest apiRequest) {
+        JSONObject jsonObject = JSONObject.fromObject(apiRequest.getRequestParam());
+        Integer user_id = TokenUtils.getInstance().getUserId();
+        if (user_id != 0) {
+            String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
+
+            // 验证手机号与user_id的匹配
+            User userByPhone = userMapper.selectUserByPhone(mobile);
+            User userByUserId = userMapper.selectUserByUserId(user_id);
+            Map<String, String> map = new HashMap<>(1, 1);
+            if (userByUserId.getMobile() == null || "".equals(userByUserId.getMobile())) {
+                // 用户的手机号为空 则判断该手机号是否被使用
+                if (userByPhone != null) {
+                    map.put("name", userByPhone.getName());
+                    return APIUtil.submitErrorResponse("该手机号已被使用", map);
+                }
+            } else {// 用户已经绑定手机号 验证手机号不为用户手机号
+                if (!mobile.equals(userByUserId.getMobile())) {
+                    map.put("mobile", userByUserId.getMobile());
+                    return APIUtil.submitErrorResponse("该用户已验证手机", map);
+                }
+            }
+
+            //获取用户注册需要保存的邀请相关参数
+            JSONObject jsonInvite = jsonObject.getJSONObject("invite");  //用户注册时 相关邀请信息
+            JSONObject attributeOBJ = jsonObject.getJSONObject("merchant").getJSONObject("attributes");
+
+            String invite_code = null;
+            if (jsonObject.getJSONObject("merchant").getJSONObject("attributes").containsKey("invite_code"))
+                invite_code = jsonObject.getJSONObject("merchant").getJSONObject("attributes").getString("invite_code");
+            //移除获取token时不需要的参数
+            jsonObject.getJSONObject("merchant").remove("attributes");
+            jsonObject.remove("invite");
+
+            // 生成sf获取token的链接
+            StringBuilder postUrl = new StringBuilder(SF_GET_TOKEN);
+
+            // 调用顺丰接口
+            String str = gson.toJson(jsonObject);
+            HttpPost post = new HttpPost(postUrl.toString());
+            String res = APIPostUtil.post(str, post);
+            JSONObject resJSONObject = JSONObject.fromObject(res);
+
+            if (!resJSONObject.containsKey("error")) {
+                // 更新 token中的access_token 到token表
+                String access_token = resJSONObject.getJSONObject("token").getString("access_token");
+                String refresh_token = resJSONObject.getJSONObject("token").getString("refresh_token");
+                Token token = new Token();
+                token.setUser_id(user_id);
+                token.setAccess_token(access_token);
+                token.setRefresh_token(refresh_token);
+                tokenMapper.updateToken(token);
+                return APIUtil.getResponse(SUCCESS, resJSONObject);
+            } else {    //判断错误信息
+                JSONObject errMesgOBJ = resJSONObject.getJSONObject("error");
+                    if (errMesgOBJ != null && errMesgOBJ.containsKey("type")) {
+                        // ERROR 验证码错误 | NOT_FOUND 用户不存在
+                        String type = errMesgOBJ.getString("type");
+                        if (type != null && !type.equals("") && type.equals("ERROR")) {
+                            Map<String, String> errorMap = new HashMap<>();
+                            errorMap.put("reason", "Verification code error");
+                            return APIUtil.submitErrorResponse("验证码错误", errorMap);
+                        } else if (type != null && !type.equals("") && type.equals("NOT_FOUND")) {
+                            // 用户不存在时 新用户注册流程 添加所需参数
+                            jsonObject.getJSONObject("merchant").put("attributes",attributeOBJ);
+                            jsonObject.getJSONObject("message").put("type","WX_REGISTER_VERIFY_SMS");
+
+                            String registerUrl = gson.toJson(jsonObject);
+                            HttpPost registerPost = new HttpPost(SF_REGISTER_URL);
+                            String resp = APIPostUtil.post(registerUrl, registerPost);
+                            JSONObject registerResp = JSONObject.fromObject(resp);
+
+                            // 注册失败 匹配error
+                            if (registerResp.containsKey("error")) {
+                                return APIUtil.submitErrorResponse("注册失败", registerResp);
+                            } else {
+                                // 注册成功
+                                JSONObject merchantJSONObject = registerResp.getJSONObject("merchant");
+                                JSONObject tokenJSONObject = registerResp.getJSONObject("token");
+
+                                UserInvite invite = null;
+                                if (invite_code != null && !invite_code.equals("")) {
+                                    String city = jsonInvite.getString("city");
+                                    String channel = jsonInvite.getString("channel");
+                                    invite = new UserInvite();
+                                    invite.setUser_id(user_id);
+
+                                    if (city != null && !"".equals(city))
+                                        invite.setCity(city);
+
+                                    if (channel != null && !"".equals(channel))
+                                        invite.setInvite_channel(channel);
+                                    invite.setInvite_code(invite_code);
+                                    invite.setCreate_time(Long.toString(System.currentTimeMillis()));
+                                    invite = userInviteDao.save(invite);
+                                    this.logger.info("invite_id = " + invite.getId());
+                                }
+
+                                // 存储 token中的access_token 到token表
+                                Token token = new Token();
+                                token.setUser_id(user_id);
+                                token.setAccess_token(tokenJSONObject.getString("access_token"));
+                                token.setRefresh_token(tokenJSONObject.getString("refresh_token"));
+                                tokenMapper.updateToken(token);
+
+                                // 存储 merchant中的uuid 到user表
+                                User user = new User();
+                                user.setId(user_id);
+                                user.setMobile(merchantJSONObject.getString("mobile"));
+                                user.setUuid(merchantJSONObject.getString("uuid"));
+                                // 推荐注册
+                                if (invite != null) {
+                                    user.setInvite_id(invite.getId());
+                                }
+                                userMapper.updateUser(user);
+
+                                // 存储用户邀请的信息到user_invite表
+                                return APIUtil.getResponse(SUCCESS, registerResp);
+                            }
+                        }
+                    }
+                return APIUtil.submitErrorResponse("token获取失败", resJSONObject);
+            }
+        } else {
+            Map<String, String> map = new HashMap<>();
+            map.put("reason", "Param missing local_token");
+            return APIUtil.submitErrorResponse("用户local_token缺失", map);
+        }
+    }
+
+    /**
      * 发送微信模板消息的方法 下单成功后
      *
      * @param touser_id  接受折的id
@@ -297,9 +430,9 @@ public class MessageServiceImpl implements MessageService {
         String resultStr = APIPostUtil.post(postStr, httpPost);
         JSONObject resultJSONObject = JSONObject.fromObject(resultStr);
         if (resultJSONObject.containsKey("errcode") && resultJSONObject.getInt("errcode") != 0) {
-            logger.error("---微信模板返回错误信息---"+resultStr);
+            logger.error("---微信模板返回错误信息---" + resultStr);
         } else {
-            logger.info("---微信模板返回成功信息----"+resultStr);
+            logger.info("---微信模板返回成功信息----" + resultStr);
         }
     }
 

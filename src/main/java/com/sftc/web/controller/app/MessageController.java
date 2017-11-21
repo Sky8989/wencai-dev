@@ -4,10 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
-import com.sftc.web.model.vo.swaggerRequestVO.GetTokenRequestVO;
-import com.sftc.web.model.vo.swaggerRequestVO.RegisterRequestVO;
-import com.sftc.web.model.vo.swaggerRequestVO.SFLoginRequestVO;
-import com.sftc.web.model.vo.swaggerRequestVO.SMSMessageRequestVO;
+import com.sftc.web.model.vo.swaggerRequestVO.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -33,6 +30,16 @@ public class MessageController extends BaseController {
         return messageService.getMessage(apiRequest);
     }
 
+    @ApiOperation(value = "验证验证码【调顺丰】", httpMethod = "POST")
+    @RequestMapping(value = "/validate", method = RequestMethod.POST)
+    @ResponseBody
+    public APIResponse messageCheck(@RequestBody UserValidateVO userValidateVO) throws Exception {
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(userValidateVO);
+        return messageService.messageCheck(apiRequest);
+    }
+
+    @ApiIgnore
     @IgnoreToken
     @ApiOperation(value = "注册接口【调顺丰】", httpMethod = "POST")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -43,6 +50,7 @@ public class MessageController extends BaseController {
         return messageService.register(apiRequest);
     }
 
+    @ApiIgnore
     @IgnoreToken
     @ApiOperation(value = "获取token【调顺丰】", httpMethod = "POST")
     @RequestMapping(value = "/token", method = RequestMethod.POST)
