@@ -63,7 +63,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         //获取公共access_token
         String accessToken = SFTokenHelper.COMMON_ACCESSTOKEN;
         //获取orderID
-        String orderID = requestPOJO.getOrderID();
+        String orderID = requestPOJO.getOrder_id();
 
         /*---------------------------------------------------------------- 查询数据库获取收件人和寄件人信息 --------------------------------------------------------------------------------*/
         //寄件人信息
@@ -164,7 +164,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         //获取公共access_token
         String accessToken = SFTokenHelper.COMMON_ACCESSTOKEN;
         //获取orderID
-        String orderID = requestPOJO.getOrderID();
+        String orderID = requestPOJO.getOrder_id();
 
          /*---------------------------------------------------------------- 查询数据库获取收件人和寄件人信息 --------------------------------------------------------------------------------*/
         //寄件人信息
@@ -314,7 +314,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
     private Map<String, Object> mosaicTargetRequestsJson(MultiplePackageVO requestPOJO, List<MultiplePackageDTO> targetInfos) {
         Map<String, Object> requestsMap = new HashMap<>(targetInfos.size());
         //包裹
-        List<BatchPackagesVO> packagesVO = requestPOJO.getPackagesVO();
+        List<BatchPackagesVO> packagesVO = requestPOJO.getPackages();
         JSONArray packagesArrays = JSONArray.fromObject(packagesVO);
         requestsMap.put("packages", packagesArrays);
 
