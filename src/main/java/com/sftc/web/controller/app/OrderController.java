@@ -114,7 +114,7 @@ public class OrderController extends BaseController {
     public @ResponseBody
     APIResponse detail(HttpServletRequest request, HttpServletResponse response) throws Exception {
         response.addHeader("Access-Control-Allow-Origin", "*");
-        return orderService.selectOrderDetail(new APIRequest(request));
+        return orderService.selectOrderDetail(new APIRequest(request))d;
     }
 
     @ApiOperation(value = "我的订单列表", httpMethod = "POST",notes = "测试接口若出现错误，删除key_words、key_state再试试",response = MyOrderListVO.class)

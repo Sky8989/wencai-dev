@@ -19,6 +19,6 @@ public class OrderListMessageVO extends Order{
 
     @Getter @Setter
     @ApiModelProperty(name = "orderExpressList",value = "快递数组")
-    public List<OrderExpressDTO> orderExpressList;  // 快递数组
+    public List<OrderListExpressVO> orderExpressList;  // 快递数组
 
 }

@@ -9,11 +9,11 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(value = "快递包裹信息包装类")
 public class PackageMessageVO extends Object {
-    @ApiModelProperty(name = "name",value = "名称")
+    @ApiModelProperty(name = "name",value = "名称",example = "0~5Kg")
     private String name;
-    @ApiModelProperty(name = "weight",value = "重量")
+    @ApiModelProperty(name = "weight",value = "重量",example = "3")
     private String weight;
-    @ApiModelProperty(name = "type",value = "类型")
+    @ApiModelProperty(name = "type",value = "类型",example = "0")
     private String type;
 
     public String getName() {return name;}
