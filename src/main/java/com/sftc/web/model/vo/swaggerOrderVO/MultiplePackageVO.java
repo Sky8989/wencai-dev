@@ -42,6 +42,10 @@ public class MultiplePackageVO {
     @Getter
     @Setter
     @ApiModelProperty(name = "reserve_time", example = "1501497840000", required = true)
-    @NotBlank(message = "reserve_time不能为空")
     private String reserve_time;
+
+    @Getter
+    @Setter
+    @ApiModelProperty(name = "form_id", example = "", required = true)
+    private String form_id;
 }

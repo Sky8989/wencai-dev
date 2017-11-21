@@ -2,14 +2,11 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.model.vo.swaggerOrderVO.MultiplePackageVO;
 import com.sftc.web.service.MultiplePackageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,6 +58,18 @@ public class MultiplePackageController {
         return multiplePackageService.batchPlaceOrder(request);
     }
 
+//    @ApiOperation(value = "批量支付", httpMethod = HttpMethod.POST)
+//    @PostMapping(value = "placeOrder")
+    public APIResponse batchPay(@RequestBody @Valid MultiplePackageVO multiplePackageVO, BindingResult result) {
+        APIResponse errorMap = validRequestParms(result);
+        if (errorMap != null) {
+            return errorMap;
+        }
+        APIRequest request = new APIRequest();
+        request.setRequestParam(multiplePackageVO);
+        return multiplePackageService.batchPay(request);
+    }
+
     private APIResponse validRequestParms(BindingResult result) {
         if (result.hasErrors()) {
             List<ObjectError> allErrors = result.getAllErrors();
@@ -68,7 +77,7 @@ public class MultiplePackageController {
             for (ObjectError objectError : allErrors) {
                 lists.add(objectError.getDefaultMessage());
             }
-            return APIUtil.submitErrorResponse("请求体不完整",lists);
+            return APIUtil.submitErrorResponse("请求体不完整", lists);
         }
         return null;
     }

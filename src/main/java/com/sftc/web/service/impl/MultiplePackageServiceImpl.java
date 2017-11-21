@@ -6,6 +6,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.common.DateUtils;
+import com.sftc.tools.constant.OrderConstant;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.mybatis.MultiplePackageMapper;
 import com.sftc.web.model.dto.MultiplePackageDTO;
@@ -28,6 +29,7 @@ import java.util.Map;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_Multiple_QUOTES_URL;
 import static com.sftc.tools.constant.SFConstant.SF_Multiple_REQUEST_URL;
+import static com.sftc.tools.constant.WXConstant.WX_template_id_1;
 
 /**
  * 好友多包裹逻辑业务层
@@ -40,6 +42,8 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
 
     @Resource
     private MultiplePackageMapper multiplePackageMapper;
+    @Resource
+    private MessageServiceImpl multipleMessageService;
 
     /**
      * 批量计价
@@ -238,13 +242,18 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         if (!sfResponeObject.containsKey(keyRequests)){
             return APIUtil.submitErrorResponse("下单失败", "顺风返回体requests为空");
         }
+
         JSONArray sfResponeRequestsArray = sfResponeObject.getJSONArray("requests");
         if (sfResponeRequestsArray == null || sfResponeRequestsArray.size() < 1) {
             return APIUtil.submitErrorResponse("下单失败", "顺风返回体requests为空");
         }
-
         int mapSize = sfResponeRequestsArray.size() * 6;
         Map<String, Object> map = new HashMap<>(mapSize);
+        if (StringUtils.isBlank(reserveTime)){
+            reserveTime = String.valueOf(System.currentTimeMillis());
+        }
+        StringBuilder requestNumSB = new StringBuilder();
+        StringBuilder shipNameSB = new StringBuilder();
         for (int j = 0; j < sfResponeRequestsArray.size(); j++) {
             JSONObject requestsJson = (JSONObject) sfResponeRequestsArray.get(j);
             MultiplePackageDTO multiplePackageDTO = targetInfos.get(j);
@@ -260,6 +269,9 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
             map.put("orderTime", orderTime);
             map.put("reserveTime", reserveTime);
             multiplePackageMapper.updateOrderExpressById(map);
+            if (j<(sfResponeRequestsArray.size()-1)){
+                requestNumSB.append(requestNum+",");
+            }
         }
 
         /*-------------------------------------------------- 修改数据库表sftc_order--------------------------------------------------------*/
@@ -268,8 +280,43 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         String orderId = sourceInfo.getOrderId();
         multiplePackageMapper.updateorderById(orderId, groupUUId);
 
+        /*-------------------------------------------------- 发生微信模板给发送端--------------------------------------------------------*/
+        // 普通同城跳转链接
+//        String path;
+//        String form_id = requestPOJO.getForm_id();
+//        if (!StringUtils.isBlank(form_id)){
+//            JSONObject json = (JSONObject) sfResponeRequestsArray.get(0);
+//            String str = "merchant";
+//            if (json.containsKey(str)){
+//                JSONObject merchant = json.getJSONObject(str);
+//                String uuId = merchant.getString("uuid");
+//                path = OrderConstant.BASIS_REGION_SAME_LINK + "?order_id=" + orderID + "&uuid=" + uuId;
+//
+//                String[] messageArr = new String[2];
+//                messageArr[0] = respObject.getJSONObject("request").getString("request_num");
+//                messageArr[1] = "您的顺丰订单下单成功！收件人是：" + ship_name;
+//                multipleMessageService.sendWXTemplateMessage( sourceInfo.get ,
+//                        messageArr, path, form_id, WX_template_id_1);
+//            }
+//        }
+
 
         return APIUtil.getResponse(SUCCESS, sfResponeObject);
+    }
+
+    @Override
+    public APIResponse batchPay(APIRequest request) {
+
+        //获取公共uuid
+        String uuid = SFTokenHelper.COMMON_UUID;
+        //获取公共access_token
+        String accessToken = SFTokenHelper.COMMON_ACCESSTOKEN;
+
+
+
+
+
+        return null;
     }
 
     /**
