@@ -73,7 +73,7 @@ public class SFConstant {
     /**
      * 多包裹支付
      */
-    public static String SF_Multiple_PAY_URL = SF_SAME_DOMAIN + "/request_groups";
+    public static String SF_Multiple_PAY_URL = SF_SAME_DOMAIN + "request_groups";
     /**
      * 优惠券获取
      */
