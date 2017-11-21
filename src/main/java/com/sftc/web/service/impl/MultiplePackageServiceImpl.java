@@ -239,7 +239,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
 
         /*-------------------------------------------------- 修改数据库表sftc_order_express--------------------------------------------------------*/
         String keyRequests = "requests";
-        if (!sfResponeObject.containsKey(keyRequests)){
+        if (!sfResponeObject.containsKey(keyRequests)) {
             return APIUtil.submitErrorResponse("下单失败", "顺风返回体requests为空");
         }
 
@@ -249,7 +249,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         }
         int mapSize = sfResponeRequestsArray.size() * 6;
         Map<String, Object> map = new HashMap<>(mapSize);
-        if (StringUtils.isBlank(reserveTime)){
+        if (StringUtils.isBlank(reserveTime)) {
             reserveTime = String.valueOf(System.currentTimeMillis());
         }
         StringBuilder requestNumSB = new StringBuilder();
@@ -262,6 +262,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
             String requestNum = requestsJson.getString("request_num");
             String status = requestsJson.getString("status");
             String orderTime = Long.toString(System.currentTimeMillis());
+            String receiver = requestsJson.getJSONObject("target").getJSONObject("address").getString("receiver");
             map.put("orderExpressId", orderExpressId);
             map.put("uuid", uuid1);
             map.put("requestNum", requestNum);
@@ -269,8 +270,11 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
             map.put("orderTime", orderTime);
             map.put("reserveTime", reserveTime);
             multiplePackageMapper.updateOrderExpressById(map);
-            if (j<(sfResponeRequestsArray.size()-1)){
-                requestNumSB.append(requestNum+",");
+            requestNumSB.append(requestNum);
+            shipNameSB.append(receiver);
+            if (j != (sfResponeRequestsArray.size() - 1)) {
+                requestNumSB.append(",");
+                shipNameSB.append(",");
             }
         }
 
@@ -280,25 +284,24 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         String orderId = sourceInfo.getOrderId();
         multiplePackageMapper.updateorderById(orderId, groupUUId);
 
-        /*-------------------------------------------------- 发生微信模板给发送端--------------------------------------------------------*/
+        /*-------------------------------------------------- 发生微信模板给寄件人--------------------------------------------------------*/
         // 普通同城跳转链接
-//        String path;
-//        String form_id = requestPOJO.getForm_id();
-//        if (!StringUtils.isBlank(form_id)){
-//            JSONObject json = (JSONObject) sfResponeRequestsArray.get(0);
-//            String str = "merchant";
-//            if (json.containsKey(str)){
-//                JSONObject merchant = json.getJSONObject(str);
-//                String uuId = merchant.getString("uuid");
-//                path = OrderConstant.BASIS_REGION_SAME_LINK + "?order_id=" + orderID + "&uuid=" + uuId;
-//
-//                String[] messageArr = new String[2];
-//                messageArr[0] = respObject.getJSONObject("request").getString("request_num");
-//                messageArr[1] = "您的顺丰订单下单成功！收件人是：" + ship_name;
-//                multipleMessageService.sendWXTemplateMessage( sourceInfo.get ,
-//                        messageArr, path, form_id, WX_template_id_1);
-//            }
-//        }
+        String path;
+        String formId = requestPOJO.getForm_id();
+        if (!StringUtils.isBlank(formId)) {
+            JSONObject json = (JSONObject) sfResponeRequestsArray.get(0);
+            String str = "merchant";
+            if (json.containsKey(str)) {
+                JSONObject merchant = json.getJSONObject(str);
+                String uuId = merchant.getString("uuid");
+                path = OrderConstant.BASIS_REGION_SAME_LINK + "?order_id=" + orderID + "&uuid=" + uuId;
+                String[] messageArr = new String[2];
+                messageArr[0] = requestNumSB + "";
+                messageArr[1] = "您的顺丰订单下单成功！收件人是：" + shipNameSB;
+                multipleMessageService.sendWXTemplateMessage(Integer.valueOf(sourceInfo.getMultiplePackageAddressDTO().getUserId()),
+                        messageArr, path, formId, WX_template_id_1);
+            }
+        }
 
 
         return APIUtil.getResponse(SUCCESS, sfResponeObject);
@@ -306,15 +309,6 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
 
     @Override
     public APIResponse batchPay(APIRequest request) {
-
-        //获取公共uuid
-        String uuid = SFTokenHelper.COMMON_UUID;
-        //获取公共access_token
-        String accessToken = SFTokenHelper.COMMON_ACCESSTOKEN;
-
-
-
-
 
         return null;
     }
@@ -347,6 +341,10 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
             reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserveTime, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             requestJson.put("reserve_time", reserveTime);
         }
+        //同城下单参数增加 C 端小程序标识和订单类型表示   NORMAL/RESERVED/DIRECTED
+        requestJson.put("request_source", "C_WX_APP");
+        //默认为普通
+        requestJson.put("type", "NORMAL");
         sfRequestJson.put("request", requestJson);
         return reserveTime;
     }
