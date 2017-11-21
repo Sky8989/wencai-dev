@@ -13,7 +13,7 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.jpa.PriceExplainDao;
 import com.sftc.web.dao.mybatis.PriceExaplainMapper;
 import com.sftc.web.model.entity.PriceExplain;
-import com.sftc.web.model.vo.swaggerRequestVO.PriceExaplainVO;
+import com.sftc.web.model.vo.swaggerRequest.PriceExaplainVO;
 import com.sftc.web.service.PriceExaplainService;
 
 

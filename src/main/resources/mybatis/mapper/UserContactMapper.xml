@@ -17,7 +17,7 @@
         <association property="friend_info" select="selectUser" column="friend_id"/>
     </resultMap>
 
-    <resultMap id="contactCallbackMap" type="com.sftc.web.model.vo.displayVO.FriendRecordVO">
+    <resultMap id="contactCallbackMap" type="com.sftc.web.model.vo.displayMessage.FriendRecordVO">
         <id column="id" property="id"/>
         <result column="sender_name" property="sender_name"/>
         <result column="sender_user_id" property="sender_user_id"/>
@@ -50,7 +50,7 @@
     </select>
 
     <!-- 好友列表 -->
-    <select id="friendList" parameterType="com.sftc.web.model.vo.swaggerRequestVO.FriendListVO" resultMap="friendMap">
+    <select id="friendList" parameterType="com.sftc.web.model.vo.swaggerRequest.FriendListVO" resultMap="friendMap">
         SELECT *
         FROM sftc_user_contact
         WHERE user_id = #{user_id}
@@ -63,7 +63,7 @@
         WHERE user_id = #{user_id}
     </select>
 
-    <insert id="addFriend" parameterType="com.sftc.web.model.vo.swaggerRequestVO.UserContactParamVO">
+    <insert id="addFriend" parameterType="com.sftc.web.model.vo.swaggerRequest.UserContactParamVO">
         INSERT INTO sftc_user_contact
         (user_id, friend_id, create_time)
         VALUES
@@ -94,7 +94,7 @@
         WHERE user_id = #{user_id} AND friend_id = #{friend_id}
     </select>
 
-    <select id="selectCirclesContact" parameterType="com.sftc.web.model.vo.swaggerRequestVO.UserContactParamVO"
+    <select id="selectCirclesContact" parameterType="com.sftc.web.model.vo.swaggerRequest.UserContactParamVO"
             resultMap="contactCallbackMap">
         SELECT
             sftc_order_express.*,

@@ -11,7 +11,7 @@ import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.entity.Token;
 import com.sftc.web.model.entity.User;
-import com.sftc.web.model.vo.swaggerRequestVO.UserParamVO;
+import com.sftc.web.model.vo.swaggerRequest.UserParamVO;
 import com.sftc.web.model.others.WXUser;
 import com.sftc.web.service.MessageService;
 import com.sftc.web.service.UserService;

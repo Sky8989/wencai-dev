@@ -2,8 +2,8 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.vo.swaggerRequestVO.UpdateUserContactLabelVO;
-import com.sftc.web.model.vo.swaggerRequestVO.UserLabelVO;
+import com.sftc.web.model.vo.swaggerRequest.UpdateUserContactLabelVO;
+import com.sftc.web.model.vo.swaggerRequest.UserLabelVO;
 import com.sftc.web.service.UserLabelService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
