@@ -20,7 +20,7 @@ public class EvaluateServiceImpl implements EvaluateService {
     private EvaluateMapper evaluateMapper;
 
     /**
-     * 通过 uuid 去获取大网订单的快递信息 在本地数据库里
+     * 通过 uuid 去获取订单的快递信息 在本地数据库里
      */
     public APIResponse getEvaluate(APIRequest apiRequest) {
         String uuid = (String) apiRequest.getParameter("uuid");

@@ -79,7 +79,7 @@ public class Order extends Object {
     private String order_type; // 订单类型 普通 神秘
 
     @Setter @Getter
-    private String region_type;// 订单地域 同城 大网
+    private String region_type;// 订单地域 同城
 
     private int is_cancel;//新添加 is_cancel
 

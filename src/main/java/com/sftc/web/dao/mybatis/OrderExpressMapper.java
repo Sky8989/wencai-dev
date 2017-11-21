@@ -1,7 +1,6 @@
 package com.sftc.web.dao.mybatis;
 
 import com.sftc.web.model.entity.OrderExpress;
-import com.sftc.web.model.entity.OrderExpressTransform;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -92,14 +91,5 @@ public interface OrderExpressMapper {
     ////////////////////下面是cms系统用到的mapper//////////////////////////
 
     List<OrderExpress> selectOrderExpressByPage(OrderExpress orderExpress);
-
-    /**
-     * 获取大网兜底单列表
-     *
-     * @param orderExpressTransform 转单快递的模型
-     * @return 返回的是orderExpressTransform
-     */
-    List<OrderExpressTransform> selectOrderExpressTransformList(OrderExpressTransform orderExpressTransform);
-
 
 }

@@ -225,17 +225,6 @@
         </where>
     </select>
 
-
-    <select id="selectOrderExpressTransformList" resultType="com.sftc.web.model.entity.OrderExpressTransform"
-            parameterType="com.sftc.web.model.entity.OrderExpressTransform">
-        SELECT * FROM sftc_order_express_transform
-        <where>
-            <if test="express_id != null and express_id != 0">and express_id = #{express_id}</if>
-            <if test="same_uuid != null and same_uuid != '' ">and same_uuid = #{same_uuid}</if>
-            <if test="nation_uuid != null and nation_uuid != '' ">and nation_uuid = #{nation_uuid}</if>
-        </where>
-    </select>
-
     <select id="selectOrderIdForsyncSFExpressStatus" parameterType="int" resultType="java.lang.String">
         SELECT *
         FROM sftc_order o

@@ -81,15 +81,6 @@ public class EnumUtils {
 		case "KUAISUDA":
 			distribution = DistributionMethod.valueOf("KUAISUDA").KUAISUDA;
 			break;
-		case "1":
-			distribution = DistributionMethod.valueOf("SF_MORROW").SF_MORROW;
-			break;
-		case "2":
-			distribution = DistributionMethod.valueOf("SF_EOD").SF_EOD;
-			break;
-		case "5":
-			distribution = DistributionMethod.valueOf("SF_MORROW_MORNING").SF_MORROW_MORNING;
-			break;
 		default:
 			break;
 		}

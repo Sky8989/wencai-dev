@@ -33,24 +33,4 @@ public class TokenController extends BaseController {
         apiRequest.setRequestParam(deleteTokenVO);
         return tokenService.deleteToken(apiRequest);
     }
-
-    @ApiOperation(value = "1.app端的接口，手机号登陆和微信登陆共用，参数区分2.刷新token", httpMethod = "POST")
-    @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse login(@RequestBody RefreshTokenVO refreshTokenVO) throws Exception {
-        APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(refreshTokenVO);
-        return tokenService.token(apiRequest);
-    }
-
-//    @RequestMapping(value = "/token2", method = RequestMethod.POST)
-//    public @ResponseBody
-//    ResponseEntity<APIResponse> login2(@RequestBody Object object) throws Exception {
-//        APIRequest apiRequest = new APIRequest();
-//        apiRequest.setRequestParam(object);
-//        APIResponse apiResponse = APIUtil.paramErrorResponse("测试错误");
-//        int i = 1/0;
-//        return ControllerHelper.responseEntityBuilder(apiResponse);
-//    }
-
 }

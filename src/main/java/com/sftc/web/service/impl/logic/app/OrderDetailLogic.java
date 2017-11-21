@@ -39,8 +39,6 @@ public class OrderDetailLogic {
     @Resource
     private GiftCardMapper giftCardMapper;
     @Resource
-    private OrderExpressTransformMapper orderExpressTransformMapper;
-    @Resource
     private MessageMapper messageMapper;
 
     private static final String CONSTANTS_STR = "BASICDATA";
@@ -117,32 +115,6 @@ public class OrderDetailLogic {
             return APIUtil.getResponse(SUCCESS, respObject);
         }
 
-        if (regionType.equals("REGION_NATION")) { // 大网
-
-            // 兜底单
-            OrderExpressTransform orderExpressTransform = orderExpressTransformMapper.selectExpressTransformByUUID(uuid);
-            respObject.put("transform", orderExpressTransform);
-
-            // sort
-            String sort = (String) request.getParameter("sort");
-            sort = sort == null ? "desc" : sort;
-            // GET
-            String url = SF_ORDERROUTE_URL + uuid + "&sort=" + sort;
-            HttpGet get = new HttpGet(url);
-            String access_token = SFTokenHelper.getToken();
-            get.addHeader("Authorization", "bearer " + access_token);
-            String res = APIGetUtil.get(get);
-
-            if (!res.equals("[]")) {
-                JSONArray routeList = JSONArray.fromObject(res);
-                if (routeList != null)
-                    respObject.put("sf", routeList);
-            } else {
-                respObject.put("sf", new JSONObject());
-            }
-
-        } else if (regionType.equals("REGION_SAME")) { // 同城
-
             // 同城订单需要access_token
             String access_token = (String) request.getParameter("access_token");
             access_token = (access_token == null || access_token.equals("") ? COMMON_ACCESSTOKEN : access_token);
@@ -180,7 +152,7 @@ public class OrderDetailLogic {
             if (apiResponse != null) return apiResponse;
             order = orderMapper.selectOrderDetailByUuid(uuid);
             setPackageType(order);//获取包裹信息
-        }
+
 
         respObject.put("order", order);
 
