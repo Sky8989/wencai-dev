@@ -320,7 +320,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         if (StringUtils.isBlank(openID)) {
             return APIUtil.selectErrorResponse("open_id为空", null);
         }
-        String pay_url = SF_Multiple_REQUEST_URL + "/" + groupUUId + "/js_pay?open_id=" + openID;
+        String pay_url = SF_Multiple_PAY_URL + "/" + groupUUId + "/js_pay?open_id=" + openID;
         HttpPost post = new HttpPost(pay_url);
         //获取公共access_token
         String accessToken = TokenUtils.getInstance().getAccess_token();

@@ -71,6 +71,10 @@ public class SFConstant {
      */
     public static String SF_Multiple_QUOTES_URL = SF_QUOTES_URL + "/in_group";
     /**
+     * 多包裹支付
+     */
+    public static String SF_Multiple_PAY_URL = SF_SAME_DOMAIN + "/request_groups";
+    /**
      * 优惠券获取
      */
     public static String SF_COUPON_LIST_URL = SF_SAME_DOMAIN + "coupons/by_user/{user_uuid}?status={status}&limit={limit}&offset={offset}";
