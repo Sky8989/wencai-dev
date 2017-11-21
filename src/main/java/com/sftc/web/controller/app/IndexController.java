@@ -2,9 +2,8 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.config.IgnoreToken;
-import com.sftc.web.model.vo.swaggerRequestVO.SFAPIRequestVO;
-import com.sftc.web.model.vo.swaggerRequestVO.SFAccessTokenRequestVO;
+import com.sftc.web.model.vo.swaggerRequest.SFAPIRequestVO;
+import com.sftc.web.model.vo.swaggerRequest.SFAccessTokenRequestVO;
 import com.sftc.web.service.IndexService;
 import com.sftc.web.service.UserService;
 import io.swagger.annotations.Api;

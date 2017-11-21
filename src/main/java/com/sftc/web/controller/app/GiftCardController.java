@@ -3,7 +3,6 @@ package com.sftc.web.controller.app;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.BaseController;
-import com.sftc.web.model.vo.displayVO.GiftCardListVO;
 import com.sftc.web.model.vo.swaggerResponse.GiftCardListRespVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

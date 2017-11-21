@@ -4,9 +4,8 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
-import com.sftc.web.model.vo.swaggerRequestVO.UserMerchantsRequestVO;
-import com.sftc.web.model.vo.swaggerRequestVO.UserParamVO;
-import com.sftc.web.model.vo.swaggerRequestVO.UserNewMobileVO;
+import com.sftc.web.model.vo.swaggerRequest.UserMerchantsRequestVO;
+import com.sftc.web.model.vo.swaggerRequest.UserParamVO;
 import com.sftc.web.model.vo.swaggerResponse.ResponseMessageVO;
 import com.sftc.web.service.UserService;
 import io.swagger.annotations.Api;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 @RequestMapping("user")
 @Api(description = "用户相关")

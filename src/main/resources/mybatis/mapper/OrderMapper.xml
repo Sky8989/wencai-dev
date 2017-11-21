@@ -177,7 +177,7 @@
     </update>
 
     <!-- 我的订单列表  -->
-    <select id="selectMyOrderList" parameterType="com.sftc.web.model.vo.swaggerOrderVO.MyOrderParamVO"
+    <select id="selectMyOrderList" parameterType="com.sftc.web.model.vo.swaggerOrderRequest.MyOrderParamVO"
             resultMap="orderMap">
         SELECT * FROM sftc_order
         WHERE id IN (
@@ -204,7 +204,7 @@
         limit #{pageNum}, #{pageSize}
     </select>
     <!--解决多字段 转义的问题-->
-    <select id="selectMyOrderList2" parameterType="com.sftc.web.model.vo.swaggerOrderVO.MyOrderParamVO"
+    <select id="selectMyOrderList2" parameterType="com.sftc.web.model.vo.swaggerOrderRequest.MyOrderParamVO"
             resultMap="orderMap">
         SELECT * FROM sftc_order
         WHERE id IN (
@@ -235,7 +235,7 @@
 
 
     <!-- 我的好友订单列表  -->
-    <select id="selectMyFriendOrderList" parameterType="com.sftc.web.model.vo.swaggerOrderVO.MyOrderParamVO"
+    <select id="selectMyFriendOrderList" parameterType="com.sftc.web.model.vo.swaggerOrderRequest.MyOrderParamVO"
             resultMap="orderMap">
 
         SELECT *

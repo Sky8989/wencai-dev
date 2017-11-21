@@ -1,5 +1,5 @@
 package com.sftc.web.model.dto;
-import com.sftc.web.model.vo.displayVO.PackageMessageVO;
+import com.sftc.web.model.vo.displayMessage.PackageMessageVO;
 import com.sftc.web.model.entity.Evaluate;
 import com.sftc.web.model.entity.OrderExpress;
 import io.swagger.annotations.ApiModel;

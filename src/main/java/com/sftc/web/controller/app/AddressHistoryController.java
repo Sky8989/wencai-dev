@@ -4,7 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.vo.swaggerResponse.AddressHistoryListVO;
 import com.sftc.web.model.vo.swaggerResponse.ResponseMessageVO;
-import com.sftc.web.model.vo.swaggerRequestVO.AddressHistoryDeleteVO;
+import com.sftc.web.model.vo.swaggerRequest.AddressHistoryDeleteVO;
 import com.sftc.web.service.AddressHistoryService;
 import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;

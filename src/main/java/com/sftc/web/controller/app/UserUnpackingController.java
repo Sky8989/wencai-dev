@@ -2,7 +2,7 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.vo.swaggerRequestVO.UserUnpackingVO;
+import com.sftc.web.model.vo.swaggerRequest.UserUnpackingVO;
 import com.sftc.web.service.UserUnpackingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

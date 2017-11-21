@@ -4,7 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
-import com.sftc.web.model.vo.swaggerRequestVO.DeleteTokenVO;
+import com.sftc.web.model.vo.swaggerRequest.DeleteTokenVO;
 import com.sftc.web.service.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

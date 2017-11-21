@@ -1,8 +1,6 @@
 package com.sftc.web.model.vo.swaggerResponse;
 
-import com.sftc.web.model.dto.OrderDTO;
-import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.vo.displayVO.PackageMessageVO;
+import com.sftc.web.model.vo.displayMessage.PackageMessageVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

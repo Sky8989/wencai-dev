@@ -1,10 +1,10 @@
 package com.sftc.web.dao.mybatis;
 
-import com.sftc.web.model.vo.displayVO.FriendRecordVO;
-import com.sftc.web.model.vo.swaggerRequestVO.FriendListVO;
+import com.sftc.web.model.vo.displayMessage.FriendRecordVO;
+import com.sftc.web.model.vo.swaggerRequest.FriendListVO;
 import com.sftc.web.model.entity.UserContact;
 import com.sftc.web.model.entity.UserContactNew;
-import com.sftc.web.model.vo.swaggerRequestVO.UserContactParamVO;
+import com.sftc.web.model.vo.swaggerRequest.UserContactParamVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

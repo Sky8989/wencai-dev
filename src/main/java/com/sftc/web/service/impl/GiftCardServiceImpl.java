@@ -7,7 +7,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.mybatis.GiftCardMapper;
 import com.sftc.web.model.entity.GiftCard;
-import com.sftc.web.model.vo.displayVO.GiftCardListVO;
+import com.sftc.web.model.vo.displayMessage.GiftCardListVO;
 import com.sftc.web.service.GiftCardService;
 import org.springframework.stereotype.Service;
 

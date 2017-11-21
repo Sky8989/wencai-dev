@@ -4,7 +4,7 @@ package com.sftc.web.controller.app;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.BaseController;
-import com.sftc.web.model.vo.swaggerRequestVO.UpdateIsReadVO;
+import com.sftc.web.model.vo.swaggerRequest.UpdateIsReadVO;
 import com.sftc.web.model.vo.swaggerResponse.NotificaionMessageListVO;
 import com.sftc.web.model.vo.swaggerResponse.ResponseMessageVO;
 import com.sftc.web.service.NotificationMessageService;
