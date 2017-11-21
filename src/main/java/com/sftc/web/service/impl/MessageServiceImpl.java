@@ -275,7 +275,7 @@ public class MessageServiceImpl implements MessageService {
             // 验证手机号与user_id的匹配
             User userByPhone = userMapper.selectUserByPhone(mobile);
             User userByUserId = userMapper.selectUserByUserId(user_id);
-            Map<String, String> map = new HashMap<String, String>(1, 1);
+            Map<String, String> map = new HashMap<>(1, 1);
             if (userByUserId.getMobile() == null || "".equals(userByUserId.getMobile())) {
                 // 用户的手机号为空 则判断该手机号是否被使用
                 if (userByPhone != null) {
@@ -296,8 +296,7 @@ public class MessageServiceImpl implements MessageService {
             String invite_code = null;
             if (jsonObject.getJSONObject("merchant").getJSONObject("attributes").containsKey("invite_code"))
                 invite_code = jsonObject.getJSONObject("merchant").getJSONObject("attributes").getString("invite_code");
-
-            this.logger.info("--- invite_code " + invite_code);
+            //移除获取token时不需要的参数
             jsonObject.getJSONObject("merchant").remove("attributes");
             jsonObject.remove("invite");
 
@@ -330,7 +329,7 @@ public class MessageServiceImpl implements MessageService {
                             errorMap.put("reason", "Verification code error");
                             return APIUtil.submitErrorResponse("验证码错误", errorMap);
                         } else if (type != null && !type.equals("") && type.equals("NOT_FOUND")) {
-                            // 新用户注册流程
+                            // 用户不存在时 新用户注册流程 添加所需参数
                             jsonObject.getJSONObject("merchant").put("attributes",attributeOBJ);
                             jsonObject.getJSONObject("message").put("type","WX_REGISTER_VERIFY_SMS");
 
