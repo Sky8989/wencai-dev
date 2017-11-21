@@ -88,9 +88,9 @@ public class CouponServiceImpl implements CouponService {
         APIStatus status = APIStatus.SUCCESS;
         String coupon_exchange_url = SF_COUPON_EXCHANGE_API.replace("{promo_code}", promo.getPromo_code());
 
-        //更新商户信息
-        APIResponse apiResponse = updateMerchantAddress(promo.getToken());
-        if (apiResponse != null) return apiResponse;
+//        //更新商户信息
+//        APIResponse apiResponse = updateMerchantAddress(promo.getToken());
+//        if (apiResponse != null) return apiResponse;
 
         // 调用顺丰接口
         HttpPost httpPost = new HttpPost(coupon_exchange_url);
@@ -108,22 +108,22 @@ public class CouponServiceImpl implements CouponService {
 
     }
 
-    private APIResponse updateMerchantAddress(String access_token) throws Exception {
-        String json = "{\"merchant\":{\"name\":\"new_name\",\"attributes\":{},\"summary\":{},\"" +
-                "email\":\"123@gmail.com\",\"address\":{\"type\":\"LIVE\",\"country\":\"中国\",\"province\":\"广东\",\"" +
-                "city\":\"深圳\",\"region\":\"南山区\",\"street\":\"深圳市南山区文心五路海岸城五楼周大福\",\"zipcode\":\"518000\",\"receiver\":" +
-                "\"兑换优惠券\",\"mobile\":\"13632383955\",\"marks\":{},\"longitude\":113.942215,\"latitude\":22.52261}}}";
-        RequestBody rb = RequestBody.create(null, json);
-        Request request = new Request.Builder().
-                url(SF_LOGIN).
-                addHeader("Content-Type", "application/json").
-                addHeader("PushEnvelope-Device-Token", access_token)
-                .put(rb).build();
-        OkHttpClient client = new OkHttpClient();
-        okhttp3.Response response = client.newCall(request).execute();
-        if (response.code() == 200) return null;//正常情况返回null
-        return APIUtil.logicErrorResponse("更新商户信息失败", response.body());
-    }
+//    private APIResponse updateMerchantAddress(String access_token) throws Exception {
+//        String json = "{\"merchant\":{\"name\":\"new_name\",\"attributes\":{},\"summary\":{},\"" +
+//                "email\":\"123@gmail.com\",\"address\":{\"type\":\"LIVE\",\"country\":\"中国\",\"province\":\"广东\",\"" +
+//                "city\":\"深圳\",\"region\":\"南山区\",\"street\":\"深圳市南山区文心五路海岸城五楼周大福\",\"zipcode\":\"518000\",\"receiver\":" +
+//                "\"兑换优惠券\",\"mobile\":\"13632383955\",\"marks\":{},\"longitude\":113.942215,\"latitude\":22.52261}}}";
+//        RequestBody rb = RequestBody.create(null, json);
+//        Request request = new Request.Builder().
+//                url(SF_LOGIN).
+//                addHeader("Content-Type", "application/json").
+//                addHeader("PushEnvelope-Device-Token", access_token)
+//                .put(rb).build();
+//        OkHttpClient client = new OkHttpClient();
+//        okhttp3.Response response = client.newCall(request).execute();
+//        if (response.code() == 200) return null;//正常情况返回null
+//        return APIUtil.logicErrorResponse("更新商户信息失败", response.body());
+//    }
 
     private JSONObject resolveCouponResult(String status_temp, JSONObject resJSONObject) throws ParseException {
 
