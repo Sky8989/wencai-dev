@@ -39,6 +39,7 @@ public class MessageController extends BaseController {
         return messageService.messageCheck(apiRequest);
     }
 
+    @ApiIgnore
     @IgnoreToken
     @ApiOperation(value = "注册接口【调顺丰】", httpMethod = "POST")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -49,6 +50,7 @@ public class MessageController extends BaseController {
         return messageService.register(apiRequest);
     }
 
+    @ApiIgnore
     @IgnoreToken
     @ApiOperation(value = "获取token【调顺丰】", httpMethod = "POST")
     @RequestMapping(value = "/token", method = RequestMethod.POST)

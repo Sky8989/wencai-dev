@@ -332,6 +332,7 @@ public class MessageServiceImpl implements MessageService {
                         } else if (type != null && !type.equals("") && type.equals("NOT_FOUND")) {
                             // 新用户注册流程
                             jsonObject.getJSONObject("merchant").put("attributes",attributeOBJ);
+                            jsonObject.getJSONObject("message").put("type","WX_REGISTER_VERIFY_SMS");
 
                             String registerUrl = gson.toJson(jsonObject);
                             HttpPost registerPost = new HttpPost(SF_REGISTER_URL);
