@@ -74,7 +74,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         //收件人信息
         List<MultiplePackageDTO> targetInfos = multiplePackageMapper.queryTargetsOrderInfoByOrderID(orderID);
         if (targetInfos == null) {
-            return APIUtil.selectErrorResponse("无效orderId", sourceInfo);
+            return APIUtil.selectErrorResponse("无效orderId", null);
         }
 
         /*---------------------------------------------------------------- sf请求体封装拼接 --------------------------------------------------------------------------------*/
@@ -175,7 +175,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         //收件人信息
         List<MultiplePackageDTO> targetInfos = multiplePackageMapper.queryTargetsOrderInfoByOrderID(orderID);
         if (targetInfos == null) {
-            return APIUtil.selectErrorResponse("无效orderId", sourceInfo);
+            return APIUtil.selectErrorResponse("无效orderId", null);
         }
 
 
