@@ -318,7 +318,25 @@ public class MessageServiceImpl implements MessageService {
                 token.setAccess_token(access_token);
                 token.setRefresh_token(refresh_token);
                 tokenMapper.updateToken(token);
-                return APIUtil.getResponse(SUCCESS, resJSONObject);
+
+                String loginStr = gson.toJson(jsonObject);
+                HttpPost loginPost = new HttpPost(SF_LOGIN);
+                loginPost.addHeader("PushEnvelope-Device-Token", access_token);
+                String loginRespStr = APIPostUtil.post(loginStr, loginPost);
+
+                JSONObject loginRespOBJ = JSONObject.fromObject(loginRespStr);
+                if (loginRespOBJ.containsKey("error")) {
+                    return APIUtil.submitErrorResponse("LOGIN_ERROR", loginRespOBJ);
+                } else {
+                    // 更新 uuid
+                    User user = userMapper.selectUserByUserId(user_id);
+                    if (user != null && (user.getUuid() == null || "".equals(user.getUuid()))) {
+                        user.setUuid(loginRespOBJ.getJSONObject("merchant").getString("uuid"));
+                        user.setMobile(loginRespOBJ.getJSONObject("merchant").getString("mobile"));
+                        userMapper.updateUser(user);
+                    }
+                }
+                return APIUtil.getResponse(SUCCESS, loginRespOBJ);
             } else {    //判断错误信息
                 JSONObject errMesgOBJ = resJSONObject.getJSONObject("error");
                     if (errMesgOBJ != null && errMesgOBJ.containsKey("type")) {
