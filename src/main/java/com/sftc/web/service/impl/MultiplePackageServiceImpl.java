@@ -336,7 +336,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         JSONObject responseJson = new JSONObject();
         JSONObject payStrJson = JSONObject.fromObject(payStr);
         responseJson.put("payStr",payStrJson);
-        return APIUtil.getResponse(SUCCESS, payStrJson);
+        return APIUtil.getResponse(SUCCESS, responseJson);
     }
 
     /**
