@@ -332,7 +332,9 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
             return APIUtil.submitErrorResponse("支付失败，请查看返回值", resultObject);
         }
 
-        return APIUtil.getResponse(SUCCESS, resultObject);
+        String payStr = resultObject.getString("payStr");
+        JSONObject payStrJson = JSONObject.fromObject(payStr);
+        return APIUtil.getResponse(SUCCESS, payStrJson);
     }
 
     /**
