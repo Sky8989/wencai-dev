@@ -25,4 +25,6 @@ public interface MultiplePackageMapper {
     void updateorderById(@Param(value = "orderId")String orderId,@Param(value = "groupUUId") String groupUUId);
 
     String queryUserOpenIDByGroupUUId(String groupUUId);
+
+    void updatePayStatuByGroupID(String orderId);
 }
