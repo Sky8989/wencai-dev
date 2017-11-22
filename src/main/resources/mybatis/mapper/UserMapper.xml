@@ -51,11 +51,29 @@
         (#{open_id}, #{create_time}, #{session_key})
     </insert>
 
+    <insert id="insertUnionId" parameterType="com.sftc.web.model.entity.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sftc_user (open_id,unionid, create_time, chanel)
+        VALUES
+        (#{open_id}, #{unionid}, #{create_time}, #{chanel})
+    </insert>
+
     <insert id="insertWithAvatarAndName" parameterType="com.sftc.web.model.entity.User" useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO sftc_user (open_id, create_time, session_key, avatar, name)
         VALUES
         (#{open_id}, #{create_time}, #{session_key}, #{avatar}, #{name})
+    </insert>
+
+    <update id="updateUnionId" parameterType="java.lang.String">
+        UPDATE sftc_user SET unionid = #{unionid}
+        WHERE id = #{id}
+    </update>
+
+    <insert id="appInsertWithAvatarAndName" parameterType="com.sftc.web.model.entity.User" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO sftc_user (open_id, create_time, chanel, avatar, name,unionid)
+        VALUES
+        (#{open_id}, #{create_time}, #{chanel}, #{avatar}, #{name},#{unionid})
     </insert>
 
     <!--添加顺丰传过来的Merchant信息-->

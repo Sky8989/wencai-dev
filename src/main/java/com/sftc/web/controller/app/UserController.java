@@ -4,6 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
+import com.sftc.web.model.vo.swaggerRequest.APPUserParamVO;
 import com.sftc.web.model.vo.swaggerRequest.UserMerchantsRequestVO;
 import com.sftc.web.model.vo.swaggerRequest.UserParamVO;
 import com.sftc.web.model.vo.swaggerResponse.ResponseMessageVO;
@@ -59,6 +60,22 @@ public class UserController extends BaseController {
         APIRequest request = new APIRequest();
         request.setRequestParam(userParamVO);
         return userService.superLogin(request);
+    }
+
+    @IgnoreToken
+    @ApiOperation(value = "APP登录", httpMethod = "POST",notes = "通过code，获取unionid")
+    @ApiResponses({
+            @ApiResponse(code = 400,message = "Parameters of the abnormal"),
+            @ApiResponse(code = 401,message = "The query fails"),
+            @ApiResponse(code = 402,message = "The submit fails"),
+            @ApiResponse(code = 500,message = "System exceptions")
+    })
+    @RequestMapping(value = "/login/app", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse appLogin(@RequestBody APPUserParamVO appUserParamVO) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(appUserParamVO);
+        return userService.appLogin(request);
     }
 
     //10-12日提出的新需求 更新个人信息

@@ -34,6 +34,12 @@ public class User extends Object {
     private String open_id;
 
     @Setter @Getter
+    private String chanel;//用户渠道
+
+    @Setter @Getter
+    private String unionid;//用户唯一标识unionid
+
+    @Setter @Getter
     private String session_key;
 
     @Setter @Getter

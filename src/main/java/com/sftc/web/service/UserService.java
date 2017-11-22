@@ -17,6 +17,11 @@ public interface UserService {
     APIResponse superLogin(APIRequest request) throws Exception;
 
     /**
+     * APP登陆 获取unionid
+     */
+    APIResponse appLogin(APIRequest request) throws Exception;
+
+    /**
      * 获取token的公用方法
      */
     Token getToken(int id);

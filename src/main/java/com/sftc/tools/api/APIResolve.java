@@ -2,6 +2,7 @@ package com.sftc.tools.api;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
+import com.sftc.web.model.others.WXAPPUser;
 import com.sftc.web.model.vo.swaggerOrderRequest.OrderSynVO;
 import com.sftc.web.model.others.WXUser;
 import net.sf.json.JSONObject;
@@ -20,6 +21,14 @@ public class APIResolve {
         String json = IOUtils.toString(inputStream);
 
         return new Gson().fromJson(json, WXUser.class);
+    }
+
+    public static WXAPPUser getWxAPPUserWithUrl(String apiUrl) throws Exception {
+
+        InputStream inputStream = new URL(apiUrl).openConnection().getInputStream();
+        String json = IOUtils.toString(inputStream);
+
+        return new Gson().fromJson(json, WXAPPUser.class);
     }
 
     public static List<OrderSynVO> getOrderStatusWithUrl(String apiUrl, String token) throws Exception {

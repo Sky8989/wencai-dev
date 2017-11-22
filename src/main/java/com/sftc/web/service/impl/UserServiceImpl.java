@@ -9,6 +9,8 @@ import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.entity.Token;
 import com.sftc.web.model.entity.User;
+import com.sftc.web.model.others.WXAPPUser;
+import com.sftc.web.model.vo.swaggerRequest.APPUserParamVO;
 import com.sftc.web.model.vo.swaggerRequest.UserParamVO;
 import com.sftc.web.model.others.WXUser;
 import com.sftc.web.service.MessageService;
@@ -32,6 +34,7 @@ import java.util.Map;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_GET_TOKEN;
 import static com.sftc.tools.constant.SFConstant.SF_LOGIN;
+import static com.sftc.tools.constant.ThirdPartyConstant.WX_APP_UNIONID;
 import static com.sftc.tools.constant.ThirdPartyConstant.WX_AUTHORIZATION;
 
 @Service
@@ -51,6 +54,9 @@ public class UserServiceImpl implements UserService {
     private static final String postStr = "{\"merchant\":{" +
             "\"mobile\":\"13797393543\"" + "}," +
             "\"message\":{" + "\"content\":\"4444\"}}";
+
+    private static final String WXC_USER = "WXC";
+    private static final String APP_USER = "APP";
 
     public APIResponse login(APIRequest request) throws Exception {
         UserParamVO userParamVO = (UserParamVO) request.getRequestParam();
@@ -204,6 +210,97 @@ public class UserServiceImpl implements UserService {
             }
         } else {
             return APIUtil.submitErrorResponse(wxUser.getErrmsg(), wxUser);
+        }
+        return APIUtil.getResponse(SUCCESS, tokenInfo);
+    }
+
+    /**
+     * APP登录获取unionid
+     */
+    public APIResponse appLogin(APIRequest request) throws Exception {
+
+        APPUserParamVO appUserParamVO = (APPUserParamVO) request.getRequestParam();
+        String auth_url = WX_APP_UNIONID + appUserParamVO.getCode();
+        WXAPPUser wxappUser = APIResolve.getWxAPPUserWithUrl(auth_url);
+        User user = null;
+        Map<String, String> tokenInfo = new HashMap<String, String>();
+        if (wxappUser.getOpenid() != null && wxappUser.getUnionid() != null) {
+            List<User> userList = userMapper.selectUserByOpenid(wxappUser.getOpenid());
+            if (userList.size() > 1) {
+                return APIUtil.paramErrorResponse("出现重复用户，请填写用户反馈");
+            }
+            if (userList.size() == 1) {
+                user = userList.get(0);
+            }
+            if (user == null) {
+                User user2 = new User();
+                user2.setOpen_id(wxappUser.getOpenid());
+                user2.setUnionid(wxappUser.getUnionid());
+                user2.setChanel(APP_USER);
+                user2.setCreate_time(Long.toString(System.currentTimeMillis()));
+                //加入头像和昵称
+                if (appUserParamVO.getName() != null && appUserParamVO.getAvatar() != null) {
+                    user2.setAvatar(appUserParamVO.getAvatar());
+                    user2.setName(appUserParamVO.getName());
+                    userMapper.appInsertWithAvatarAndName(user2);
+                } else {
+                    userMapper.insertUnionId(user2);
+                }
+                //构建新的token
+                String myToken = makeToken(user2.getCreate_time(), user2.getOpen_id());
+                Token token = new Token(user2.getId(), myToken);
+                tokenMapper.addToken(token);
+                tokenInfo.put("token", myToken);
+                tokenInfo.put("user_id", (user2.getId() + ""));
+            } else {
+                //更新头像和昵称
+                if (appUserParamVO.getName() != null && appUserParamVO.getAvatar() != null) {
+                    logger.info("更新头像: " + appUserParamVO.getAvatar());
+                    logger.info("更新名字: " + appUserParamVO.getName());
+                    user.setAvatar(appUserParamVO.getAvatar());
+                    user.setName(appUserParamVO.getName());
+                }
+                if (user.getUnionid() == null || user.getUnionid().equals("")) {
+                    String unionid = wxappUser.getUnionid();
+                    userMapper.updateUnionId(unionid, user.getId());
+                }
+                userMapper.updateUserOfAvatar(user);
+                Token token = tokenMapper.getTokenById(user.getId());
+                if (token == null) {
+                    token = new Token(user.getId(), makeToken(user.getCreate_time(), user.getOpen_id()));
+                    tokenMapper.addToken(token);
+                } else {
+                    String gmt_modified = Long.toString(System.currentTimeMillis());
+                    if (Long.parseLong(gmt_modified) > Long.parseLong(token.getGmt_expiry())) {
+                        token.setGmt_expiry(Long.toString(System.currentTimeMillis() + 2592000000L));
+                        String myToken = makeToken(gmt_modified, user.getOpen_id());
+                        token.setLocal_token(myToken);
+                    }
+                    token.setGmt_modified(gmt_modified);
+                    // 此处更新 localtoken
+                    tokenMapper.updateToken(token);
+                }
+                tokenInfo.put("token", token.getLocal_token());
+                tokenInfo.put("user_id", (token.getUser_id() + ""));
+                Token paramtoken = tokenMapper.getTokenById(token.getUser_id());
+                if (paramtoken.getAccess_token() != null && !"".equals(paramtoken.getAccess_token())) { // 获取顺丰 access_token和uuid的内容
+                    HashMap<String, String> map = checkAccessToken(token.getUser_id(), paramtoken);
+                    if (map.containsKey("error")) {
+                        return APIUtil.submitErrorResponse("refresh_token failed", JSONObject.fromObject(map.get("error")));
+                    }
+                    if (map.containsKey("uuid")) {
+                        tokenInfo.put("uuid", map.get("uuid"));
+                    } else tokenInfo.put("uuid", user.getUuid());
+
+                    tokenInfo.put("access_token", map.get("access_token"));
+                }
+                //若有手机号 则加入手机号
+                if (user.getMobile() != null && !"".equals(user.getMobile())) {
+                    tokenInfo.put("mobile", user.getMobile());
+                }
+            }
+        } else {
+            return APIUtil.submitErrorResponse(wxappUser.getErrmsg(), wxappUser);
         }
         return APIUtil.getResponse(SUCCESS, tokenInfo);
     }

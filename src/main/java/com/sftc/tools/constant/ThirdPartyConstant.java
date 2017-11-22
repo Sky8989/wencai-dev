@@ -39,6 +39,11 @@ public class ThirdPartyConstant {
      */
     public static final String WX_AUTHORIZATION = "https://api.weixin.qq.com/sns/jscode2session?appid=" + WX_APPID + "&secret=" + WX_SECRET + "&grant_type=authorization_code&js_code=";
 
+    /**
+     * APP登录code换取unionid接口地址
+     */
+    public static final String WX_APP_UNIONID = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + WX_APPID + "&secret=" + WX_SECRET + "&grant_type=authorization_code&code=";
+
 
     /////////////// 腾讯地图相关 ///////////////
     /**
