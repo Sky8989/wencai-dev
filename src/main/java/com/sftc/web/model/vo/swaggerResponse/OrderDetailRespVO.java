@@ -6,15 +6,12 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * 礼品卡界面展示类
- */
-@ApiModel(value = "订单列表响应对象")
+@ApiModel(value = "订单详情响应对象")
 public class OrderDetailRespVO extends APIResponse{
 
     @Getter @Setter
     @ApiModelProperty(name = "merchant")
-    private OrderListVO result;
+    private OrderDetailVO result;
 
     @Getter @Setter
     @ApiModelProperty(name = "error",value = "错误信息",hidden = true)

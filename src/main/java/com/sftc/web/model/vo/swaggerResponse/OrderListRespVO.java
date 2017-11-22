@@ -1,16 +1,18 @@
-package com.sftc.web.model.vo.displayMessage;
+package com.sftc.web.model.vo.swaggerResponse;
 
+import com.sftc.tools.api.APIResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+
 /**
  * 我的订单列表界面展示类
  */
-@ApiModel(value = "订单列表界面展示类")
-public class MyOrderListVO{
+@ApiModel(value = "我的订单列表响应对象")
+public class OrderListRespVO extends APIResponse{
 
     @Setter @Getter
     @ApiModelProperty(name = "id",value = "订单id",example = "C1510544211749T8")

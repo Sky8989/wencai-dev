@@ -12,8 +12,8 @@ import java.util.List;
 /**
  * Created by xf on 2017/11/17.
  */
-@ApiModel(value = "订单列表信息包装类")
-public class OrderListVO{
+@ApiModel(value = "订单详情信息包装类")
+public class OrderDetailVO {
 
     @Getter @Setter
     @ApiModelProperty(name = "order",value = "订单信息")

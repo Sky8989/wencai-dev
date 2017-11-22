@@ -18,7 +18,7 @@ public class EvaluateMessageRespVO extends APIResponse{
 
     @Getter @Setter
     @ApiModelProperty(name = "addressBookDTOList",value = "历史地址列表")
-    private List<Evaluate> result;
+    private Evaluate result;
 
     @Getter @Setter
     @ApiModelProperty(name = "error",value = "错误信息",hidden = true)

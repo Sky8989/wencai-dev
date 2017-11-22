@@ -18,7 +18,7 @@ public class OrderEvaluateRespVO extends APIResponse{
 
     @Getter @Setter
     @ApiModelProperty(name = "EvaluateAttributes",value = "订单评价列表")
-    private List<EvaluateAttributes> result;
+    private EvaluateAttributes result;
 
     @Getter @Setter
     @ApiModelProperty(name = "error",value = "错误信息",hidden = true)
