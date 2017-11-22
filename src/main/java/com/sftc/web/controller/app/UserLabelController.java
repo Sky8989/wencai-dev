@@ -62,7 +62,7 @@ public class UserLabelController {
     /**
      * 删除个人标签
      */
-    @ApiOperation(value = "修改个人标签", httpMethod = "DELETE")
+    @ApiOperation(value = "删除个人标签", httpMethod = "DELETE")
     @RequestMapping(method = RequestMethod.DELETE)
     @ResponseBody
     public APIResponse deleteUsrLabelByLID(@RequestBody int id) {

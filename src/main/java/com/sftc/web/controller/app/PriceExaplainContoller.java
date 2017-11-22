@@ -44,7 +44,7 @@ public class PriceExaplainContoller {
          }
     	
     }
-    @ApiOperation(value = "删除常见问题", httpMethod = "DELETE")
+    @ApiOperation(value = "删除价格说明", httpMethod = "DELETE")
     @RequestMapping(method = RequestMethod.DELETE)
     public @ResponseBody
     APIResponse deleteCommonQuestion(@RequestBody int id) throws Exception {
