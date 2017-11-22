@@ -172,14 +172,18 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         String orderID = requestPOJO.getOrder_id();
 
          /*---------------------------------------------------------------- 查询数据库获取收件人和寄件人信息 --------------------------------------------------------------------------------*/
-        //寄件人信息
-        MultiplePackageDTO sourceInfo = multiplePackageMapper.querySourceOrderInfoByOrderID(orderID);
-        if (sourceInfo == null) {
-            return APIUtil.selectErrorResponse("无效orderId", null);
-        }
+
         //收件人信息
         List<MultiplePackageDTO> targetInfos = multiplePackageMapper.queryTargetsOrderInfoByOrderID(orderID);
         if (targetInfos == null) {
+            return APIUtil.selectErrorResponse("无效orderId", null);
+        }
+        if (targetInfos.size()<=1){
+            return APIUtil.submitErrorResponse("收件人不能少于2人", null);
+        }
+        //寄件人信息
+        MultiplePackageDTO sourceInfo = multiplePackageMapper.querySourceOrderInfoByOrderID(orderID);
+        if (sourceInfo == null) {
             return APIUtil.selectErrorResponse("无效orderId", null);
         }
 
