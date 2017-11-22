@@ -71,6 +71,17 @@ public class MultiplePackageController {
         return multiplePackageService.batchPay(request);
     }
 
+    @ApiOperation(value = "是否支付成功", httpMethod = HttpMethod.POST)
+    @PostMapping(value = "isPay")
+    public APIResponse isPay(@RequestBody @Valid MultiplePackagePayVO multiplePackageVO, BindingResult result) {
+        APIResponse errorMap = validRequestParms(result);
+        if (errorMap != null) {
+            return errorMap;
+        }
+        APIRequest request = new APIRequest();
+        request.setRequestParam(multiplePackageVO);
+        return multiplePackageService.isPay(request);
+    }
     private APIResponse validRequestParms(BindingResult result) {
         if (result.hasErrors()) {
             List<ObjectError> allErrors = result.getAllErrors();

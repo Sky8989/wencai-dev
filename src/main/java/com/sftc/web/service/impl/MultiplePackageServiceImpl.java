@@ -18,6 +18,7 @@ import com.sftc.web.service.MultiplePackageService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -122,7 +123,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         String res = APIPostUtil.post(gson.toJson(sfRequestJson), post);
 
         if (StringUtils.isBlank(res)) {
-            return APIUtil.submitErrorResponse("计价失败", "顺风返回体为空");
+            return APIUtil.submitErrorResponse("计价失败", "sf返回体为空");
         }
 
         JSONObject sfResponeObject = JSONObject.fromObject(res);
@@ -135,7 +136,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         /*-------------------------------------------------- 修改数据库表sftc_order_express -> quote的uuid--------------------------------------------------------*/
         JSONArray quotesArray = sfResponeObject.getJSONArray("quotes");
         if (quotesArray == null) {
-            return APIUtil.submitErrorResponse("计价失败", "顺风返回体quotes为空");
+            return APIUtil.submitErrorResponse("计价失败", "sf返回体quotes为空");
         }
         for (int j = 0; j < quotesArray.size(); j++) {
             MultiplePackageDTO multiplePackageDTO = targetInfos.get(j);
@@ -254,6 +255,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         }
         StringBuilder requestNumSB = new StringBuilder();
         StringBuilder shipNameSB = new StringBuilder();
+        map.put("status", "WAIT_HAND_OVER");
         for (int j = 0; j < sfResponeRequestsArray.size(); j++) {
             JSONObject requestsJson = (JSONObject) sfResponeRequestsArray.get(j);
             MultiplePackageDTO multiplePackageDTO = targetInfos.get(j);
@@ -266,7 +268,6 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
             map.put("orderExpressId", orderExpressId);
             map.put("uuid", uuid1);
             map.put("requestNum", requestNum);
-            map.put("status", status);
             map.put("orderTime", orderTime);
             map.put("reserveTime", reserveTime);
             multiplePackageMapper.updateOrderExpressById(map);
@@ -307,6 +308,12 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         return APIUtil.getResponse(SUCCESS, sfResponeObject);
     }
 
+    /**
+     * 批量支付
+     *
+     * @param request 前端请求request
+     * @return 支付结果
+     */
     @Override
     public APIResponse batchPay(APIRequest request) {
         //获取请求参数对象
@@ -320,8 +327,8 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         if (StringUtils.isBlank(openID)) {
             return APIUtil.selectErrorResponse("open_id为空", null);
         }
-        String pay_url = SF_Multiple_PAY_URL + "/" + groupUUId + "/js_pay?open_id=" + openID;
-        HttpPost post = new HttpPost(pay_url);
+        String payUrl = SF_Multiple_PAY_URL + "/" + groupUUId + "/js_pay?open_id=" + openID;
+        HttpPost post = new HttpPost(payUrl);
         //获取公共access_token
         String accessToken = TokenUtils.getInstance().getAccess_token();
         post.addHeader("PushEnvelope-Device-Token", accessToken);
@@ -335,8 +342,44 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         String payStr = resultObject.getString("payStr");
         JSONObject responseJson = new JSONObject();
         JSONObject payStrJson = JSONObject.fromObject(payStr);
-        responseJson.put("payStr",payStrJson);
+        responseJson.put("payStr", payStrJson);
         return APIUtil.getResponse(SUCCESS, responseJson);
+    }
+
+    /**
+     * 是否支付成功
+     *
+     * @param request 前端请求request
+     * @return 支付结果
+     */
+    @Override
+    public APIResponse isPay(APIRequest request) {
+        //获取请求参数对象
+        MultiplePackagePayVO requestParam = (MultiplePackagePayVO) request.getRequestParam();
+        if (requestParam == null) {
+            return APIUtil.paramErrorResponse("请求参数为空");
+        }
+        //group_uuid
+        String groupUUId = requestParam.getGroup_uuid();
+        //获取openID
+        String openID = multiplePackageMapper.queryUserOpenIDByGroupUUId(groupUUId);
+        if (StringUtils.isBlank(openID)) {
+            return APIUtil.selectErrorResponse("open_id为空", null);
+        }
+        String payUrl = SF_Multiple_PAY_URL + "/" + groupUUId + "/paid?open_id=" + openID;
+        HttpGet get = new HttpGet(payUrl);
+        //获取公共access_token
+        String accessToken = TokenUtils.getInstance().getAccess_token();
+        get.addHeader("PushEnvelope-Device-Token", accessToken);
+        String res = APIPostUtil.get("", payUrl);
+
+        JSONObject resultObject = JSONObject.fromObject(res);
+        String str = "error";
+        if (resultObject.containsKey(str)) {
+            return APIUtil.submitErrorResponse("支付判断失败，请查看返回值", resultObject);
+        }
+
+        return APIUtil.getResponse(SUCCESS, resultObject);
     }
 
     /**

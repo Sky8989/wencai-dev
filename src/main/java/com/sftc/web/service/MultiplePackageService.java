@@ -13,4 +13,6 @@ public interface MultiplePackageService {
     APIResponse batchPlaceOrder(APIRequest request);
 
     APIResponse batchPay(APIRequest request);
+
+    APIResponse isPay(APIRequest request);
 }
