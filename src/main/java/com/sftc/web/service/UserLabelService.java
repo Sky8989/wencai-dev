@@ -13,4 +13,9 @@ public interface UserLabelService {
      * 根据标签id修改个人标签
      */
     APIResponse updateUserContactLabels(APIRequest apiRequest);
+
+	APIResponse deleteUserContactLabels(int id);
+//	APIResponse deleteUserContactLabels(int id, int user_contact_id);
+
+	APIResponse addUserContactLabels(APIRequest apiRequest);
 }

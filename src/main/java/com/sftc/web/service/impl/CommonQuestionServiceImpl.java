@@ -98,7 +98,7 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
         	commonQuestionRedisDao.clearCommonQuestionsCache();
         	return APIUtil.getResponse(APIStatus.SUCCESS, commonQuestion);
         }else{
-        	return APIUtil.getResponse(APIStatus.PARAM_ERROR, new String("修改失败,不存在id="+commonQuestion.getId()));
+        	return APIUtil.getResponse(APIStatus.PARAM_ERROR, "修改失败,不存在id="+commonQuestion.getId());
         }
 
     }
@@ -110,7 +110,7 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
     	   commonQuestionRedisDao.clearCommonQuestionsCache();
     	   return APIUtil.getResponse(APIStatus.SUCCESS, id);
        }else{
-    	   return APIUtil.getResponse(APIStatus.PARAM_ERROR, new String("删除失败，不存在id="+id));
+    	   return APIUtil.getResponse(APIStatus.PARAM_ERROR, "删除失败，不存在id="+id);
        }
 
     }

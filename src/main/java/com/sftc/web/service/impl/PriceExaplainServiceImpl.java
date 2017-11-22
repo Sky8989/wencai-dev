@@ -55,7 +55,7 @@ public class PriceExaplainServiceImpl implements PriceExaplainService {
 		 if(priceExaplainMapper.deletePriceExplain(id) > 0){
 	    	   return APIUtil.getResponse(APIStatus.SUCCESS, id);
 	       }else{
-	    	   return APIUtil.getResponse(APIStatus.PARAM_ERROR, new String("删除失败，不存在id="+id));
+	    	   return APIUtil.getResponse(APIStatus.PARAM_ERROR, "删除失败，不存在id="+id);
 	       }
 	}
 	/**
@@ -79,12 +79,13 @@ public class PriceExaplainServiceImpl implements PriceExaplainService {
 	public APIResponse updatePriceExplain(PriceExplain priceExplain) {
 		if(priceExplain != null){
 			priceExplain.setUpdate_time(Long.toString(System.currentTimeMillis()));
-		}
 		if(priceExaplainMapper.updatePriceExplain(priceExplain) > 0 ){
         	return APIUtil.getResponse(APIStatus.SUCCESS, priceExplain);
         }else{
-        	return APIUtil.getResponse(APIStatus.PARAM_ERROR, new String("修改失败,不存在id="+priceExplain.getId()));
+        	return APIUtil.getResponse(APIStatus.PARAM_ERROR, "修改失败,不存在id="+priceExplain.getId());
         }
+		}
+		return APIUtil.getResponse(APIStatus.PARAM_ERROR, "修改失败,对象为null");
 	}
     
     
