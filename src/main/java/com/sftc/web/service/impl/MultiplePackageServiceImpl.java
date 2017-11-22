@@ -380,7 +380,9 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         String accessToken = TokenUtils.getInstance().getAccess_token();
         get.addHeader("PushEnvelope-Device-Token", accessToken);
         String res = APIPostUtil.get("", payUrl);
-
+        if (StringUtils.isBlank(res)){
+            return APIUtil.submitErrorResponse("支付判断失败", "sf返回体res为空");
+        }
         JSONObject resultObject = JSONObject.fromObject(res);
         String str = "error";
         if (resultObject.containsKey(str)) {
