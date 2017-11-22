@@ -46,7 +46,7 @@ public class SystemLabelController {
     	}
     }
     
-    @ApiOperation(value = "删除常见问题", httpMethod = "DELETE")
+    @ApiOperation(value = "删除系统标签", httpMethod = "DELETE")
     @RequestMapping(method = RequestMethod.DELETE)
     public @ResponseBody
     APIResponse deleteCommonQuestion(@RequestBody int id) throws Exception {
