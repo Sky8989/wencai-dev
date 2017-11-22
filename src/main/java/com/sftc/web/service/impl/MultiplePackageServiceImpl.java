@@ -255,6 +255,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         }
         StringBuilder requestNumSB = new StringBuilder();
         StringBuilder shipNameSB = new StringBuilder();
+        map.put("status", "WAIT_HAND_OVER");
         for (int j = 0; j < sfResponeRequestsArray.size(); j++) {
             JSONObject requestsJson = (JSONObject) sfResponeRequestsArray.get(j);
             MultiplePackageDTO multiplePackageDTO = targetInfos.get(j);
@@ -267,7 +268,6 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
             map.put("orderExpressId", orderExpressId);
             map.put("uuid", uuid1);
             map.put("requestNum", requestNum);
-            map.put("status", status);
             map.put("orderTime", orderTime);
             map.put("reserveTime", reserveTime);
             multiplePackageMapper.updateOrderExpressById(map);
