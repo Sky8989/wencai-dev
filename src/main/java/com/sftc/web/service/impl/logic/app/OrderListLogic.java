@@ -96,7 +96,6 @@ public class OrderListLogic {
             callback.setSender_name(orderDTO.getSender_name());
             callback.setSender_addr(orderDTO.getSender_addr());
             callback.setOrder_type(orderDTO.getOrder_type());
-            callback.setRegion_type(orderDTO.getRegion_type());
             callback.setIs_gift(orderDTO.getGift_card_id() > 0);
             callback.setPay_method(orderDTO.getPay_method());
             if (orderDTO.getOrderExpressList().size() == 1) // 单包裹
@@ -171,7 +170,6 @@ public class OrderListLogic {
             callback.setWord_message(orderDTO.getWord_message());
             callback.setImage(orderDTO.getImage());
             callback.setCreate_time(orderDTO.getCreate_time());
-            callback.setRegion_type(orderDTO.getRegion_type());
             callback.setIs_gift(orderDTO.getGift_card_id() > 0);
             //增加支付类型
             callback.setPay_method(orderDTO.getPay_method());
@@ -247,7 +245,7 @@ public class OrderListLogic {
         for (OrderExpress oe : orderExpressList) {
             if (oe.getUuid() != null && oe.getUuid().length() != 0) {
                 Order order = orderMapper.selectOrderDetailByOrderId(oe.getOrder_id());
-                if (order != null && order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) { // 只有同城的订单能同步快递状态
+                if (order != null && oe.getOrder_number()!= null && !oe.getOrder_number().equals("")) { // 只有同城的订单能同步快递状态
                     uuidSB.append(oe.getUuid());
                     uuidSB.append(",");
                 }
@@ -291,7 +289,6 @@ public class OrderListLogic {
             // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
             //这个status的改动是因为是预约单 预约单支付后，派单前都是PAYING
             Order order = orderMapper.selectOrderDetailByUuid(orderSynVO.getUuid());
-            if (order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) {
                 String status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
                 String pay_state = "WAIT_PAY";
                 if (orderSynVO.getStatus().equals("WAIT_REFUND")) { //待退款、已退款路由状态合并为已取消
@@ -307,7 +304,6 @@ public class OrderListLogic {
                 //存在锁的问题，修改语句改为一条
                 String attributes = orderSynVO.getAttributes();
                 orderExpressMapper.updateAttributesAndStatusByUUID(orderSynVO.getUuid(), attributes, status, pay_state);
-            }
         }
 
         return null;

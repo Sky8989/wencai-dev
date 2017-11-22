@@ -10,9 +10,7 @@ public enum OrderType {
 	
 	//order_type订单类型
 	ORDER_BASIS("ORDER_BASIS","普通订单"),
-	ORDER_MYSTERY("ORDER_MYSTERY","好友订单"),
-	//region_type区域类型
-	REGION_SAME("REGION_SAME","同城订单");
+	ORDER_MYSTERY("ORDER_MYSTERY","好友订单");
 
 	private String key;
 	private String value;

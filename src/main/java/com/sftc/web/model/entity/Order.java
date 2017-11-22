@@ -78,9 +78,6 @@ public class Order extends Object {
     @Setter @Getter
     private String order_type; // 订单类型 普通 神秘
 
-    @Setter @Getter
-    private String region_type;// 订单地域 同城
-
     private int is_cancel;//新添加 is_cancel
 
     public Order() {
@@ -152,7 +149,6 @@ public class Order extends Object {
         this.sender_user_id = orderParamVO.getSender_user_id();
         this.gift_card_id = orderParamVO.getGift_card_id();
         this.order_type = orderParamVO.getOrder_type();
-        this.region_type = orderParamVO.getRegion_type();
     }
 
     /**
@@ -165,9 +161,6 @@ public class Order extends Object {
         }
         if (request.getParameter("order_type") != null && !"".equals(request.getParameter("order_type"))) {
             this.order_type = request.getParameter("order_type");
-        }
-        if (request.getParameter("region_type") != null && !"".equals(request.getParameter("region_type"))) {
-            this.region_type = request.getParameter("region_type");
         }
         if (request.getParameter("sender_mobile") != null && !"".equals(request.getParameter("sender_mobile"))) {
             this.sender_mobile = request.getParameter("sender_mobile");

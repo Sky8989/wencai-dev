@@ -7,7 +7,6 @@
     <resultMap id="orderMap" type="com.sftc.web.model.dto.OrderDTO">
         <id property="id" column="id"/>
         <result property="order_type" column="order_type"/>
-        <result property="region_type" column="region_type"/>
         <result property="latitude" column="latitude"/>
         <result property="longitude" column="longitude"/>
         <result property="sender_user_id" column="sender_user_id"/>
@@ -51,7 +50,7 @@
         WHERE o.id = oe.order_id AND o.is_cancel = 0
               AND (SELECT COUNT(order_id)
                    FROM sftc_order_express
-                   WHERE oe.order_id = o.id) > 1 AND o.region_type IS NULL
+                   WHERE oe.order_id = o.id) > 1 AND oe.order_number IS NULL OR oe.order_number = ''
     </select>
 
     <!--抓取同城单-->
@@ -67,7 +66,7 @@
               AND (
                   (oe.route_state = 'WAIT_FILL' OR oe.route_state = 'ALREADY_FILL')
                   OR
-                  (o.region_type = 'REGION_SAME' AND oe.pay_state = 'WAIT_PAY')
+                  (oe.pay_state = 'WAIT_PAY'AND oe.order_number IS null OR oe.order_number = '')
               )
     </select>
 
@@ -96,7 +95,7 @@
         (create_time, sender_province, sender_name, sender_mobile, sender_city,
          sender_area, sender_addr, word_message, image, voice,
          sender_user_id, gift_card_id, pay_method, distribution_method, longitude,
-         latitude, order_type, voice_time, region_type)
+         latitude, order_type, voice_time)
         VALUES (
             #{create_time, jdbcType=VARCHAR},
             #{sender_province, jdbcType=VARCHAR},
@@ -115,8 +114,7 @@
             #{longitude, jdbcType=DOUBLE},
             #{latitude, jdbcType=DOUBLE},
             #{order_type, jdbcType=VARCHAR},
-            #{voice_time, jdbcType=INTEGER},
-            #{region_type, jdbcType=VARCHAR, javaType=String}
+            #{voice_time, jdbcType=INTEGER}
         )
     </insert>
 
@@ -126,7 +124,7 @@
         (create_time, sender_province, sender_name, sender_mobile, sender_city,
          sender_area, sender_addr, supplementary_info, word_message, image, voice,
          sender_user_id, gift_card_id, pay_method, distribution_method, longitude,
-         latitude, order_type, voice_time, region_type,id)
+         latitude, order_type, voice_time,id)
         VALUES (
             #{create_time, jdbcType=VARCHAR},
             #{sender_province, jdbcType=VARCHAR},
@@ -147,22 +145,9 @@
             #{latitude, jdbcType=DOUBLE},
             #{order_type, jdbcType=VARCHAR},
             #{voice_time, jdbcType=INTEGER},
-            #{region_type, jdbcType=VARCHAR, javaType=String},
             #{id, jdbcType=VARCHAR, javaType=String}
         )
     </insert>
-
-    <update id="updateOrderRegionType">
-        UPDATE sftc_order
-        SET region_type = #{region_type, jdbcType=VARCHAR}
-        WHERE id = #{id}
-    </update>
-
-    <update id="updateRegionAndDistributionById">
-        UPDATE sftc_order
-        SET region_type = #{region_type},distribution_method = #{distribution_method}
-        WHERE id = #{id}
-    </update>
 
     <!-- 我的订单列表  -->
     <select id="selectMyOrderList" parameterType="com.sftc.web.model.vo.swaggerOrderRequest.MyOrderParamVO"
@@ -315,7 +300,6 @@
         <where>
             <if test="id != null">and id = #{id}</if>
             <if test="order_type != null">and order_type = #{order_type}</if>
-            <if test="region_type != null">and region_type = #{region_type}</if>
             <if test="sender_mobile != null">and sender_mobile = #{sender_mobile}</if>
         </where>
     </select>

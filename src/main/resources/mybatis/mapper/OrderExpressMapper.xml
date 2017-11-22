@@ -204,7 +204,7 @@
                      FROM sftc_order_express oe
                      WHERE (oe.sender_user_id = #{id} OR oe.ship_user_id = #{id})
                  ) AS t
-        ) AND region_type = 'REGION_SAME'
+        )
         ORDER BY o.create_time DESC
     </select>
 

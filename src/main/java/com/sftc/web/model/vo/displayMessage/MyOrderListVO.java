@@ -20,9 +20,6 @@ public class MyOrderListVO {
     @Setter @Getter
     private String order_type;
 
-    @Setter @Getter
-    private String region_type;
-
     private boolean is_gift;
 
     private boolean is_evaluated;

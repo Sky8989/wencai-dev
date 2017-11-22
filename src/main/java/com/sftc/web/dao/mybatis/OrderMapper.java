@@ -22,11 +22,6 @@ public interface OrderMapper {
     void addOrder2(Order order);
 
     /**
-     * 更新订单区域类型
-     */
-    void updateOrderRegionType(@Param("id") String id, @Param("region_type") String region_type);
-
-    /**
      * 查询我的订单列表
      */
     List<Order> selectMyOrderList(MyOrderParamVO param);
@@ -71,13 +66,6 @@ public interface OrderMapper {
 
     // 取消订单，更新is_cancel字段
     void updateCancelOrderById(@Param("id") String id);
-
-    //根据订单id修改region_type和配送方式
-    void updateRegionAndDistributionById(
-            @Param("id") String id,
-            @Param("region_type") String region_type,
-            @Param("distribution_method") String distribution_method
-    );
 
     //  下面是cms系统用到的mapper
     List<Order> selectOrderByPage(Order order);

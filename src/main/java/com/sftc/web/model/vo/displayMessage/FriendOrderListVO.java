@@ -23,9 +23,6 @@ public class FriendOrderListVO {
     private int sender_user_id;
 
     @Setter   @Getter
-    private String region_type;
-
-    @Setter   @Getter
     private String object_type; // 物品类型
 
     @Setter   @Getter
