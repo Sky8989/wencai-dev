@@ -90,7 +90,7 @@
     <update id="updatePayStatuByGroupID" parameterType="java.lang.String">
         UPDATE sftc_order_express
         SET pay_state = 'ALREADY_PAY'
-        WHERE order_id = #{orderId}
+        WHERE order_id = #{orderId}  AND ship_name IS NOT NULL  AND ship_mobile IS NOT NULL 
     </update>
 
 </mapper>
