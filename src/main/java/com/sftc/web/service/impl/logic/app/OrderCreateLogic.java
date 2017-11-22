@@ -115,7 +115,7 @@ public class OrderCreateLogic {
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(orderExpress.getOrder_id());
         if (orderDTO == null)
             return APIUtil.selectErrorResponse("订单不存在", null);
-        if (orderDTO.getRegion_type() != null && !"".equals(orderDTO.getRegion_type()) && orderDTO.getRegion_type().length() != 0) {
+        if (orderExpress.getOrder_number() != null && !"".equals(orderExpress.getOrder_number()) && orderExpress.getOrder_number().length() != 0) {
             return APIUtil.submitErrorResponse("订单已经下单，现在您无法再填写信息", orderExpress.getOrder_id());
         }
 

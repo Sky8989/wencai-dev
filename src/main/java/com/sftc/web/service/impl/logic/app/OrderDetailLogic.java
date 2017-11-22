@@ -55,10 +55,8 @@ public class OrderDetailLogic {
         if (orderDTO1 == null)
             return APIUtil.selectErrorResponse("订单不存在", null);
 
-        if (orderDTO1.getRegion_type() != null && orderDTO1.getRegion_type().equals("REGION_SAME")) {
             APIResponse apiResponse = syncOrderExpress(order_id);
             if (apiResponse != null) return apiResponse;
-        }
 
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
         setPackageType(orderDTO); //获取包裹信息
@@ -105,14 +103,6 @@ public class OrderDetailLogic {
             return APIUtil.selectErrorResponse("订单不存在", null);
 
         JSONObject respObject = new JSONObject();
-
-        String regionType = order.getRegion_type();
-
-        if (regionType == null || regionType.equals("")) { //增加对未提交订单的查询，此时regionType无值
-            setPackageType(order);//获取包裹信息
-            respObject.put("order", order);
-            return APIUtil.getResponse(SUCCESS, respObject);
-        }
 
             // 同城订单需要access_token
             String access_token = (String) request.getParameter("access_token");
@@ -249,7 +239,7 @@ public class OrderDetailLogic {
 
         for (OrderExpress oe : orderExpressList) { //此处订单若过多 url过长 sf接口会报414
             Order order = orderMapper.selectOrderDetailByOrderId(oe.getOrder_id());
-            if (order != null && order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) {
+            if (order != null && oe.getOrder_number() != null && !oe.getOrder_number().equals("")) {
                 // 只有同城的订单能同步快递状态
                 uuids = uuids + oe.getUuid() + ",";
             }

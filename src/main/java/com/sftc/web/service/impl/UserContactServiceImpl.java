@@ -150,7 +150,7 @@ public class UserContactServiceImpl implements UserContactService {
 
         for (OrderExpress oe : orderExpressList) { //此处订单若过多 url过长 sf接口会报414
             Order order = orderMapper.selectOrderDetailByOrderId(oe.getOrder_id());
-            if (order != null && order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) {
+            if (order != null && oe.getOrder_number() != null && !oe.getOrder_number().equals("")) {
                 // 只有同城的订单能同步快递状态
                 uuids = uuids + oe.getUuid() + ",";
             }

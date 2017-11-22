@@ -269,8 +269,6 @@ public class OrderCommitLogic {
                 else pay_state = "WAIT_PAY";
 
                 /// 数据库操作
-                // 订单表更新订单区域类型
-                orderMapper.updateOrderRegionType(order_id, "REGION_SAME");
                 String order_time = Long.toString(System.currentTimeMillis());
                 // 快递表更新  uuid / 预约时间 / 下单时间 / 订单号 / 快递状态
                 orderExpressMapper.updateOrderExpressUuidAndReserveTimeById(oe.getId(), uuid, reserve_time);
@@ -367,7 +365,6 @@ public class OrderCommitLogic {
             order.setGift_card_id(0);
         }
         order.setVoice_time(Integer.parseInt((String) orderOBJ.get("voice_time")));
-        order.setRegion_type("REGION_SAME");
 
         HttpPost post = new HttpPost(SF_REQUEST_URL);
         TokenUtils instance = TokenUtils.getInstance();

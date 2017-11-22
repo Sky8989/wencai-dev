@@ -49,9 +49,6 @@ public class FriendRecordVO {
     private String create_time;  // 创建时间
 
     @Setter @Getter
-    private String region_type;
-
-    @Setter @Getter
     private String sender_wechatname;    // 寄件人微信名
 
     @Setter @Getter

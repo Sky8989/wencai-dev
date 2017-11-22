@@ -86,8 +86,8 @@ public class OrderCancelLogic {
         Order order = orderMapper.selectOrderDetailByOrderId(order_id);
         if (order == null)
             return APIUtil.selectErrorResponse("订单不存在", null);
-
-        boolean isDidCommitToSF = order.getRegion_type() != null && !(order.getRegion_type().equals(""));
+        OrderExpress firstExpress = arrayList.get(0);
+        boolean isDidCommitToSF = firstExpress.getOrder_number() != null && !(firstExpress.getOrder_number().equals(""));
         if (isDidCommitToSF) { // 已经提交到顺丰，需要先从顺丰取消
             StringBuilder stringBuilder = new StringBuilder();
             //遍历所有的快递列表
