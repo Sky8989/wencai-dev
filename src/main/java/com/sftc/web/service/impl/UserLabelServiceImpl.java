@@ -1,30 +1,36 @@
 package com.sftc.web.service.impl;
 
+import static com.sftc.tools.api.APIStatus.PARAM_ERROR;
+import static com.sftc.tools.api.APIStatus.SUCCESS;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
+import com.sftc.web.dao.jpa.UserContactLabelDao;
 import com.sftc.web.dao.mybatis.UserLabelMapper;
 import com.sftc.web.dao.redis.UserLabelsRedisDao;
-import com.sftc.web.model.vo.swaggerRequest.UpdateUserContactLabelVO;
-import com.sftc.web.model.vo.swaggerRequest.UserLabelVO;
+import com.sftc.web.model.dto.LabelDTO;
 import com.sftc.web.model.dto.SystemLabelDTO;
 import com.sftc.web.model.entity.Label;
-import com.sftc.web.model.dto.LabelDTO;
 import com.sftc.web.model.entity.SystemLabel;
+import com.sftc.web.model.entity.UserContactLabel;
+import com.sftc.web.model.vo.swaggerRequest.UpdateUserContactLabelVO;
+import com.sftc.web.model.vo.swaggerRequest.UserLabelVO;
+import com.sftc.web.model.vo.swaggerRequestVO.userContactLabel.AddUserContactLabelVO;
 import com.sftc.web.service.UserLabelService;
+
 import net.sf.json.JSONObject;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static com.sftc.tools.api.APIStatus.PARAM_ERROR;
-import static com.sftc.tools.api.APIStatus.SUCCESS;
 
 
 @Service
@@ -36,6 +42,8 @@ public class UserLabelServiceImpl implements UserLabelService {
     private UserLabelMapper userLabelMapper;
     @Resource
     private UserLabelsRedisDao userLabelsRedisDao;
+    @Resource
+    private UserContactLabelDao userContactLabelDao;
     /**
      * 根据用户id获取用户所有标签
      */
@@ -156,4 +164,69 @@ public class UserLabelServiceImpl implements UserLabelService {
 
         return responseObject;
     }
+    
+    /**
+	 * 通过 用户标签id 或者 用户id user_contact_id 去删除用户标签
+	 */
+	@Override
+	public APIResponse deleteUserContactLabels(int id) {
+		if (id != 0 ) {
+			if (userLabelMapper.deleteUserContactLabels(id) > 0) {
+				return APIUtil.getResponse(SUCCESS, id );
+			}
+		}
+		return APIUtil.getResponse(PARAM_ERROR, "删除失败 id 不存在" + id );
+	}
+	/**
+	 * 通过 用户标签id 或者 用户id user_contact_id 去删除用户标签
+	 */
+	/*@Override
+	public APIResponse deleteUserContactLabels(int id, int user_contact_id) {
+		if (id != 0 || user_contact_id != 0) {
+			if (userLabelMapper.deleteUserContactLabels(id, user_contact_id) > 0) {
+				return APIUtil.getResponse(SUCCESS, "删除成功 id=" + id + ",=user_contact_id = " + user_contact_id);
+			}
+		}
+		return APIUtil.getResponse(PARAM_ERROR, "删除失败 id=" + id + ",=user_contact_id = " + user_contact_id);
+	}*/
+
+	/**
+	 * 新增用户标签信息
+	 */
+	@Override
+	public APIResponse addUserContactLabels(APIRequest apiRequest) {
+		AddUserContactLabelVO addUserContactLabelVO = (AddUserContactLabelVO) apiRequest.getRequestParam();
+		
+		if (addUserContactLabelVO != null) {
+			String custom_labels = new Gson().toJson(addUserContactLabelVO.getCustom_labels()); // 用户标签表
+																								// custom_labels
+																								// json转String
+			int user_contact_id = addUserContactLabelVO.getUser_contact_id(); // 用户id
+			if (user_contact_id <= 0)
+				return APIUtil.paramErrorResponse("Parameter `user_contact_id` missing.");
+
+			List<Integer> system_labels  = addUserContactLabelVO.getSystem_labels();
+			// 多个system_label_ids 用 | 分隔
+			StringBuilder sb_system_label = new StringBuilder();
+			if (system_labels != null && !system_labels.isEmpty()) {
+				for (int i = 0; i < system_labels.size(); i++) {
+					sb_system_label.append(system_labels.get(i));
+					if (i != system_labels.size() - 1)
+						sb_system_label.append("|");
+				}
+			}
+			// 用户标签表实体类
+			UserContactLabel userContactLabel = new UserContactLabel();
+			userContactLabel.setCreate_time(Long.toString(System.currentTimeMillis()));
+			userContactLabel.setUpdate_time(Long.toString(System.currentTimeMillis()));
+			userContactLabel.setCustom_labels(custom_labels);
+			userContactLabel.setUser_contact_id(user_contact_id);
+			userContactLabel.setSystem_label_ids(sb_system_label.toString());
+			userContactLabelDao.save(userContactLabel);
+
+			return APIUtil.getResponse(SUCCESS, userContactLabel);
+		}
+		return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());
+	}
 }
+

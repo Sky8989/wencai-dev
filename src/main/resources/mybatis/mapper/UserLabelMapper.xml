@@ -35,4 +35,12 @@
             system_label
         FROM sftc_system_label
     </select>
+    
+    <delete id="deleteUserContactLabels" parameterType="java.lang.Integer">
+    delete from  sftc_user_contact_label where id = #{id}
+    <!-- where>
+    		<if test="id != 0">and id = #{id}</if>
+    		 <if test="user_contact_id != 0"> and user_contact_id = #{user_contact_id}</if> 
+    	</where> -->
+    </delete>
 </mapper>

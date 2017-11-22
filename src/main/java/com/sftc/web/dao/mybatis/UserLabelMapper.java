@@ -25,4 +25,6 @@ public interface UserLabelMapper {
     );
 
     List<SystemLabel> querySystemLabels();
+
+	int deleteUserContactLabels(int id);
 }
