@@ -15,6 +15,12 @@ public class MultiplePackagePayVO {
     @Getter
     @Setter
     @NotBlank(message = "group_uuid不能为空")
-    @ApiModelProperty(name = "group_uuid",value = "uuid",example = "2c9a85895f24480d015f299b99c4588a",required = true)
+    @ApiModelProperty(name = "group_uuid", value = "uuid", example = "2c9a85895f24480d015f299b99c4588a", required = true)
     private String group_uuid;
+    @Getter
+    @Setter
+    @ApiModelProperty(name = "order_id", value = "订单id", example = "C1509504431473V4", required = true)
+    private String order_id;
+
+
 }

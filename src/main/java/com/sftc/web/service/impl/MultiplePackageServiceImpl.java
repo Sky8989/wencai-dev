@@ -255,14 +255,20 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         }
         StringBuilder requestNumSB = new StringBuilder();
         StringBuilder shipNameSB = new StringBuilder();
-        map.put("status", "WAIT_HAND_OVER");
+        String payType = requestPOJO.getPay_type();
+        String type = "FREIGHT_PREPAID";
+        //到付寄付状态改变
+        if (type.equalsIgnoreCase(payType)) {
+            map.put("status", "INIT");
+        } else {
+            map.put("status", "WAIT_HAND_OVER");
+        }
         for (int j = 0; j < sfResponeRequestsArray.size(); j++) {
             JSONObject requestsJson = (JSONObject) sfResponeRequestsArray.get(j);
             MultiplePackageDTO multiplePackageDTO = targetInfos.get(j);
             String orderExpressId = multiplePackageDTO.getOrderExpressId();
             String uuid1 = requestsJson.getString("uuid");
             String requestNum = requestsJson.getString("request_num");
-            String status = requestsJson.getString("status");
             String orderTime = Long.toString(System.currentTimeMillis());
             String receiver = requestsJson.getJSONObject("target").getJSONObject("address").getString("receiver");
             map.put("orderExpressId", orderExpressId);
@@ -285,7 +291,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         String orderId = sourceInfo.getOrderId();
         multiplePackageMapper.updateorderById(orderId, groupUUId);
 
-        /*-------------------------------------------------- 发生微信模板给寄件人--------------------------------------------------------*/
+        /*-------------------------------------------------- 发送微信模板给寄件人--------------------------------------------------------*/
         // 普通同城跳转链接
         String path;
         String formId = requestPOJO.getForm_id();
@@ -343,6 +349,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         JSONObject responseJson = new JSONObject();
         JSONObject payStrJson = JSONObject.fromObject(payStr);
         responseJson.put("payStr", payStrJson);
+
         return APIUtil.getResponse(SUCCESS, responseJson);
     }
 
@@ -353,6 +360,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
      * @return 支付结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public APIResponse isPay(APIRequest request) {
         //获取请求参数对象
         MultiplePackagePayVO requestParam = (MultiplePackagePayVO) request.getRequestParam();
@@ -377,6 +385,21 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         String str = "error";
         if (resultObject.containsKey(str)) {
             return APIUtil.submitErrorResponse("支付判断失败，请查看返回值", resultObject);
+        }
+
+        /*-------------------------------------------------- 修改数据库表sftc_order_express  pay_state--------------------------------------------------------*/
+        JSONObject requestGroupJson = resultObject.getJSONObject("request_group");
+        if (requestGroupJson == null) {
+            return APIUtil.submitErrorResponse("支付判断失败", "sf返回体requests为空");
+        }
+        String paid = requestGroupJson.getString("paid");
+        String isTrue = "true";
+        if (paid.equalsIgnoreCase(isTrue)) {
+            String orderId = requestParam.getOrder_id();
+            if (StringUtils.isBlank(orderId)) {
+                return APIUtil.paramErrorResponse("订单id为空");
+            }
+            multiplePackageMapper.updatePayStatuByGroupID(orderId);
         }
 
         return APIUtil.getResponse(SUCCESS, resultObject);
