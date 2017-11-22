@@ -117,7 +117,7 @@ public class OrderController extends BaseController {
         return orderService.selectOrderDetail(new APIRequest(request));
     }
 
-    @ApiOperation(value = "我的订单列表", httpMethod = "POST",notes = "测试接口若出现错误，删除key_words、key_state再试试",response = MyOrderListVO.class)
+    @ApiOperation(value = "我的订单列表", httpMethod = "POST",notes = "测试接口若出现错误，删除key_words、key_state再试试",response = OrderListRespVO.class)
     @ApiResponses({
             @ApiResponse(code = 400,message = "Parameters of the abnormal"),
             @ApiResponse(code = 401,message = "The query fails"),

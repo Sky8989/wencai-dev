@@ -9,8 +9,8 @@ import lombok.Setter;
 /**
  * Created by xf on 2017/11/17.
  */
-@ApiModel(value = "订单列表包裹信息")
-public class OrderListExpressVO{
+@ApiModel(value = "订单详情包裹信息")
+public class OrderDetailExpressVO {
 
     @Getter @Setter
     @ApiModelProperty(name = "gift_card_id",value = "礼品卡id",example = "0",dataType = "int")

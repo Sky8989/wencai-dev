@@ -18,7 +18,7 @@ public class OrderExpressStateRespVO extends APIResponse{
 
     @Getter @Setter
     @ApiModelProperty(name = "merchant")
-    private List<OrderExpress> result;
+    private OrderExpress result;
 
     @Getter @Setter
     @ApiModelProperty(name = "error",value = "错误信息",hidden = true)
