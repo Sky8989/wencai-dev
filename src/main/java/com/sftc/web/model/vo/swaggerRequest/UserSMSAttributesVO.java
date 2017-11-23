@@ -12,6 +12,6 @@ import lombok.Setter;
 public class UserSMSAttributesVO {
 
     @Getter @Setter
-    @ApiModelProperty(name = "invite_code",value = "邀请码")
+    @ApiModelProperty(name = "invite_code",value = "邀请码",example = "X0VRPX6V")
     private String invite_code;
 }

@@ -30,7 +30,8 @@ public class MessageController extends BaseController {
         return messageService.getMessage(apiRequest);
     }
 
-    @ApiOperation(value = "验证验证码【调顺丰】", httpMethod = "POST")
+    @ApiOperation(value = "验证验证码【调顺丰】", httpMethod = "POST",notes = "之前获取token的接口，注册的接口和登录的接口合并为这一个接口\n"+
+    "只需要传递用户手机信息和验证码信息，邀请信息如果有就传")
     @RequestMapping(value = "/validate", method = RequestMethod.POST)
     @ResponseBody
     public APIResponse messageCheck(@RequestBody UserValidateVO userValidateVO) throws Exception {
