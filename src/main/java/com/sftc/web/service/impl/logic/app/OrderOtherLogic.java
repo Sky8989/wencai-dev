@@ -132,34 +132,52 @@ public class OrderOtherLogic {
      * 判断是否可同城下单
      */
     public APIResponse determineOrderAddress(APIRequest request) {
-        JSONObject reqParamOBJ = JSONObject.fromObject(request.getRequestParam());
-        JSONObject requestOBJ = reqParamOBJ.getJSONObject("request");
+
+        JSONObject requestOBJ = JSONObject.fromObject(request.getRequestParam());
         Map<String, String> errorMap = new HashMap<>();
+
+        /*-------------------------------------- 寄件人经纬度参数处理 ---------------------------------------*/
         if (!requestOBJ.containsKey("source")) {
             return APIUtil.submitErrorResponse("寄件人经纬度缺失", null);
         } else {
-            double sourceLongitude = requestOBJ.getJSONObject("source").
-                    getJSONObject("coordinate").getDouble("longitude");
-            double sourceLatitude = requestOBJ.getJSONObject("source").
-                    getJSONObject("coordinate").getDouble("latitude");
+            double sourceLongitude = requestOBJ.getJSONObject("source").getDouble("longitude");
+            double sourceLatitude = requestOBJ.getJSONObject("source").getDouble("latitude");
             if (sourceLatitude == 0 || sourceLongitude == 0) {
                 errorMap.put("reason", "Longitude or Latitude is not available");
-                return APIUtil.submitErrorResponse("经纬度参数不正确", errorMap);
+                return APIUtil.submitErrorResponse("寄件人经纬度参数不正确", errorMap);
             }
+            //拼接顺丰所需寄件人经纬度参数
+            JSONObject coordinateOBJ = new JSONObject();
+            coordinateOBJ.put("latitude",sourceLatitude);
+            coordinateOBJ.put("longitude",sourceLongitude);
+            requestOBJ.getJSONObject("source").remove("longitude");
+            requestOBJ.getJSONObject("source").remove("latitude");
+            requestOBJ.getJSONObject("source").put("coordinate",coordinateOBJ);
         }
-        //TODO:Swagger 的bug,对象不可不传，而且判断null还不行
+
+        /*-------------------------------------- 收件人经纬度参数处理 ---------------------------------------*/
         if (requestOBJ.containsKey("target") && requestOBJ.getJSONObject("target").size() != 0) {
-            double targetLongitude = requestOBJ.getJSONObject("target").
-                    getJSONObject("coordinate").getDouble("longitude");
-            double targetLatitude = requestOBJ.getJSONObject("target").
-                    getJSONObject("coordinate").getDouble("latitude");
+            double targetLongitude = requestOBJ.getJSONObject("target").getDouble("longitude");
+            double targetLatitude = requestOBJ.getJSONObject("target").getDouble("latitude");
             if (targetLatitude == 0 || targetLongitude == 0) {
                 errorMap.put("reason", "Longitude or Latitude is not available");
-                return APIUtil.submitErrorResponse("经纬度参数不正确", errorMap);
+                return APIUtil.submitErrorResponse("收件人经纬度参数不正确", errorMap);
             }
-        } else {
+
+            //拼接顺丰所需收件人经纬度参数
+            JSONObject coordinateOBJ2 = new JSONObject();
+            coordinateOBJ2.put("latitude",targetLatitude);
+            coordinateOBJ2.put("longitude",targetLongitude);
+            requestOBJ.getJSONObject("target").remove("longitude");
+            requestOBJ.getJSONObject("target").remove("latitude");
+            requestOBJ.getJSONObject("target").put("coordinate",coordinateOBJ2);
+        } else { //如果前端不传 target 参数，将 source 参数 复制给 target
             requestOBJ.put("target", requestOBJ.getJSONObject("source"));
         }
+
+        //顺丰请求 request 参数
+        JSONObject reqParamOBJ = new JSONObject();
+        reqParamOBJ.put("request",requestOBJ);
 
         String token = TokenUtils.getInstance().getAccess_token();
 
@@ -170,9 +188,9 @@ public class OrderOtherLogic {
         String resultStr = APIPostUtil.post(paramStr, post);
         JSONObject responseObject = JSONObject.fromObject(resultStr);
 
-        if (responseObject.containsKey("error")) {
+        if (responseObject.containsKey("error")) { // state = 400 不能同城
             return APIUtil.paramErrorResponse("您所在的区域尚未开放下单，敬请期待！");
-        } else {
+        } else { // state = 200 可同城
             Map<String, Boolean> map = new HashMap<>();
             map.put("determine", true);
             return APIUtil.getResponse(SUCCESS, map);
