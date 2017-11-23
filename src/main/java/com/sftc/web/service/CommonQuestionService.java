@@ -36,4 +36,6 @@ public interface CommonQuestionService {
 
 	APIResponse selectListPaging(APIRequest apiRequest);
 
+	APIResponse save(CommonQuestion commonQuestion) throws Exception;
+
 }

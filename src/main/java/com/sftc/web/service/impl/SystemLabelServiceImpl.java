@@ -24,21 +24,16 @@ public class SystemLabelServiceImpl implements SystemLabelService {
 	@Resource
 	SystemLabelMapper systemLabelMapper;
 
-
 	/**
-	 * 修改系统标签 
+	 * 修改系统标签
 	 */
 	@Override
 	public APIResponse updateSystemLabel(SystemLabel systemLabel) {
-		if (systemLabel != null) {
-			systemLabel.setUpdate_time(Long.toString(System.currentTimeMillis()));
+		systemLabel.setUpdate_time(Long.toString(System.currentTimeMillis()));
 		if (systemLabelMapper.updateSystemLabel(systemLabel) > 0) {
 			return APIUtil.getResponse(APIStatus.SUCCESS, systemLabel);
-		} else {
-			return APIUtil.getResponse(APIStatus.PARAM_ERROR, "修改系统标签失败 id不存在 = " + systemLabel.getId());
 		}
-		}
-		return APIUtil.getResponse(APIStatus.PARAM_ERROR, "修改系统标签对象为空");
+		return APIUtil.getResponse(APIStatus.PARAM_ERROR, "修改系统标签失败 id不存在 = " + systemLabel.getId());
 	}
 
 	/**
@@ -46,13 +41,10 @@ public class SystemLabelServiceImpl implements SystemLabelService {
 	 */
 	@Override
 	public APIResponse addSystemLabel(SystemLabel systemLabel) {
-		if(systemLabel != null){
-			systemLabel.setCreate_time(Long.toString(System.currentTimeMillis()));
-			systemLabel.setUpdate_time(Long.toString(System.currentTimeMillis()));
-			systemLabelDao.save(systemLabel);
-			return APIUtil.getResponse(APIStatus.SUCCESS, systemLabel);
-		}
-			return APIUtil.getResponse(APIStatus.PARAM_ERROR,"对象为空");
+		systemLabel.setCreate_time(Long.toString(System.currentTimeMillis()));
+		systemLabel.setUpdate_time(Long.toString(System.currentTimeMillis()));
+		systemLabelDao.save(systemLabel);
+		return APIUtil.getResponse(APIStatus.SUCCESS, systemLabel);
 	}
 
 	/**
@@ -60,11 +52,11 @@ public class SystemLabelServiceImpl implements SystemLabelService {
 	 */
 	@Override
 	public APIResponse deleteSystemLable(int id) {
-		 if(systemLabelMapper.deleteSystemLable(id) > 0){
-	    	   return APIUtil.getResponse(APIStatus.SUCCESS, id);
-	       }else{
-	    	   return APIUtil.getResponse(APIStatus.PARAM_ERROR, "删除失败，不存在id="+id);
-	       }
+		if (systemLabelMapper.deleteSystemLable(id) > 0) {
+			return APIUtil.getResponse(APIStatus.SUCCESS, id);
+		} else {
+			return APIUtil.getResponse(APIStatus.PARAM_ERROR, "删除失败，不存在id=" + id);
+		}
 	}
 
 	/**
@@ -72,19 +64,34 @@ public class SystemLabelServiceImpl implements SystemLabelService {
 	 */
 	@Override
 	public APIResponse getSystemLabelList(SystemLabelVo systemLabelVo) {
-		if(systemLabelVo != null){
-		SystemLabel systemLabel = new SystemLabel();
-		int pageNumKey = systemLabelVo.getPageNumKey();
-		int pageSizeKey = systemLabelVo.getPageSizeKey();
-		systemLabel.setId(systemLabelVo.getId());
-		systemLabel.setSystem_label(systemLabelVo.getSystem_label());
-		
-		//  使用lambab表达式 配合pageHelper实现对用户列表和查询相关信息的统一查询
-		PageInfo<Object> pageInfo = PageHelper.startPage(pageNumKey, pageSizeKey).doSelectPageInfo(() -> systemLabelMapper.getSystemLabelList(systemLabel));
-		  return APIUtil.getResponse(APIStatus.SUCCESS, pageInfo);
+		if (systemLabelVo != null) {
+			SystemLabel systemLabel = new SystemLabel();
+			int pageNumKey = systemLabelVo.getPageNumKey();
+			int pageSizeKey = systemLabelVo.getPageSizeKey();
+			systemLabel.setId(systemLabelVo.getId());
+			systemLabel.setSystem_label(systemLabelVo.getSystem_label());
+
+			// 使用lambab表达式 配合pageHelper实现对用户列表和查询相关信息的统一查询
+			PageInfo<Object> pageInfo = PageHelper.startPage(pageNumKey, pageSizeKey)
+					.doSelectPageInfo(() -> systemLabelMapper.getSystemLabelList(systemLabel));
+			return APIUtil.getResponse(APIStatus.SUCCESS, pageInfo);
 		}
-		
+
 		return APIUtil.getResponse(APIStatus.PARAM_ERROR, "查询条件为null");
+	}
+
+	/**
+	 * id为0时 为新增操作 id 非0为修改操作
+	 */
+	@Override
+	public APIResponse save(SystemLabel systemLabel) {
+		if (systemLabel == null) {
+			return APIUtil.getResponse(APIStatus.PARAM_ERROR, "save失败，传入对象为 =" + systemLabel);
+		}
+		if (systemLabel.getId() != 0)
+			return updateSystemLabel(systemLabel);
+
+		return addSystemLabel(systemLabel);
 	}
 
 }

@@ -1,12 +1,18 @@
 package com.sftc.web.model.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.servlet.http.HttpServletRequest;
+
 import com.sftc.web.model.others.Object;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,25 +24,30 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2017/4/25
  * @Time 上午10:45
  */
-@ApiModel(value = "礼品卡")
+@Entity
+@ApiModel(value = "礼品卡(id为0时新增礼品卡，id不为0时修改礼品卡)")
+@Table(name = "sftc_gift_card")
 public class GiftCard extends Object {
-    @ApiModelProperty("主键")
+    
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@ApiModelProperty(value = "主键")
     @Setter @Getter
     private int id;
 
-    @ApiModelProperty("创建时间")
+    @ApiModelProperty(value = "创建时间",hidden=true)
     @Setter @Getter
     private String create_time;
 
-    @ApiModelProperty("名称")
+    @ApiModelProperty(value = "名称",example = "礼品卡名称")
     @Setter @Getter
     private String name;
 
-    @ApiModelProperty("图片")
+    @ApiModelProperty(value = "图片",example = "暂存 上传图片时的Base64值")
     @Setter @Getter
     private String icon;
 
-    @ApiModelProperty("类型")
+    @ApiModelProperty(value = "类型",example = "礼品卡 类型名")
     @Setter @Getter
     private String type;
 

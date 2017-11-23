@@ -9,8 +9,12 @@
 	</delete>
 
 	<update id="updateSystemLabel" parameterType="com.sftc.web.model.entity.SystemLabel">
-		update sftc_system_label set system_label = #{system_label}, update_time =
-		#{update_time} where id = #{id}
+		update sftc_system_label 
+		<trim prefix="set" suffixOverrides=",">
+			<if test="system_label != null and system_label != '' "> system_label = #{system_label}, </if>
+			<if test="update_time != null and update_time != '' "> update_time = #{update_time}, </if>
+		</trim>
+		where id = #{id}
 	</update>
 	
 	<select id="getSystemLabelList" parameterType="com.sftc.web.model.entity.SystemLabel"

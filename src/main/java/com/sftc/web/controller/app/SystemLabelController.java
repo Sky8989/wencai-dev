@@ -22,34 +22,31 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value = "systemLabel")
 public class SystemLabelController {
 
-    @Resource
-    private SystemLabelService systemLabelService;
+	@Resource
+	private SystemLabelService systemLabelService;
 
-    /**
-     * 查询系统标签List 并分页
-     */
-    @ApiOperation(value = "查询系统标签", httpMethod = "POST")
-    @PostMapping(value = "/findSystemLabelList")
-    public APIResponse getUserAllLabelByUCID(@RequestBody SystemLabelVo systemLabel) {
-        return systemLabelService.getSystemLabelList(systemLabel);
-    }
-    /**
-     * 新增(修改)系统标签  新增id为0  id不为0时修改
-     */
-    @ApiOperation(value = "新增(修改)系统标签", httpMethod = "POST")
-    @RequestMapping(value = "addAndUpdate",method = RequestMethod.POST)
-    public APIResponse updateUsrLabelByLID(@RequestBody SystemLabel systemLabel) {
-    	if(systemLabel != null && systemLabel.getId() != 0){
-    		return systemLabelService.updateSystemLabel(systemLabel);
-    	}else{
-    		return systemLabelService.addSystemLabel(systemLabel);
-    	}
-    }
-    
-    @ApiOperation(value = "删除系统标签", httpMethod = "DELETE")
-    @RequestMapping(method = RequestMethod.DELETE)
-    public @ResponseBody
-    APIResponse deleteCommonQuestion(@RequestBody int id) throws Exception {
-    		return systemLabelService.deleteSystemLable(id);
-    	}
+	/**
+	 * 查询系统标签List 并分页
+	 */
+	@ApiOperation(value = "查询系统标签", httpMethod = "POST")
+	@PostMapping(value = "/findSystemLabelList")
+	public APIResponse getUserAllLabelByUCID(@RequestBody SystemLabelVo systemLabel) {
+		return systemLabelService.getSystemLabelList(systemLabel);
+	}
+
+	/**
+	 * 新增(修改)系统标签 新增id为0 id不为0时修改
+	 */
+	@ApiOperation(value = "新增(修改)系统标签", httpMethod = "POST")
+	@RequestMapping(value = "addAndUpdate", method = RequestMethod.POST)
+	public APIResponse updateUsrLabelByLID(@RequestBody SystemLabel systemLabel) {
+
+			return systemLabelService.save(systemLabel); 
+	}
+
+	@ApiOperation(value = "删除系统标签", httpMethod = "DELETE")
+	@RequestMapping(method = RequestMethod.DELETE)
+	public @ResponseBody APIResponse deleteCommonQuestion(@RequestBody int id) throws Exception {
+		return systemLabelService.deleteSystemLable(id);
+	}
 }

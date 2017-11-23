@@ -13,4 +13,6 @@ public interface PriceExaplainService {
 	APIResponse addPriceExplain(PriceExplain priceExplain);
 
 	APIResponse updatePriceExplain(PriceExplain priceExplain);
+
+	APIResponse save(PriceExplain priceExplain);
 }

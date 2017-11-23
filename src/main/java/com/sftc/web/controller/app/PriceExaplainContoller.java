@@ -37,11 +37,8 @@ public class PriceExaplainContoller {
     @RequestMapping(value="addOrUpdate",method = RequestMethod.POST)
     public @ResponseBody
     APIResponse addCommonQuestion(@RequestBody PriceExplain priceExplain) throws Exception {
-         if(priceExplain != null && priceExplain.getId() != 0){
-        	 return priceExaplainService.updatePriceExplain(priceExplain);
-         }else{
-        	 return priceExaplainService.addPriceExplain(priceExplain);
-         }
+        	 return priceExaplainService.save(priceExplain);	
+        		 
     	
     }
     @ApiOperation(value = "删除价格说明", httpMethod = "DELETE")
