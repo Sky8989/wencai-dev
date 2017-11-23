@@ -170,8 +170,10 @@ public class UserLabelServiceImpl implements UserLabelService {
 	 */
 	@Override
 	public APIResponse deleteUserContactLabels(int id) {
+		UserContactLabel user = userContactLabelDao.findOne(id);
 		if (id != 0 ) {
 			if (userLabelMapper.deleteUserContactLabels(id) > 0) {
+				userLabelsRedisDao.removeUserContactLabelsCache(user.getUser_contact_id());	//清理缓存
 				return APIUtil.getResponse(SUCCESS, id );
 			}
 		}
@@ -224,6 +226,7 @@ public class UserLabelServiceImpl implements UserLabelService {
 			userContactLabel.setSystem_label_ids(sb_system_label.toString());
 			userContactLabelDao.save(userContactLabel);
 
+			userLabelsRedisDao.removeUserContactLabelsCache(user_contact_id);	//清理缓存
 			return APIUtil.getResponse(SUCCESS, userContactLabel);
 		}
 		return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());

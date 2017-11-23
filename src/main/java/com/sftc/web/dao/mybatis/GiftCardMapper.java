@@ -28,11 +28,11 @@ public interface GiftCardMapper {
     /**
      * CMS 系统 修改礼品卡信息
      */
-    void updateGiftCard(GiftCard giftCard);
+    int updateGiftCard(GiftCard giftCard);
 
     /**
      * CMS 系统 删除礼品卡信息
      */
-    void deleteGiftCard(int id);
+    int deleteGiftCard(int id);
 
 }

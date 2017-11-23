@@ -13,4 +13,6 @@ public interface SystemLabelService {
 	APIResponse addSystemLabel(SystemLabel systemLabel);
 
 	APIResponse deleteSystemLable(int id);
+
+	APIResponse save(SystemLabel systemLabel);
 }

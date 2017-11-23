@@ -38,7 +38,7 @@ public class QiniuServiceImpl implements QiniuService {
     }
 
     // 上传图片到七牛云，返回图片全路径
-    private String putImage(String base64, String imgName) throws Exception {
+    public String putImage(String base64, String imgName) throws Exception {
 
         String url = "https://up-z2.qbox.me/putb64/-1/key/" + UrlSafeBase64.encodeToString(imgName);
         RequestBody rb = RequestBody.create(null, base64);

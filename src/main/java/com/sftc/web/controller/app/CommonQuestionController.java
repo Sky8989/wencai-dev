@@ -22,41 +22,35 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("question")
 public class CommonQuestionController {
 
-    @Resource
-    private CommonQuestionService commonQuestionService;
+	@Resource
+	private CommonQuestionService commonQuestionService;
 
-    @ApiOperation(value = "常见问题", httpMethod = "GET")
-    @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody
-    APIResponse getCommonQuestion() throws Exception {
-        return commonQuestionService.getCommonQuestion();
-    }
-    @ApiOperation(value = "新增(修改)常见问题", httpMethod = "POST")
-    @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse addCommonQuestion(@RequestBody CommonQuestion commonQuestion) throws Exception {
-         if(commonQuestion != null && commonQuestion.getId() != 0){
-        	 return commonQuestionService.updateCommonQuestion(commonQuestion);
-         }else{
-        	 return commonQuestionService.addCommonQuestion(commonQuestion);
-         }
-    	
-    }
-    @ApiOperation(value = "删除常见问题", httpMethod = "DELETE")
-    @RequestMapping(method = RequestMethod.DELETE)
-    public @ResponseBody
-    APIResponse deleteCommonQuestion(@RequestBody int id) throws Exception {
-    		return commonQuestionService.deleteCommonQuestion(id);
-    	}
-    
-    @ApiOperation(value = "查询常见问题List", httpMethod = "POST")
-    @RequestMapping(value="list",method = RequestMethod.POST)
-    public @ResponseBody
-    APIResponse findCommonQuestion(@RequestBody CommonQuestionVo commonQuestionVo) throws Exception {
-    	APIRequest apiRequest = new APIRequest();
-    	apiRequest.setRequestParam(commonQuestionVo);
-    	return commonQuestionService.selectListPaging(apiRequest);
-    }
-    	
-    
+	@ApiOperation(value = "常见问题", httpMethod = "GET")
+	@RequestMapping(method = RequestMethod.GET)
+	public @ResponseBody APIResponse getCommonQuestion() throws Exception {
+		return commonQuestionService.getCommonQuestion();
+	}
+
+	@ApiOperation(value = "新增(修改)常见问题", httpMethod = "POST")
+	@RequestMapping(method = RequestMethod.POST)
+	public @ResponseBody APIResponse addCommonQuestion(@RequestBody CommonQuestion commonQuestion) throws Exception {
+				return commonQuestionService.save(commonQuestion); 
+
+	}
+
+	@ApiOperation(value = "删除常见问题", httpMethod = "DELETE")
+	@RequestMapping(method = RequestMethod.DELETE)
+	public @ResponseBody APIResponse deleteCommonQuestion(@RequestBody int id) throws Exception {
+		return commonQuestionService.deleteCommonQuestion(id);
+	}
+
+	@ApiOperation(value = "查询常见问题List", httpMethod = "POST")
+	@RequestMapping(value = "list", method = RequestMethod.POST)
+	public @ResponseBody APIResponse findCommonQuestion(@RequestBody CommonQuestionVo commonQuestionVo)
+			throws Exception {
+		APIRequest apiRequest = new APIRequest();
+		apiRequest.setRequestParam(commonQuestionVo);
+		return commonQuestionService.selectListPaging(apiRequest);
+	}
+
 }

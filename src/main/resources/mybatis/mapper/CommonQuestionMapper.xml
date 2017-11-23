@@ -36,7 +36,7 @@
     </insert>
 
     <update id="updateCommonQuestion" parameterType="com.sftc.web.model.entity.CommonQuestion">
-        UPDATE sftc_common_question
+        update sftc_common_question
         <trim prefix="set" suffixOverrides=",">
             <if test="title != null and title != ''">title = #{title},</if>
             <if test="content != null and content != ''">content = #{content},</if>

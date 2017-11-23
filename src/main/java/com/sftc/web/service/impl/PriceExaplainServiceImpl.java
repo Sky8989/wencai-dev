@@ -63,29 +63,35 @@ public class PriceExaplainServiceImpl implements PriceExaplainService {
 	 */
 	@Override
 	public APIResponse addPriceExplain(PriceExplain priceExplain) {
-		if(priceExplain != null){
 			priceExplain.setCreate_time(Long.toString(System.currentTimeMillis()));
 			priceExplain.setUpdate_time(Long.toString(System.currentTimeMillis()));
 			priceExplainDao.save(priceExplain);
 			return APIUtil.getResponse(APIStatus.SUCCESS, priceExplain);
-		}else{
-			return APIUtil.getResponse(APIStatus.PARAM_ERROR,"对象为空");
-		}
 	}
 	/**
 	 * 修改价格说明
 	 */
 	@Override
 	public APIResponse updatePriceExplain(PriceExplain priceExplain) {
-		if(priceExplain != null){
 			priceExplain.setUpdate_time(Long.toString(System.currentTimeMillis()));
 		if(priceExaplainMapper.updatePriceExplain(priceExplain) > 0 ){
         	return APIUtil.getResponse(APIStatus.SUCCESS, priceExplain);
         }else{
         	return APIUtil.getResponse(APIStatus.PARAM_ERROR, "修改失败,不存在id="+priceExplain.getId());
         }
-		}
-		return APIUtil.getResponse(APIStatus.PARAM_ERROR, "修改失败,对象为null");
+	}
+	/**
+	 * id为0时 为新增操作  id 非0为修改操作
+	 */
+	@Override
+	public APIResponse save(PriceExplain priceExplain) {
+		 if (priceExplain == null) {
+		return APIUtil.getResponse(APIStatus.PARAM_ERROR, "save失败，传入对象为 =" + priceExplain);
+	}
+		 if(priceExplain.getId() != 0)
+			 return updatePriceExplain(priceExplain);
+		 
+		 return addPriceExplain(priceExplain);
 	}
     
     

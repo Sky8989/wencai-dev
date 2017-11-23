@@ -5,17 +5,26 @@
 
 <mapper namespace="com.sftc.web.dao.mybatis.PriceExaplainMapper">
 
-    <select id="queryPriceExplainByCirty" resultType="com.sftc.web.model.entity.PriceExplain">
-        SELECT distance_price,weight_price FROM sftc_price_explain WHERE city = #{city}
-    </select>
+	<select id="queryPriceExplainByCirty" resultType="com.sftc.web.model.entity.PriceExplain">
+		SELECT distance_price,weight_price FROM sftc_price_explain WHERE city =
+		#{city}
+	</select>
 
 	<delete id="deletePriceExplain" parameterType="java.lang.Integer">
-	delete FROM sftc_price_explain where id =#{id}
+		delete FROM sftc_price_explain where id =#{id}
 	</delete>
-	
+
 	<update id="updatePriceExplain" parameterType="com.sftc.web.model.entity.PriceExplain">
-	update  sftc_price_explain set city = #{city}, distance_price = #{distance_price},
-	weight_price = #{weight_price}, update_time = #{update_time}
-	where id = #{id}
+		update sftc_price_explain
+		<trim prefix="set" suffixOverrides=",">
+			<if test="city != null and city != '' "> city = #{city}, </if>
+			<if test="distance_price != null and distance_price != '' ">
+				distance_price = #{distance_price}, </if>
+			<if test="weight_price != null and weight_price != '' ">
+				weight_price = #{weight_price}, </if>
+			<if test="update_time != null and update_time != '' "> update_time
+				= #{update_time}, </if>
+		</trim>
+		where id = #{id}
 	</update>
 </mapper>

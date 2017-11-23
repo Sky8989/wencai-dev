@@ -133,6 +133,23 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
 	        
 	}
 
+	
+	/**
+	 * id为0时 为新增操作  id 非0为修改操作
+	 */
+	@Override
+	public APIResponse save(CommonQuestion commonQuestion) throws Exception {
+		if (commonQuestion == null) {
+			return APIUtil.getResponse(APIStatus.PARAM_ERROR, "save失败，传入对象为 =" + commonQuestion);
+		}
+		
+		if(commonQuestion.getId() != 0)
+			return updateCommonQuestion(commonQuestion);
+		
+		return addCommonQuestion(commonQuestion);
+		
+	}
+
 
 	
 }
