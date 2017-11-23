@@ -52,11 +52,11 @@ public class Address extends Object {
     @Setter @Getter
     private String supplementary_info;
 
-    @ApiModelProperty(value = "经度",example = "114.260976",required = true)
+    @ApiModelProperty(value = "经度",example = "114.260976",required = true,dataType = "double")
     @Setter @Getter
     private double longitude;
 
-    @ApiModelProperty(value = "纬度",example = "22.723223",required = true)
+    @ApiModelProperty(value = "纬度",example = "22.723223",required = true,dataType = "double")
     @Setter @Getter
     private double latitude;
 
