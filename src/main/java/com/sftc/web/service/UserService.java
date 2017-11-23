@@ -31,11 +31,8 @@ public interface UserService {
      */
     APIResponse updateMobile(APIRequest apiRequest) throws Exception;
 
-    //10-12日提出的新需求 更新个人信息 作为中控给顺丰验证和更新个人信息
+    //更新个人信息 作为中控给顺丰验证和更新个人信息
     APIResponse updatePersonMessage(APIRequest apiRequest) throws Exception;
-
-    //10-23 临时Token生成接口
-    APIResponse getTemporaryToken() throws Exception;
 
     /**
      * 下面是CMS后台所使用的接口
