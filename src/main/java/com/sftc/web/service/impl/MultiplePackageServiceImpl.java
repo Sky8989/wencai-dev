@@ -193,7 +193,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         //attributes-pay_in_group
         JSONObject attributesJson = new JSONObject();
         attributesJson.put("pay_in_group", true);
-        requestsMap.put("attributesJson", attributesJson);
+        requestsMap.put("attributes", attributesJson);
 
         //requests信息数组对象封装
         JSONArray targetsArray = new JSONArray();
