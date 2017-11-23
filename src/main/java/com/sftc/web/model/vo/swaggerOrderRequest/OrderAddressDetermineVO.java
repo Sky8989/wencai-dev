@@ -10,11 +10,15 @@ import lombok.Setter;
 /**
  * Created by xf on 2017/10/23.
  */
-@ApiModel(value = "判断是否同城请求包装类")
+@ApiModel(value = "判断是否同城请求信息")
 public class OrderAddressDetermineVO {
 
     @Getter @Setter
-    @ApiModelProperty(name = "request",value = "request对象",required = true)
-    private OrderAddressDetermine request;
+    @ApiModelProperty(name = "source",value = "寄件人经纬度",required = true)
+    private DetermineSourceVO source;
+
+    @Getter @Setter
+    @ApiModelProperty(name = "target",value = "收件人经纬度")
+    private DetermineTargetVO target;
 
 }

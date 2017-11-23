@@ -12,6 +12,10 @@ import lombok.Setter;
 public class DetermineTargetVO {
 
     @Getter @Setter
-    @ApiModelProperty(name = "coordinate",value = "收件人经纬度")
-    private CoordinateVO coordinate;
+    @ApiModelProperty(name = "longitude",value = "经度",example = "114.260976")
+    private double longitude;
+
+    @Getter @Setter
+    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.723223")
+    private double latitude;
 }
