@@ -30,7 +30,7 @@ import com.sftc.web.model.vo.swaggerRequest.CoordinateVO;
 import com.sftc.web.model.vo.swaggerRequest.TargetCoordinateVO;
 import com.sftc.web.service.impl.MessageServiceImpl;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -7,7 +7,7 @@ import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.vo.swaggerOrderRequest.MyOrderParamVO;
 import com.sftc.web.model.vo.swaggerOrderRequest.OrderParamVO;
 import com.sftc.web.model.vo.swaggerOrderRequest.*;
-import com.sftc.web.model.vo.swaggerOrderRequest.OrderAddressDetermineVO;
+import com.sftc.web.model.vo.swaggerOrderRequest.OrderAddressDetermine;
 import com.sftc.web.model.vo.swaggerRequest.OrderCancelTimeVO;
 import com.sftc.web.service.EvaluateService;
 import com.sftc.web.service.OrderService;

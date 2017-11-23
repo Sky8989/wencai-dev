@@ -1,16 +1,16 @@
 package com.sftc.web.service.impl.logic.app;
 
-import com.sftc.tools.api.APIGetUtil;
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIUtil;
+import com.google.gson.Gson;
+import com.sftc.tools.api.*;
 import com.sftc.tools.screenshot.HtmlScreenShotUtil;
 import com.sftc.tools.sf.SFTokenHelper;
+import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.service.QiniuService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -25,12 +25,16 @@ import java.util.TimeZone;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_WEB_URL;
 import static com.sftc.tools.constant.SFConstant.SF_CONSTANTS_URL;
+import static com.sftc.tools.constant.SFConstant.SF_DETERMINE_URL;
+import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
 
 @Component
 public class OrderOtherLogic {
 
     @Resource
     private QiniuService qiniuService;
+
+    private Gson gson = new Gson();
 
     private static final String PACKAGE_SMALL_ICON = "https://sf.dankal.cn/icn_package_small_copy.png";
     private static final String PACKAGE_MIDDLE_ICON = "https://sf.dankal.cn/icn_package_middle_copy.png";
@@ -127,27 +131,53 @@ public class OrderOtherLogic {
 
     /**
      * 判断是否可同城下单
-     * TODO:顺丰接口未完成，暂时先放着
      */
     public APIResponse determineOrderAddress(APIRequest request) {
-        JSONObject requestOBJ = JSONObject.fromObject(request.getRequestParam());
+        JSONObject reqParamOBJ = JSONObject.fromObject(request.getRequestParam());
+        JSONObject requestOBJ = reqParamOBJ.getJSONObject(SF_DETERMINE_URL"request");
+        Map<String, String> errorMap = new HashMap<>();
         if (!requestOBJ.containsKey("source")) {
             return APIUtil.submitErrorResponse("寄件人经纬度缺失", null);
         } else {
-            double sourceLongitude = requestOBJ.getJSONObject("source").getDouble("longitude");
-            double sourceLatitude = requestOBJ.getJSONObject("source").getDouble("latitude");
+            double sourceLongitude = requestOBJ.getJSONObject("source").
+                    getJSONObject("coordinate").getDouble("longitude");
+            double sourceLatitude = requestOBJ.getJSONObject("source").
+                    getJSONObject("coordinate").getDouble("latitude");
+            if (sourceLatitude == 0 || sourceLongitude == 0) {
+                errorMap.put("reason", "Longitude or Latitude is not available");
+                return APIUtil.submitErrorResponse("经纬度参数不正确", errorMap);
+            }
         }
         //TODO:Swagger 的bug,对象不可不传，而且判断null还不行
-        if (requestOBJ.containsKey("target")&&requestOBJ.getJSONObject("target").size()!=0) {
-            double targetLongitude = requestOBJ.getJSONObject("target").getDouble("longitude");
-            double targetLatitude = requestOBJ.getJSONObject("target").getDouble("latitude");
+        if (requestOBJ.containsKey("target") && requestOBJ.getJSONObject("target").size() != 0) {
+            double targetLongitude = requestOBJ.getJSONObject("target").
+                    getJSONObject("coordinate").getDouble("longitude");
+            double targetLatitude = requestOBJ.getJSONObject("target").
+                    getJSONObject("coordinate").getDouble("latitude");
+            if (targetLatitude == 0 || targetLongitude == 0) {
+                errorMap.put("reason", "Longitude or Latitude is not available");
+                return APIUtil.submitErrorResponse("经纬度参数不正确", errorMap);
+            }
+        } else {
+            requestOBJ.remove("target");
         }
 
-        //顺丰接口
+        String token = TokenUtils.getInstance().getAccess_token();
 
-        Map<String, Boolean> map = new HashMap<>();
-        map.put("determine", true);
-        return APIUtil.getResponse(SUCCESS, map);
+        //顺丰接口
+        String paramStr = gson.toJson(JSONObject.fromObject(reqParamOBJ));
+        HttpPost post = new HttpPost(SF_DETERMINE_URL);
+        post.addHeader("PushEnvelope-Device-Token", token);
+        String resultStr = APIPostUtil.post(paramStr, post);
+        JSONObject responseObject = JSONObject.fromObject(resultStr);
+
+        if (responseObject.containsKey("error")) {
+            return APIUtil.paramErrorResponse("您所在的区域尚未开放下单，敬请期待！");
+        } else {
+            Map<String, Boolean> map = new HashMap<>();
+            map.put("determine", true);
+            return APIUtil.getResponse(SUCCESS, map);
+        }
     }
 
     /**
