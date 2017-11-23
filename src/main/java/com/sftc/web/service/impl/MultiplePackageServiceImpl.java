@@ -93,7 +93,9 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         for (MultiplePackageDTO obj : targetInfos) {
             if (obj != null) {
                 JSONObject targetJson = new JSONObject();
+                obj.getMultiplePackageAddressDTO().setCountry("中国");
                 targetJson.put("address", obj.getMultiplePackageAddressDTO());
+                targetJson.getJSONObject("address").remove("userId");
                 targetJson.put("coordinate", obj.getMultiplePackageLLDTO());
                 requestsMap.put("target", targetJson);
 
@@ -200,7 +202,9 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         for (MultiplePackageDTO obj : targetInfos) {
             if (obj != null) {
                 JSONObject targetJson = new JSONObject();
+                obj.getMultiplePackageAddressDTO().setCountry("中国");
                 targetJson.put("address", obj.getMultiplePackageAddressDTO());
+                targetJson.getJSONObject("address").remove("userId");
                 targetJson.put("coordinate", obj.getMultiplePackageLLDTO());
                 requestsMap.put("target", targetJson);
 
@@ -208,6 +212,9 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
                 JSONObject quoteJson = new JSONObject();
                 quoteJson.put("uuid", obj.getQuoteUUId());
                 requestsMap.put("quote", quoteJson);
+
+                //默认为普通
+                requestsMap.put("type", "NORMAL");
 
                 targetsArray.add(requestsMap);
             }
@@ -430,7 +437,9 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         //requset信息
         JSONObject requestJson = new JSONObject();
         JSONObject sourceJson = new JSONObject();
+        sourceInfo.getMultiplePackageAddressDTO().setCountry("中国");
         sourceJson.put("address", sourceInfo.getMultiplePackageAddressDTO());
+        sourceJson.getJSONObject("address").remove("userId");
         sourceJson.put("coordinate", sourceInfo.getMultiplePackageLLDTO());
         //寄件人信息
         requestJson.put("source", sourceJson);
@@ -445,6 +454,8 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
             reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserveTime, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             requestJson.put("reserve_time", reserveTime);
         }
+        String productType = requestPOJO.getProduct_type();
+        requestJson.put("product_type", productType);
         //同城下单参数增加 C 端小程序标识和订单类型表示   NORMAL/RESERVED/DIRECTED
         requestJson.put("request_source", "C_WX_APP");
         //默认为普通
@@ -466,7 +477,13 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         List<BatchPackagesVO> packagesVO = requestPOJO.getPackages();
         JSONArray packagesArrays = JSONArray.fromObject(packagesVO);
         requestsMap.put("packages", packagesArrays);
-
+        //获取预约时间处理
+        String reserveTime = requestPOJO.getReserve_time();
+        //订单类型为：预约
+        if (!StringUtils.isBlank(reserveTime)) {
+            reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserveTime, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            requestsMap.put("reserve_time", reserveTime);
+        }
         //产品类型
         requestsMap.put("product_type", requestPOJO.getProduct_type());
         //付款类型
