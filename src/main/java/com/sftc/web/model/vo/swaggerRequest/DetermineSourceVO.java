@@ -11,11 +11,6 @@ import lombok.Setter;
 @ApiModel(value = "判断同城寄件人经纬度")
 public class DetermineSourceVO {
     @Getter @Setter
-    @ApiModelProperty(name = "longitude",value = "经度",example = "113.94524651122737",required = true,dataType = "double")
-    private double longitude;
-
-    @Getter @Setter
-    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.5304852403182",required = true,dataType = "double")
-    private double latitude;
-
+    @ApiModelProperty(name = "coordinate",value = "寄件人经纬度",required = true)
+    private CoordinateVO coordinate;
 }

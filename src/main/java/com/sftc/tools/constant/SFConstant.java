@@ -87,6 +87,10 @@ public class SFConstant {
      */
     public static String SF_REQUEST_URL = SF_SAME_DOMAIN + "requests";
     /**
+     * 判断是否可同城
+     */
+    public static String SF_DETERMINE_URL = SF_SAME_DOMAIN + "/requests/coordinates/valid";
+    /**
      * 多包裹订单请求地址
      */
     public static String SF_Multiple_REQUEST_URL = SF_REQUEST_URL + "/in_group";
