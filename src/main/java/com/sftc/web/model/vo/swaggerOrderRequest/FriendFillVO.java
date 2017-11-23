@@ -2,6 +2,8 @@ package com.sftc.web.model.vo.swaggerOrderRequest;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by xf on 2017/10/21.
@@ -26,10 +28,14 @@ public class FriendFillVO {
     private String order_id;
     @ApiModelProperty(name = "ship_user_id",value = "收件人id",example = "10087")
     private String ship_user_id;
-    @ApiModelProperty(name = "longitude",value = "经度",example = "113.9466987556842")
-    private String longitude;
-    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.530164470515828")
-    private String latitude;
+
+    @Getter @Setter
+    @ApiModelProperty(name = "longitude",value = "经度",example = "113.9466987556842",dataType = "double")
+    private double longitude;
+
+    @Getter @Setter
+    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.530164470515828",dataType = "double")
+    private double latitude;
 
     public String getShip_name() {
         return ship_name;
@@ -103,19 +109,4 @@ public class FriendFillVO {
         this.ship_user_id = ship_user_id;
     }
 
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
 }

@@ -28,9 +28,9 @@ public class OrderParamVO {
     private String pay_method;
     @ApiModelProperty(name = "distribution_method",value = "配送方式",example = "das")
     private String distribution_method;
-    @ApiModelProperty(name = "longitude",value = "经度",example = "114.260976")
+    @ApiModelProperty(name = "longitude",value = "经度",example = "114.260976",dataType = "double")
     private double longitude;
-    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.723223")
+    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.723223",dataType = "double")
     private double latitude;
     @ApiModelProperty(name = "word_message",value = "留言",example = "你好")
     private String word_message;

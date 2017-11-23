@@ -37,10 +37,10 @@ public class UserMerchantsAddressVO {
 
     @ApiModelProperty(value = "寄件人电话",example = "18124033797",required = true)
     private String mobile;
-    @ApiModelProperty(name = "longitude",value = "经度",example = "113.94524651122737",required = true)
-    private String longitude;
-    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.5304852403182",required = true)
-    private String latitude;
+    @ApiModelProperty(name = "longitude",value = "经度",example = "113.94524651122737",required = true,dataType = "double")
+    private double longitude;
+    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.5304852403182",required = true,dataType = "double")
+    private double latitude;
 
     public String getUuid() {
         return uuid;
@@ -128,21 +128,5 @@ public class UserMerchantsAddressVO {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
     }
 }
