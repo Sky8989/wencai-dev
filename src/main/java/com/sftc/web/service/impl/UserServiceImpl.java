@@ -11,14 +11,15 @@ import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.entity.Token;
 import com.sftc.web.model.entity.User;
-import com.sftc.web.model.vo.swaggerRequest.UserParamVO;
 import com.sftc.web.model.others.WXUser;
+import com.sftc.web.model.vo.swaggerRequest.UserParamVO;
 import com.sftc.web.service.MessageService;
 import com.sftc.web.service.UserService;
 import net.sf.json.JSONObject;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.slf4j.Logger;
@@ -189,7 +190,7 @@ public class UserServiceImpl implements UserService {
                 tokenInfo.put("user_id", (token.getUser_id() + ""));
                 Token paramtoken = tokenMapper.getTokenById(token.getUser_id());
                 if (paramtoken.getAccess_token() != null && !"".equals(paramtoken.getAccess_token())) { // 获取顺丰 access_token和uuid的内容
-                    HashMap<String, String> map = checkAccessToken(token.getUser_id(), paramtoken);
+                    HashMap<String, String> map = checkAccessToken(token.getUser_id());
                     if (map.containsKey("error")) {
                         return APIUtil.submitErrorResponse("refresh_token failed", JSONObject.fromObject(map.get("error")));
                     }
@@ -210,28 +211,47 @@ public class UserServiceImpl implements UserService {
         return APIUtil.getResponse(SUCCESS, tokenInfo);
     }
 
+    // 检查绑定状态
+    public APIResponse checkBindStatus() throws Exception {
+
+        JSONObject responseObject = new JSONObject();
+        int userId = TokenUtils.getInstance().getUserId();
+        String access_token = TokenUtils.getInstance().getAccess_token();
+        boolean isBind = false;
+        if (StringUtils.isNotBlank(access_token)) { // 有绑定手机号的用户，access_token不为空
+            // 验证access_token是否有效
+            HashMap loginInfo = checkAccessToken(userId);
+            // access_token有效，或者使用refresh_token刷新了access_token
+            if ((!loginInfo.containsKey("error")) && loginInfo.containsKey("access_token")) {
+                isBind = true;
+            }
+        }
+        responseObject.put("is_bind", isBind);
+
+        return APIUtil.getResponse(SUCCESS, responseObject);
+    }
+
     public Token getToken(int id) {
         return tokenMapper.getToken(id);
     }
 
     private String makeToken(String str1, String str2) {
         String s = MD5Util.MD5(str1 + str2);
-        return s.substring(0, s.length() - 10);
+        return s != null ? s.substring(0, s.length() - 10) : null;
     }
 
     // 验证access_token是否有效 通过访问merchant/me接口 但只针对有access_token的用户
-    private HashMap<String, String> checkAccessToken(int user_id, Token paramtoken) throws Exception {
+    private HashMap<String, String> checkAccessToken(int user_id) throws Exception {
+
         Token token = tokenMapper.getTokenById(user_id);
-        //验证 access_token 如果error则用refresh_token
-        String old_accesstoken = token.getAccess_token();
-        JSONObject resJSONObject = catchSFLogin(old_accesstoken);
-        HashMap<String, String> map = new HashMap<String, String>();
+        // 验证access_token 如果error则用refresh_token去刷新
+        String oldAccesstoken = token.getAccess_token();
+        JSONObject resJSONObject = catchSFLogin(oldAccesstoken);
+        HashMap<String, String> map = new HashMap<>();
         if (resJSONObject.containsKey("error")) { // 旧的token失效 要刷新
             // 访问sf刷新token的链接
-            StringBuilder postUrl = new StringBuilder(SF_GET_TOKEN);
-            postUrl.append("?refresh_token=");
-            postUrl.append(token.getRefresh_token());
-            HttpPost post = new HttpPost(postUrl.toString());
+            String postUrl = SF_GET_TOKEN.concat("?refresh_token=").concat(token.getRefresh_token());
+            HttpPost post = new HttpPost(postUrl);
             String resPost = APIPostUtil.post(postStr, post);
             JSONObject resPostJSONObject = JSONObject.fromObject(resPost);
             // 处理refresh刷新失败的情况
@@ -245,12 +265,10 @@ public class UserServiceImpl implements UserService {
             token.setAccess_token(newAccess_token);
             token.setRefresh_token(newRefresh_token);
             tokenMapper.updateToken(token);
-
-
+            // 返回新的access_token
             map.put("access_token", newAccess_token);
-        } else { // 旧的token有效
-            map.put("uuid", resJSONObject.getJSONObject("merchant").getString("uuid"));
-            map.put("access_token", old_accesstoken);
+        } else { // 旧的access_token有效
+            map.put("access_token", oldAccesstoken);
         }
         return map;
     }
@@ -263,45 +281,44 @@ public class UserServiceImpl implements UserService {
         return JSONObject.fromObject(res);
     }
 
-    // 解除绑定操作，原微信号，解除原有手机号
-    public APIResponse deleteMobile(APIRequest request) throws Exception {
-        Integer user_id = TokenUtils.getInstance().getUserId();
-        User user = userMapper.selectUserByUserId(user_id);
-        Token tokenById = tokenMapper.getTokenById(user_id);
-        if (user != null) {// 验空
-            if (user.getMobile() != null && !"".equals(user.getMobile())) {
-                //清除 手机号 uuid access_token 和 refresh_token
-                user.setMobile("");
-                user.setUuid("");
-                userMapper.updateUser(user);
-                tokenById.setAccess_token("");
-                tokenById.setRefresh_token("");
-                tokenMapper.updateToken(tokenById);
-                return APIUtil.getResponse(SUCCESS, user_id + "用户解除手机绑定成功");
-            } else {// 无手机号
-                return APIUtil.submitErrorResponse("该用户未绑定手机号，请勿进行操作", null);
-            }
-        } else {
-            return APIUtil.submitErrorResponse("无该用户，请检查参数", null);
-        }
-    }
+//    // 解除绑定操作，原微信号，解除原有手机号
+//    public APIResponse deleteMobile(APIRequest request) throws Exception {
+//        Integer user_id = TokenUtils.getInstance().getUserId();
+//        User user = userMapper.selectUserByUserId(user_id);
+//        Token tokenById = tokenMapper.getTokenById(user_id);
+//        if (user != null) {// 验空
+//            if (user.getMobile() != null && !"".equals(user.getMobile())) {
+//                //清除 手机号 uuid access_token 和 refresh_token
+//                user.setMobile("");
+//                user.setUuid("");
+//                userMapper.updateUser(user);
+//                tokenById.setAccess_token("");
+//                tokenById.setRefresh_token("");
+//                tokenMapper.updateToken(tokenById);
+//                return APIUtil.getResponse(SUCCESS, user_id + "用户解除手机绑定成功");
+//            } else {// 无手机号
+//                return APIUtil.submitErrorResponse("该用户未绑定手机号，请勿进行操作", null);
+//            }
+//        } else {
+//            return APIUtil.submitErrorResponse("无该用户，请检查参数", null);
+//        }
+//    }
+//
+//    // 修改手机号码 即重新绑定新手机号
+//    public APIResponse updateMobile(APIRequest apiRequest) throws Exception {
+//        Object requestParam = apiRequest.getRequestParam();
+//        // 1 验证手机号可用性
+//        JSONObject jsonObject = JSONObject.fromObject(requestParam);
+//        String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
+//        User user = userMapper.selectUserByPhone(mobile);
+//        if (user != null) {
+//            return APIUtil.submitErrorResponse("手机号已被人使用过，请检查手机号", mobile);
+//        }
+//        // 2 走注册流程
+//        return messageService.register(apiRequest);
+//    }
 
-    // 修改手机号码 即重新绑定新手机号
-    public APIResponse updateMobile(APIRequest apiRequest) throws Exception {
-        Object requestParam = apiRequest.getRequestParam();
-        // 1 验证手机号可用性
-        JSONObject jsonObject = JSONObject.fromObject(requestParam);
-        String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
-        int user_id = jsonObject.getInt("user_id");
-        User user = userMapper.selectUserByPhone(mobile);
-        if (user != null) {
-            return APIUtil.submitErrorResponse("手机号已被人使用过，请检查手机号", mobile);
-        }
-        // 2 走注册流程
-        return messageService.register(apiRequest);
-    }
-
-    //10-12日提出的新需求 更新个人信息
+    // 更新商户信息
     public APIResponse updatePersonMessage(APIRequest apiRequest) throws Exception {
         Object requestParam = apiRequest.getRequestParam();
         JSONObject jsonObject = JSONObject.fromObject(requestParam);
@@ -323,7 +340,7 @@ public class UserServiceImpl implements UserService {
                 "email\":\"" + email + "\",\"address\":{\"type\":\"LIVE\",\"country\":\"中国\",\"province\":\"" + province + "\",\"" +
                 "city\":\"" + city + "\",\"region\":\"" + region + "\",\"street\":\"" + street + "\",\"zipcode\":\"" + zipcode + "\",\"receiver\":" +
                 "\"" + receiver + "\",\"mobile\":\"" + mobile + "\",\"marks\":{},\"longitude\":\"" + longitude + "\",\"latitude\":\"" + latitude + "\",\"uuid\":\"" + uuid + "\"}}}";
-        String access_token = null;
+        String access_token;
         if (jsonObject.getString("token") != null && !(jsonObject.getString("token")).equals("")) {
             access_token = jsonObject.getString("token");
         } else {
@@ -341,7 +358,7 @@ public class UserServiceImpl implements UserService {
         return APIUtil.logicErrorResponse("更新个人信息失败", response.body());
     }
 
-    //生成临时token  2017-10-23
+    // 生成临时token  2017-10-23
     public APIResponse getTemporaryToken() throws Exception {
         //2188用户用于发放临时token
         Token usableToken = tokenMapper.getTokenById(2188);
@@ -369,8 +386,8 @@ public class UserServiceImpl implements UserService {
             tokenMapper.addToken(token);
             usableToken = tokenMapper.getTokenById(2188);
         }
-        Map<String,String> map = new HashMap<>();
-        map.put("token",usableToken.getLocal_token());
+        Map<String, String> map = new HashMap<>();
+        map.put("token", usableToken.getLocal_token());
         return APIUtil.getResponse(SUCCESS, map);
     }
 

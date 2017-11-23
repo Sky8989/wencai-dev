@@ -38,7 +38,7 @@ public class UserController extends BaseController {
     }
 
     @IgnoreToken
-    @ApiOperation(value = "超级登录", httpMethod = "POST",notes = "通过jscode，获取登陆信息，以及access_token和uuid，并且在旧的token失效时自动刷新。\n" +
+    @ApiOperation(value = "超级登录", httpMethod = "POST", notes = "通过jscode，获取登陆信息，以及access_token和uuid，并且在旧的token失效时自动刷新。\n" +
             "如果用户没有access_token或者access_token失效，则不会传递access_token和uuid，以此区分access_token是否有效。")
     @RequestMapping(value = "/login/pro", method = RequestMethod.POST)
     public @ResponseBody
@@ -48,27 +48,33 @@ public class UserController extends BaseController {
         return userService.superLogin(request);
     }
 
-    @IgnoreToken
-    @ApiOperation(value = "解除绑定手机", httpMethod = "PUT",notes = "解除绑定手机号，用户登陆小程序，使用原有微信号，解除旧有绑定的手机号。\n" +
-            "前端确认用户操作后，传递用户id、用户旧手机号，传递到接口。")
-    @RequestMapping(value = "/mobile/unbind", method = RequestMethod.PUT)
+    @ApiOperation(value = "检查手机绑定状态", httpMethod = "GET", notes = "在下单、兑换优惠券前，都需要检查一下账号是否已经绑定手机号。如果未绑定手机号，需要先绑定（手机号+验证码的方式），再进行后续操作。")
+    @RequestMapping(value = "/mobile/bind", method = RequestMethod.GET)
     public @ResponseBody
-    APIResponse commonUnbind(HttpServletRequest request) throws Exception {
-        return userService.deleteMobile(new APIRequest(request));
+    APIResponse checkMobileBindStatus() throws Exception {
+        return userService.checkBindStatus();
     }
 
-    @IgnoreToken
-    @ApiOperation(value = "修改绑定手机", httpMethod = "PUT")
-    @RequestMapping(value = "/mobile/bind", method = RequestMethod.PUT)
-    public @ResponseBody
-    APIResponse bindNewMobile(@RequestBody UserNewMobileVO userNewMobileVO) throws Exception {
-        APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(userNewMobileVO);
-        return userService.updateMobile(apiRequest);
-    }
+//    @IgnoreToken
+//    @ApiOperation(value = "解除绑定手机", httpMethod = "PUT", notes = "解除绑定手机号，用户登陆小程序，使用原有微信号，解除旧有绑定的手机号。\n" +
+//            "前端确认用户操作后，传递用户id、用户旧手机号，传递到接口。")
+//    @RequestMapping(value = "/mobile/unbind", method = RequestMethod.PUT)
+//    public @ResponseBody
+//    APIResponse commonUnbind(HttpServletRequest request) throws Exception {
+//        return userService.deleteMobile(new APIRequest(request));
+//    }
+//
+//    @IgnoreToken
+//    @ApiOperation(value = "修改绑定手机", httpMethod = "PUT")
+//    @RequestMapping(value = "/mobile/bind", method = RequestMethod.PUT)
+//    public @ResponseBody
+//    APIResponse bindNewMobile(@RequestBody UserNewMobileVO userNewMobileVO) throws Exception {
+//        APIRequest apiRequest = new APIRequest();
+//        apiRequest.setRequestParam(userNewMobileVO);
+//        return userService.updateMobile(apiRequest);
+//    }
 
-    //10-12日提出的新需求 更新个人信息
-    @ApiOperation(value = "更新个人信息", httpMethod = "PUT",notes = "更新用户信息,2017-10-12的新需求，前端需要在下单前调用")
+    @ApiOperation(value = "更新商户信息", httpMethod = "PUT", notes = "更新用户信息, 2017-10-12的新需求，前端需要在下单前调用")
     @RequestMapping(value = "/merchants/me", method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse updatePersonMessage(@RequestBody UserMerchantsRequestVO userMerchantsRequestVO) throws Exception {
