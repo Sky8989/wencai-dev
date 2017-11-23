@@ -34,7 +34,7 @@ public class PriceExaplainContoller {
     }
     
     @ApiOperation(value = "新增(修改)价格说明", httpMethod = "POST")
-    @RequestMapping(value="addOrUpdate",method = RequestMethod.POST)
+    @RequestMapping(value="save",method = RequestMethod.POST)
     public @ResponseBody
     APIResponse addCommonQuestion(@RequestBody PriceExplain priceExplain) throws Exception {
         	 return priceExaplainService.save(priceExplain);	

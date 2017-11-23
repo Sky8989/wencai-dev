@@ -28,7 +28,7 @@ public class GiftCardController extends BaseController {
         return giftCardService.getGiftCardList(new APIRequest(request));
     }
     @ApiOperation(value = "新增修改礼品卡",httpMethod = "POST")
-    @RequestMapping(value = "addOrUpdateGiftCard",method = RequestMethod.POST)
+    @RequestMapping(value = "save",method = RequestMethod.POST)
     public @ResponseBody
     APIResponse addOrUpdateGiftCard(@RequestBody GiftCard giftCard) throws Exception {
     			return giftCardService.save(giftCard);	
