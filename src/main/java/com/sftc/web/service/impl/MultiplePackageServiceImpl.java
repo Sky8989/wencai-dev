@@ -351,6 +351,8 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
             return APIUtil.submitErrorResponse("支付失败，请查看返回值", resultObject);
         }
         /*-------------------------------------------------- 修改数据库表sftc_order_express  route_state--------------------------------------------------------*/
+
+
         multiplePackageMapper.updateRouteStateByGroupID("PAYING",groupUUId);
 
         String payStr = resultObject.getString("payStr");
