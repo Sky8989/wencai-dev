@@ -21,21 +21,26 @@ public interface UserService {
      */
     Token getToken(int id);
 
-    /**
-     * 解除绑定操作，原微信号，解除原有手机号
-     */
-    APIResponse deleteMobile(APIRequest request) throws Exception;
-
-    /**
-     * 修改手机号码 即重新绑定新手机号
-     */
-    APIResponse updateMobile(APIRequest apiRequest) throws Exception;
+//    /**
+//     * 解除绑定操作，原微信号，解除原有手机号
+//     */
+//    APIResponse deleteMobile(APIRequest request) throws Exception;
+//
+//    /**
+//     * 修改手机号码 即重新绑定新手机号
+//     */
+//    APIResponse updateMobile(APIRequest apiRequest) throws Exception;
 
     //10-12日提出的新需求 更新个人信息 作为中控给顺丰验证和更新个人信息
     APIResponse updatePersonMessage(APIRequest apiRequest) throws Exception;
 
     //10-23 临时Token生成接口
     APIResponse getTemporaryToken() throws Exception;
+
+    /**
+     * 检查账号是否已经绑定手机号
+     */
+    APIResponse checkBindStatus() throws Exception;
 
     /**
      * 下面是CMS后台所使用的接口
