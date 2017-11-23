@@ -226,17 +226,19 @@ public class UserServiceImpl implements UserService {
         User user = null;
         Map<String, String> tokenInfo = new HashMap<>();
         if (wxappUser.getOpenid() != null && wxappUser.getUnionid() != null) {
-            List<User> userList = userMapper.selectUserByUnionId(wxappUser.getUnionid());
-            if (userList.size() > 1) {
+            List<User> userListByUnionId = userMapper.selectUserByUnionId(wxappUser.getUnionid());
+            List<User> userListByOpenId = userMapper.selectUserByOpenid(wxappUser.getOpenid());
+            if (userListByOpenId.size() > 1 || userListByUnionId.size() > 1) {
                 return APIUtil.paramErrorResponse("出现重复用户，请填写用户反馈");
             }
-            if (userList.size() == 1) {
-                user = userList.get(0);
+            if (userListByOpenId.size() == 1 && userListByUnionId.size() == 0) { //有open_id没有unionid则为老用户
+                user = userListByOpenId.get(0);
+            }else if(userListByOpenId.size() == 0 && userListByUnionId.size() == 1){ //有unionid没有open_id则为改为unionid标识后的用户
+                user = userListByUnionId.get(0);
             }
-            /*------------------------------------------------ 如果unionid无对应用户 则为新用户 插入unionid ---------------------------------------------------*/
+            /*------------------------------------------------ 若两个都没有 则为新用户 插入unionid ---------------------------------------------------*/
             if (user == null) {
                 User user2 = new User();
-                user2.setOpen_id(wxappUser.getOpenid());
                 user2.setUnionid(wxappUser.getUnionid());
                 user2.setChanel(APP_USER);
                 user2.setCreate_time(Long.toString(System.currentTimeMillis()));
@@ -254,7 +256,7 @@ public class UserServiceImpl implements UserService {
                 tokenMapper.addToken(token);
                 tokenInfo.put("token", myToken);
                 tokenInfo.put("user_id", (user2.getId() + ""));
-            /*------------------------------------------------ 如果unionid有对应用户 则为老用户 更新 unionid ---------------------------------------------------*/
+            /*------------------------------------------------ 如果有对应用户 更新 unionid 将open_id设空 ---------------------------------------------------*/
             } else {
                 //更新头像和昵称
                 if (appUserParamVO.getName() != null && appUserParamVO.getAvatar() != null) {
@@ -263,10 +265,11 @@ public class UserServiceImpl implements UserService {
                     user.setAvatar(appUserParamVO.getAvatar());
                     user.setName(appUserParamVO.getName());
                 }
-                if (user.getUnionid() == null || user.getUnionid().equals("")) {
+                if (user.getUnionid() == null || user.getUnionid().equals("") || !user.getUnionid().equals(wxappUser.getUnionid())) {
                     String unionid = wxappUser.getUnionid();
                     userMapper.updateUnionId(unionid, user.getId());
                 }
+                user.setOpen_id("");
                 userMapper.updateUserOfAvatar(user);
                 Token token = tokenMapper.getTokenById(user.getId());
                 if (token == null) {

@@ -58,9 +58,9 @@
     </insert>
 
     <insert id="insertUnionId" parameterType="com.sftc.web.model.entity.User" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO sftc_user (open_id,unionid, create_time, chanel)
+        INSERT INTO sftc_user (unionid, create_time, chanel)
         VALUES
-        (#{open_id}, #{unionid}, #{create_time}, #{chanel})
+        (#{unionid}, #{create_time}, #{chanel})
     </insert>
 
     <insert id="insertWithAvatarAndName" parameterType="com.sftc.web.model.entity.User" useGeneratedKeys="true"
@@ -77,9 +77,9 @@
 
     <insert id="appInsertWithAvatarAndName" parameterType="com.sftc.web.model.entity.User" useGeneratedKeys="true"
             keyProperty="id">
-        INSERT INTO sftc_user (open_id, create_time, chanel, avatar, name,unionid)
+        INSERT INTO sftc_user (create_time, chanel, avatar, name,unionid)
         VALUES
-        (#{open_id}, #{create_time}, #{chanel}, #{avatar}, #{name},#{unionid})
+        (#{create_time}, #{chanel}, #{avatar}, #{name},#{unionid})
     </insert>
 
     <!--添加顺丰传过来的Merchant信息-->
@@ -103,6 +103,7 @@
             <if test="avatar!=null">avatar=#{avatar},</if>
             <if test="name!=null">name=#{name},</if>
             <if test="session_key!=null">session_key=#{session_key},</if>
+            <if test="open_id!=null">open_id=#{open_id},</if>
         </trim>
         WHERE open_id = #{open_id}
     </update>
