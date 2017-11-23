@@ -97,9 +97,9 @@
     <update id="updateRouteStateByGroupID" parameterType="java.lang.String">
         UPDATE sftc_order_express
         SET route_state = #{routeState}
-        WHERE order_id = {
+        WHERE order_id = (
         SELECT id FROM sftc_order WHERE group_uuid = #{groupUUId}
-        }
+        )
          AND ship_name IS NOT NULL  AND ship_mobile IS NOT NULL
     </update>
 
