@@ -267,12 +267,13 @@ public class MessageServiceImpl implements MessageService {
      * 验证短信验证码
      */
     public APIResponse messageCheck(APIRequest apiRequest) {
+
         JSONObject jsonObject = JSONObject.fromObject(apiRequest.getRequestParam());
         Integer user_id = TokenUtils.getInstance().getUserId();
         if (user_id != 0) {
             String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
 
-            // 验证手机号与user_id的匹配
+            // 验证手机号与user_id的匹配 根据手机号和 用户 id 查询用户
             User userByPhone = userMapper.selectUserByPhone(mobile);
             User userByUserId = userMapper.selectUserByUserId(user_id);
             Map<String, String> map = new HashMap<>(1, 1);
@@ -289,7 +290,7 @@ public class MessageServiceImpl implements MessageService {
                 }
             }
 
-            //获取用户注册需要保存的邀请相关参数
+           /*-------------------------------------- 调用顺丰获取 token 接口 验证手机验证码是否正确 ---------------------------------------*/
             JSONObject jsonInvite = jsonObject.getJSONObject("invite");  //用户注册时 相关邀请信息
             JSONObject attributeOBJ = jsonObject.getJSONObject("merchant").getJSONObject("attributes");
 
@@ -303,12 +304,13 @@ public class MessageServiceImpl implements MessageService {
             // 生成sf获取token的链接
             StringBuilder postUrl = new StringBuilder(SF_GET_TOKEN);
 
-            // 调用顺丰接口
+            // 调用顺丰获取token接口
             String str = gson.toJson(jsonObject);
             HttpPost post = new HttpPost(postUrl.toString());
             String res = APIPostUtil.post(str, post);
             JSONObject resJSONObject = JSONObject.fromObject(res);
 
+             /*-------------------------------------- 验证成功调用登录接口 失败若为 NOT_FOUND 调用注册接口 ---------------------------------------*/
             if (!resJSONObject.containsKey("error")) {
                 // 更新 token中的access_token 到token表
                 String access_token = resJSONObject.getJSONObject("token").getString("access_token");
@@ -319,6 +321,7 @@ public class MessageServiceImpl implements MessageService {
                 token.setRefresh_token(refresh_token);
                 tokenMapper.updateToken(token);
 
+                //调用顺丰登录接口
                 String loginStr = gson.toJson(jsonObject);
                 HttpPost loginPost = new HttpPost(SF_LOGIN);
                 loginPost.addHeader("PushEnvelope-Device-Token", access_token);
@@ -351,6 +354,7 @@ public class MessageServiceImpl implements MessageService {
                             jsonObject.getJSONObject("merchant").put("attributes",attributeOBJ);
                             jsonObject.getJSONObject("message").put("type","WX_REGISTER_VERIFY_SMS");
 
+                            //调用顺丰注册接口
                             String registerUrl = gson.toJson(jsonObject);
                             HttpPost registerPost = new HttpPost(SF_REGISTER_URL);
                             String resp = APIPostUtil.post(registerUrl, registerPost);
@@ -360,7 +364,7 @@ public class MessageServiceImpl implements MessageService {
                             if (registerResp.containsKey("error")) {
                                 return APIUtil.submitErrorResponse("注册失败", registerResp);
                             } else {
-                                // 注册成功
+                                // 注册成功 获取邀请信息
                                 JSONObject merchantJSONObject = registerResp.getJSONObject("merchant");
                                 JSONObject tokenJSONObject = registerResp.getJSONObject("token");
 

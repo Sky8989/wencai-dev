@@ -61,6 +61,7 @@ public class MessageController extends BaseController {
         return messageService.getToken(apiRequest);
     }
 
+    @ApiIgnore
     @IgnoreToken
     @ApiOperation(value = "sf登录【调顺丰】", httpMethod = "POST")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
