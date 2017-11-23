@@ -164,10 +164,6 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         }
         MultiplePackageVO requestPOJO = (MultiplePackageVO) requestFromPOJOToJson;
 
-        //获取公共uuid
-        String uuid = SFTokenHelper.COMMON_UUID;
-        //获取公共access_token
-        String accessToken = SFTokenHelper.COMMON_ACCESSTOKEN;
         //获取orderID
         String orderID = requestPOJO.getOrder_id();
 
@@ -219,6 +215,9 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         sfRequestJson.put("requests", targetsArray);
 
         //request 请求封装拼接
+
+        //获取公共uuid
+        String uuid = TokenUtils.getInstance().getUserUUID();
         String reserveTime = mosaicSourceRequestJson(requestPOJO, sfRequestJson, uuid, sourceInfo);
 
 
@@ -227,6 +226,8 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         /*---------------------------------------------------------------- sf请求 --------------------------------------------------------------------------------*/
         Gson gson = new Gson();
         HttpPost post = new HttpPost(SF_Multiple_REQUEST_URL);
+        //获取公共access_token
+        String accessToken = TokenUtils.getInstance().getAccess_token();
         // 下单设置请求头
         post.addHeader("PushEnvelope-Device-Token", accessToken);
 
