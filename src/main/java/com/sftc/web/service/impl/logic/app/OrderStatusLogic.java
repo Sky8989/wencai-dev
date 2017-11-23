@@ -50,9 +50,11 @@ public class OrderStatusLogic {
 
         // update
         for (OrderExpressDTO oe : orderDTO.getOrderExpressList()) {
-            String uuid = oe.getUuid();
-            //事务问题,先存在查的改为统一使用Mybatis
-            orderExpressMapper.updateOrderExpressStatusByUUID(uuid, route_state, pay_state);
+            if (oe.getRoute_state().equals("ALREADY_FILL")) {
+                String uuid = oe.getUuid();
+                //事务问题,先存在查的改为统一使用Mybatis
+                orderExpressMapper.updateOrderExpressStatusByUUID(uuid, route_state, pay_state);
+            }
         }
         orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
         return APIUtil.getResponse(SUCCESS, orderDTO);
@@ -94,7 +96,7 @@ public class OrderStatusLogic {
         JSONObject requestObject = JSONObject.fromObject(request.getRequestParam());
         String route_state = requestObject.getString("route_state");
         String pay_state = requestObject.getString("pay_state");
-        if (route_state == null || route_state.equals("")||pay_state == null || pay_state.equals(""))
+        if (route_state == null || route_state.equals("") || pay_state == null || pay_state.equals(""))
             return "参数status不能为空";
         if (!(route_state.equals("WAIT_FILL") ||
                 route_state.equals("ALREADY_FILL") ||
@@ -105,10 +107,10 @@ public class OrderStatusLogic {
                 route_state.equals("FINISHED") ||
                 route_state.equals("ABNORMAL") ||
                 route_state.equals("CANCELED") ||
-                route_state.equals("REFUNDING")||
-                pay_state.equals("WAIT_PAY")||
-                pay_state.equals("ALREADY_PAY")||
-                pay_state.equals("WAIT_REFUND")||
+                route_state.equals("REFUNDING") ||
+                pay_state.equals("WAIT_PAY") ||
+                pay_state.equals("ALREADY_PAY") ||
+                pay_state.equals("WAIT_REFUND") ||
                 pay_state.equals("REFUNDED")))
             return "参数status不正确";
 

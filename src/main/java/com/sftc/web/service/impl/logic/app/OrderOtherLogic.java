@@ -26,7 +26,6 @@ import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_WEB_URL;
 import static com.sftc.tools.constant.SFConstant.SF_CONSTANTS_URL;
 import static com.sftc.tools.constant.SFConstant.SF_DETERMINE_URL;
-import static com.sftc.tools.constant.SFConstant.SF_REQUEST_URL;
 
 @Component
 public class OrderOtherLogic {
@@ -134,7 +133,7 @@ public class OrderOtherLogic {
      */
     public APIResponse determineOrderAddress(APIRequest request) {
         JSONObject reqParamOBJ = JSONObject.fromObject(request.getRequestParam());
-        JSONObject requestOBJ = reqParamOBJ.getJSONObject(SF_DETERMINE_URL"request");
+        JSONObject requestOBJ = reqParamOBJ.getJSONObject("request");
         Map<String, String> errorMap = new HashMap<>();
         if (!requestOBJ.containsKey("source")) {
             return APIUtil.submitErrorResponse("寄件人经纬度缺失", null);
@@ -159,7 +158,7 @@ public class OrderOtherLogic {
                 return APIUtil.submitErrorResponse("经纬度参数不正确", errorMap);
             }
         } else {
-            requestOBJ.remove("target");
+            requestOBJ.put("target", requestOBJ.getJSONObject("source"));
         }
 
         String token = TokenUtils.getInstance().getAccess_token();
