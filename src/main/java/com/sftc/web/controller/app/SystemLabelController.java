@@ -38,7 +38,7 @@ public class SystemLabelController {
 	 * 新增(修改)系统标签 新增id为0 id不为0时修改
 	 */
 	@ApiOperation(value = "新增(修改)系统标签", httpMethod = "POST")
-	@RequestMapping(value = "addAndUpdate", method = RequestMethod.POST)
+	@RequestMapping(value = "save", method = RequestMethod.POST)
 	public APIResponse updateUsrLabelByLID(@RequestBody SystemLabel systemLabel) {
 
 			return systemLabelService.save(systemLabel); 
