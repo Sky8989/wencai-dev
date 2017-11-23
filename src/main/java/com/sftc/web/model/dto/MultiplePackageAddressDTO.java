@@ -32,5 +32,8 @@ public class MultiplePackageAddressDTO {
     @Getter
     @Setter
     private String mobile;
+    @Getter
+    @Setter
+    private String country;
 
 }
