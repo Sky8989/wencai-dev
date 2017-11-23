@@ -26,6 +26,7 @@ import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.DKConstant.DK_PHANTOMJS_WEB_URL;
 import static com.sftc.tools.constant.SFConstant.SF_CONSTANTS_URL;
 import static com.sftc.tools.constant.SFConstant.SF_DETERMINE_URL;
+import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
 
 @Component
 public class OrderOtherLogic {
@@ -179,7 +180,7 @@ public class OrderOtherLogic {
         JSONObject reqParamOBJ = new JSONObject();
         reqParamOBJ.put("request",requestOBJ);
 
-        String token = TokenUtils.getInstance().getAccess_token();
+        String token = COMMON_ACCESSTOKEN;
 
         //顺丰接口
         String paramStr = gson.toJson(JSONObject.fromObject(reqParamOBJ));
