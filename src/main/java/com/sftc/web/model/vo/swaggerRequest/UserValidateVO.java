@@ -12,11 +12,11 @@ import lombok.Setter;
 public class UserValidateVO {
 
     @Getter @Setter
-    @ApiModelProperty(name = "merchant",value = "用户手机")
+    @ApiModelProperty(name = "merchant",value = "用户手机",required = true)
     private UserMobileVO merchant;
 
     @Getter @Setter
-    @ApiModelProperty(name = "message",value = "验证码")
+    @ApiModelProperty(name = "message",value = "验证码信息",required = true)
     private UserSMSContentVO message;
 
     @Getter @Setter

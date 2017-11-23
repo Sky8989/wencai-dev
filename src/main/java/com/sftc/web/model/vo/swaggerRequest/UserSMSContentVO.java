@@ -12,10 +12,10 @@ import lombok.Setter;
 public class UserSMSContentVO {
 
     @Getter @Setter
-    @ApiModelProperty(name = "content",value = "验证码",example = "yourSMSCode")
+    @ApiModelProperty(name = "content",value = "验证码",example = "yourSMSCode",required = true)
     private String content;
 
     @Getter @Setter
-    @ApiModelProperty(name = "type",value = "类型",example = "LOGIN_VERIFY_SMS")
+    @ApiModelProperty(name = "type",value = "类型",example = "LOGIN_VERIFY_SMS",required = true)
     private String type;
 }

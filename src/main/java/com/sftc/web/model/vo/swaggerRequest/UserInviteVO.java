@@ -16,6 +16,6 @@ public class UserInviteVO {
     private String city;
 
     @Getter @Setter
-    @ApiModelProperty(name = "channel",value = "渠道",example = "1")
+    @ApiModelProperty(name = "channel",value = "渠道",example = "driver",notes = "目前只有这一种渠道")
     private String channel;
 }

@@ -12,7 +12,7 @@ import lombok.Setter;
 public class UserMobileVO {
 
     @Getter @Setter
-    @ApiModelProperty(name = "mobile",value = "手机",example = "13544185508")
+    @ApiModelProperty(name = "mobile",value = "手机",example = "13544185508",required = true)
     private String mobile;
 
     @Getter @Setter
