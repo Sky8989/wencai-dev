@@ -216,7 +216,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
 
         //request 请求封装拼接
 
-        //获取公共uuid
+        //获取uuid
         String uuid = TokenUtils.getInstance().getUserUUID();
         String reserveTime = mosaicSourceRequestJson(requestPOJO, sfRequestJson, uuid, sourceInfo);
 
@@ -226,7 +226,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         /*---------------------------------------------------------------- sf请求 --------------------------------------------------------------------------------*/
         Gson gson = new Gson();
         HttpPost post = new HttpPost(SF_Multiple_REQUEST_URL);
-        //获取公共access_token
+        //获取access_token
         String accessToken = TokenUtils.getInstance().getAccess_token();
         // 下单设置请求头
         post.addHeader("PushEnvelope-Device-Token", accessToken);
@@ -326,6 +326,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
      * @return 支付结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public APIResponse batchPay(APIRequest request) {
         //获取请求参数对象
         MultiplePackagePayVO requestParam = (MultiplePackagePayVO) request.getRequestParam();
@@ -349,6 +350,8 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         if (resultObject.containsKey(str)) {
             return APIUtil.submitErrorResponse("支付失败，请查看返回值", resultObject);
         }
+        /*-------------------------------------------------- 修改数据库表sftc_order_express  route_state--------------------------------------------------------*/
+        multiplePackageMapper.updateRouteStateByGroupID("PAYING",groupUUId);
 
         String payStr = resultObject.getString("payStr");
         JSONObject responseJson = new JSONObject();
