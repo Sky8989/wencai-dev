@@ -13,6 +13,8 @@ public interface UserMapper {
 
     List<User> selectUserByOpenid(String open_id);
 
+    List<User> selectUserByUnionId(String unionid);
+
     List<User> findUserByMobile(String mobile);
 
     User selectUserByUserId(int user_id);

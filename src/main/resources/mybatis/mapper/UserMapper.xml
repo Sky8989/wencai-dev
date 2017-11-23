@@ -34,6 +34,12 @@
         WHERE open_id = #{open_id}
     </select>
 
+    <select id="selectUserByUnionId" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.User">
+        SELECT *
+        FROM sftc_user
+        WHERE unionid = #{unionid}
+    </select>
+
     <select id="findUserByMobile" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.User">
         SELECT *
         FROM sftc_user

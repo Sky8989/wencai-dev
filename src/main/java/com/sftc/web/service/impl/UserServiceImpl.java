@@ -219,19 +219,21 @@ public class UserServiceImpl implements UserService {
      */
     public APIResponse appLogin(APIRequest request) throws Exception {
 
+        /*------------------------------------------------ 使用 code 换取用户唯一标识 unionid ---------------------------------------------------*/
         APPUserParamVO appUserParamVO = (APPUserParamVO) request.getRequestParam();
         String auth_url = WX_APP_UNIONID + appUserParamVO.getCode();
         WXAPPUser wxappUser = APIResolve.getWxAPPUserWithUrl(auth_url);
         User user = null;
-        Map<String, String> tokenInfo = new HashMap<String, String>();
+        Map<String, String> tokenInfo = new HashMap<>();
         if (wxappUser.getOpenid() != null && wxappUser.getUnionid() != null) {
-            List<User> userList = userMapper.selectUserByOpenid(wxappUser.getOpenid());
+            List<User> userList = userMapper.selectUserByUnionId(wxappUser.getUnionid());
             if (userList.size() > 1) {
                 return APIUtil.paramErrorResponse("出现重复用户，请填写用户反馈");
             }
             if (userList.size() == 1) {
                 user = userList.get(0);
             }
+            /*------------------------------------------------ 如果unionid无对应用户 则为新用户 插入unionid ---------------------------------------------------*/
             if (user == null) {
                 User user2 = new User();
                 user2.setOpen_id(wxappUser.getOpenid());
@@ -252,6 +254,7 @@ public class UserServiceImpl implements UserService {
                 tokenMapper.addToken(token);
                 tokenInfo.put("token", myToken);
                 tokenInfo.put("user_id", (user2.getId() + ""));
+            /*------------------------------------------------ 如果unionid有对应用户 则为老用户 更新 unionid ---------------------------------------------------*/
             } else {
                 //更新头像和昵称
                 if (appUserParamVO.getName() != null && appUserParamVO.getAvatar() != null) {
