@@ -12,6 +12,8 @@ import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.entity.Token;
 import com.sftc.web.model.entity.User;
 import com.sftc.web.model.others.WXUser;
+import com.sftc.web.model.vo.swaggerRequest.UserMerchantsRequestVO;
+import com.sftc.web.model.vo.swaggerRequest.UserMerchantsVO;
 import com.sftc.web.model.vo.swaggerRequest.UserParamVO;
 import com.sftc.web.service.MessageService;
 import com.sftc.web.service.UserService;
@@ -320,31 +322,30 @@ public class UserServiceImpl implements UserService {
 
     // 更新商户信息
     public APIResponse updatePersonMessage(APIRequest apiRequest) throws Exception {
-        Object requestParam = apiRequest.getRequestParam();
-        JSONObject jsonObject = JSONObject.fromObject(requestParam);
-        JSONObject merchants = jsonObject.getJSONObject("merchant");
-//      String json = merchants.toString();
-        String new_name = merchants.getString("name");
-        String email = merchants.getString("email");
-        String uuid = merchants.getJSONObject("address").getString("uuid");
-        String province = merchants.getJSONObject("address").getString("province");
-        String city = merchants.getJSONObject("address").getString("city");
-        String region = merchants.getJSONObject("address").getString("region");
-        String street = merchants.getJSONObject("address").getString("street");
-        String zipcode = merchants.getJSONObject("address").getString("zipcode");
-        String receiver = merchants.getJSONObject("address").getString("receiver");
-        String mobile = merchants.getJSONObject("address").getString("mobile");
-        String longitude = merchants.getJSONObject("address").getString("longitude");
-        String latitude = merchants.getJSONObject("address").getString("latitude");
+
+        UserMerchantsRequestVO requestParam = (UserMerchantsRequestVO) apiRequest.getRequestParam();
+        UserMerchantsVO merchantsVO = requestParam.getMerchant();
+
+        String new_name = merchantsVO.getName();
+        String email = merchantsVO.getEmail();
+        String uuid = merchantsVO.getAddress().getUuid();
+        String province = merchantsVO.getAddress().getProvince();
+        String city = merchantsVO.getAddress().getCity();
+        String region = merchantsVO.getAddress().getRegion();
+        String street = merchantsVO.getAddress().getStreet();
+        String zipcode = merchantsVO.getAddress().getZipcode();
+        String receiver = merchantsVO.getAddress().getReceiver();
+        String mobile = merchantsVO.getAddress().getMobile();
+        double longitude = merchantsVO.getAddress().getLongitude();
+        double latitude = merchantsVO.getAddress().getLatitude();
+
         String json = "{\"merchant\":{\"name\":\"" + new_name + "\",\"attributes\":{},\"summary\":{},\"" +
                 "email\":\"" + email + "\",\"address\":{\"type\":\"LIVE\",\"country\":\"中国\",\"province\":\"" + province + "\",\"" +
                 "city\":\"" + city + "\",\"region\":\"" + region + "\",\"street\":\"" + street + "\",\"zipcode\":\"" + zipcode + "\",\"receiver\":" +
                 "\"" + receiver + "\",\"mobile\":\"" + mobile + "\",\"marks\":{},\"longitude\":\"" + longitude + "\",\"latitude\":\"" + latitude + "\",\"uuid\":\"" + uuid + "\"}}}";
-        String access_token;
-        if (jsonObject.getString("token") != null && !(jsonObject.getString("token")).equals("")) {
-            access_token = jsonObject.getString("token");
-        } else {
-            access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
+        String access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
+        if (StringUtils.isNotBlank(requestParam.getToken())) {
+            access_token = requestParam.getToken();
         }
         RequestBody rb = RequestBody.create(null, json);
         Request request = new Request.Builder().
@@ -354,8 +355,10 @@ public class UserServiceImpl implements UserService {
                 .put(rb).build();
         OkHttpClient client = new OkHttpClient();
         okhttp3.Response response = client.newCall(request).execute();
-        if (response.code() == 200) return APIUtil.getResponse(SUCCESS, response.message());//正常情况返回null
-        return APIUtil.logicErrorResponse("更新个人信息失败", response.body());
+        if (response.code() != 200) {
+            return APIUtil.submitErrorResponse("更新个人信息失败", response.body());
+        }
+        return APIUtil.getResponse(SUCCESS, null);
     }
 
     // 生成临时token  2017-10-23
