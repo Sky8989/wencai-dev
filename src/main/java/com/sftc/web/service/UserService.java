@@ -31,7 +31,9 @@ public interface UserService {
 //     */
 //    APIResponse updateMobile(APIRequest apiRequest) throws Exception;
 
-    //10-12日提出的新需求 更新个人信息 作为中控给顺丰验证和更新个人信息
+    /**
+     * 更新商户信息
+     */
     APIResponse updatePersonMessage(APIRequest apiRequest) throws Exception;
 
     //10-23 临时Token生成接口
