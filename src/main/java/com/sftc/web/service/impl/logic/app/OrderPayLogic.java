@@ -108,9 +108,10 @@ public class OrderPayLogic {
         if (uuid == null || uuid.equals(""))
             return APIUtil.paramErrorResponse("uuid参数缺失");
 
-        String access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
+        String access_token = TokenUtils.getInstance().getAccess_token();
 
         int user_id = TokenUtils.getInstance().getUserId();
+
         User user = userMapper.selectUserByUserId(user_id);
         if (user == null) return APIUtil.selectErrorResponse("用户信息错误，未找到该用户", null);
         String pay_url = SF_REQUEST_URL + "/" + uuid + "/js_pay?open_id=" + user.getOpen_id();

@@ -50,7 +50,7 @@ public class IndexController {
         return indexService.setupCommonToken(request);
     }
 
-    @ApiOperation(value = "获取同城专送列表", httpMethod = HttpMethod.GET)
+    @ApiOperation(value = "获取城市列表", httpMethod = HttpMethod.GET)
     @GetMapping(value = "cities")
     @ResponseBody
     public APIResponse getCityExpressList() {
