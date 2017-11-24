@@ -58,10 +58,10 @@ public class IndexController {
     }
 
     @ApiOperation(value = "获取同城专送列表", httpMethod = HttpMethod.GET)
-    @GetMapping(value = "citys")
+    @GetMapping(value = "cities")
     @ResponseBody
-    public APIResponse getCityExpressList(HttpServletRequest request) {
-        return cityExpressService.getCityExpressList(new APIRequest(request));
+    public APIResponse getCityExpressList() {
+        return cityExpressService.getCityExpressList();
     }
 
 }
