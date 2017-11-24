@@ -34,10 +34,11 @@ public interface UserService {
     /**
      * 更新商户信息
      */
-    APIResponse updatePersonMessage(APIRequest apiRequest) throws Exception;
 
-    //10-23 临时Token生成接口
-    APIResponse getTemporaryToken() throws Exception;
+    APIResponse updateMobile(APIRequest apiRequest) throws Exception;
+
+    //更新个人信息 作为中控给顺丰验证和更新个人信息
+    APIResponse updatePersonMessage(APIRequest apiRequest) throws Exception;
 
     /**
      * 检查账号是否已经绑定手机号

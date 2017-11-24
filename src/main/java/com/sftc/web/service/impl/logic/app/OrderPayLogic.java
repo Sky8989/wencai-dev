@@ -13,7 +13,7 @@ import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.entity.Token;
 import com.sftc.web.model.entity.User;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Component;
 
@@ -103,25 +103,16 @@ public class OrderPayLogic {
      */
     public APIResponse payOrder(APIRequest request) {
         JSONObject jsonObject = JSONObject.fromObject(request.getRequestParam());
-        String token = jsonObject.getString("local_token");
+
         String uuid = jsonObject.getString("uuid");
-//        String access_token = jsonObject.getString("access_token");
-        String access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
-
-
-        if (token == null || token.equals(""))
-            return APIUtil.paramErrorResponse("token参数缺失");
         if (uuid == null || uuid.equals(""))
             return APIUtil.paramErrorResponse("uuid参数缺失");
-        if (access_token == null || access_token.equals(""))
-            return APIUtil.paramErrorResponse("access_token参数缺失");
 
-        Token tokenPram = tokenMapper.selectUserIdByToken(token);
-        if (tokenPram == null) return APIUtil.paramErrorResponse("token无效，库中无该token");
+        String access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
 
-
-        User user = userMapper.selectUserByUserId(tokenPram.getUser_id());
-        if (user == null) return APIUtil.selectErrorResponse("该token无对应的用户", null);
+        int user_id = TokenUtils.getInstance().getUserId();
+        User user = userMapper.selectUserByUserId(user_id);
+        if (user == null) return APIUtil.selectErrorResponse("用户信息错误，未找到该用户", null);
         String pay_url = SF_REQUEST_URL + "/" + uuid + "/js_pay?open_id=" + user.getOpen_id();
         HttpPost post = new HttpPost(pay_url);
         post.addHeader("PushEnvelope-Device-Token", access_token);

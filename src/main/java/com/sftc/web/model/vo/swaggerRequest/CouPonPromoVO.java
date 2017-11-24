@@ -2,6 +2,8 @@ package com.sftc.web.model.vo.swaggerRequest;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,24 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "优惠券兑换")
 public class CouPonPromoVO {
 
-    @ApiModelProperty(name = "promo_code",value = "兑换密语",example = "1")
+    @Getter @Setter
+    @ApiModelProperty(name = "promo_code",value = "兑换密语",example = "1",required = true)
     private String promo_code;
-    @ApiModelProperty(name = "token",value = "token",example = "EyMivbd44I124lcddrBG")
-    private String token;
-
-    public String getPromo_code() {
-        return promo_code;
-    }
-
-    public void setPromo_code(String promo_code) {
-        this.promo_code = promo_code;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

@@ -125,7 +125,6 @@ public class OrderController extends BaseController {
             "至于页面展不展示提示，请拿【transform】下的 is_read 字段。")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "uuid", value = "快递uuid", defaultValue = "e1d2ceda3daa", paramType = "query", required = true),
-            @ApiImplicitParam(name = "access_token", value = "顺丰token", defaultValue = "EyMivbd44I124lcddrBG", paramType = "query", required = true),
             @ApiImplicitParam(name = "sort", value = "排序方式", defaultValue = "asc", paramType = "query")
     })
     @RequestMapping(value = "/express/detail", method = RequestMethod.GET)
@@ -143,16 +142,16 @@ public class OrderController extends BaseController {
         return orderService.selectSameExpressDetail(new APIRequest(request));
     }
 
-    @ApiOperation(value = "更改订单状态", httpMethod = "PUT", notes = "该接口只适用于同城的订单，在支付完成后将订单状态改为待揽件。\n" +
+    @ApiOperation(value = "更改订单状态", httpMethod = "PUT", notes = "该接口只适用于同城的订单，在支付完成后修改路由状态和支付状态。\n" +
             "status 详见文档说明中的订单常量，一般只需要用到 PAYING 和 WAIT_HAND_OVER 这两个参数。\n" +
             "调起支付前将状态改为 PAYING，支付完成后将状态改为 WAIT_HAND_OVER。\n" +
             "当然也可以只调用用一次，支付完成后直接将状态改为 WAIT_HAND_OVER。\n" +
             "更改状态成功后会返回订单详情。")
     @RequestMapping(value = "/status", method = RequestMethod.PUT)
     public @ResponseBody
-    APIResponse updateOrderStatus(@RequestBody OrderStatusVO rderStatusVO) throws Exception {
+    APIResponse updateOrderStatus(@RequestBody OrderStatusVO orderStatusVO) throws Exception {
         APIRequest request = new APIRequest();
-        request.setRequestParam(rderStatusVO);
+        request.setRequestParam(orderStatusVO);
         return orderService.updateOrderStatus(request);
     }
 

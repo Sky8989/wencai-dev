@@ -12,15 +12,15 @@ import lombok.Setter;
 public class OrderStatusVO {
 
     @Getter @Setter
-    @ApiModelProperty(name = "order_id",value = "订单id",example = "C1508233636870TR")
+    @ApiModelProperty(name = "order_id",value = "订单id",example = "C1508233636870TR",required = true)
     private String order_id;
 
     @Getter @Setter
-    @ApiModelProperty(name = "route_state",value = "路由状态",example = "WAIT_HAND_OVER")
+    @ApiModelProperty(name = "route_state",value = "路由状态",example = "WAIT_HAND_OVER",required = true)
     private String route_state;
 
     @Getter @Setter
-    @ApiModelProperty(name = "pay_state",value = "支付状态",example = "ALREADY_PAY")
+    @ApiModelProperty(name = "pay_state",value = "支付状态",example = "ALREADY_PAY",required = true)
     private String pay_state;
 
 }

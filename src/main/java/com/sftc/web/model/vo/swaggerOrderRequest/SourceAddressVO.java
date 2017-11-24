@@ -10,9 +10,9 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "寄件人地址信息")
 public class SourceAddressVO {
 
-    @ApiModelProperty(name = "address",value = "寄件人地址信息")
+    @ApiModelProperty(name = "address",value = "寄件人地址信息",required = true)
     private OrderAddressVO address;
-    @ApiModelProperty(name = "coordinate",value = "经纬度")
+    @ApiModelProperty(name = "coordinate",value = "经纬度",required = true)
     private CoordinateVO coordinate;
 
     public OrderAddressVO getAddress() {

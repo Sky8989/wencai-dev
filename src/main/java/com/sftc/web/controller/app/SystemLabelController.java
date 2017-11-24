@@ -2,6 +2,7 @@ package com.sftc.web.controller.app;
 
 import javax.annotation.Resource;
 
+import com.sftc.web.model.vo.swaggerRequest.DeleteSystemLableVO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,12 +42,12 @@ public class SystemLabelController {
 	/**
 	 * 新增(修改)系统标签 新增id为0 id不为0时修改
 	 */
-	@ApiOperation(value = "CMS保存系统标签 新增id为0 id不为0修改", httpMethod = "POST")
+	@ApiOperation(value = "CMS保存系统标签 新增id为0 id不为0修改", httpMethod = "POST",notes = "新增不用传id，修改时传id")
 	@RequestMapping(value = "save", method = RequestMethod.POST)
 	public APIResponse save(@RequestBody SystemLabel systemLabel) {
 		 APIRequest apiRequest = new APIRequest();
 	        apiRequest.setRequestParam(systemLabel);
-			return systemLabelService.save(apiRequest); 
+			return systemLabelService.save(apiRequest);
 	}
 
 	@ApiOperation(value = "CMS删除系统标签", httpMethod = "DELETE")

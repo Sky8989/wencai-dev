@@ -8,9 +8,9 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(value = "地址距离计算请求包装类")
 public class DistanceRequestVO {
-    @ApiModelProperty(name = "source",value = "寄件人经纬度")
+    @ApiModelProperty(name = "source",value = "寄件人经纬度",required = true)
     private SourceLLtudeVO source;
-    @ApiModelProperty(name = "target",value = "收件人经纬度")
+    @ApiModelProperty(name = "target",value = "收件人经纬度",required = true)
     private TargetLLtudeVO target;
 
     public SourceLLtudeVO getSource() {
