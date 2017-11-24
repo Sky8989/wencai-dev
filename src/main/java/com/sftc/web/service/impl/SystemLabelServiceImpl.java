@@ -3,6 +3,7 @@ package com.sftc.web.service.impl;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -16,7 +17,7 @@ import com.sftc.web.model.entity.SystemLabel;
 import com.sftc.web.model.vo.swaggerRequestVO.systemLabel.DeleteSystemLabelVo;
 import com.sftc.web.model.vo.swaggerRequestVO.systemLabel.SystemLabelVo;
 import com.sftc.web.service.SystemLabelService;
-
+@Transactional
 @Service("systemLabelService")
 public class SystemLabelServiceImpl implements SystemLabelService {
 

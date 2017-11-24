@@ -2,9 +2,12 @@ package com.sftc.web.service.impl;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
@@ -17,7 +20,7 @@ import com.sftc.web.model.vo.swaggerRequest.PriceExaplainVO;
 import com.sftc.web.model.vo.swaggerRequestVO.priceExaplain.DeletePriceExplain;
 import com.sftc.web.service.PriceExaplainService;
 
-
+@Transactional
 @Service("priceExaplainService")
 public class PriceExaplainServiceImpl implements PriceExaplainService {
     @Resource
@@ -95,6 +98,14 @@ public class PriceExaplainServiceImpl implements PriceExaplainService {
 			 return updatePriceExplain(priceExplain);
 		 
 		 return addPriceExplain(priceExplain);
+	}
+	/**
+	 * CMS获取 价格说明List
+	 */
+	@Override
+	public APIResponse findPriceExplainList() {
+		List<PriceExplain> priceExplainList = (List<PriceExplain>) priceExplainDao.findAll();
+		return APIUtil.getResponse(APIStatus.SUCCESS, priceExplainList);
 	}
     
     

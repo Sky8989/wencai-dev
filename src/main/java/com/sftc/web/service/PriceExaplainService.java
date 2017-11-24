@@ -17,5 +17,7 @@ public interface PriceExaplainService {
 
 	APIResponse deletePriceExplain(APIRequest apiRequest);
 
+	APIResponse findPriceExplainList();
+
 
 }

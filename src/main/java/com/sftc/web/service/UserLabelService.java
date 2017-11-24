@@ -20,4 +20,6 @@ public interface UserLabelService {
 
 
 	APIResponse deleteUserContactLabels(APIRequest apiRequest);
+
+	APIResponse findUserLabelList();
 }

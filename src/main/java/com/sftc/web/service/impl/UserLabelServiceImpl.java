@@ -33,7 +33,7 @@ import com.sftc.web.service.UserLabelService;
 
 import net.sf.json.JSONObject;
 
-
+@Transactional
 @Service
 public class UserLabelServiceImpl implements UserLabelService {
 
@@ -217,6 +217,15 @@ public class UserLabelServiceImpl implements UserLabelService {
 			return APIUtil.getResponse(SUCCESS, userContactLabel);
 		}
 		return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());
+	}
+
+	/**
+	 * 获取所有用户标签
+	 */
+	@Override
+	public APIResponse findUserLabelList() {
+		List<UserContactLabel> userLabelList = (List<UserContactLabel>) userContactLabelDao.findAll();
+		return  APIUtil.getResponse(SUCCESS, userLabelList);
 	}
 }
 

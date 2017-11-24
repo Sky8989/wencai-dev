@@ -14,6 +14,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ import java.util.HashMap;
 import static com.sftc.tools.api.APIStatus.SUCCESS;
 import static com.sftc.tools.constant.SFConstant.SF_GET_TOKEN;
 import static com.sftc.tools.constant.SFConstant.SF_LOGIN;
-
+@Transactional
 @Service("tokenService")
 public class TokenServiceImpl implements TokenService {
 

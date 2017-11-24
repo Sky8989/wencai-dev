@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -17,12 +18,11 @@ import com.sftc.web.dao.jpa.CommonQuestionDao;
 import com.sftc.web.dao.mybatis.CommonQuestionMapper;
 import com.sftc.web.dao.redis.CommonQuestionRedisDao;
 import com.sftc.web.model.entity.CommonQuestion;
-import com.sftc.web.model.vo.swaggerRequest.UpdateUserContactLabelVO;
 import com.sftc.web.model.vo.swaggerRequestVO.commonQuestion.DeleteCommonQuestionVO;
 import com.sftc.web.service.CommonQuestionService;
 
 import net.sf.json.JSONObject;
-
+@Transactional
 @Service("commonQuestionService")
 public class CommonQuestionServiceImpl implements CommonQuestionService {
 
@@ -88,7 +88,6 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
         commonQuestion.setCreate_time(Long.toString(System.currentTimeMillis()));
         commonQuestionDao.save(commonQuestion);
         commonQuestionRedisDao.clearCommonQuestionsCache();
-
         return APIUtil.getResponse(APIStatus.SUCCESS, commonQuestion);
     }
 
