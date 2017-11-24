@@ -44,7 +44,6 @@ public class OrderCancelLogic {
         //获取订单id，便于后续取消订单操作的取用
         String id = paramJsonObject.getString("order_id");
         paramJsonObject.remove("order_id");
-//        String access_token = paramJsonObject.getString("access_token");
         String access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
         //对重复取消订单的情况进行处理
         Order order = orderMapper.selectOrderDetailByOrderId(id);

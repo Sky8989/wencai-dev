@@ -10,13 +10,13 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "地址簿包装类")
 public class AddressBookRequestVO {
 
-    @ApiModelProperty(value = "是否删除",example = "0")
+    @ApiModelProperty(value = "是否删除",example = "0",required = true)
     private int is_delete;
-    @ApiModelProperty(value = "是否神秘",example = "0")
+    @ApiModelProperty(value = "是否神秘",example = "0",required = true)
     private int is_mystery;
-    @ApiModelProperty(value = "地址类型",example = "address_history")
+    @ApiModelProperty(value = "地址类型",example = "address_history",required = true)
     private String address_type;
-    @ApiModelProperty(value = "地址簿类型",example = "sender")
+    @ApiModelProperty(value = "地址簿类型",example = "sender",required = true)
     private String address_book_type;
     @ApiModelProperty(value = "地址类")
     private Address address;

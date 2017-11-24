@@ -7,10 +7,10 @@ import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFExpressHelper;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.enumeration.express.PackageType;
-import com.sftc.web.model.vo.displayMessage.PackageMessageVO;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
 import com.sftc.web.model.entity.*;
+import com.sftc.web.model.vo.displayMessage.PackageMessageVO;
 import com.sftc.web.model.vo.swaggerOrderRequest.OrderSynVO;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.SFConstant.*;
+import static com.sftc.tools.constant.SFConstant.SF_CONSTANTS_URL;
+import static com.sftc.tools.constant.SFConstant.SF_ORDER_SYNC_URL;
 import static com.sftc.tools.sf.SFTokenHelper.COMMON_ACCESSTOKEN;
 
 @Component
@@ -55,8 +56,8 @@ public class OrderDetailLogic {
         if (orderDTO1 == null)
             return APIUtil.selectErrorResponse("订单不存在", null);
 
-            APIResponse apiResponse = syncOrderExpress(order_id);
-            if (apiResponse != null) return apiResponse;
+        APIResponse apiResponse = syncOrderExpress(order_id);
+        if (apiResponse != null) return apiResponse;
 
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
         setPackageType(orderDTO); //获取包裹信息
@@ -104,43 +105,42 @@ public class OrderDetailLogic {
 
         JSONObject respObject = new JSONObject();
 
-            // 同城订单需要access_token
-            String access_token = (String) request.getParameter("access_token");
-            access_token = (access_token == null || access_token.equals("") ? COMMON_ACCESSTOKEN : access_token);
-            respObject = SFExpressHelper.getExpressDetail(uuid, access_token);
-            //处理错误信息
-            if (respObject.containsKey("error") || respObject.containsKey("errors") || respObject.containsKey("ERROR")) {
-                return APIUtil.selectErrorResponse("查询失败", respObject);
-            }
+        // 同城订单需要access_token
+        String access_token = COMMON_ACCESSTOKEN;
+        respObject = SFExpressHelper.getExpressDetail(uuid, access_token);
+        //处理错误信息
+        if (respObject.containsKey("error") || respObject.containsKey("errors") || respObject.containsKey("ERROR")) {
+            return APIUtil.selectErrorResponse("查询失败", respObject);
+        }
 
-            String order_status = respObject.getJSONObject("request").getString("status");
-            String directed_code = null;
-            int is_directed = respObject.getJSONObject("request").getString("type").equals("DIRECTED") ? 1 : 0;
+        String order_status = respObject.getJSONObject("request").getString("status");
+        String directed_code = null;
+        int is_directed = respObject.getJSONObject("request").getString("type").equals("DIRECTED") ? 1 : 0;
 
-            if (respObject.containsKey("request")) {
-                JSONObject req = respObject.getJSONObject("request");
-                if (req != null && req.containsKey("attributes")) {
-                    JSONObject attributuOBJ = req.getJSONObject("attributes");
-                    if (attributuOBJ != null) {
-                        if (attributuOBJ.containsKey("directed_code")) {
-                            directed_code = attributuOBJ.getString("directed_code");
-                            is_directed = 1;
-                        }
+        if (respObject.containsKey("request")) {
+            JSONObject req = respObject.getJSONObject("request");
+            if (req != null && req.containsKey("attributes")) {
+                JSONObject attributuOBJ = req.getJSONObject("attributes");
+                if (attributuOBJ != null) {
+                    if (attributuOBJ.containsKey("directed_code")) {
+                        directed_code = attributuOBJ.getString("directed_code");
+                        is_directed = 1;
                     }
                 }
             }
-            // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
-            boolean payed = respObject.getJSONObject("request").getBoolean("payed");
-            if (payed && order_status.equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) {
-                order_status = "WAIT_HAND_OVER";
-                respObject.getJSONObject("request").put("status", "WAIT_HAND_OVER");
-            }
-            orderExpressMapper.updateExpressDirectedByUUID(uuid, order_status, directed_code, is_directed);
+        }
+        // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
+        boolean payed = respObject.getJSONObject("request").getBoolean("payed");
+        if (payed && order_status.equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) {
+            order_status = "WAIT_HAND_OVER";
+            respObject.getJSONObject("request").put("status", "WAIT_HAND_OVER");
+        }
+        orderExpressMapper.updateExpressDirectedByUUID(uuid, order_status, directed_code, is_directed);
 
-            APIResponse apiResponse = syncOrderExpress(order.getId());
-            if (apiResponse != null) return apiResponse;
-            order = orderMapper.selectOrderDetailByUuid(uuid);
-            setPackageType(order);//获取包裹信息
+        APIResponse apiResponse = syncOrderExpress(order.getId());
+        if (apiResponse != null) return apiResponse;
+        order = orderMapper.selectOrderDetailByUuid(uuid);
+        setPackageType(order);//获取包裹信息
 
 
         respObject.put("order", order);
@@ -165,9 +165,9 @@ public class OrderDetailLogic {
     }
 
     /**
-     *同步基础数据，返回包裹信息
+     * 同步基础数据，返回包裹信息
      */
-    private APIResponse setPackageType(OrderDTO order){
+    private APIResponse setPackageType(OrderDTO order) {
         List<OrderExpressDTO> orderExpressList = order.getOrderExpressList();
         String access_token = COMMON_ACCESSTOKEN;
         if (order.getLatitude() == 0 || order.getLongitude() == 0) {
@@ -281,10 +281,10 @@ public class OrderDetailLogic {
                     order_status = "CANCELED";
                     pay_state = "REFUNDED";
                 }
-                if(!order_status.equals("CANCELED")) pay_state = orderSynVO.isPayed()?"ALREADY_PAY" : "WAIT_PAY";
-                    //存在锁的问题，修改语句改为一条
-                    String attributes = orderSynVO.getAttributes();
-                    orderExpressMapper.updateAttributesAndStatusByUUID(uuid, attributes,order_status,pay_state);
+                if (!order_status.equals("CANCELED")) pay_state = orderSynVO.isPayed() ? "ALREADY_PAY" : "WAIT_PAY";
+                //存在锁的问题，修改语句改为一条
+                String attributes = orderSynVO.getAttributes();
+                orderExpressMapper.updateAttributesAndStatusByUUID(uuid, attributes, order_status, pay_state);
 
             }
         }

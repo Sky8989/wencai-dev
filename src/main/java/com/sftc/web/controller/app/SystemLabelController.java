@@ -2,6 +2,7 @@ package com.sftc.web.controller.app;
 
 import javax.annotation.Resource;
 
+import com.sftc.web.model.vo.swaggerRequest.DeleteSystemLableVO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +38,7 @@ public class SystemLabelController {
 	/**
 	 * 新增(修改)系统标签 新增id为0 id不为0时修改
 	 */
-	@ApiOperation(value = "新增(修改)系统标签", httpMethod = "POST")
+	@ApiOperation(value = "新增(修改)系统标签", httpMethod = "POST",notes = "新增不用传id，修改时传id")
 	@RequestMapping(value = "addAndUpdate", method = RequestMethod.POST)
 	public APIResponse updateUsrLabelByLID(@RequestBody SystemLabel systemLabel) {
 
@@ -46,7 +47,7 @@ public class SystemLabelController {
 
 	@ApiOperation(value = "删除系统标签", httpMethod = "DELETE")
 	@RequestMapping(method = RequestMethod.DELETE)
-	public @ResponseBody APIResponse deleteCommonQuestion(@RequestBody int id) throws Exception {
-		return systemLabelService.deleteSystemLable(id);
+	public @ResponseBody APIResponse deleteCommonQuestion(@RequestBody DeleteSystemLableVO deleteSystemLableVO) throws Exception {
+		return systemLabelService.deleteSystemLable(deleteSystemLableVO);
 	}
 }

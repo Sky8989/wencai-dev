@@ -2,6 +2,8 @@ package com.sftc.web.model.vo.swaggerOrderRequest;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -10,80 +12,36 @@ import java.util.List;
  */
 @ApiModel(value = "订单计价request对象")
 public class PriceRequest {
+
+    @Getter @Setter
     @ApiModelProperty(name = "region",example = "68034a73fccc11e68c2e0242ac1a0504",required = true)
     private String region;
+
+    @Getter @Setter
     @ApiModelProperty(name = "reserve_time",example = "1501497840000",required = true)
     private String reserve_time;
+
+    @Getter @Setter
     @ApiModelProperty(name = "source",required = true)
     private SourceAddressVO source;
+
+    @Getter @Setter
     @ApiModelProperty(name = "target",required = true)
     private TargetAddressVO target;
-    @ApiModelProperty(name = "merchant",required = true)
-    private MerchantVO merchant;
+
+    @Getter @Setter
     @ApiModelProperty(name = "attributes",required = true)
     private AttributesVO attributes;
+
+    @Getter @Setter
     @ApiModelProperty(name = "packages",required = true)
     private List<PackagesVO> packages;
+
+    @Getter @Setter
     @ApiModelProperty(name = "product_type",example = "JISUDA",required = true)
     private String product_type;
+
+    @Getter @Setter
     @ApiModelProperty(name = "pay_type",example = "FREIGHT_COLLECT",required = true)
     private String pay_type;
-    @ApiModelProperty(name = "token",required = true)
-    private TokenVO token;
-
-    public String getRegion() {return region;}
-
-    public void setRegion(String region) {this.region = region;}
-
-    public SourceAddressVO getSource() {return source;}
-
-    public void setSource(SourceAddressVO source) {this.source = source;}
-
-    public TargetAddressVO getTarget() {return target;}
-
-    public void setTarget(TargetAddressVO target) {this.target = target;}
-
-    public MerchantVO getMerchant() {
-        return merchant;
-    }
-
-    public void setMerchant(MerchantVO merchant) {
-        this.merchant = merchant;
-    }
-
-    public AttributesVO getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(AttributesVO attributes) {
-        this.attributes = attributes;
-    }
-
-    public String getReserve_time() {return reserve_time;}
-
-    public void setReserve_time(String reserve_time) {this.reserve_time = reserve_time;}
-
-    public TokenVO getToken() {return token;}
-
-    public void setToken(TokenVO token) {this.token = token;}
-
-    public List<PackagesVO> getPackages() {return packages;}
-
-    public void setPackages(List<PackagesVO> packages) {this.packages = packages;}
-
-    public String getProduct_type() {
-        return product_type;
-    }
-
-    public void setProduct_type(String product_type) {
-        this.product_type = product_type;
-    }
-
-    public String getPay_type() {
-        return pay_type;
-    }
-
-    public void setPay_type(String pay_type) {
-        this.pay_type = pay_type;
-    }
 }

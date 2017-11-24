@@ -16,7 +16,7 @@ public class CommonQuestion extends Object {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty(name="主键",required=false)
+    @ApiModelProperty(name="主键")
     @Setter @Getter
     private int id;
 
@@ -25,11 +25,11 @@ public class CommonQuestion extends Object {
     @Setter @Getter
     private String create_time;
 
-    @ApiModelProperty(name="标题",example = "问题标题")
+    @ApiModelProperty(name="标题",example = "问题标题",required = true)
     @Setter @Getter
     private String title;
 
-    @ApiModelProperty(name="内容",example = "问题答案")
+    @ApiModelProperty(name="内容",example = "问题答案",required = true)
     @Setter @Getter
     private String content;
 

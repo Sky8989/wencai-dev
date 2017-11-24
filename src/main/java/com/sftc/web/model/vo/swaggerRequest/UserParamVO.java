@@ -17,8 +17,6 @@ import io.swagger.annotations.ApiModelProperty;
 public class UserParamVO {
     @ApiModelProperty(name = "bespoken_time",value = "用户id",example = "10093",hidden = true)
     private int id;
-    @ApiModelProperty(name = "token",value = "用户token",example = "EyMivbd44I124lcddrBG")
-    private String token;
     @ApiModelProperty(name = "js_code",value = "用户id",example = "041u1Eid1d3bbv0nFyld1FSjid1u1EiW")
     private String js_code;
     @ApiModelProperty(name = "avatar",value = "用户id",example = "https://wx.qlogo.cn/mmopen/vi_32/3KfBP6rtNj6s8RUqBD2ZEpSxcGibmRSo7fP6MCXbFlibXq7xBPkibdOoF7eOWD2CQOQ0VabCKxe0gs7q4qshkzvhw/0")
@@ -47,14 +45,6 @@ public class UserParamVO {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public String getJs_code() {

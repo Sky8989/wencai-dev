@@ -19,21 +19,21 @@ public class PriceExplain extends com.sftc.web.model.others.Object{
 	
  	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty(name="主键",required=false)
+    @ApiModelProperty(name="主键")
     @Setter @Getter
     private int id;
 	
-    @ApiModelProperty(name="城市",example="深圳")
+    @ApiModelProperty(name="城市",example="深圳",required = true)
     @Setter @Getter
     private String city;
 
     /**距离定价*/
-    @ApiModelProperty(name="距离定价")
+    @ApiModelProperty(name="距离定价",required = true)
     @Setter @Getter
     private String distance_price;
 
     /**重量价格*/
-    @ApiModelProperty(name="重量价格")
+    @ApiModelProperty(name="重量价格",required = true)
     @Setter @Getter
     private String weight_price;
     

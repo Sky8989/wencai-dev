@@ -53,7 +53,6 @@ public class OrderEvaluateLogic {
         /// 向顺丰的接口发送评价信息
         String evaluate_url = SF_REQUEST_URL + "/" + uuid + "/attributes/merchant_comment";
         HttpPut put = new HttpPut(evaluate_url);
-//        put.addHeader("PushEnvelope-Device-Token", (String) requestOBJ.get("access_token"));
         put.addHeader("PushEnvelope-Device-Token", SFTokenHelper.COMMON_ACCESSTOKEN);
         String res = APIPostUtil.post(str, put);
         jsonObject = JSONObject.fromObject(res);

@@ -16,7 +16,7 @@ public class Address extends Object {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty(value = "主键")
+    @ApiModelProperty(value = "主键",hidden = true)
     @Setter @Getter
     private int id;
 
@@ -60,7 +60,7 @@ public class Address extends Object {
     @Setter @Getter
     private double latitude;
 
-    @ApiModelProperty("创建时间")
+    @ApiModelProperty(value = "创建时间",hidden = true)
     @Setter @Getter
     private String create_time;
 

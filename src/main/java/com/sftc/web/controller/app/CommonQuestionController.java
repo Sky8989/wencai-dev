@@ -31,7 +31,7 @@ public class CommonQuestionController {
 		return commonQuestionService.getCommonQuestion();
 	}
 
-	@ApiOperation(value = "新增(修改)常见问题", httpMethod = "POST")
+	@ApiOperation(value = "新增(修改)常见问题", httpMethod = "POST",notes = "新增不用传id,修改时传id")
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody APIResponse addCommonQuestion(@RequestBody CommonQuestion commonQuestion) throws Exception {
 				return commonQuestionService.save(commonQuestion); 

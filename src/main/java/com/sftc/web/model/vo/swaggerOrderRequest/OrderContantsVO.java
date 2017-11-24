@@ -12,10 +12,6 @@ import lombok.Setter;
 public class OrderContantsVO {
 
     @Getter @Setter
-    @ApiModelProperty(name = "access_token",value = "顺丰access_token",example = "EyMivbd44I124lcddrBG",required = true)
-    private String access_token;
-
-    @Getter @Setter
     @ApiModelProperty(name = "longitude",value = "经度",example = "113.947074",required = true,dataType = "double")
     private double longitude;
 

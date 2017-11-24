@@ -21,11 +21,11 @@ public class SystemLabel extends Object{
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty(name="主键",required=false)
+    @ApiModelProperty(name="主键")
     @Setter @Getter
     private int id;
     
-	@ApiModelProperty(name="系统标签内容")
+	@ApiModelProperty(name="系统标签内容",required = true)
     @Setter @Getter
     private String system_label;
 	

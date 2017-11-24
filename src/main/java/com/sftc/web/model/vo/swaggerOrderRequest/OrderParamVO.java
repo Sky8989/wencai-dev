@@ -6,37 +6,37 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "寄件人订单填写包装类")
 public class OrderParamVO {
 
-    @ApiModelProperty(name = "ship_name",value = "寄件人姓名",example = "Joel测试订单1")
+    @ApiModelProperty(name = "ship_name",value = "寄件人姓名",example = "Joel测试订单1",required = true)
     private String sender_name;
-    @ApiModelProperty(name = "sender_mobile",value = "寄件人电话",example = "13691698530")
+    @ApiModelProperty(name = "sender_mobile",value = "寄件人电话",example = "13691698530",required = true)
     private String sender_mobile;
-    @ApiModelProperty(name = "sender_province",value = "寄件人省份",example = "广东省")
+    @ApiModelProperty(name = "sender_province",value = "寄件人省份",example = "广东省",required = true)
     private String sender_province;
-    @ApiModelProperty(name = "sender_city",value = "寄件人城市",example = "深圳市")
+    @ApiModelProperty(name = "sender_city",value = "寄件人城市",example = "深圳市",required = true)
     private String sender_city;
-    @ApiModelProperty(name = "sender_area",value = "寄件人区域",example = "龙岗区")
+    @ApiModelProperty(name = "sender_area",value = "寄件人区域",example = "龙岗区",required = true)
     private String sender_area;
     @ApiModelProperty(name = "supplementary_info",value = "寄件人门牌号",example = "寄件人填写1号")
     private String supplementary_info;
-    @ApiModelProperty(name = "sender_addr",value = "寄件人详细地址",example = "大运")
+    @ApiModelProperty(name = "sender_addr",value = "寄件人详细地址",example = "大运",required = true)
     private String sender_addr;
     @ApiModelProperty(name = "image",value = "图片",example = "yqy.jpg")
     private String image;
     @ApiModelProperty(name = "voice",value = "语音",example = "你好")
     private String voice;
-    @ApiModelProperty(name = "pay_method",value = "支付方式",example = "到付")
+    @ApiModelProperty(name = "pay_method",value = "支付方式",example = "到付",required = true)
     private String pay_method;
-    @ApiModelProperty(name = "distribution_method",value = "配送方式",example = "das")
+    @ApiModelProperty(name = "distribution_method",value = "配送方式",example = "JISUDA",required = true)
     private String distribution_method;
-    @ApiModelProperty(name = "longitude",value = "经度",example = "114.260976",dataType = "double")
+    @ApiModelProperty(name = "longitude",value = "经度",example = "114.260976",dataType = "double",required = true)
     private double longitude;
-    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.723223",dataType = "double")
+    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.723223",dataType = "double",required = true)
     private double latitude;
     @ApiModelProperty(name = "word_message",value = "留言",example = "你好")
     private String word_message;
-    @ApiModelProperty(name = "package_count",value = "包裹数量",example = "1")
+    @ApiModelProperty(name = "package_count",value = "包裹数量",example = "1",required = true)
     private int package_count;
-    @ApiModelProperty(name = "sender_user_id",value = "寄件人id",example = "10028")
+    @ApiModelProperty(name = "sender_user_id",value = "寄件人id",example = "10028",required = true)
     private int sender_user_id;
     @ApiModelProperty(name = "gift_card_id",value = "贺卡id",example = "1")
     private int gift_card_id;
@@ -44,13 +44,13 @@ public class OrderParamVO {
     private int voice_time;
     @ApiModelProperty(name = "package_comments",value = "快递描述",example = "补充快递信息")
     private String package_comments;
-    @ApiModelProperty(name = "object_type",value = "物品类型",example = "dsa")
+    @ApiModelProperty(name = "object_type",value = "物品类型",example = "FILE",required = true)
     private  String object_type;
-    @ApiModelProperty(name = "weight",value = "包裹重量",example = "1")
+    @ApiModelProperty(name = "weight",value = "包裹重量",example = "1",required = true)
     private  String weight;
-    @ApiModelProperty(name = "order_type",value = "是否普通",example = "ORDER_MYSTERY")
+    @ApiModelProperty(name = "order_type",value = "是否普通",example = "ORDER_BASIS",required = true)
     private String order_type;
-    @ApiModelProperty(name = "package_type",value = "包裹类型",example = "0")
+    @ApiModelProperty(name = "package_type",value = "包裹类型",example = "0",required = true)
     private String package_type;
 
     public String getSender_name() {

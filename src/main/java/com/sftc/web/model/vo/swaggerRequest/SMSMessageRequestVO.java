@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(value = "获取短信验证请求包装类")
 public class SMSMessageRequestVO {
-    @ApiModelProperty(name = "message",value = "短信验证信息")
+    @ApiModelProperty(name = "message",value = "短信验证信息",required = true)
     private SMSMessageVO message;
     @ApiModelProperty(name = "device",value = "设备详细信息",required = true)
     private SMSMessageDeviceVO device;

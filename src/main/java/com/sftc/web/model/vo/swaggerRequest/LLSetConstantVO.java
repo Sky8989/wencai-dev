@@ -9,17 +9,17 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "经纬度SetContant")
 public class LLSetConstantVO {
 
-    @ApiModelProperty(name = "longitude",example = "")
+    @ApiModelProperty(name = "MAX_LL_NUMBER",required = true)
     private int MAX_LL_NUMBER;
-    @ApiModelProperty(name = "latitude",example = "")
+    @ApiModelProperty(name = "MIN_LL_NUMBER",required = true)
     private int MIN_LL_NUMBER;
-    @ApiModelProperty(name = "latitude",example = "")
+    @ApiModelProperty(name = "RANGE_NUMBER",required = true)
     private double RANGE_NUMBER;
 
-    @ApiModelProperty(name = "latitude",example = "")
+    @ApiModelProperty(name = "END_HOUR",required = true)
     private int END_HOUR;
 
-    @ApiModelProperty(name = "latitude",example = "")
+    @ApiModelProperty(name = "BEGIN_HOUR",required = true)
     private int BEGIN_HOUR;
 
     public int getMAX_LL_NUMBER() {
