@@ -3,6 +3,7 @@ package com.sftc.web.service;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.entity.GiftCard;
+import com.sftc.web.model.vo.swaggerRequestVO.giftCard.DeleteGiftCardVO;
 
 public interface GiftCardService {
 
@@ -26,7 +27,11 @@ public interface GiftCardService {
     /**
      * CMS 系统 删除礼品卡信息
      */
-    APIResponse deleteGiftCard(int id) throws Exception;
+    APIResponse deleteGiftCard(APIRequest apiRequest);
 
-	APIResponse save(GiftCard giftCard) throws Exception;
+	APIResponse save(APIRequest apiRequest) throws Exception;
+
+	APIResponse deleteGiftCard(int id);
+
+
 }

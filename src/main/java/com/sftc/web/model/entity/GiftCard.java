@@ -31,7 +31,7 @@ public class GiftCard extends Object {
     
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@ApiModelProperty(value = "主键")
+	@ApiModelProperty(value = "主键",required=true)
     @Setter @Getter
     private int id;
 
@@ -39,15 +39,15 @@ public class GiftCard extends Object {
     @Setter @Getter
     private String create_time;
 
-    @ApiModelProperty(value = "名称",example = "礼品卡名称")
+    @ApiModelProperty(value = "名称",example = "礼品卡名称",required=true)
     @Setter @Getter
     private String name;
 
-    @ApiModelProperty(value = "图片",example = "暂存 上传图片时的Base64值")
+    @ApiModelProperty(value = "图片",example = "暂存 上传图片时的Base64值",required=true)
     @Setter @Getter
     private String icon;
 
-    @ApiModelProperty(value = "类型",example = "礼品卡 类型名")
+    @ApiModelProperty(value = "类型",example = "礼品卡 类型名",required=true)
     @Setter @Getter
     private String type;
 

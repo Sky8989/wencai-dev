@@ -28,6 +28,7 @@ import com.sftc.web.model.entity.UserContactLabel;
 import com.sftc.web.model.vo.swaggerRequest.UpdateUserContactLabelVO;
 import com.sftc.web.model.vo.swaggerRequest.UserLabelVO;
 import com.sftc.web.model.vo.swaggerRequestVO.userContactLabel.AddUserContactLabelVO;
+import com.sftc.web.model.vo.swaggerRequestVO.userContactLabel.DeleteUserContactLabelVo;
 import com.sftc.web.service.UserLabelService;
 
 import net.sf.json.JSONObject;
@@ -48,7 +49,6 @@ public class UserLabelServiceImpl implements UserLabelService {
      * 根据用户id获取用户所有标签
      */
     public APIResponse getUserContactLabels(APIRequest apiRequest) {
-
         UserLabelVO userLabelVO = (UserLabelVO) apiRequest.getRequestParam();
         if (userLabelVO == null)
             return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());
@@ -65,7 +65,6 @@ public class UserLabelServiceImpl implements UserLabelService {
      * 根据标签id修改个人标签
      */
     public APIResponse updateUserContactLabels(APIRequest apiRequest) {
-
         UpdateUserContactLabelVO updateUserContactLabelVO = (UpdateUserContactLabelVO) apiRequest.getRequestParam();
         if (updateUserContactLabelVO == null) {
             return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());
@@ -169,28 +168,16 @@ public class UserLabelServiceImpl implements UserLabelService {
 	 * 通过 用户标签id 或者 用户id user_contact_id 去删除用户标签
 	 */
 	@Override
-	public APIResponse deleteUserContactLabels(int id) {
-		UserContactLabel user = userContactLabelDao.findOne(id);
-		if (id != 0 ) {
-			if (userLabelMapper.deleteUserContactLabels(id) > 0) {
+	public APIResponse deleteUserContactLabels(APIRequest apiRequest) {
+		DeleteUserContactLabelVo userLabel = (DeleteUserContactLabelVo) apiRequest.getRequestParam();
+		if(userLabel != null && userLabelMapper.deleteUserContactLabels(userLabel.getId()) > 0){
+			 UserContactLabel user = userContactLabelDao.findOne(userLabel.getId());
+			 if(user != null)
 				userLabelsRedisDao.removeUserContactLabelsCache(user.getUser_contact_id());	//清理缓存
-				return APIUtil.getResponse(SUCCESS, id );
+				return APIUtil.getResponse(SUCCESS, userLabel);
 			}
-		}
-		return APIUtil.getResponse(PARAM_ERROR, "删除失败 id 不存在" + id );
+		return APIUtil.getResponse(PARAM_ERROR, "删除失败 " + userLabel );
 	}
-	/**
-	 * 通过 用户标签id 或者 用户id user_contact_id 去删除用户标签
-	 */
-	/*@Override
-	public APIResponse deleteUserContactLabels(int id, int user_contact_id) {
-		if (id != 0 || user_contact_id != 0) {
-			if (userLabelMapper.deleteUserContactLabels(id, user_contact_id) > 0) {
-				return APIUtil.getResponse(SUCCESS, "删除成功 id=" + id + ",=user_contact_id = " + user_contact_id);
-			}
-		}
-		return APIUtil.getResponse(PARAM_ERROR, "删除失败 id=" + id + ",=user_contact_id = " + user_contact_id);
-	}*/
 
 	/**
 	 * 新增用户标签信息

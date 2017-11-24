@@ -14,6 +14,7 @@ import com.sftc.web.dao.jpa.PriceExplainDao;
 import com.sftc.web.dao.mybatis.PriceExaplainMapper;
 import com.sftc.web.model.entity.PriceExplain;
 import com.sftc.web.model.vo.swaggerRequest.PriceExaplainVO;
+import com.sftc.web.model.vo.swaggerRequestVO.priceExaplain.DeletePriceExplain;
 import com.sftc.web.service.PriceExaplainService;
 
 
@@ -51,11 +52,12 @@ public class PriceExaplainServiceImpl implements PriceExaplainService {
      * 价格说明 通过id删除
      */
 	@Override
-	public APIResponse deletePriceExplain(int id) {
-		 if(priceExaplainMapper.deletePriceExplain(id) > 0){
-	    	   return APIUtil.getResponse(APIStatus.SUCCESS, id);
+	public APIResponse deletePriceExplain(APIRequest apiRequest) {
+		DeletePriceExplain priceExplain = (DeletePriceExplain) apiRequest.getRequestParam();
+		 if(priceExplain != null && priceExaplainMapper.deletePriceExplain(priceExplain.getId()) > 0){
+	    	   return APIUtil.getResponse(APIStatus.SUCCESS, priceExplain);
 	       }else{
-	    	   return APIUtil.getResponse(APIStatus.PARAM_ERROR, "删除失败，不存在id="+id);
+	    	   return APIUtil.getResponse(APIStatus.PARAM_ERROR, "删除失败 "+ priceExplain);
 	       }
 	}
 	/**
@@ -84,7 +86,8 @@ public class PriceExaplainServiceImpl implements PriceExaplainService {
 	 * id为0时 为新增操作  id 非0为修改操作
 	 */
 	@Override
-	public APIResponse save(PriceExplain priceExplain) {
+	public APIResponse save(APIRequest apiRequest) {
+		PriceExplain priceExplain = (PriceExplain) apiRequest.getRequestParam();
 		 if (priceExplain == null) {
 		return APIUtil.getResponse(APIStatus.PARAM_ERROR, "save失败，传入对象为 =" + priceExplain);
 	}

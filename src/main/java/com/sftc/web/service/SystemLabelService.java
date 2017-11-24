@@ -1,18 +1,23 @@
 package com.sftc.web.service;
 
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.entity.SystemLabel;
+import com.sftc.web.model.vo.swaggerRequestVO.systemLabel.DeleteSystemLabelVo;
 import com.sftc.web.model.vo.swaggerRequestVO.systemLabel.SystemLabelVo;
 
 public interface SystemLabelService {
 
-	APIResponse getSystemLabelList(SystemLabelVo systemLabel);
+	APIResponse getSystemLabelList(APIRequest apiRequest);
 
-	APIResponse updateSystemLabel(SystemLabel systemLabel);
+	APIResponse save(APIRequest apiRequest);
+
+	APIResponse deleteSystemLable(APIRequest apiRequest);
+
 
 	APIResponse addSystemLabel(SystemLabel systemLabel);
 
-	APIResponse deleteSystemLable(int id);
+	APIResponse updateSystemLabel(SystemLabel systemLabel);
 
-	APIResponse save(SystemLabel systemLabel);
+
 }

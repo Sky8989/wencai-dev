@@ -1,8 +1,14 @@
 package com.sftc.web.service.impl;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.page.PageMethod;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIStatus;
@@ -11,15 +17,11 @@ import com.sftc.web.dao.jpa.CommonQuestionDao;
 import com.sftc.web.dao.mybatis.CommonQuestionMapper;
 import com.sftc.web.dao.redis.CommonQuestionRedisDao;
 import com.sftc.web.model.entity.CommonQuestion;
+import com.sftc.web.model.vo.swaggerRequest.UpdateUserContactLabelVO;
+import com.sftc.web.model.vo.swaggerRequestVO.commonQuestion.DeleteCommonQuestionVO;
 import com.sftc.web.service.CommonQuestionService;
 
 import net.sf.json.JSONObject;
-
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @Service("commonQuestionService")
 public class CommonQuestionServiceImpl implements CommonQuestionService {
@@ -105,12 +107,18 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
     /**
      * CMS 删除常见问题
      */
-    public APIResponse deleteCommonQuestion(int id) throws Exception {
-       if(commonQuestionMapper.deleteCommonQuestion(id) > 0){
+    public APIResponse deleteCommonQuestion(int id){
+    	commonQuestionMapper.deleteCommonQuestion(id);
+    	 return APIUtil.getResponse(APIStatus.SUCCESS,  id);
+    }
+    
+    public APIResponse deleteCommonQuestion(APIRequest apiRequest) throws Exception {
+    	DeleteCommonQuestionVO commonQuestion = (DeleteCommonQuestionVO) apiRequest.getRequestParam();
+       if(commonQuestion != null && commonQuestionMapper.deleteCommonQuestion(commonQuestion.getId()) > 0){
     	   commonQuestionRedisDao.clearCommonQuestionsCache();
-    	   return APIUtil.getResponse(APIStatus.SUCCESS, id);
+    	   return APIUtil.getResponse(APIStatus.SUCCESS, commonQuestion);
        }else{
-    	   return APIUtil.getResponse(APIStatus.PARAM_ERROR, "删除失败，不存在id="+id);
+    	   return APIUtil.getResponse(APIStatus.PARAM_ERROR, "删除失败 "+commonQuestion);
        }
 
     }
@@ -138,7 +146,8 @@ public class CommonQuestionServiceImpl implements CommonQuestionService {
 	 * id为0时 为新增操作  id 非0为修改操作
 	 */
 	@Override
-	public APIResponse save(CommonQuestion commonQuestion) throws Exception {
+	public APIResponse save(APIRequest apiRequest) throws Exception {
+		CommonQuestion commonQuestion = (CommonQuestion) apiRequest.getRequestParam();
 		if (commonQuestion == null) {
 			return APIUtil.getResponse(APIStatus.PARAM_ERROR, "save失败，传入对象为 =" + commonQuestion);
 		}
