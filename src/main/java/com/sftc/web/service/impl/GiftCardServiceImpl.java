@@ -17,12 +17,11 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
-import com.sftc.tools.sf.SFOrderHelper;
 import com.sftc.web.dao.jpa.GiftCardDao;
 import com.sftc.web.dao.mybatis.GiftCardMapper;
 import com.sftc.web.model.entity.GiftCard;
-import com.sftc.web.model.vo.displayMessage.GiftCardListVO;
-import com.sftc.web.model.vo.swaggerRequestVO.giftCard.DeleteGiftCardVO;
+import com.sftc.web.model.dto.GiftCardListDTO;
+import com.sftc.web.model.vo.swaggerRequest.DeleteGiftCardVO;
 import com.sftc.web.service.GiftCardService;
 import com.sftc.web.service.QiniuService;
 
@@ -40,12 +39,12 @@ public class GiftCardServiceImpl implements GiftCardService {
 	public APIResponse getGiftCardList(APIRequest request) {
 
 		List<GiftCard> giftCards = giftCardMapper.giftCardList();
-		List<GiftCardListVO> giftCardLists = new ArrayList<GiftCardListVO>();
+		List<GiftCardListDTO> giftCardLists = new ArrayList<GiftCardListDTO>();
 
 		for (GiftCard giftCard : giftCards) {
 			// 遍历当前的giftCardLists数组，判断这个type的GiftCardList是否已经存在，如果存在，取出这个type的giftCardList
-			GiftCardListVO giftCardList = null;
-			for (GiftCardListVO tempList : giftCardLists) {
+			GiftCardListDTO giftCardList = null;
+			for (GiftCardListDTO tempList : giftCardLists) {
 				if (tempList.getType().equals(giftCard.getType())) {
 					giftCardList = tempList;
 					break;
@@ -56,7 +55,7 @@ public class GiftCardServiceImpl implements GiftCardService {
 				List<GiftCard> gitCards = giftCardList.getGiftCards();
 				gitCards.add(giftCard);
 			} else { // 不存在，新建一个GiftCardList，进行赋值，再add进giftCardLists数组
-				GiftCardListVO list = new GiftCardListVO();
+				GiftCardListDTO list = new GiftCardListDTO();
 				List<GiftCard> gitCards = new ArrayList<GiftCard>();
 				gitCards.add(giftCard);
 				list.setType(giftCard.getType());

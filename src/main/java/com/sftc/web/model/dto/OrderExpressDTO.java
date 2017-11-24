@@ -1,5 +1,4 @@
 package com.sftc.web.model.dto;
-import com.sftc.web.model.vo.displayMessage.PackageMessageVO;
 import com.sftc.web.model.entity.Evaluate;
 import com.sftc.web.model.entity.OrderExpress;
 import lombok.Getter;
@@ -19,7 +18,7 @@ public class OrderExpressDTO extends OrderExpress {
 
     @Getter
     @Setter
-    private PackageMessageVO packageMessage;
+    private PackageMessageDTO packageMessage;
 
     public OrderExpressDTO() {
     }

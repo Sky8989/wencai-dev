@@ -1,4 +1,4 @@
-package com.sftc.web.model.vo.displayMessage;
+package com.sftc.web.model.dto;
 
 import com.sftc.web.model.entity.OrderExpress;
 import lombok.Getter;
@@ -6,9 +6,9 @@ import lombok.Setter;
 
 import java.util.List;
 /**
- * 来往记录界面展示类
+ * 来往记录
  */
-public class FriendRecordVO {
+public class FriendRecordDTO {
     @Setter @Getter
     private int id;
 

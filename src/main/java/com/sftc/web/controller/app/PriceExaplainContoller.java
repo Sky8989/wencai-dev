@@ -12,7 +12,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.entity.PriceExplain;
 import com.sftc.web.model.vo.swaggerRequest.PriceExaplainVO;
-import com.sftc.web.model.vo.swaggerRequestVO.priceExaplain.DeletePriceExplain;
+import com.sftc.web.model.vo.swaggerRequest.DeletePriceExplain;
 import com.sftc.web.service.PriceExaplainService;
 
 import io.swagger.annotations.Api;

@@ -1,4 +1,4 @@
-package com.sftc.web.model.vo.displayMessage;
+package com.sftc.web.model.dto;
 
 import com.sftc.web.model.entity.GiftCard;
 import lombok.Getter;
@@ -6,9 +6,9 @@ import lombok.Setter;
 
 import java.util.List;
 /**
- * 礼品卡界面展示类
+ * 礼品卡
  */
-public class GiftCardListVO {
+public class GiftCardListDTO {
 
     @Setter @Getter
     private String type;

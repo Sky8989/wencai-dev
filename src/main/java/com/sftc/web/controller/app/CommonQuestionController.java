@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.entity.CommonQuestion;
-import com.sftc.web.model.vo.swaggerRequestVO.commonQuestion.CommonQuestionVO;
-import com.sftc.web.model.vo.swaggerRequestVO.commonQuestion.DeleteCommonQuestionVO;
+import com.sftc.web.model.vo.swaggerRequest.CommonQuestionVO;
+import com.sftc.web.model.vo.swaggerRequest.DeleteCommonQuestionVO;
 import com.sftc.web.service.CommonQuestionService;
 
 import io.swagger.annotations.Api;

@@ -12,13 +12,13 @@ public class UserMerchantsVO {
     @ApiModelProperty(value = "地址", required = true)
     private UserMerchantsAddressVO address;
 
-    @ApiModelProperty(value = "attributes")
+    @ApiModelProperty(value = "attributes",hidden = true)
     private UserMerchantsAttributesVO attributes;
 
-    @ApiModelProperty(value = "summary")
+    @ApiModelProperty(value = "summary",hidden = true)
     private UserMerchantsSummaryVO summary;
 
-    @ApiModelProperty(value = "邮箱", example = "123@gmail.com")
+    @ApiModelProperty(value = "邮箱", example = "123@gmail.com",hidden = true)
     private String email;
 
     public String getName() {

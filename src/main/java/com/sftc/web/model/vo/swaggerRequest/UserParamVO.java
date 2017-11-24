@@ -23,8 +23,6 @@ public class UserParamVO {
     private String avatar;
     @ApiModelProperty(name = "name",value = "用户id",example = "Bingo?")
     private String name;
-    @ApiModelProperty(name = "uuid",value = "用户id",example = "2c9a85895d82ebe7015d8d4c6cc11df6")
-    private String uuid;
 
     public  String getAvatar() {
         return avatar;
@@ -54,8 +52,4 @@ public class UserParamVO {
     public void setJs_code(String js_code) {
         this.js_code = js_code;
     }
-
-    public String getUuid() {return uuid;}
-
-    public void setUuid(String uuid) {this.uuid = uuid;}
 }

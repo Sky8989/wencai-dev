@@ -10,7 +10,7 @@ import com.sftc.web.enumeration.express.PackageType;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
 import com.sftc.web.model.entity.*;
-import com.sftc.web.model.vo.displayMessage.PackageMessageVO;
+import com.sftc.web.model.dto.PackageMessageDTO;
 import com.sftc.web.model.vo.swaggerOrderRequest.OrderSynVO;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -188,7 +188,7 @@ public class OrderDetailLogic {
             try {
                 if (jsonObject.getJSONObject("constant").getJSONObject("value").containsKey("PACKAGE_TYPE")) {
                     JSONArray packageTypeArr = jsonObject.getJSONObject("constant").getJSONObject("value").getJSONArray("PACKAGE_TYPE");
-                    PackageMessageVO packageMessage = new PackageMessageVO();
+                    PackageMessageDTO packageMessage = new PackageMessageDTO();
                     for (int i = 0; i < packageTypeArr.size(); i++) {
                         JSONObject packageTypeOBJ = packageTypeArr.getJSONObject(i);
                         String package_code = packageTypeOBJ.getString("code");

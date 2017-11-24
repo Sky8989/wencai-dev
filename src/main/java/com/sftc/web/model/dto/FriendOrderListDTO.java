@@ -1,14 +1,14 @@
-package com.sftc.web.model.vo.displayMessage;
+package com.sftc.web.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 /**
- * 好友圈订单列表界面展示类
+ * 好友圈订单列表信息
  */
 
-public class FriendOrderListVO {
+public class FriendOrderListDTO {
 
     @Setter   @Getter
     private String id;

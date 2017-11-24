@@ -24,13 +24,13 @@ public class UserMerchantsAddressVO {
     @ApiModelProperty(value = "寄件人电话", example = "18124033797", required = true)
     private String mobile;
 
-    @ApiModelProperty(value = "用户uuid", example = "2c9a85895e99caa5015ebc09a1297072")
+    @ApiModelProperty(value = "用户uuid", example = "2c9a85895e99caa5015ebc09a1297072",hidden = true)
     private String uuid;
 
-    @ApiModelProperty(value = "类型", example = "LIVE")
+    @ApiModelProperty(value = "类型", example = "LIVE",hidden = true)
     private String type;
 
-    @ApiModelProperty(value = "邮编", example = "518000")
+    @ApiModelProperty(value = "邮编", example = "518000",hidden = true)
     private String zipcode;
 
     @ApiModelProperty(value = "收件人姓名", example = "near")

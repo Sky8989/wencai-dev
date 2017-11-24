@@ -8,7 +8,7 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.mybatis.*;
-import com.sftc.web.model.vo.displayMessage.FriendRecordVO;
+import com.sftc.web.model.dto.FriendRecordDTO;
 import com.sftc.web.model.entity.*;
 import com.sftc.web.model.vo.swaggerOrderRequest.OrderSynVO;
 import com.sftc.web.model.vo.swaggerRequest.FriendListVO;
@@ -121,20 +121,20 @@ public class UserContactServiceImpl implements UserContactService {
         //修改为物理分页参数
         userContactParamVO.setPageNum((userContactParamVO.getPageNum() - 1) * userContactParamVO.getPageSize()); // pageNum -> startIndex
         // callback
-        List<FriendRecordVO> friendRecordVOS = userContactMapper.selectCirclesContact(userContactParamVO);
-        for (FriendRecordVO friendRecordVO : friendRecordVOS) {
-            User sender = userMapper.selectUserByUserId(friendRecordVO.getSender_user_id());
-            User receiver = userMapper.selectUserByUserId(friendRecordVO.getShip_user_id());
+        List<FriendRecordDTO> friendRecordDTOS = userContactMapper.selectCirclesContact(userContactParamVO);
+        for (FriendRecordDTO friendRecordDTO : friendRecordDTOS) {
+            User sender = userMapper.selectUserByUserId(friendRecordDTO.getSender_user_id());
+            User receiver = userMapper.selectUserByUserId(friendRecordDTO.getShip_user_id());
             if (sender != null) {
-                friendRecordVO.setSender_icon(sender.getAvatar());
-                friendRecordVO.setSender_wechatname(sender.getName());
+                friendRecordDTO.setSender_icon(sender.getAvatar());
+                friendRecordDTO.setSender_wechatname(sender.getName());
             }
             if (receiver != null) {
-                friendRecordVO.setShip_icon(receiver.getAvatar());
-                friendRecordVO.setShip_wechatname(receiver.getName());
+                friendRecordDTO.setShip_icon(receiver.getAvatar());
+                friendRecordDTO.setShip_wechatname(receiver.getName());
             }
         }
-        return APIUtil.getResponse(SUCCESS, friendRecordVOS);
+        return APIUtil.getResponse(SUCCESS, friendRecordDTOS);
     }
 
     private APIResponse syncFriendExpress(UserContactParamVO userContactParamVO) {
