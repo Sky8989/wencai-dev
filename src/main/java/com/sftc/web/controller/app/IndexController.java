@@ -18,7 +18,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.HttpMethod;
 
-@ApiIgnore
 @Controller
 @Api(description = "设置")
 @RequestMapping("index")
@@ -31,6 +30,7 @@ public class IndexController {
     @Resource
     private CityExpressService cityExpressService;
 
+    @ApiIgnore
     @ApiOperation(value = "设置顺丰专送API环境", httpMethod = "POST",notes = "设置项目对接的顺丰同城的API环境，项目部署后默认是dev环境")
     @RequestMapping(value = "/environment", method = RequestMethod.POST)
     public @ResponseBody
@@ -40,6 +40,7 @@ public class IndexController {
         return indexService.setupEnvironment(request);
     }
 
+    @ApiIgnore
     @ApiOperation(value = "设置顺丰专送公共token", httpMethod = "POST")
     @RequestMapping(value = "/common/token", method = RequestMethod.POST)
     public @ResponseBody
