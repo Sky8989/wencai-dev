@@ -2,6 +2,7 @@ package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
 import com.sftc.tools.token.TokenUtils;
+import com.sftc.web.model.entity.User;
 import com.sftc.web.model.vo.swaggerRequest.CouPonPromoVO;
 import com.sftc.web.service.CouponService;
 import net.sf.json.JSONArray;
@@ -38,10 +39,8 @@ public class CouponServiceImpl implements CouponService {
     public APIResponse getUserCouponList(APIRequest apiRequest) throws Exception {
 
         JSONObject paramOBJ = JSONObject.fromObject(apiRequest.getRequestParam());
-        if (!paramOBJ.containsKey("uuid")) return APIUtil.paramErrorResponse("Parameter missing uuid");
         if (!paramOBJ.containsKey("status")) return APIUtil.paramErrorResponse("Parameter missing status");
-
-        String uuid = paramOBJ.getString("uuid");
+        String uuid = TokenUtils.getInstance().getUserUUID();
         String limit = String.valueOf(500);
         String offset = paramOBJ.containsKey("offset") ? String.valueOf(paramOBJ.getInt("offset") - 1) : String.valueOf(0);
         String status = paramOBJ.getString("status");

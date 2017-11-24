@@ -12,10 +12,6 @@ import lombok.Setter;
 public class CouponRequestVO {
 
     @Getter @Setter
-    @ApiModelProperty(name = "uuid",value = "用户uuid",example = "2c9a85895d82ebe7015d8d4c6cc11df6",required = true)
-    private String uuid;
-
-    @Getter @Setter
     @ApiModelProperty(name = "status",value = "优惠券状态",example = "all",required = true)
     private String status;
 }
