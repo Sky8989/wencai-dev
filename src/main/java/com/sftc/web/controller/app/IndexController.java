@@ -5,18 +5,18 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.model.vo.swaggerRequest.SFAPIRequestVO;
 import com.sftc.web.model.vo.swaggerRequest.SFAccessTokenRequestVO;
+import com.sftc.web.service.CityExpressService;
 import com.sftc.web.service.IndexService;
 import com.sftc.web.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.HttpMethod;
 
 @ApiIgnore
 @Controller
@@ -28,6 +28,8 @@ public class IndexController {
     private IndexService indexService;
     @Resource
     private UserService userService;
+    @Resource
+    private CityExpressService cityExpressService;
 
     @ApiOperation(value = "设置顺丰专送API环境", httpMethod = "POST",notes = "设置项目对接的顺丰同城的API环境，项目部署后默认是dev环境")
     @RequestMapping(value = "/environment", method = RequestMethod.POST)
@@ -54,4 +56,11 @@ public class IndexController {
     APIResponse getTemporaryToken() throws Exception {
         return userService.getTemporaryToken();
     }
+
+    @ApiOperation(value = "获取同城专送列表", httpMethod = HttpMethod.GET)
+    @GetMapping(value = "getCitys")
+    public APIResponse getCityExpressList(HttpServletRequest request) {
+        return cityExpressService.getCityExpressList(new APIRequest(request));
+    }
+
 }
