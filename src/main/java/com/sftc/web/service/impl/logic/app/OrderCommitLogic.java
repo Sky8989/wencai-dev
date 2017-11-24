@@ -252,8 +252,10 @@ public class OrderCommitLogic {
                 TokenUtils instance = TokenUtils.getInstance();
                 String token = instance.getAccess_token();
                 String userUUID = instance.getUserUUID();
-                requestObject.getJSONObject("request").getJSONObject("merchant").put("access_token", token);
-                requestObject.getJSONObject("request").getJSONObject("merchant").put("uuid", userUUID);
+                JSONObject merchantOBJ = new JSONObject();
+                merchantOBJ.put("access_token", token);
+                merchantOBJ.put("uuid", userUUID);
+                requestObject.getJSONObject("request").put("merchant",merchantOBJ);
 
                 post.addHeader("PushEnvelope-Device-Token", token);
                 String resultStr = APIPostUtil.post(paramStr, post);
@@ -371,9 +373,11 @@ public class OrderCommitLogic {
         TokenUtils instance = TokenUtils.getInstance();
         String token = instance.getAccess_token();
         String userUUID = instance.getUserUUID();
-        requestOBJ.getJSONObject("merchant").put("access_token", token);
-        requestOBJ.getJSONObject("merchant").put("uuid", userUUID);
-//        post.addHeader("PushEnvelope-Device-Token", (String) requestOBJ.getJSONObject("merchant").get("access_token"));
+        JSONObject merchantOBJ = new JSONObject();
+        merchantOBJ.put("access_token", token);
+        merchantOBJ.put("uuid", userUUID);
+        requestOBJ.put("merchant",merchantOBJ);
+
         post.addHeader("PushEnvelope-Device-Token", token);
 
         // 预约时间处理

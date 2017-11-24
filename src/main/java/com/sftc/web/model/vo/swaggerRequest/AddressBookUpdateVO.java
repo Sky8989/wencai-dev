@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(value = "地址簿修改包装类")
 public class AddressBookUpdateVO {
-    @ApiModelProperty(name = "id",value = "地址簿id",example = "2351")
+    @ApiModelProperty(name = "id",value = "地址簿id",example = "2351",required = true)
     private long id;
     @ApiModelProperty(value = "地址实体")
     private Address address;

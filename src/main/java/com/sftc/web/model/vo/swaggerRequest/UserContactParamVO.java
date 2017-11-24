@@ -4,7 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "来往记录请求类")
 public class UserContactParamVO {
-    @ApiModelProperty(name = "access_token",value = "顺丰access_token",example = "EyMivbd44I124lcddrBG",required = true)
+
+    @ApiModelProperty(name = "access_token",value = "顺丰access_token",required = true,hidden = true)
     private String access_token;
     @ApiModelProperty(name = "user_id",value = "用户id",example = "10093",required = true,hidden = true)
     private int user_id;

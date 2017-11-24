@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
 import com.sftc.tools.sf.SFOrderHelper;
-import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
@@ -14,7 +13,6 @@ import com.sftc.web.model.entity.Token;
 import com.sftc.web.model.entity.User;
 import com.sftc.web.model.others.WXUser;
 import com.sftc.web.model.vo.swaggerRequest.UserMerchantsRequestVO;
-import com.sftc.web.model.vo.swaggerRequest.UserMerchantsVO;
 import com.sftc.web.model.vo.swaggerRequest.UserParamVO;
 import com.sftc.web.service.MessageService;
 import com.sftc.web.service.UserService;
@@ -64,7 +62,7 @@ public class UserServiceImpl implements UserService {
         String auth_url = WX_AUTHORIZATION + userParamVO.getJs_code();
         WXUser wxUser = APIResolve.getWxUserWithUrl(auth_url);
         User user = null;
-        Map<String, String> tokenInfo = new HashMap<String, String>();
+        Map<String, String> tokenInfo = new HashMap<>();
         if (wxUser.getOpenid() != null) {
             List<User> userList = userMapper.selectUserByOpenid(wxUser.getOpenid());
             if (userList.size() > 1) {
@@ -74,50 +72,15 @@ public class UserServiceImpl implements UserService {
                 user = userList.get(0);
             }
             if (user == null) {
-                User user2 = new User();
-                user2.setOpen_id(wxUser.getOpenid());
-                user2.setSession_key(wxUser.getSession_key());
-                user2.setCreate_time(Long.toString(System.currentTimeMillis()));
-                //加入头像和昵称
-                if (userParamVO.getName() != null && userParamVO.getAvatar() != null) {
-                    user2.setAvatar(userParamVO.getAvatar());
-                    user2.setName(userParamVO.getName());
-                    userMapper.insertWithAvatarAndName(user2);
-                } else {
-                    userMapper.insertOpenid(user2);
-                }
-                //构建新的token
-                String myToken = makeToken(user2.getCreate_time(), user2.getOpen_id());
-                Token token = new Token(user2.getId(), myToken);
-                tokenMapper.addToken(token);
-                tokenInfo.put("token", myToken);
-                tokenInfo.put("user_id", (user2.getId() + ""));
+                loginNewUser(wxUser, userParamVO, tokenInfo);
             } else {
                 user.setOpen_id(wxUser.getOpenid());
                 user.setSession_key(wxUser.getSession_key());
                 user.setCreate_time(Long.toString(System.currentTimeMillis()));
-                //更新头像和昵称
-                if (userParamVO.getName() != null && userParamVO.getAvatar() != null) {
-                    logger.info("更新头像: " + userParamVO.getAvatar());
-                    logger.info("更新名字: " + userParamVO.getName());
-                    user.setAvatar(userParamVO.getAvatar());
-                    user.setName(userParamVO.getName());
-                    userMapper.updateUserOfAvatar(user);
-                }
+
                 Token token = tokenMapper.getTokenById(user.getId());
-                if (token == null) {
-                    token = new Token(user.getId(), makeToken(user.getCreate_time(), user.getOpen_id()));
-                    tokenMapper.addToken(token);
-                } else {
-                    String gmt_modified = Long.toString(System.currentTimeMillis());
-                    if (Long.parseLong(gmt_modified) > Long.parseLong(token.getGmt_expiry())) {
-                        token.setGmt_expiry(Long.toString(System.currentTimeMillis() + 2592000000L));
-                        String myToken = makeToken(gmt_modified, user.getOpen_id());
-                        token.setLocal_token(myToken);
-                    }
-                    token.setGmt_modified(gmt_modified);
-                    tokenMapper.updateToken(token);
-                }
+                updateUserToken(userParamVO, token, user);
+
                 tokenInfo.put("token", token.getLocal_token());
                 tokenInfo.put("user_id", (token.getUser_id() + ""));
             }
@@ -134,7 +97,7 @@ public class UserServiceImpl implements UserService {
         String auth_url = WX_AUTHORIZATION + userParamVO.getJs_code();
         WXUser wxUser = APIResolve.getWxUserWithUrl(auth_url);
         User user = null;
-        Map<String, String> tokenInfo = new HashMap<String, String>();
+        Map<String, String> tokenInfo = new HashMap<>();
         if (wxUser.getOpenid() != null) {
             List<User> userList = userMapper.selectUserByOpenid(wxUser.getOpenid());
             if (userList.size() > 1) {
@@ -144,51 +107,13 @@ public class UserServiceImpl implements UserService {
                 user = userList.get(0);
             }
             if (user == null) {
-                User user2 = new User();
-                user2.setOpen_id(wxUser.getOpenid());
-                user2.setSession_key(wxUser.getSession_key());
-                user2.setCreate_time(Long.toString(System.currentTimeMillis()));
-                //加入头像和昵称
-                if (userParamVO.getName() != null && userParamVO.getAvatar() != null) {
-                    user2.setAvatar(userParamVO.getAvatar());
-                    user2.setName(userParamVO.getName());
-                    userMapper.insertWithAvatarAndName(user2);
-                } else {
-                    userMapper.insertOpenid(user2);
-                }
-                //构建新的token
-                String myToken = makeToken(user2.getCreate_time(), user2.getOpen_id());
-                Token token = new Token(user2.getId(), myToken);
-                tokenMapper.addToken(token);
-                tokenInfo.put("token", myToken);
-                tokenInfo.put("user_id", (user2.getId() + ""));
+                loginNewUser(wxUser, userParamVO, tokenInfo);
             } else {
-//                user.setOpen_id(wxUser.getOpenid());// 不更新
                 user.setSession_key(wxUser.getSession_key());
-//                user.setCreate_time(Long.toString(System.currentTimeMillis()));//不更新
-                //更新头像和昵称
-                if (userParamVO.getName() != null && userParamVO.getAvatar() != null) {
-                    logger.info("更新头像: " + userParamVO.getAvatar());
-                    logger.info("更新名字: " + userParamVO.getName());
-                    user.setAvatar(userParamVO.getAvatar());
-                    user.setName(userParamVO.getName());
-                }
-                userMapper.updateUserOfAvatar(user);
+
                 Token token = tokenMapper.getTokenById(user.getId());
-                if (token == null) {
-                    token = new Token(user.getId(), makeToken(user.getCreate_time(), user.getOpen_id()));
-                    tokenMapper.addToken(token);
-                } else {
-                    String gmt_modified = Long.toString(System.currentTimeMillis());
-                    if (Long.parseLong(gmt_modified) > Long.parseLong(token.getGmt_expiry())) {
-                        token.setGmt_expiry(Long.toString(System.currentTimeMillis() + 2592000000L));
-                        String myToken = makeToken(gmt_modified, user.getOpen_id());
-                        token.setLocal_token(myToken);
-                    }
-                    token.setGmt_modified(gmt_modified);
-                    // 此处更新 localtoken
-                    tokenMapper.updateToken(token);
-                }
+                updateUserToken(userParamVO, token, user);
+
                 tokenInfo.put("token", token.getLocal_token());
                 tokenInfo.put("user_id", (token.getUser_id() + ""));
                 Token paramtoken = tokenMapper.getTokenById(token.getUser_id());
@@ -241,6 +166,53 @@ public class UserServiceImpl implements UserService {
     private String makeToken(String str1, String str2) {
         String s = MD5Util.MD5(str1 + str2);
         return s != null ? s.substring(0, s.length() - 10) : null;
+    }
+
+    //新用户 头像 名称 token 等存储
+    private void loginNewUser(WXUser wxUser, UserParamVO userParamVO, Map<String, String> tokenInfo) {
+        User user2 = new User();
+        user2.setOpen_id(wxUser.getOpenid());
+        user2.setSession_key(wxUser.getSession_key());
+        user2.setCreate_time(Long.toString(System.currentTimeMillis()));
+        //加入头像和昵称
+        if (userParamVO.getName() != null && userParamVO.getAvatar() != null) {
+            user2.setAvatar(userParamVO.getAvatar());
+            user2.setName(userParamVO.getName());
+            userMapper.insertWithAvatarAndName(user2);
+        } else {
+            userMapper.insertOpenid(user2);
+        }
+        //构建新的token
+        String myToken = makeToken(user2.getCreate_time(), user2.getOpen_id());
+        Token token = new Token(user2.getId(), myToken);
+        tokenMapper.addToken(token);
+        tokenInfo.put("token", myToken);
+        tokenInfo.put("user_id", (user2.getId() + ""));
+    }
+
+    //老用户更新 token 和 有效时间
+    private void updateUserToken(UserParamVO userParamVO, Token token, User user) {
+        if (userParamVO.getName() != null && userParamVO.getAvatar() != null) {
+            logger.info("更新头像: " + userParamVO.getAvatar());
+            logger.info("更新名字: " + userParamVO.getName());
+            user.setAvatar(userParamVO.getAvatar());
+            user.setName(userParamVO.getName());
+            userMapper.updateUserOfAvatar(user);
+        }
+        if (token == null) {
+            token = new Token(user.getId(), makeToken(user.getCreate_time(), user.getOpen_id()));
+            tokenMapper.addToken(token);
+        } else {
+            String gmt_modified = Long.toString(System.currentTimeMillis());
+            if (Long.parseLong(gmt_modified) > Long.parseLong(token.getGmt_expiry())) {
+                token.setGmt_expiry(Long.toString(System.currentTimeMillis() + 2592000000L));
+                String myToken = makeToken(gmt_modified, user.getOpen_id());
+                token.setLocal_token(myToken);
+            }
+            token.setGmt_modified(gmt_modified);
+            // 此处更新 localtoken
+            tokenMapper.updateToken(token);
+        }
     }
 
     // 验证access_token是否有效 通过访问merchant/me接口 但只针对有access_token的用户
@@ -321,7 +293,22 @@ public class UserServiceImpl implements UserService {
 //        return messageService.register(apiRequest);
 //    }
 
-    // 更新商户信息
+    // 修改手机号码 即重新绑定新手机号
+    public APIResponse updateMobile(APIRequest apiRequest) throws Exception {
+        Object requestParam = apiRequest.getRequestParam();
+        // 1 验证手机号可用性
+        JSONObject jsonObject = JSONObject.fromObject(requestParam);
+        String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
+        int user_id = jsonObject.getInt("user_id");
+        User user = userMapper.selectUserByPhone(mobile);
+        if (user != null) {
+            return APIUtil.submitErrorResponse("手机号已被人使用过，请检查手机号", mobile);
+        }
+        // 2 走注册流程
+        return messageService.register(apiRequest);
+    }
+
+    //更新个人信息 下单时调用
     public APIResponse updatePersonMessage(APIRequest apiRequest) throws Exception {
         // 参数处理
         UserMerchantsRequestVO requestParam = (UserMerchantsRequestVO) apiRequest.getRequestParam();
@@ -344,39 +331,6 @@ public class UserServiceImpl implements UserService {
             return APIUtil.submitErrorResponse(response.message(), null);
         }
         return APIUtil.getResponse(SUCCESS, null);
-    }
-
-    // 生成临时token  2017-10-23
-    public APIResponse getTemporaryToken() throws Exception {
-        //2188用户用于发放临时token
-        Token usableToken = tokenMapper.getTokenById(2188);
-        if (usableToken != null) {
-            long dataTime = System.currentTimeMillis();
-            long tempTime = Long.parseLong(usableToken.getGmt_expiry());
-            //如果没有过期直接返回
-            if (dataTime < tempTime || dataTime == tempTime) {
-                usableToken = tokenMapper.getTokenById(2188);
-            } else {//如果过期重新创建新的返回
-                String creat_time = Long.toString(System.currentTimeMillis());
-                String tempOpenId = SFOrderHelper.getTempOpenId();
-                String tempToken = makeToken(creat_time, tempOpenId);
-                Token token = new Token(2188, tempToken);
-                token.setGmt_expiry((System.currentTimeMillis() + 60000) + "");
-                tokenMapper.updateToken(token);
-                usableToken = tokenMapper.getTokenById(2188);
-            }
-        } else {
-            String creat_time = Long.toString(System.currentTimeMillis());
-            String tempOpenId = SFOrderHelper.getTempOpenId();
-            String tempToken = makeToken(creat_time, tempOpenId);
-            Token token = new Token(2188, tempToken);
-            token.setGmt_expiry((System.currentTimeMillis() + 60000) + "");
-            tokenMapper.addToken(token);
-            usableToken = tokenMapper.getTokenById(2188);
-        }
-        Map<String, String> map = new HashMap<>();
-        map.put("token", usableToken.getLocal_token());
-        return APIUtil.getResponse(SUCCESS, map);
     }
 
     /**

@@ -2,6 +2,8 @@ package com.sftc.web.model.vo.swaggerOrderRequest;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -10,62 +12,28 @@ import java.util.List;
  */
 @ApiModel(value = "好友同城订单request对象")
 public class FriendRequestVO {
+
+    @Getter @Setter
     @ApiModelProperty(name = "region",example = "68034a73fccc11e68c2e0242ac1a0504",required = true)
     private String region;
-    @ApiModelProperty(name = "merchant",required = true)
-    private MerchantVO merchant;
+
+    @Getter @Setter
     @ApiModelProperty(name = "attributes",required = true)
     private AttributesVO attributes;
-    @ApiModelProperty(name = "friend_quote",required = true)
+
+    @Getter @Setter
+    @ApiModelProperty(name = "friend_quote",value = "计价对象",required = true)
     private FriendQuoteVO quote;
-    @ApiModelProperty(name = "packages",required = true)
+
+    @Getter @Setter
+    @ApiModelProperty(name = "packages",value = "包裹信息",required = true)
     private List<PackagesVO> packages;
-    @ApiModelProperty(name = "product_type",example = "JISUDA",required = true)
+
+    @Getter @Setter
+    @ApiModelProperty(name = "product_type",value = "配送方式",example = "JISUDA",required = true)
     private String product_type;
-    @ApiModelProperty(name = "pay_type",example = "FREIGHT_COLLECT",required = true)
+
+    @Getter @Setter
+    @ApiModelProperty(name = "pay_type",value = "支付方式",example = "FREIGHT_COLLECT",required = true,notes = "FREIGHT_COLLECT 到付 FREIGHT_PREPAID 寄付")
     private String pay_type;
-
-    public String getRegion() {return region;}
-
-    public void setRegion(String region) {this.region = region;}
-
-    public MerchantVO getMerchant() {
-        return merchant;
-    }
-
-    public void setMerchant(MerchantVO merchant) {
-        this.merchant = merchant;
-    }
-
-    public AttributesVO getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(AttributesVO attributes) {
-        this.attributes = attributes;
-    }
-
-    public FriendQuoteVO getQuote() {return quote;}
-
-    public void setQuote(FriendQuoteVO quote) {this.quote = quote;}
-
-    public List<PackagesVO> getPackages() {return packages;}
-
-    public void setPackages(List<PackagesVO> packages) {this.packages = packages;}
-
-    public String getProduct_type() {
-        return product_type;
-    }
-
-    public void setProduct_type(String product_type) {
-        this.product_type = product_type;
-    }
-
-    public String getPay_type() {
-        return pay_type;
-    }
-
-    public void setPay_type(String pay_type) {
-        this.pay_type = pay_type;
-    }
 }

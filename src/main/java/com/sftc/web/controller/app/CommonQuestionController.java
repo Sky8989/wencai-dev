@@ -32,7 +32,7 @@ public class CommonQuestionController {
 		return commonQuestionService.getCommonQuestion();
 	}
 
-	@ApiOperation(value = "CMS保存常见问题 id为0新增，id不为0修改", httpMethod = "POST")
+	@ApiOperation(value = "新增(修改)常见问题", httpMethod = "POST",notes = "新增不用传id,修改时传id")
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody APIResponse save(@RequestBody CommonQuestion commonQuestion) throws Exception {
 		  APIRequest apiRequest = new APIRequest();

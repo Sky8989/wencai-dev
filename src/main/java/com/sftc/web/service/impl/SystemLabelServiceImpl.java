@@ -2,6 +2,7 @@ package com.sftc.web.service.impl;
 
 import javax.annotation.Resource;
 
+import com.sftc.web.model.vo.swaggerRequest.DeleteSystemLableVO;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -52,7 +53,6 @@ public class SystemLabelServiceImpl implements SystemLabelService {
 	/**
 	 * 删除系统标签
 	 */
-	@Override
 	public APIResponse deleteSystemLable(APIRequest apiRequest) {
 		DeleteSystemLabelVo systemLabel = (DeleteSystemLabelVo) apiRequest.getRequestParam();
 		if ( systemLabel != null && systemLabelMapper.deleteSystemLable(systemLabel.getId()) > 0) {
