@@ -2,6 +2,7 @@ package com.sftc.web.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.gson.Gson;
 import com.sftc.tools.api.*;
 import com.sftc.tools.md5.MD5Util;
 import com.sftc.tools.sf.SFOrderHelper;
@@ -322,32 +323,16 @@ public class UserServiceImpl implements UserService {
 
     // 更新商户信息
     public APIResponse updatePersonMessage(APIRequest apiRequest) throws Exception {
-
+        // 参数处理
         UserMerchantsRequestVO requestParam = (UserMerchantsRequestVO) apiRequest.getRequestParam();
-        UserMerchantsVO merchantsVO = requestParam.getMerchant();
+        requestParam.getMerchant().getAddress().setType("LIVE");
+        requestParam.getMerchant().getAddress().setUuid(TokenUtils.getInstance().getUserUUID());
+        requestParam.getMerchant().getAddress().setZipcode("");
+        requestParam.getMerchant().getAddress().setReceiver("");
 
-        String new_name = merchantsVO.getName();
-        String email = merchantsVO.getEmail();
-        String uuid = merchantsVO.getAddress().getUuid();
-        String province = merchantsVO.getAddress().getProvince();
-        String city = merchantsVO.getAddress().getCity();
-        String region = merchantsVO.getAddress().getRegion();
-        String street = merchantsVO.getAddress().getStreet();
-        String zipcode = merchantsVO.getAddress().getZipcode();
-        String receiver = merchantsVO.getAddress().getReceiver();
-        String mobile = merchantsVO.getAddress().getMobile();
-        double longitude = merchantsVO.getAddress().getLongitude();
-        double latitude = merchantsVO.getAddress().getLatitude();
-
-        String json = "{\"merchant\":{\"name\":\"" + new_name + "\",\"attributes\":{},\"summary\":{},\"" +
-                "email\":\"" + email + "\",\"address\":{\"type\":\"LIVE\",\"country\":\"中国\",\"province\":\"" + province + "\",\"" +
-                "city\":\"" + city + "\",\"region\":\"" + region + "\",\"street\":\"" + street + "\",\"zipcode\":\"" + zipcode + "\",\"receiver\":" +
-                "\"" + receiver + "\",\"mobile\":\"" + mobile + "\",\"marks\":{},\"longitude\":\"" + longitude + "\",\"latitude\":\"" + latitude + "\",\"uuid\":\"" + uuid + "\"}}}";
-        String access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
-        if (StringUtils.isNotBlank(requestParam.getToken())) {
-            access_token = requestParam.getToken();
-        }
-        RequestBody rb = RequestBody.create(null, json);
+        String requestJson = new Gson().toJson(requestParam);
+        String access_token = TokenUtils.getInstance().getAccess_token();
+        RequestBody rb = RequestBody.create(null, requestJson);
         Request request = new Request.Builder().
                 url(SF_LOGIN).
                 addHeader("Content-Type", "application/json").
@@ -356,7 +341,7 @@ public class UserServiceImpl implements UserService {
         OkHttpClient client = new OkHttpClient();
         okhttp3.Response response = client.newCall(request).execute();
         if (response.code() != 200) {
-            return APIUtil.submitErrorResponse("更新个人信息失败", response.body());
+            return APIUtil.submitErrorResponse(response.message(), null);
         }
         return APIUtil.getResponse(SUCCESS, null);
     }
