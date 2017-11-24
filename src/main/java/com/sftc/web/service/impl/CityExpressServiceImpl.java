@@ -30,7 +30,7 @@ public class CityExpressServiceImpl implements CityExpressService {
     private CityExpressRedisDao cityExpressRedisDao;
 
     @Override
-    public APIResponse getCityExpressList(APIRequest apiRequest) {
+    public APIResponse getCityExpressList() {
         //缓存获取
         JSONArray cityExpresssCache = cityExpressRedisDao.getCityExpresssCache();
         if (cityExpresssCache == null) {
@@ -41,7 +41,7 @@ public class CityExpressServiceImpl implements CityExpressService {
             }
         }
         JSONObject cityJson = new JSONObject();
-        cityJson.put("citys", cityExpresssCache);
+        cityJson.put("cities", cityExpresssCache);
         return APIUtil.getResponse(SUCCESS, cityJson);
     }
 }

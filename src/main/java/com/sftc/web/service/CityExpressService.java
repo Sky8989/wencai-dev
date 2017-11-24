@@ -8,5 +8,5 @@ import com.sftc.tools.api.APIResponse;
  * @date ：Create in 10:23 2017/11/24
  */
 public interface CityExpressService {
-    APIResponse getCityExpressList(APIRequest apiRequest);
+    APIResponse getCityExpressList();
 }
