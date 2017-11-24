@@ -31,7 +31,7 @@ public class SystemLabelController {
 	 * 查询系统标签List 并分页
 	 */
 	@ApiOperation(value = "CMS查询系统标签", httpMethod = "POST")
-	@PostMapping(value = "/findSystemLabelList")
+	@PostMapping(value = "/list")
 	public APIResponse getUserAllLabelByUCID(@RequestBody SystemLabelVo systemLabel) {
 		  APIRequest apiRequest = new APIRequest();
 	        apiRequest.setRequestParam(systemLabel);

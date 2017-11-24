@@ -71,4 +71,13 @@ public class UserLabelController {
     	apiRequest.setRequestParam(userLabel);
     	return userLabelService.deleteUserContactLabels(apiRequest);
     }
+    /**
+     * 获取所有个人标签
+     */
+    @ApiOperation(value = "CMS获取所有个人标签", httpMethod = "GET")
+    @RequestMapping(value="list",method = RequestMethod.GET)
+    @ResponseBody
+    public APIResponse findUserLabelList() {
+    	return userLabelService.findUserLabelList();
+    }
 }

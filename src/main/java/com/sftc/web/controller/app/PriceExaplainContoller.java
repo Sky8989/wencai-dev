@@ -41,9 +41,8 @@ public class PriceExaplainContoller {
     	APIRequest apiRequest = new APIRequest();
         apiRequest.setRequestParam(priceExplain);
          return priceExaplainService.save(apiRequest);	
-        		 
-    	
     }
+    
     @ApiOperation(value = "CMS删除价格说明", httpMethod = "DELETE")
     @RequestMapping(method = RequestMethod.DELETE)
     public @ResponseBody
@@ -52,4 +51,11 @@ public class PriceExaplainContoller {
         apiRequest.setRequestParam(priceExplain);
     		return priceExaplainService.deletePriceExplain(apiRequest);
     	}
+    
+    @ApiOperation(value = "CMS查询价格说明List", httpMethod = "GET")
+    @RequestMapping(value="list",method = RequestMethod.GET)
+    public @ResponseBody
+    APIResponse findPriceExplainList() throws Exception {
+    	return priceExaplainService.findPriceExplainList();	
+    }
 }

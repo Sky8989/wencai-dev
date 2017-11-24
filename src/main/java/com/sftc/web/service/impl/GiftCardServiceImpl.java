@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -24,7 +25,7 @@ import com.sftc.web.model.dto.GiftCardListDTO;
 import com.sftc.web.model.vo.swaggerRequest.DeleteGiftCardVO;
 import com.sftc.web.service.GiftCardService;
 import com.sftc.web.service.QiniuService;
-
+@Transactional
 @Service
 public class GiftCardServiceImpl implements GiftCardService {
 	@Resource
