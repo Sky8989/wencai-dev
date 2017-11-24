@@ -238,6 +238,13 @@ public class OrderCommitLogic {
                 String newStreet2 = removeStreet2.toString() + oe.getSupplementary_info();
                 requestObject.getJSONObject("request").getJSONObject("target").getJSONObject("address").put("street", newStreet2);
 
+                TokenUtils instance = TokenUtils.getInstance();
+                String token = instance.getAccess_token();
+                String userUUID = instance.getUserUUID();
+                JSONObject merchantOBJ = new JSONObject();
+                merchantOBJ.put("access_token", token);
+                merchantOBJ.put("uuid", userUUID);
+                requestObject.getJSONObject("request").put("merchant",merchantOBJ);
                 /// Request
                 Object tempObj = JSONObject.toBean(requestObject);
                 // tempJsonObj 是为了保证对顺丰接口的请求体的完整，不能包含其它的键值对，例如接口的请求参数"order"
@@ -249,13 +256,6 @@ public class OrderCommitLogic {
                 // POST
                 HttpPost post = new HttpPost(SF_REQUEST_URL);
 //            String token = (String) requestObject.getJSONObject("request").getJSONObject("merchant").get("access_token");
-                TokenUtils instance = TokenUtils.getInstance();
-                String token = instance.getAccess_token();
-                String userUUID = instance.getUserUUID();
-                JSONObject merchantOBJ = new JSONObject();
-                merchantOBJ.put("access_token", token);
-                merchantOBJ.put("uuid", userUUID);
-                requestObject.getJSONObject("request").put("merchant",merchantOBJ);
 
                 post.addHeader("PushEnvelope-Device-Token", token);
                 String resultStr = APIPostUtil.post(paramStr, post);
