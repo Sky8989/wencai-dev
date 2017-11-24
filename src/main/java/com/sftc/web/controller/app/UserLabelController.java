@@ -14,12 +14,13 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.vo.swaggerRequest.UpdateUserContactLabelVO;
 import com.sftc.web.model.vo.swaggerRequest.UserLabelVO;
 import com.sftc.web.model.vo.swaggerRequestVO.userContactLabel.AddUserContactLabelVO;
+import com.sftc.web.model.vo.swaggerRequestVO.userContactLabel.DeleteUserContactLabelVo;
 import com.sftc.web.service.UserLabelService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "用户标签")
+@Api(description = "CMS用户标签")
 @RestController
 @RequestMapping(value = "label")
 public class UserLabelController {
@@ -30,7 +31,7 @@ public class UserLabelController {
     /**
      * 根据用户好友关系id获取用户所有标签
      */
-    @ApiOperation(value = "好友所有标签", httpMethod = "POST")
+    @ApiOperation(value = "CMS好友所有标签", httpMethod = "POST")
     @PostMapping(value = "/all")
     public APIResponse getUserAllLabelByUCID(@RequestBody UserLabelVO userLabelVO) {
         APIRequest apiRequest = new APIRequest();
@@ -41,7 +42,7 @@ public class UserLabelController {
     /**
      * 根据标签id修改个人标签
      */
-    @ApiOperation(value = "修改个人标签", httpMethod = "POST")
+    @ApiOperation(value = "CMS修改个人标签", httpMethod = "POST")
     @PostMapping(value = "update")
     public APIResponse updateUsrLabelByLID(@RequestBody UpdateUserContactLabelVO updateUserContactLabelVO) {
         APIRequest apiRequest = new APIRequest();
@@ -51,7 +52,7 @@ public class UserLabelController {
     /**
      * 新增个人标签
      */
-    @ApiOperation(value = "新增个人标签", httpMethod = "POST")
+    @ApiOperation(value = "CMS新增个人标签", httpMethod = "POST")
     @PostMapping(value = "add")
     
     public APIResponse addUserLabel(@RequestBody AddUserContactLabelVO addUserContactLabelVO) {
@@ -62,10 +63,12 @@ public class UserLabelController {
     /**
      * 删除个人标签
      */
-    @ApiOperation(value = "删除个人标签", httpMethod = "DELETE")
+    @ApiOperation(value = "CMS删除个人标签", httpMethod = "DELETE")
     @RequestMapping(method = RequestMethod.DELETE)
     @ResponseBody
-    public APIResponse deleteUsrLabelByLID(@RequestBody int id) {
-    	return userLabelService.deleteUserContactLabels(id);
+    public APIResponse deleteUsrLabelByLID(@RequestBody DeleteUserContactLabelVo userLabel) {
+    	APIRequest apiRequest = new APIRequest();
+    	apiRequest.setRequestParam(userLabel);
+    	return userLabelService.deleteUserContactLabels(apiRequest);
     }
 }

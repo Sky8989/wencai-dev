@@ -2,6 +2,7 @@ package com.sftc.web.service;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
+import com.sftc.web.model.vo.swaggerRequestVO.userContactLabel.DeleteUserContactLabelVo;
 
 public interface UserLabelService {
     /**
@@ -14,8 +15,9 @@ public interface UserLabelService {
      */
     APIResponse updateUserContactLabels(APIRequest apiRequest);
 
-	APIResponse deleteUserContactLabels(int id);
-//	APIResponse deleteUserContactLabels(int id, int user_contact_id);
 
 	APIResponse addUserContactLabels(APIRequest apiRequest);
+
+
+	APIResponse deleteUserContactLabels(APIRequest apiRequest);
 }

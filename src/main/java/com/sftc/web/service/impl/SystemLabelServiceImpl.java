@@ -6,12 +6,14 @@ import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.jpa.SystemLabelDao;
 import com.sftc.web.dao.mybatis.SystemLabelMapper;
 import com.sftc.web.model.entity.SystemLabel;
+import com.sftc.web.model.vo.swaggerRequestVO.systemLabel.DeleteSystemLabelVo;
 import com.sftc.web.model.vo.swaggerRequestVO.systemLabel.SystemLabelVo;
 import com.sftc.web.service.SystemLabelService;
 
@@ -51,11 +53,12 @@ public class SystemLabelServiceImpl implements SystemLabelService {
 	 * 删除系统标签
 	 */
 	@Override
-	public APIResponse deleteSystemLable(int id) {
-		if (systemLabelMapper.deleteSystemLable(id) > 0) {
-			return APIUtil.getResponse(APIStatus.SUCCESS, id);
+	public APIResponse deleteSystemLable(APIRequest apiRequest) {
+		DeleteSystemLabelVo systemLabel = (DeleteSystemLabelVo) apiRequest.getRequestParam();
+		if ( systemLabel != null && systemLabelMapper.deleteSystemLable(systemLabel.getId()) > 0) {
+			return APIUtil.getResponse(APIStatus.SUCCESS, systemLabel);
 		} else {
-			return APIUtil.getResponse(APIStatus.PARAM_ERROR, "删除失败，不存在id=" + id);
+			return APIUtil.getResponse(APIStatus.PARAM_ERROR, "删除失败" + systemLabel);
 		}
 	}
 
@@ -63,7 +66,8 @@ public class SystemLabelServiceImpl implements SystemLabelService {
 	 * 查询系统List并分页
 	 */
 	@Override
-	public APIResponse getSystemLabelList(SystemLabelVo systemLabelVo) {
+	public APIResponse getSystemLabelList(APIRequest apiRequest) {
+		SystemLabelVo systemLabelVo  = (SystemLabelVo) apiRequest.getRequestParam();
 		if (systemLabelVo != null) {
 			SystemLabel systemLabel = new SystemLabel();
 			int pageNumKey = systemLabelVo.getPageNumKey();
@@ -84,7 +88,8 @@ public class SystemLabelServiceImpl implements SystemLabelService {
 	 * id为0时 为新增操作 id 非0为修改操作
 	 */
 	@Override
-	public APIResponse save(SystemLabel systemLabel) {
+	public APIResponse save(APIRequest apiRequest) {
+		SystemLabel systemLabel = (SystemLabel) apiRequest.getRequestParam();
 		if (systemLabel == null) {
 			return APIUtil.getResponse(APIStatus.PARAM_ERROR, "save失败，传入对象为 =" + systemLabel);
 		}

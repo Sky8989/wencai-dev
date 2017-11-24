@@ -22,6 +22,7 @@ import com.sftc.web.dao.jpa.GiftCardDao;
 import com.sftc.web.dao.mybatis.GiftCardMapper;
 import com.sftc.web.model.entity.GiftCard;
 import com.sftc.web.model.vo.displayMessage.GiftCardListVO;
+import com.sftc.web.model.vo.swaggerRequestVO.giftCard.DeleteGiftCardVO;
 import com.sftc.web.service.GiftCardService;
 import com.sftc.web.service.QiniuService;
 
@@ -112,19 +113,27 @@ public class GiftCardServiceImpl implements GiftCardService {
 	/**
 	 * CMS 系统 删除礼品卡信息
 	 */
-	public APIResponse deleteGiftCard(int id) throws Exception {
-		if(giftCardMapper.deleteGiftCard(id) > 0)
+	public APIResponse deleteGiftCard(int id) {
+		giftCardMapper.deleteGiftCard(id);
 		return APIUtil.getResponse(SUCCESS, id);
+	}
+	
+	public APIResponse deleteGiftCard(APIRequest apiRequest) {
+		 DeleteGiftCardVO giftCard = (DeleteGiftCardVO) apiRequest.getRequestParam();
+		if(giftCard != null && giftCardMapper.deleteGiftCard(giftCard.getId()) > 0)
+		return APIUtil.getResponse(SUCCESS, giftCard);
 		
-		return APIUtil.getResponse(APIStatus.PARAM_ERROR, "删除失败，不存在id="+id);
+		return APIUtil.getResponse(APIStatus.PARAM_ERROR, "删除失败 "+giftCard);
 	}
 	
 
 	/**
 	 * 礼品卡保存操作， 当礼品卡id为0时 为新增礼品卡操作  礼品卡id 非0为修改操作
+	 * @throws Exception 
 	 */
 	@Override
-	public APIResponse save(GiftCard giftCard) throws Exception {
+	public APIResponse save(APIRequest apiRequest) throws Exception {
+		GiftCard giftCard = (GiftCard) apiRequest.getRequestParam();
 		if (giftCard == null) {
 			return APIUtil.getResponse(APIStatus.PARAM_ERROR, "save失败，传入对象为 =" + giftCard);
 		}

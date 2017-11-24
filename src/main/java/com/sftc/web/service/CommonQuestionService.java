@@ -3,6 +3,7 @@ package com.sftc.web.service;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.entity.CommonQuestion;
+import com.sftc.web.model.vo.swaggerRequestVO.commonQuestion.DeleteCommonQuestionVO;
 
 public interface CommonQuestionService {
 
@@ -31,11 +32,19 @@ public interface CommonQuestionService {
 
     /**
      * CMS 删除礼品卡信息
+     * @throws Exception 
      */
-    APIResponse deleteCommonQuestion(int id) throws Exception;
+    APIResponse deleteCommonQuestion(APIRequest apiRequest) throws Exception;
+    
 
 	APIResponse selectListPaging(APIRequest apiRequest);
 
-	APIResponse save(CommonQuestion commonQuestion) throws Exception;
+	APIResponse save(APIRequest apiRequest) throws Exception;
+
+	APIResponse deleteCommonQuestion(int id);
+
+
+
+
 
 }

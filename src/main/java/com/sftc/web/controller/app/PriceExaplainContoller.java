@@ -12,19 +12,20 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.entity.PriceExplain;
 import com.sftc.web.model.vo.swaggerRequest.PriceExaplainVO;
+import com.sftc.web.model.vo.swaggerRequestVO.priceExaplain.DeletePriceExplain;
 import com.sftc.web.service.PriceExaplainService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "价格说明")
+@Api(description = "CMS价格说明")
 @RestController
 @RequestMapping(value = "price")
 public class PriceExaplainContoller {
     @Autowired
     private PriceExaplainService priceExaplainService;
-    @ApiOperation(value = "根据城市获取价格说明", httpMethod = "POST")
+    @ApiOperation(value = "CMS根据城市获取价格说明", httpMethod = "POST")
     @ApiImplicitParam(name = "city", value = "城市", required = true, paramType = "query", defaultValue = "北京")
     @PostMapping(value = "get")
     public APIResponse getPriceExplainByCity(@RequestBody PriceExaplainVO priceExaplainVO) {
@@ -33,18 +34,22 @@ public class PriceExaplainContoller {
         return priceExaplainService.getPriceExplainByCity(apiRequest);
     }
     
-    @ApiOperation(value = "新增(修改)价格说明", httpMethod = "POST")
+    @ApiOperation(value = "CMS保存价格说明 id为0新增，id不为0修改", httpMethod = "POST")
     @RequestMapping(value="save",method = RequestMethod.POST)
     public @ResponseBody
-    APIResponse addCommonQuestion(@RequestBody PriceExplain priceExplain) throws Exception {
-        	 return priceExaplainService.save(priceExplain);	
+    APIResponse save(@RequestBody PriceExplain priceExplain) throws Exception {
+    	APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(priceExplain);
+         return priceExaplainService.save(apiRequest);	
         		 
     	
     }
-    @ApiOperation(value = "删除价格说明", httpMethod = "DELETE")
+    @ApiOperation(value = "CMS删除价格说明", httpMethod = "DELETE")
     @RequestMapping(method = RequestMethod.DELETE)
     public @ResponseBody
-    APIResponse deleteCommonQuestion(@RequestBody int id) throws Exception {
-    		return priceExaplainService.deletePriceExplain(id);
+    APIResponse deletePriceExplain(@RequestBody DeletePriceExplain priceExplain) throws Exception {
+    	APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(priceExplain);
+    		return priceExaplainService.deletePriceExplain(apiRequest);
     	}
 }
