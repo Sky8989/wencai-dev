@@ -1,13 +1,13 @@
-package com.sftc.web.model.vo.displayMessage;
+package com.sftc.web.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 /**
- * 我的订单列表界面展示类
+ * 我的订单列表信息
  */
-public class MyOrderListVO {
+public class MyOrderListDTO {
     @Setter @Getter
     private String id;
 

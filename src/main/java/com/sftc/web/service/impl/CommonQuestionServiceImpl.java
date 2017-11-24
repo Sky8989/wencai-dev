@@ -17,8 +17,7 @@ import com.sftc.web.dao.jpa.CommonQuestionDao;
 import com.sftc.web.dao.mybatis.CommonQuestionMapper;
 import com.sftc.web.dao.redis.CommonQuestionRedisDao;
 import com.sftc.web.model.entity.CommonQuestion;
-import com.sftc.web.model.vo.swaggerRequest.UpdateUserContactLabelVO;
-import com.sftc.web.model.vo.swaggerRequestVO.commonQuestion.DeleteCommonQuestionVO;
+import com.sftc.web.model.vo.swaggerRequest.DeleteCommonQuestionVO;
 import com.sftc.web.service.CommonQuestionService;
 
 import net.sf.json.JSONObject;

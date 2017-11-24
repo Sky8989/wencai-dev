@@ -2,7 +2,6 @@ package com.sftc.web.service.impl;
 
 import javax.annotation.Resource;
 
-import com.sftc.web.model.vo.swaggerRequest.DeleteSystemLableVO;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -14,8 +13,8 @@ import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.jpa.SystemLabelDao;
 import com.sftc.web.dao.mybatis.SystemLabelMapper;
 import com.sftc.web.model.entity.SystemLabel;
-import com.sftc.web.model.vo.swaggerRequestVO.systemLabel.DeleteSystemLabelVo;
-import com.sftc.web.model.vo.swaggerRequestVO.systemLabel.SystemLabelVo;
+import com.sftc.web.model.vo.swaggerRequest.DeleteSystemLabelVo;
+import com.sftc.web.model.vo.swaggerRequest.SystemLabelVo;
 import com.sftc.web.service.SystemLabelService;
 
 @Service("systemLabelService")

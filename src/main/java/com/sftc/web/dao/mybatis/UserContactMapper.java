@@ -1,6 +1,6 @@
 package com.sftc.web.dao.mybatis;
 
-import com.sftc.web.model.vo.displayMessage.FriendRecordVO;
+import com.sftc.web.model.dto.FriendRecordDTO;
 import com.sftc.web.model.vo.swaggerRequest.FriendListVO;
 import com.sftc.web.model.entity.UserContact;
 import com.sftc.web.model.entity.UserContactNew;
@@ -25,7 +25,7 @@ public interface UserContactMapper {
 
     UserContact friendDetail(@Param("user_id") int user_id, @Param("friend_id") int friend);
 
-    List<FriendRecordVO> selectCirclesContact(UserContactParamVO userContactParamVO);
+    List<FriendRecordDTO> selectCirclesContact(UserContactParamVO userContactParamVO);
 
     UserContactNew selectByUserIdAndShipId(UserContactNew userContactNew);
 

@@ -13,8 +13,8 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.vo.swaggerRequest.UpdateUserContactLabelVO;
 import com.sftc.web.model.vo.swaggerRequest.UserLabelVO;
-import com.sftc.web.model.vo.swaggerRequestVO.userContactLabel.AddUserContactLabelVO;
-import com.sftc.web.model.vo.swaggerRequestVO.userContactLabel.DeleteUserContactLabelVo;
+import com.sftc.web.model.vo.swaggerRequest.AddUserContactLabelVO;
+import com.sftc.web.model.vo.swaggerRequest.DeleteUserContactLabelVo;
 import com.sftc.web.service.UserLabelService;
 
 import io.swagger.annotations.Api;

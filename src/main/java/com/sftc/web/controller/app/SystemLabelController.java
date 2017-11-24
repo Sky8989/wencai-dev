@@ -2,7 +2,6 @@ package com.sftc.web.controller.app;
 
 import javax.annotation.Resource;
 
-import com.sftc.web.model.vo.swaggerRequest.DeleteSystemLableVO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.entity.SystemLabel;
-import com.sftc.web.model.vo.swaggerRequestVO.systemLabel.DeleteSystemLabelVo;
-import com.sftc.web.model.vo.swaggerRequestVO.systemLabel.SystemLabelVo;
+import com.sftc.web.model.vo.swaggerRequest.DeleteSystemLabelVo;
+import com.sftc.web.model.vo.swaggerRequest.SystemLabelVo;
 import com.sftc.web.service.SystemLabelService;
 
 import io.swagger.annotations.Api;

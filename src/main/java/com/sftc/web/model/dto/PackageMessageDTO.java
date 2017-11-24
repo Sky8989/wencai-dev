@@ -1,10 +1,10 @@
-package com.sftc.web.model.vo.displayMessage;
+package com.sftc.web.model.dto;
 
 /**
  * 快递详情添加包裹信息
  *
  */
-public class PackageMessageVO extends Object {
+public class PackageMessageDTO extends Object {
     private String name;
     private String weight;
     private String type;

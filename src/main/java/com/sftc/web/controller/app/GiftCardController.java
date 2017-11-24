@@ -12,7 +12,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.entity.GiftCard;
-import com.sftc.web.model.vo.swaggerRequestVO.giftCard.DeleteGiftCardVO;
+import com.sftc.web.model.vo.swaggerRequest.DeleteGiftCardVO;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

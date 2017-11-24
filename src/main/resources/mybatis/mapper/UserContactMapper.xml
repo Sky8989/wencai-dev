@@ -17,7 +17,7 @@
         <association property="friend_info" select="selectUser" column="friend_id"/>
     </resultMap>
 
-    <resultMap id="contactCallbackMap" type="com.sftc.web.model.vo.displayMessage.FriendRecordVO">
+    <resultMap id="contactCallbackMap" type="com.sftc.web.model.dto.FriendRecordDTO">
         <id column="id" property="id"/>
         <result column="sender_name" property="sender_name"/>
         <result column="sender_user_id" property="sender_user_id"/>

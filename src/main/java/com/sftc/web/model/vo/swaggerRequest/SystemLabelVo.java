@@ -1,12 +1,13 @@
-package com.sftc.web.model.vo.swaggerRequestVO.commonQuestion;
+package com.sftc.web.model.vo.swaggerRequest;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-@ApiModel(value = "问题说明查询 list并分页 新增id为0，修改时传id")
-public class CommonQuestionVO{
+
+@ApiModel(value = "系统标签list并分页")
+public class SystemLabelVo{
 
     @ApiModelProperty(name="主键")
     @Setter @Getter
@@ -17,14 +18,9 @@ public class CommonQuestionVO{
     @ApiModelProperty(name="每页显示个数",example="5",required = true)
     @Setter @Getter
     private int pageSizeKey;
+
+    @ApiModelProperty(name="系统标签内容",example = "系统标签内容，模糊查询")
+    @Setter @Getter
+    private String system_label;
     
-    @ApiModelProperty(name="标题",example = "问题标题，模糊查询")
-    @Setter @Getter
-    private String title;
-
-    @ApiModelProperty(name="内容",example = "问题答案，模糊查询")
-    @Setter @Getter
-    private String content;
-
-
 }
