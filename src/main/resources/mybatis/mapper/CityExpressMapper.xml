@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.dao.mybatis.CityExpressMapper">
-    <select id="quaryCityExpressList" resultType="java.lang.String">
-        SELECT city_name FROM sftc_city_express ORDER BY convert(city_name USING gbk) COLLATE gbk_chinese_ci asc;
+    <select id="quaryCityExpressList" resultType="com.sftc.web.model.entity.CityExpress">
+        SELECT city_name,is_hot FROM sftc_city_express ORDER BY convert(city_name USING gbk) COLLATE gbk_chinese_ci asc;
     </select>
 </mapper>
