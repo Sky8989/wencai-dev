@@ -16,6 +16,7 @@ import com.sftc.web.model.entity.OrderExpress;
 import com.sftc.web.model.entity.UserContactNew;
 import com.sftc.web.model.vo.swaggerOrderRequest.OrderParamVO;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -131,6 +132,9 @@ public class OrderCreateLogic {
                 return APIUtil.submitErrorResponse("您已经填写过信息，请勿重复填写", orderExpress.getOrder_id());
             if (oe.getShip_user_id() == 0)
                 realList.add(oe);
+            if (StringUtils.isNotBlank(oe.getOrder_number())) {
+                return APIUtil.submitErrorResponse("该订单已提交，请勿重复填写", null);
+            }
         }
 
 

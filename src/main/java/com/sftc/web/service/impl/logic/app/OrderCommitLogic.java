@@ -191,9 +191,12 @@ public class OrderCommitLogic {
         //后期更新订单与包裹一对一，但是好友件同城可以多包裹，同城订单走这个逻辑？
         String ship_name = "";
         for (OrderExpressDTO oeDto : orderDTO.getOrderExpressList()) {
-            if (oeDto.getShip_name()!=null){
+            if (oeDto.getShip_name() != null) {
                 OrderExpress oe = gson.fromJson(gson.toJson(oeDto), OrderExpress.class);
                 ship_name += oe.getShip_name() + ",";
+                if (StringUtils.isNotBlank(oe.getOrder_number())) {
+                    return APIUtil.submitErrorResponse("请勿重复提交订单", null);
+                }
                 // 拼接同城订单参数中的 source 和 target
                 SourceAddressVO source = new SourceAddressVO();
                 OrderAddressVO address = new OrderAddressVO();
@@ -244,7 +247,7 @@ public class OrderCommitLogic {
                 JSONObject merchantOBJ = new JSONObject();
                 merchantOBJ.put("access_token", token);
                 merchantOBJ.put("uuid", userUUID);
-                requestObject.getJSONObject("request").put("merchant",merchantOBJ);
+                requestObject.getJSONObject("request").put("merchant", merchantOBJ);
                 /// Request
                 Object tempObj = JSONObject.toBean(requestObject);
                 // tempJsonObj 是为了保证对顺丰接口的请求体的完整，不能包含其它的键值对，例如接口的请求参数"order"
@@ -376,7 +379,7 @@ public class OrderCommitLogic {
         JSONObject merchantOBJ = new JSONObject();
         merchantOBJ.put("access_token", token);
         merchantOBJ.put("uuid", userUUID);
-        requestOBJ.put("merchant",merchantOBJ);
+        requestOBJ.put("merchant", merchantOBJ);
 
         post.addHeader("PushEnvelope-Device-Token", token);
 
