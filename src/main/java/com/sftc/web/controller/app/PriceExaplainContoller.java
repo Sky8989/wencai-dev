@@ -26,7 +26,6 @@ public class PriceExaplainContoller {
     @Autowired
     private PriceExaplainService priceExaplainService;
     @ApiOperation(value = "CMS根据城市获取价格说明", httpMethod = "POST")
-    @ApiImplicitParam(name = "city", value = "城市", required = true, paramType = "query", defaultValue = "北京")
     @PostMapping(value = "get")
     public APIResponse getPriceExplainByCity(@RequestBody PriceExaplainVO priceExaplainVO) {
         APIRequest apiRequest = new APIRequest();
