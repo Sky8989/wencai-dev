@@ -5,6 +5,8 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.vo.swaggerRequest.AddressBookRequestVO;
 import com.sftc.web.model.vo.swaggerRequest.AddressBookUpdateVO;
 import com.sftc.web.model.vo.swaggerRequest.AddressBookDeleteVO;
+import com.sftc.web.model.vo.swaggerResponse.AddAddressBookRespVO;
+import com.sftc.web.model.vo.swaggerResponse.DeleteAddressBookRespVO;
 import com.sftc.web.service.AddressBookService;
 import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
@@ -24,7 +26,7 @@ public class AddressBookController {
     @Resource
     private AddressBookService addressBookService;
 
-    @ApiOperation(value = "添加地址簿",httpMethod = "POST")
+    @ApiOperation(value = "添加地址簿",httpMethod = "POST",response = AddAddressBookRespVO.class)
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody
     APIResponse addAddress(@RequestBody AddressBookRequestVO addressBookRequestVO) throws Exception {
@@ -33,7 +35,7 @@ public class AddressBookController {
         return addressBookService.addAddressBook(apiRequest);
     }
 
-    @ApiOperation(value = "删除地址簿",httpMethod = "DELETE",notes = "软删除")
+    @ApiOperation(value = "删除地址簿",httpMethod = "DELETE",notes = "软删除",response = DeleteAddressBookRespVO.class)
     @RequestMapping(method = RequestMethod.DELETE)
     public @ResponseBody
     APIResponse deleteAddress(@RequestBody AddressBookDeleteVO addressBookDeleteVO) throws Exception {

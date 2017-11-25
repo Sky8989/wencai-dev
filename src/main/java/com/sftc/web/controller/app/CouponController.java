@@ -4,6 +4,7 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.vo.swaggerRequest.CouPonPromoVO;
 import com.sftc.web.model.vo.swaggerRequest.CouponRequestVO;
+import com.sftc.web.model.vo.swaggerResponse.CouponsListVO;
 import com.sftc.web.service.CouponService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +24,7 @@ public class CouponController {
     @Resource
     private CouponService couponService;
 
-    @ApiOperation(value = "获取用户优惠券列表",httpMethod = "POST")
+    @ApiOperation(value = "获取用户优惠券列表",httpMethod = "POST",response = CouponsListVO.class)
     @RequestMapping(value="/list",method = RequestMethod.POST)
     public @ResponseBody
     APIResponse getUserCouponList(@RequestBody CouponRequestVO couponRequestVO) throws Exception {
@@ -40,7 +41,5 @@ public class CouponController {
         apiRequest.setRequestParam(couPonPromoVO);
         return couponService.exchangeCoupon(apiRequest);
     }
-
-
 
 }

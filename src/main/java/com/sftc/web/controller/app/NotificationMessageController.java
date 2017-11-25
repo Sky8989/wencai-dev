@@ -5,6 +5,8 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.vo.swaggerRequest.UpdateIsReadVO;
+import com.sftc.web.model.vo.swaggerResponse.NotificaionMessageListVO;
+import com.sftc.web.model.vo.swaggerResponse.ResponseMessageVO;
 import com.sftc.web.service.NotificationMessageService;
 import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
@@ -21,14 +23,14 @@ public class NotificationMessageController extends BaseController {
     private NotificationMessageService notificationMessageService;
 
     @ApiOperation(value = "未读通知列表",httpMethod = "GET",notes = "一是作为寄件人，好友填了包裹地址时收到的，包含订单信息；\n" +
-            "二是作为收件人，收到他人寄的包裹时收到的。")
+            "二是作为收件人，收到他人寄的包裹时收到的。",response = NotificaionMessageListVO.class)
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     APIResponse placeOrder(HttpServletRequest request) throws Exception {
         return notificationMessageService.getMessage(new APIRequest(request));
     }
 
-    @ApiOperation(value = "更新通知消息读取状态",httpMethod = "PUT")
+    @ApiOperation(value = "更新通知消息读取状态",httpMethod = "PUT",response = ResponseMessageVO.class)
     @RequestMapping(method = RequestMethod.PUT)
     public @ResponseBody()
     APIResponse updateIsRead(@RequestBody UpdateIsReadVO updateIsReadVO) throws Exception {

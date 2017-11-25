@@ -1,7 +1,7 @@
 package com.sftc.web.model.vo.swaggerResponse;
 
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.vo.displayMessage.MyOrderListVO;
+import com.sftc.web.model.dto.MyOrderListDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -17,7 +17,7 @@ public class OrderListRespVO extends APIResponse{
 
     @Getter @Setter
     @ApiModelProperty(name = "orderList")
-    private List<MyOrderListVO> result;
+    private List<MyOrderListDTO> result;
 
     @Getter @Setter
     @ApiModelProperty(name = "error",value = "错误信息",hidden = true)

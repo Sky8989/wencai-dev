@@ -9,6 +9,7 @@ import com.sftc.web.model.vo.swaggerOrderRequest.OrderParamVO;
 import com.sftc.web.model.vo.swaggerOrderRequest.*;
 import com.sftc.web.model.vo.swaggerOrderRequest.OrderAddressDetermineVO;
 import com.sftc.web.model.vo.swaggerRequest.OrderCancelTimeVO;
+import com.sftc.web.model.vo.swaggerResponse.*;
 import com.sftc.web.service.EvaluateService;
 import com.sftc.web.service.OrderService;
 import io.swagger.annotations.Api;
@@ -101,7 +102,7 @@ public class OrderController extends BaseController {
         return orderService.selectOrderDetail(new APIRequest(request));
     }
 
-    @ApiOperation(value = "我的订单列表", httpMethod = "POST")
+    @ApiOperation(value = "我的订单列表", httpMethod = "POST",response = OrderListRespVO.class)
     @RequestMapping(value = "/my", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse myOrder(@RequestBody MyOrderParamVO myOrderParamVO) throws Exception {
@@ -122,7 +123,7 @@ public class OrderController extends BaseController {
     @IgnoreToken
     @ApiOperation(value = "快递详情", httpMethod = "GET", notes = "uuid必填，同城需要传 access_token，\n" +
             "返回的【order】是一定会有的，同城的快递会返回【request】如果是兜底单，会返回【transform】，\n" +
-            "至于页面展不展示提示，请拿【transform】下的 is_read 字段。")
+            "至于页面展不展示提示，请拿【transform】下的 is_read 字段。",response = OrderDetailRespVO.class)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "uuid", value = "快递uuid", defaultValue = "e1d2ceda3daa", paramType = "query", required = true),
             @ApiImplicitParam(name = "sort", value = "排序方式", defaultValue = "asc", paramType = "query")
@@ -146,7 +147,7 @@ public class OrderController extends BaseController {
             "status 详见文档说明中的订单常量，一般只需要用到 PAYING 和 WAIT_HAND_OVER 这两个参数。\n" +
             "调起支付前将状态改为 PAYING，支付完成后将状态改为 WAIT_HAND_OVER。\n" +
             "当然也可以只调用用一次，支付完成后直接将状态改为 WAIT_HAND_OVER。\n" +
-            "更改状态成功后会返回订单详情。")
+            "更改状态成功后会返回订单详情。",response = OrderStateRespVO.class)
     @RequestMapping(value = "/status", method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse updateOrderStatus(@RequestBody OrderStatusVO orderStatusVO) throws Exception {
@@ -155,7 +156,7 @@ public class OrderController extends BaseController {
         return orderService.updateOrderStatus(request);
     }
 
-    @ApiOperation(value = "更改快递状态", httpMethod = "PUT")
+    @ApiOperation(value = "更改快递状态", httpMethod = "PUT",response = OrderExpressStateRespVO.class)
     @RequestMapping(value = "/express/status", method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse updateOrderExpressStatus(@RequestBody OrderExpressStatusVO orderExpressStatusVO) throws Exception {
@@ -164,7 +165,7 @@ public class OrderController extends BaseController {
         return orderService.updateOrderExpressStatus(request);
     }
 
-    @ApiOperation(value = "评价小哥 评价顺丰订单", httpMethod = "POST",notes = "这里是对某一个包裹进行单独评价")
+    @ApiOperation(value = "评价小哥 评价顺丰订单", httpMethod = "POST",notes = "这里是对某一个包裹进行单独评价",response = OrderEvaluateRespVO.class)
     @RequestMapping(value = "/evaluate", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse evaluate(@RequestBody EvaluateRequestVO evaluateRequestVO) throws Exception {

@@ -1,6 +1,6 @@
 package com.sftc.web.model.vo.swaggerResponse;
 
-import com.sftc.web.model.vo.displayMessage.PackageMessageVO;
+import com.sftc.web.model.dto.PackageMessageDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class OrderDetailExpressVO {
 
     @Getter @Setter
     @ApiModelProperty(name = "gift_card_id",value = "包裹信息")
-    public PackageMessageVO packageMessage;
+    public PackageMessageDTO packageMessage;
 
     @Getter @Setter
     @ApiModelProperty(name = "id",value = "快递id",example = "9104",dataType = "int")

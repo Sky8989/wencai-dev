@@ -4,6 +4,8 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.vo.swaggerRequest.DistanceRequestVO;
 import com.sftc.web.model.entity.Address;
+import com.sftc.web.model.vo.swaggerResponse.AddressDistanceRespVO;
+import com.sftc.web.model.vo.swaggerResponse.GeocoderAddressRespVO;
 import com.sftc.web.service.AddressService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -52,7 +54,7 @@ public class AddressController {
         return addressService.editAddress(request);
     }
 
-    @ApiOperation(value = "地址解析",httpMethod = "GET",notes = "地址解析接口，地址转坐标")
+    @ApiOperation(value = "地址解析",httpMethod = "GET",notes = "地址解析接口，地址转坐标",response = GeocoderAddressRespVO.class)
     @ApiImplicitParam(name = "address",value = "详细地址",paramType = "query",defaultValue = "深圳龙岗区花样年龙城广场",required = true)
     @RequestMapping(value = "/geocoder", method = RequestMethod.GET)
     public @ResponseBody
@@ -60,7 +62,7 @@ public class AddressController {
         return addressService.geocoderAddress(new APIRequest(request));
     }
 
-    @ApiOperation(value = "地址距离计算",httpMethod = "POST")
+    @ApiOperation(value = "地址距离计算",httpMethod = "POST",response = AddressDistanceRespVO.class)
     @RequestMapping(value = "/distance", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse distanceAddress(@RequestBody DistanceRequestVO distanceRequestVO) throws Exception {

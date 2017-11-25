@@ -2,6 +2,7 @@ package com.sftc.web.controller.app;
 
 import javax.annotation.Resource;
 
+import com.sftc.web.model.vo.swaggerResponse.CommonQuestionListVO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ public class CommonQuestionController {
 	@Resource
 	private CommonQuestionService commonQuestionService;
 
-	@ApiOperation(value = "CMS查询所有常见问题", httpMethod = "GET")
+	@ApiOperation(value = "CMS查询所有常见问题", httpMethod = "GET",response = CommonQuestionListVO.class)
 	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody APIResponse getCommonQuestion() throws Exception {
 		return commonQuestionService.getCommonQuestion();
