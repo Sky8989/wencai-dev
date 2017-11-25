@@ -57,23 +57,23 @@
 
     <update id="updateOrderExpressById" parameterType="java.util.Map">
         UPDATE sftc_order_express
-        SET
-        <if test='uuid != null and uuid!="" '>
-            uuid = #{uuid},
-        </if>
-        <if test='requestNum != null and requestNum!="" '>
-            order_number = #{requestNum},
-        </if>
-        <if test='status != null and status!="" '>
-            route_state = #{status},
-        </if>
-        <if test='orderTime != null and orderTime!="" '>
-            order_time = #{orderTime},
-        </if>
-        <if test='reserveTime != null and reserveTime!="" '>
-            reserve_time = #{reserveTime}
-        </if>
-        WHERE id = #{orderExpressId}
+        <trim prefix="set" suffixOverrides="," suffix=" where id = #{orderExpressId} ">
+            <if test='uuid != null and uuid!="" '>
+                uuid = #{uuid},
+            </if>
+            <if test='requestNum != null and requestNum!="" '>
+                order_number = #{requestNum},
+            </if>
+            <if test='status != null and status!="" '>
+                route_state = #{status},
+            </if>
+            <if test='orderTime != null and orderTime!="" '>
+                order_time = #{orderTime},
+            </if>
+            <if test='reserveTime != null and reserveTime!="" '>
+                reserve_time = #{reserveTime}
+            </if>
+        </trim>
     </update>
 
     <update id="updateorderById">
