@@ -2,6 +2,7 @@ package com.sftc.web.model.dto;
 
 import com.sftc.web.model.entity.Address;
 import com.sftc.web.model.entity.AddressBook;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,10 +14,12 @@ public class AddressBookDTO extends AddressBook {
 
     @Getter
     @Setter
+    @ApiModelProperty(name = "address",value = "地址信息",required = true)
     private Address address;
 
     @Getter
     @Setter
+    @ApiModelProperty(name = "addressDTO",value = "地址实体扩展类",hidden = true)
     private AddressDTO addressDTO;
 
     @Getter

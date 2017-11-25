@@ -5,6 +5,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.vo.swaggerRequest.CoordinateVO;
 import com.sftc.web.model.vo.swaggerRequest.LLSetConstantVO;
+import com.sftc.web.model.vo.swaggerResponse.RandomLocationRespVO;
 import com.sftc.web.service.LatitudeLongitudeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,7 +25,7 @@ public class LocationController extends BaseController {
     private LatitudeLongitudeService latitudeLongitudeService;
 
     @ApiOperation(value = "获取随机经纬度",httpMethod = "POST",notes = "提供功能：更改随机获取经纬度所使用的常量，控制生成数据的数量和范围值\n" +
-            "注意事项：原则上最大数量的值要大于最小数量要，范围值的单位是千米")
+            "注意事项：原则上最大数量的值要大于最小数量要，范围值的单位是千米",response = RandomLocationRespVO.class)
     @RequestMapping(value = "/random", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse getRandomPoint(@RequestBody CoordinateVO coordinateVO) throws Exception {

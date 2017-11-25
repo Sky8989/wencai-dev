@@ -5,6 +5,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
 import com.sftc.web.model.vo.swaggerRequest.*;
+import com.sftc.web.model.vo.swaggerResponse.SMSMessageRespVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -21,7 +22,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class MessageController extends BaseController {
 
     @IgnoreToken
-    @ApiOperation(value = "获取验证码【调顺丰】", httpMethod = "POST")
+    @ApiOperation(value = "获取验证码【调顺丰】", httpMethod = "POST",response = SMSMessageRespVO.class)
     @RequestMapping(value = "/message", method = RequestMethod.POST)
     @ResponseBody
     public APIResponse message(@RequestBody SMSMessageRequestVO smsMessageRequestVO) throws Exception {
