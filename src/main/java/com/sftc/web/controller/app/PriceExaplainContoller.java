@@ -18,6 +18,7 @@ import com.sftc.web.service.PriceExaplainService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Api(description = "CMS价格说明")
 @RestController
@@ -25,6 +26,7 @@ import io.swagger.annotations.ApiOperation;
 public class PriceExaplainContoller {
     @Autowired
     private PriceExaplainService priceExaplainService;
+    @ApiIgnore
     @ApiOperation(value = "CMS根据城市获取价格说明", httpMethod = "POST")
     @PostMapping(value = "get")
     public APIResponse getPriceExplainByCity(@RequestBody PriceExaplainVO priceExaplainVO) {
@@ -32,7 +34,8 @@ public class PriceExaplainContoller {
         apiRequest.setRequestParam(priceExaplainVO);
         return priceExaplainService.getPriceExplainByCity(apiRequest);
     }
-    
+
+    @ApiIgnore
     @ApiOperation(value = "CMS保存价格说明 id为0新增，id不为0修改", httpMethod = "POST")
     @RequestMapping(value="save",method = RequestMethod.POST)
     public @ResponseBody
@@ -41,7 +44,8 @@ public class PriceExaplainContoller {
         apiRequest.setRequestParam(priceExplain);
          return priceExaplainService.save(apiRequest);	
     }
-    
+
+    @ApiIgnore
     @ApiOperation(value = "CMS删除价格说明", httpMethod = "DELETE")
     @RequestMapping(method = RequestMethod.DELETE)
     public @ResponseBody
@@ -50,8 +54,8 @@ public class PriceExaplainContoller {
         apiRequest.setRequestParam(priceExplain);
     		return priceExaplainService.deletePriceExplain(apiRequest);
     	}
-    
-    @ApiOperation(value = "CMS查询价格说明List", httpMethod = "GET")
+
+    @ApiOperation(value = "查询价格说明", httpMethod = "GET")
     @RequestMapping(value="list",method = RequestMethod.GET)
     public @ResponseBody
     APIResponse findPriceExplainList() throws Exception {
