@@ -33,7 +33,7 @@ public class ExchangeCoupons {
     private String description;
 
     @Getter @Setter
-    @ApiModelProperty(name = "pay_type",value = "支付方式",example = "FREIGHT_PREPAID",notes = "寄付 FREIGHT_PREPAID 到付")
+    @ApiModelProperty(name = "pay_type",value = "支付方式",example = "FREIGHT_PREPAID",notes = "寄付 FREIGHT_PREPAID 到付 FREIGHT_COLLECT")
     private String pay_type;
 
     @Getter @Setter
