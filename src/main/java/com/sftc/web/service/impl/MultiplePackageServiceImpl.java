@@ -262,9 +262,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         }
         int mapSize = sfResponeRequestsArray.size() * 6;
         Map<String, Object> map = new HashMap<>(mapSize);
-        if (StringUtils.isBlank(reserveTime)) {
-            reserveTime = String.valueOf(System.currentTimeMillis());
-        }
+
         StringBuilder requestNumSB = new StringBuilder();
         StringBuilder shipNameSB = new StringBuilder();
         String payType = requestPOJO.getPay_type();
