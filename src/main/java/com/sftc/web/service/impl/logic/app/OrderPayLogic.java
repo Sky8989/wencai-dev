@@ -44,7 +44,7 @@ public class OrderPayLogic {
         // 处理商户uuid和access_token
         String uuid = TokenUtils.getInstance().getUserUUID();
         String access_token = TokenUtils.getInstance().getAccess_token();
-        if (StringUtils.isNotBlank(uuid) || StringUtils.isNotBlank(access_token)) {
+        if (StringUtils.isBlank(uuid) || StringUtils.isBlank(access_token)) {
             // 下单时如果还没验证手机号，计价时uuid和token都没有，需要使用公共的商户。
             // 这里要提醒前端，验证完手机号后，要重新计价一次，因为顺丰服务端要求，计价和下单的商户必须是同一个。
             //（如果不重新计价，就会出现问题：用公共商户计价，用个人商户下单，从而出现`订单信息与报价不符合`的问题。）
