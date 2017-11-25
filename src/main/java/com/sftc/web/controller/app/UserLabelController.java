@@ -19,7 +19,9 @@ import com.sftc.web.service.UserLabelService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import springfox.documentation.annotations.ApiIgnore;
 
+@ApiIgnore
 @Api(description = "CMS用户标签")
 @RestController
 @RequestMapping(value = "label")

@@ -16,18 +16,21 @@ import com.sftc.web.model.vo.swaggerRequest.DeleteGiftCardVO;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Controller
 @Api(description = "CMS礼品卡相关接口")
 @RequestMapping("giftCard")
 public class GiftCardController extends BaseController {
 
-    @ApiOperation(value = "CMS获取礼品卡列表",httpMethod = "GET")
+    @ApiOperation(value = "获取礼品卡列表",httpMethod = "GET")
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     APIResponse getGiftCardList(HttpServletRequest request) throws Exception {
         return giftCardService.getGiftCardList(new APIRequest(request));
     }
+
+    @ApiIgnore
     @ApiOperation(value = "CMS保存礼品卡 id为0新增，id不为0修改",httpMethod = "POST")
     @RequestMapping(value = "save",method = RequestMethod.POST)
     public @ResponseBody
@@ -36,6 +39,8 @@ public class GiftCardController extends BaseController {
 		apiRequest.setRequestParam(giftCard);
     			return giftCardService.save(apiRequest);	
     }
+
+    @ApiIgnore
     @ApiOperation(value = "CMS删除礼品卡",httpMethod = "DELETE")
     @RequestMapping(method = RequestMethod.DELETE)
     public @ResponseBody

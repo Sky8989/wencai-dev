@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 
+@ApiIgnore
 @RequestMapping("token")
 @Api(description = "token")
 @Controller

@@ -17,7 +17,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
+@ApiIgnore
 @Controller
 @Api(description = "好友相关")
 @RequestMapping("friend")

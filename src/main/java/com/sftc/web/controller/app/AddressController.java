@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ public class AddressController {
     @Resource
     private AddressService addressService;
 
+    @ApiIgnore
     @ApiOperation(value = "地址添加",httpMethod = "POST")
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody
@@ -37,6 +39,7 @@ public class AddressController {
         return addressService.addAddress(request);
     }
 
+    @ApiIgnore
     @ApiOperation(value = "我的收件人地址",httpMethod = "GET")
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
@@ -44,6 +47,7 @@ public class AddressController {
         return addressService.consigneeAddress(new APIRequest(request));
     }
 
+    @ApiIgnore
     @ApiOperation(value = "修改收件人地址",httpMethod = "PUT")
     @RequestMapping(method = RequestMethod.PUT ,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

@@ -18,6 +18,7 @@ import com.sftc.web.service.CommonQuestionService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Controller
 @Api(description = "CMS常见问题相关接口")
@@ -27,12 +28,13 @@ public class CommonQuestionController {
 	@Resource
 	private CommonQuestionService commonQuestionService;
 
-	@ApiOperation(value = "CMS查询所有常见问题", httpMethod = "GET",response = CommonQuestionListVO.class)
+	@ApiOperation(value = "查询所有常见问题", httpMethod = "GET",response = CommonQuestionListVO.class)
 	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody APIResponse getCommonQuestion() throws Exception {
 		return commonQuestionService.getCommonQuestion();
 	}
 
+	@ApiIgnore
 	@ApiOperation(value = "新增(修改)常见问题", httpMethod = "POST",notes = "新增不用传id,修改时传id")
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody APIResponse save(@RequestBody CommonQuestion commonQuestion) throws Exception {
@@ -42,6 +44,7 @@ public class CommonQuestionController {
 
 	}
 
+	@ApiIgnore
 	@ApiOperation(value = "CMS删除常见问题", httpMethod = "DELETE")
 	@RequestMapping(method = RequestMethod.DELETE)
 	public @ResponseBody APIResponse deleteCommonQuestion(@RequestBody DeleteCommonQuestionVO commonQuestion) throws Exception {
@@ -50,6 +53,7 @@ public class CommonQuestionController {
 		return commonQuestionService.deleteCommonQuestion(apiRequest);
 	}
 
+	@ApiIgnore
 	@ApiOperation(value = "CMS指定查询常见问题 并分页", httpMethod = "POST")
 	@RequestMapping(value = "list", method = RequestMethod.POST)
 	public @ResponseBody APIResponse findCommonQuestion(@RequestBody CommonQuestionVO commonQuestionVo)
