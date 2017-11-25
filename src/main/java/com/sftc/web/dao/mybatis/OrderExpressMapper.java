@@ -50,6 +50,9 @@ public interface OrderExpressMapper {
 
     List<OrderExpress> findAllOrderExpressByOrderId(String order_id);
 
+    void updatePayState (@Param("pay_state")String pay_state,
+                         @Param("uuid")String uuid);
+
     /**
      * 根据uuid查询快递
      */

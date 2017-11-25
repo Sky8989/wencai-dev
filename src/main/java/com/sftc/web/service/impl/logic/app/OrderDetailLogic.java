@@ -243,6 +243,9 @@ public class OrderDetailLogic {
                 // 只有同城的订单能同步快递状态
                 uuids = uuids + oe.getUuid() + ",";
             }
+            if (oe.getOrder_number() == null || oe.getOrder_number().equals("")) {
+                orderExpressMapper.updatePayState("WAIT_PAY",oe.getUuid());
+            }
         }
 
         User user = userMapper.getUuidAndtoken(orderid);

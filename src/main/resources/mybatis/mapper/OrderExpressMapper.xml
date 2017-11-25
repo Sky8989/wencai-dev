@@ -98,6 +98,12 @@
         WHERE id = #{express_id}
     </update>
 
+    <update id="updatePayState">
+        UPDATE sftc_order_express
+        SET pay_state = #{pay_state, jdbcType=VARCHAR}
+        WHERE uuid = #{uuid}
+    </update>
+
     <update id="updateOrderExpressStatusByUUID">
         UPDATE sftc_order_express
         SET route_state = #{route_state, jdbcType=VARCHAR},
