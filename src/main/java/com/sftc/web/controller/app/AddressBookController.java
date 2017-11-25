@@ -7,6 +7,8 @@ import com.sftc.web.model.vo.swaggerRequest.AddressBookUpdateVO;
 import com.sftc.web.model.vo.swaggerRequest.AddressBookDeleteVO;
 import com.sftc.web.model.vo.swaggerResponse.AddAddressBookRespVO;
 import com.sftc.web.model.vo.swaggerResponse.DeleteAddressBookRespVO;
+import com.sftc.web.model.vo.swaggerResponse.GetAddressBookRespVO;
+import com.sftc.web.model.vo.swaggerResponse.ResponseMessageVO;
 import com.sftc.web.service.AddressBookService;
 import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
@@ -44,7 +46,7 @@ public class AddressBookController {
         return addressBookService.deleteAddressBook(apiRequest);
     }
 
-    @ApiOperation(value = "修改地址簿",httpMethod = "PUT")
+    @ApiOperation(value = "修改地址簿",httpMethod = "PUT",response = ResponseMessageVO.class)
     @RequestMapping(method = RequestMethod.PUT)
     public @ResponseBody
     APIResponse updateAddress(@RequestBody AddressBookUpdateVO addressBookUpdateVO) throws Exception {
@@ -54,7 +56,7 @@ public class AddressBookController {
     }
 
 
-    @ApiOperation(value = "地址簿查找",httpMethod = "GET")
+    @ApiOperation(value = "地址簿查找",httpMethod = "GET",response = GetAddressBookRespVO.class)
     @ApiImplicitParam(name = "address_book_type",value = "地址簿类型 sender/ship",required = true,paramType = "query",defaultValue = "sender")
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
