@@ -18,7 +18,7 @@ public class AddressHistoryListVO extends APIResponse{
 
     @Getter @Setter
     @ApiModelProperty(name = "addressBookDTOList",value = "历史地址列表")
-    private List<AddressBookDTO> result;
+    private List<AddressMessageVO> result;
 
     @Getter @Setter
     @ApiModelProperty(name = "error",value = "错误信息",hidden = true)
