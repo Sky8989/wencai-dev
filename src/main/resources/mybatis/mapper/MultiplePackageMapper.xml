@@ -34,20 +34,41 @@
 
     <select id="querySourceOrderInfoByOrderID" resultMap="sourceOrderInfo"
             parameterType="java.lang.String">
-        SELECT id,sender_user_id,sender_province,sender_city,
-        sender_area,sender_addr,supplementary_info,
-        sender_name,sender_mobile,longitude,latitude
+        SELECT
+            id,
+            sender_user_id,
+            sender_province,
+            sender_city,
+            sender_area,
+            sender_addr,
+            supplementary_info,
+            sender_name,
+            sender_mobile,
+            longitude,
+            latitude
         FROM sftc_order
         WHERE id = #{orderId}
     </select>
 
     <select id="queryTargetsOrderInfoByOrderID" resultMap="targetsOrderInfo"
             parameterType="java.lang.String">
-        SELECT id,ship_user_id,ship_province,ship_city,
-        ship_area,ship_addr,supplementary_info,
-        ship_name,ship_mobile,longitude,latitude,order_id,quote_uuid
+        SELECT
+            id,
+            ship_user_id,
+            ship_province,
+            ship_city,
+            ship_area,
+            ship_addr,
+            supplementary_info,
+            ship_name,
+            ship_mobile,
+            longitude,
+            latitude,
+            order_id,
+            quote_uuid
         FROM sftc_order_express
-        WHERE order_id = #{orderId} AND ship_name IS NOT NULL ORDER BY id
+        WHERE order_id = #{orderId} AND ship_name IS NOT NULL
+        ORDER BY id
     </select>
     <update id="updateQuotesUUidById">
         UPDATE sftc_order_express
@@ -83,14 +104,17 @@
     </update>
 
     <select id="queryUserOpenIDByGroupUUId" resultType="java.lang.String" parameterType="java.lang.String">
-        SELECT open_id FROM sftc_order so JOIN sftc_user su on so.sender_user_id = su.id WHERE so.group_uuid = #{groupUUId}
+        SELECT open_id
+        FROM sftc_order so
+            JOIN sftc_user su ON so.sender_user_id = su.id
+        WHERE so.group_uuid = #{groupUUId}
     </select>
 
 
     <update id="updatePayStatuByGroupID" parameterType="java.lang.String">
         UPDATE sftc_order_express
         SET pay_state = 'ALREADY_PAY'
-        WHERE order_id = #{orderId}  AND ship_name IS NOT NULL  AND ship_mobile IS NOT NULL 
+        WHERE order_id = #{orderId} AND ship_name IS NOT NULL AND ship_mobile IS NOT NULL
     </update>
 
 
@@ -98,9 +122,18 @@
         UPDATE sftc_order_express
         SET route_state = #{routeState}
         WHERE order_id = (
-        SELECT id FROM sftc_order WHERE group_uuid = #{groupUUId}
+            SELECT id
+            FROM sftc_order
+            WHERE group_uuid = #{groupUUId}
         )
-         AND ship_name IS NOT NULL  AND ship_mobile IS NOT NULL
+              AND ship_name IS NOT NULL AND ship_mobile IS NOT NULL
     </update>
 
+
+    <select id="quaryIsPlaceOrderOrderId" resultType="java.lang.String">
+        SELECT order_number
+        FROM sftc_order_express
+        WHERE order_id = #{orderId} AND ship_name IS NOT NULL AND ship_mobile IS NOT NULL
+        LIMIT 1
+    </select>
 </mapper>

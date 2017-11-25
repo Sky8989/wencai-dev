@@ -168,7 +168,11 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
 
         //获取orderID
         String orderID = requestPOJO.getOrder_id();
-
+        //判断是否已经下过单
+        String isPlaceOrder = multiplePackageMapper.quaryIsPlaceOrderOrderId(orderID);
+        if (StringUtils.isNotBlank(isPlaceOrder)) {
+            return APIUtil.submitErrorResponse("请勿重复提交订单", null);
+        }
          /*---------------------------------------------------------------- 查询数据库获取收件人和寄件人信息 --------------------------------------------------------------------------------*/
 
         //收件人信息
@@ -176,7 +180,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         if (targetInfos == null) {
             return APIUtil.selectErrorResponse("无效orderId", null);
         }
-        if (targetInfos.size()<=1){
+        if (targetInfos.size() <= 1) {
             return APIUtil.submitErrorResponse("收件人不能少于2人", null);
         }
         //寄件人信息
@@ -356,9 +360,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
             return APIUtil.submitErrorResponse("支付失败，请查看返回值", resultObject);
         }
         /*-------------------------------------------------- 修改数据库表sftc_order_express  route_state--------------------------------------------------------*/
-
-
-        multiplePackageMapper.updateRouteStateByGroupID("PAYING",groupUUId);
+        multiplePackageMapper.updateRouteStateByGroupID("PAYING", groupUUId);
 
         String payStr = resultObject.getString("payStr");
         JSONObject responseJson = new JSONObject();
@@ -395,7 +397,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         String accessToken = TokenUtils.getInstance().getAccess_token();
         get.addHeader("PushEnvelope-Device-Token", accessToken);
         String res = APIPostUtil.get("", payUrl);
-        if (StringUtils.isBlank(res)){
+        if (StringUtils.isBlank(res)) {
             return APIUtil.submitErrorResponse("支付判断失败", "sf返回体res为空");
         }
         JSONObject resultObject = JSONObject.fromObject(res);

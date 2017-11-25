@@ -29,4 +29,6 @@ public interface MultiplePackageMapper {
     void updatePayStatuByGroupID(String orderId);
 
     void updateRouteStateByGroupID(@Param(value = "routeState") String routeState,@Param(value = "groupUUId")String groupUUId);
+
+    String quaryIsPlaceOrderOrderId(String orderId);
 }
