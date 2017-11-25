@@ -16,13 +16,10 @@ public class CommonQuestion extends Object {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     @ApiModelProperty(name="主键")
-
     @Setter @Getter
     private int id;
 
- 
     @ApiModelProperty(name="时间",hidden=true)
     @Setter @Getter
     private String create_time;
