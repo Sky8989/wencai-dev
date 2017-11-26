@@ -32,24 +32,4 @@ public class EvaluateServiceImpl implements EvaluateService {
             return APIUtil.getResponse(status,evaluateList.get(0));
         }
     }
-
-
-    /**
-     * 获取所有评价信息列表  分页+条件查询
-     */
-    public APIResponse selectEvaluateListByPage(APIRequest apiRequest){
-        APIStatus status = APIStatus.SUCCESS;
-        HttpServletRequest httpServletRequest = apiRequest.getRequest();
-        int pageNumKey = Integer.parseInt(httpServletRequest.getParameter("pageNumKey"));
-        int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
-        Evaluate evaluate = new Evaluate(httpServletRequest);
-        // 进行分页查询
-        PageHelper.startPage(pageNumKey,pageSizeKey);
-        List<Evaluate> evaluateList = evaluateMapper.selectByPage(evaluate);
-        if (evaluateList.size() == 0) {
-            return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
-        } else {
-            return APIUtil.getResponse(status, evaluateList);
-        }
-    }
 }

@@ -9,5 +9,10 @@ import java.util.List;
  * @date ：Create in 10:27 2017/11/24
  */
 public interface CityExpressMapper {
+
+    /**
+     * 查询同城支持城市列表
+     * @return
+     */
     List<CityExpress> quaryCityExpressList();
 }

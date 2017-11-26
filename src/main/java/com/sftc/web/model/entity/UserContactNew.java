@@ -55,19 +55,6 @@ public class UserContactNew {
 
     public UserContactNew() {}
 
-    /**
-     * 基于HttpServletRequest作为参数的构造方法 用于cms
-     * 后期便于应用扩展工厂模式 将此参数抽出
-     */
-    public UserContactNew(HttpServletRequest request) {
-        if (request.getParameter("user_id") != null && !"".equals(request.getParameter("user_id"))) {
-            this.user_id = Integer.parseInt(request.getParameter("user_id"));
-        }
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
-            this.id = Integer.parseInt(request.getParameter("id"));
-        }
-    }
-
     public int getIs_tag_star() {return is_tag_star;}
 
     public void setIs_tag_star(int is_tag_star) {this.is_tag_star = is_tag_star;}

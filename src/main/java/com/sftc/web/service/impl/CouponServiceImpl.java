@@ -2,7 +2,6 @@ package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
 import com.sftc.tools.token.TokenUtils;
-import com.sftc.web.model.entity.User;
 import com.sftc.web.model.vo.swaggerRequest.CouPonPromoVO;
 import com.sftc.web.service.CouponService;
 import net.sf.json.JSONArray;
@@ -23,8 +22,6 @@ import static com.sftc.tools.sf.SFResultHelper.*;
 @Service("couponService")
 public class CouponServiceImpl implements CouponService {
 
-    //    private String status_valid = "INIT,ACTIVE";
-    //    private String status_invalid = "DISABLED,USED";
     private static final String status_all = "INIT,ACTIVE,DISABLED,USED";
 
     /**

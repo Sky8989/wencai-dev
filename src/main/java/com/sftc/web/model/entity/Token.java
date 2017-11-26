@@ -52,20 +52,6 @@ public class Token extends Object {
 
     public Token() {}
 
-    /**
-     * CMS使用的构造方法
-     *
-     * @param request
-     */
-    public Token(HttpServletRequest request) {
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
-            this.id = Integer.parseInt(request.getParameter("id"));
-        }
-        if (request.getParameter("user_id") != null && !"".equals(request.getParameter("user_id"))) {
-            this.user_id = Integer.parseInt(request.getParameter("user_id"));
-        }
-    }
-
     public Token(int user_id, String token) {
         this.user_id = user_id;
         this.local_token = token;

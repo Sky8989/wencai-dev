@@ -3,10 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.dao.mybatis.OrderCancelMapper">
-    <insert id="addCancelOrder">
-        INSERT INTO sftc_order_cancel (order_id, reason, question_describe, create_time)
-        VALUES (#{order_id}, #{reason}, #{question_describe}, #{create_time})
-    </insert>
 
     <select id="selectCanceledOrderList" parameterType="com.sftc.web.model.entity.OrderCancel"
             resultType="com.sftc.web.model.entity.OrderCancel">

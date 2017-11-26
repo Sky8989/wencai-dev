@@ -19,6 +19,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
+@ApiIgnore
 @Api(description = "好友相关")
 @RequestMapping("friend")
 public class UserContactController extends BaseController {

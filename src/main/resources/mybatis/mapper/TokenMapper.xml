@@ -48,27 +48,6 @@
         sftc_user.id = sftc_token.user_id AND sftc_token.local_token = #{token}
     </select>
 
-    <select id="getTokenByMobile" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.Token">
-        SELECT t.access_token
-        FROM sftc_user u, sftc_token t
-        WHERE u.id = t.user_id AND u.mobile = #{mobile}
-    </select>
-
-    <select id="selectUserIdByToken" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.Token">
-        SELECT *
-        FROM sftc_token
-        WHERE local_token = #{token}
-    </select>
-
-    <select id="getTokenList" parameterType="com.sftc.web.model.entity.Token" resultType="com.sftc.web.model.entity.Token">
-        select * from sftc_token
-        <where>
-            <if test="id != 0">and id = #{id}</if>
-            <if test="user_id != null">and user_id LIKE '%${user_id}%'</if>
-        </where>
-    </select>
-
-
     <select id="getUserIdByLocalToken" parameterType="java.lang.String" resultType="java.lang.Integer">
         SELECT user_id
         FROM sftc_token

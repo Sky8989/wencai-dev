@@ -46,6 +46,7 @@ public class OrderController extends BaseController {
         return orderService.addNormalOrderCommit(request);
     }
 
+    @ApiIgnore
     @ApiOperation(value = "好友同城订单提交", httpMethod = "POST", notes = "request为同城订单需要的参数")
     @RequestMapping(value = "/friend/same", method = RequestMethod.POST)
     public @ResponseBody
@@ -65,6 +66,7 @@ public class OrderController extends BaseController {
         return orderService.countPrice(request);
     }
 
+    @ApiIgnore
     @IgnoreToken
     @ApiOperation(value = "好友填写收件", httpMethod = "POST")
     @RequestMapping(value = "friend/fill", method = RequestMethod.POST)
@@ -75,6 +77,7 @@ public class OrderController extends BaseController {
         return orderService.friendFillOrder(request);
     }
 
+    @ApiIgnore
     @ApiOperation(value = "寄件人填写订单", httpMethod = "POST")
     @RequestMapping(value = "sender/fill", method = RequestMethod.POST)
     public @ResponseBody
@@ -111,6 +114,7 @@ public class OrderController extends BaseController {
         return orderService.getMyOrderList(request);
     }
 
+    @ApiIgnore
     @ApiOperation(value = "我的好友圈订单列表", httpMethod = "POST")
     @RequestMapping(value = "/list/friend", method = RequestMethod.POST)
     public @ResponseBody

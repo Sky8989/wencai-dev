@@ -294,19 +294,19 @@ public class UserServiceImpl implements UserService {
 //    }
 
     // 修改手机号码 即重新绑定新手机号
-    public APIResponse updateMobile(APIRequest apiRequest) throws Exception {
-        Object requestParam = apiRequest.getRequestParam();
-        // 1 验证手机号可用性
-        JSONObject jsonObject = JSONObject.fromObject(requestParam);
-        String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
-        int user_id = jsonObject.getInt("user_id");
-        User user = userMapper.selectUserByPhone(mobile);
-        if (user != null) {
-            return APIUtil.submitErrorResponse("手机号已被人使用过，请检查手机号", mobile);
-        }
-        // 2 走注册流程
-        return messageService.register(apiRequest);
-    }
+//    public APIResponse updateMobile(APIRequest apiRequest) throws Exception {
+//        Object requestParam = apiRequest.getRequestParam();
+//        // 1 验证手机号可用性
+//        JSONObject jsonObject = JSONObject.fromObject(requestParam);
+//        String mobile = jsonObject.getJSONObject("merchant").getString("mobile");
+//        int user_id = jsonObject.getInt("user_id");
+//        User user = userMapper.selectUserByPhone(mobile);
+//        if (user != null) {
+//            return APIUtil.submitErrorResponse("手机号已被人使用过，请检查手机号", mobile);
+//        }
+//        // 2 走注册流程
+//        return messageService.register(apiRequest);
+//    }
 
     //更新个人信息 下单时调用
     public APIResponse updatePersonMessage(APIRequest apiRequest) throws Exception {
@@ -333,23 +333,5 @@ public class UserServiceImpl implements UserService {
         return APIUtil.getResponse(SUCCESS, null);
     }
 
-    /**
-     * 下面是CMS的内容
-     */
-    public APIResponse selectUserListByPage(APIRequest request) throws Exception {
 
-        HttpServletRequest httpServletRequest = request.getRequest();
-        // 此处封装了 User的构造方法
-        User user = new User(httpServletRequest);
-        int pageNumKey = Integer.parseInt(httpServletRequest.getParameter("pageNumKey"));
-        int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
-        //  使用lambab表达式 配合pageHelper实现对用户列表和查询相关信息的统一查询
-        PageInfo<Object> pageInfo = PageHelper.startPage(pageNumKey, pageSizeKey).doSelectPageInfo(() -> userMapper.selectByPage(user));
-        //  处理结果
-        if (pageInfo.getList().size() == 0) {
-            return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
-        } else {
-            return APIUtil.getResponse(SUCCESS, pageInfo);
-        }
-    }
 }

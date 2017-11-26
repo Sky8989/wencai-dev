@@ -4,7 +4,6 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.service.OrderService;
 import com.sftc.web.service.impl.logic.app.*;
-import com.sftc.web.service.impl.logic.cms.CMSOrderListLogic;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -32,9 +31,6 @@ public class OrderServiceImpl implements OrderService {
     private OrderStatusLogic orderStatusLogic;
     @Resource
     private OrderOtherLogic orderOtherLogic;
-
-    @Resource
-    private CMSOrderListLogic cmsOrderListLogic;
 
     public APIResponse addNormalOrderCommit(APIRequest request) {
         return orderCommitLogic.normalOrderCommit(request);
@@ -94,9 +90,6 @@ public class OrderServiceImpl implements OrderService {
         return orderOtherLogic.screenShot(request);
     }
 
-    //面对面下单
-//    public APIResponse faceOrdered(APIRequest request) {return orderCommitLogic.faceOrdered(request);}
-
     public APIResponse evaluateSingle(APIRequest request) {
         return orderEvaluateLogic.evaluateSingle(request);
     }
@@ -107,16 +100,6 @@ public class OrderServiceImpl implements OrderService {
 
     public APIResponse timeConstants(APIRequest request) {
         return orderOtherLogic.timeConstants(request);
-    }
-
-    //////////////// CMS ////////////////
-
-    public APIResponse selectOrderListByPage(APIRequest request) {
-        return cmsOrderListLogic.selectOrderListByPage(request);
-    }
-
-    public APIResponse selectCanceledOrderList(APIRequest request) {
-        return cmsOrderListLogic.selectCanceledOrderList(request);
     }
 
     public APIResponse determineOrderAddress(APIRequest request) {

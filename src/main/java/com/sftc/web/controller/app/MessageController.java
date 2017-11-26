@@ -40,47 +40,4 @@ public class MessageController extends BaseController {
         apiRequest.setRequestParam(userValidateVO);
         return messageService.messageCheck(apiRequest);
     }
-
-    @ApiIgnore
-    @IgnoreToken
-    @ApiOperation(value = "注册接口【调顺丰】", httpMethod = "POST")
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    @ResponseBody
-    public APIResponse register(@RequestBody RegisterRequestVO registerRequestVO) throws Exception {
-        APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(registerRequestVO);
-        return messageService.register(apiRequest);
-    }
-
-    @ApiIgnore
-    @IgnoreToken
-    @ApiOperation(value = "获取token【调顺丰】", httpMethod = "POST")
-    @RequestMapping(value = "/token", method = RequestMethod.POST)
-    @ResponseBody
-    public APIResponse getToken(@RequestBody GetTokenRequestVO getTokenRequestVO) throws Exception {
-        APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(getTokenRequestVO);
-        return messageService.getToken(apiRequest);
-    }
-
-    @ApiIgnore
-    @IgnoreToken
-    @ApiOperation(value = "sf登录【调顺丰】", httpMethod = "POST")
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    @ResponseBody
-    public APIResponse login(@RequestBody SFLoginRequestVO sfLoginRequestVO) throws Exception {
-        APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(sfLoginRequestVO);
-        return messageService.sfLogin(apiRequest);
-    }
-
-    @ApiIgnore
-    @ApiOperation(value = "获取图片验证码", httpMethod = "GET")
-    @ApiImplicitParam(name = "token",value = "用户token",defaultValue = "f9f99534f926c53d8996ba",paramType = "query",required = true)
-    @RequestMapping(value = "/message/captchas", method = RequestMethod.GET)
-    @ResponseBody
-    public APIResponse messagCeaptchas() throws Exception {
-        return messageService.captchas();
-    }
-
 }

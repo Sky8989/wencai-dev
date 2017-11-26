@@ -18,14 +18,4 @@
         FROM sftc_evaluate
         WHERE uuid = #{uuid}
     </select>
-
-    <!--CMS -->
-    <select id="selectByPage" resultType="com.sftc.web.model.entity.Evaluate">
-        SELECT * FROM sftc_evaluate
-        <where>
-            <if test="id != 0">and id = #{id}</if>
-            <if test="user_id != 0">and user_id = #{user_id}</if>
-            <if test="uuid != null">and uuid = #{uuid}</if>
-        </where>
-    </select>
 </mapper>

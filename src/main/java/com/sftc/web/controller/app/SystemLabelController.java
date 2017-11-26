@@ -18,8 +18,10 @@ import com.sftc.web.service.SystemLabelService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import springfox.documentation.annotations.ApiIgnore;
 
-@Api(description = "CMS系统标签")
+@ApiIgnore
+@Api(description = "系统标签")
 @RestController
 @RequestMapping(value = "systemLabel")
 public class SystemLabelController {
@@ -30,30 +32,11 @@ public class SystemLabelController {
 	/**
 	 * 查询系统标签List 并分页
 	 */
-	@ApiOperation(value = "CMS查询系统标签", httpMethod = "POST")
+	@ApiOperation(value = "查询系统标签", httpMethod = "POST")
 	@PostMapping(value = "/list")
 	public APIResponse getUserAllLabelByUCID(@RequestBody SystemLabelVo systemLabel) {
 		  APIRequest apiRequest = new APIRequest();
 	        apiRequest.setRequestParam(systemLabel);
 		return systemLabelService.getSystemLabelList(apiRequest);
-	}
-
-	/**
-	 * 新增(修改)系统标签 新增id为0 id不为0时修改
-	 */
-	@ApiOperation(value = "CMS保存系统标签 新增id为0 id不为0修改", httpMethod = "POST",notes = "新增不用传id，修改时传id")
-	@RequestMapping(value = "save", method = RequestMethod.POST)
-	public APIResponse save(@RequestBody SystemLabel systemLabel) {
-		 APIRequest apiRequest = new APIRequest();
-	        apiRequest.setRequestParam(systemLabel);
-			return systemLabelService.save(apiRequest);
-	}
-
-	@ApiOperation(value = "CMS删除系统标签", httpMethod = "DELETE")
-	@RequestMapping(method = RequestMethod.DELETE)
-	public @ResponseBody APIResponse deleteCommonQuestion(@RequestBody DeleteSystemLabelVo systemLabel) throws Exception {
-		APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(systemLabel);
-		return systemLabelService.deleteSystemLable(apiRequest);
 	}
 }

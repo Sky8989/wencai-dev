@@ -30,7 +30,10 @@ public class CityExpressServiceImpl implements CityExpressService {
     @Resource
     private CityExpressRedisDao cityExpressRedisDao;
 
-    @Override
+    /**
+     * 同城支持城市列表
+     * @return
+     */
     public APIResponse getCityExpressList() {
         //缓存获取
         JSONArray cityExpresssCache = cityExpressRedisDao.getCityExpresssCache();

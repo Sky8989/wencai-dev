@@ -4,18 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.sftc.web.dao.mybatis.SystemLabelMapper">
-	<delete id="deleteSystemLable" parameterType="java.lang.Integer">
-		delete FROM sftc_system_label where id =#{id}
-	</delete>
-
-	<update id="updateSystemLabel" parameterType="com.sftc.web.model.entity.SystemLabel">
-		update sftc_system_label 
-		<trim prefix="set" suffixOverrides=",">
-			<if test="system_label != null and system_label != '' "> system_label = #{system_label}, </if>
-			<if test="update_time != null and update_time != '' "> update_time = #{update_time}, </if>
-		</trim>
-		where id = #{id}
-	</update>
 	
 	<select id="getSystemLabelList" parameterType="com.sftc.web.model.entity.SystemLabel"
             resultType="com.sftc.web.model.entity.SystemLabel" >

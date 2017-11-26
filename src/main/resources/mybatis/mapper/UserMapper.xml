@@ -34,11 +34,6 @@
         WHERE open_id = #{open_id}
     </select>
 
-    <select id="findUserByMobile" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.User">
-        SELECT *
-        FROM sftc_user
-        WHERE mobile = #{mobile}
-    </select>
     <select id="selectUserByUserId" parameterType="int" resultType="com.sftc.web.model.entity.User">
         SELECT *
         FROM sftc_user
@@ -56,12 +51,6 @@
         INSERT INTO sftc_user (open_id, create_time, session_key, avatar, name)
         VALUES
         (#{open_id}, #{create_time}, #{session_key}, #{avatar}, #{name})
-    </insert>
-
-    <!--添加顺丰传过来的Merchant信息-->
-    <insert id="addMerchant" parameterType="com.sftc.web.model.entity.User" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO sftc_user (mobile, user_password, open_id, create_time, avatar, uuid, name) VALUES
-        (#{mobile}, #{user_password}, #{open_id}, #{create_time}, #{avatar}, #{uuid}, #{name})
     </insert>
 
     <select id="getUuidAndtoken" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.User" resultMap="User">
@@ -92,13 +81,4 @@
         </trim>
         WHERE id=#{id}
     </update>
-
-    <!--下面是cms系统用到的mapper-->
-    <select id="selectByPage" resultType="com.sftc.web.model.entity.User" parameterType="com.sftc.web.model.entity.User">
-        SELECT * FROM sftc_user
-        <where>
-            <if test="id != 0">and id = #{id}</if>
-            <if test="name != null">and name LIKE '%${name}%'</if>
-        </where>
-    </select>
 </mapper>

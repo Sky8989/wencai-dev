@@ -5,10 +5,7 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.web.model.vo.swaggerRequest.AddressBookRequestVO;
 import com.sftc.web.model.vo.swaggerRequest.AddressBookUpdateVO;
 import com.sftc.web.model.vo.swaggerRequest.AddressBookDeleteVO;
-import com.sftc.web.model.vo.swaggerResponse.AddAddressBookRespVO;
-import com.sftc.web.model.vo.swaggerResponse.DeleteAddressBookRespVO;
-import com.sftc.web.model.vo.swaggerResponse.GetAddressBookRespVO;
-import com.sftc.web.model.vo.swaggerResponse.ResponseMessageVO;
+import com.sftc.web.model.vo.swaggerResponse.*;
 import com.sftc.web.service.AddressBookService;
 import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
@@ -63,6 +60,17 @@ public class AddressBookController {
     APIResponse updateAddress(HttpServletRequest httpServletRequest) throws Exception {
         APIRequest apiRequest = new APIRequest(httpServletRequest);
         return addressBookService.selectAddressBookList(apiRequest);
+    }
+
+    @ApiOperation(value = "查询历史地址",httpMethod = "GET",response = AddressHistoryListVO.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "页码",paramType = "query",defaultValue = "1"),
+            @ApiImplicitParam(name = "pageSize",value = "每页数量",paramType = "query",defaultValue = "10"),
+    })
+    @RequestMapping(method = RequestMethod.GET)
+    public @ResponseBody
+    APIResponse selectAddressHistory(HttpServletRequest request) throws Exception {
+        return addressBookService.selectAddressHistory(new APIRequest(request));
     }
 
 }
