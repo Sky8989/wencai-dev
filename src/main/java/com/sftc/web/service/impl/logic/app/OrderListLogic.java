@@ -293,6 +293,9 @@ public class OrderListLogic {
             //这个status的改动是因为是预约单 预约单支付后，派单前都是PAYING
             Order order = orderMapper.selectOrderDetailByUuid(orderSynVO.getUuid());
             String status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
+            if(order.getPay_method().equals("FREIGHT_COLLECT")){ //到付订单的状态处理
+                status = (orderSynVO.getStatus().equals("PAYING") || orderSynVO.getStatus().equals("INIT"))? "DELIVERING" : orderSynVO.getStatus();
+            }
             String pay_state = "WAIT_PAY";
             if (orderSynVO.getStatus().equals("WAIT_REFUND")) { //待退款、已退款路由状态合并为已取消
                 status = "CANCELED";

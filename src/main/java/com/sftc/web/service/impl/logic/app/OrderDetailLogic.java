@@ -275,6 +275,9 @@ public class OrderDetailLogic {
                 Order order = orderMapper.selectOrderDetailByUuid(orderSynVO.getUuid());
                 String order_status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") &&
                         order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
+                if(order.getPay_method().equals("FREIGHT_COLLECT")){ //到付订单的状态处理
+                    order_status = (orderSynVO.getStatus().equals("PAYING") || orderSynVO.getStatus().equals("INIT"))? "DELIVERING" : orderSynVO.getStatus();
+                }
                 String pay_state = "WAIT_PAY";
                 if (orderSynVO.getStatus().equals("WAIT_REFUND")) { //待退款、已退款路由状态合并为已取消
                     order_status = "CANCELED";
