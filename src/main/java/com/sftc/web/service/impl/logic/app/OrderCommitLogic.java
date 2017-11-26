@@ -314,7 +314,7 @@ public class OrderCommitLogic {
             messageService.sendWXTemplateMessage(user_id, messageArr, path, form_id, WX_template_id_1);
         }
 
-        orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
+        orderDTO = orderMapper.selectOrderAlreadyFill(order_id);
 
         return APIUtil.getResponse(SUCCESS, orderDTO);
     }
