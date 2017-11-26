@@ -67,7 +67,7 @@ public class AddressBookController {
             @ApiImplicitParam(name = "pageNum",value = "页码",paramType = "query",defaultValue = "1"),
             @ApiImplicitParam(name = "pageSize",value = "每页数量",paramType = "query",defaultValue = "10"),
     })
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value="/history",method = RequestMethod.GET)
     public @ResponseBody
     APIResponse selectAddressHistory(HttpServletRequest request) throws Exception {
         return addressBookService.selectAddressHistory(new APIRequest(request));

@@ -25,13 +25,13 @@ import io.swagger.annotations.ApiOperation;
 public class PriceExaplainContoller {
     @Autowired
     private PriceExaplainService priceExaplainService;
-    
+
     @ApiOperation(value = "根据城市查询价格说明", httpMethod = "GET")
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
-    APIResponse getPriceExplainByCity(PriceExaplainVO priceExaplainVO) throws Exception {
+    APIResponse getPriceExplainByCity(@RequestBody PriceExaplainVO priceExaplainVO) throws Exception {
         APIRequest request = new APIRequest();
         request.setRequestParam(priceExaplainVO);
-    	return priceExaplainService.getPriceExplainByCity(request);
+        return priceExaplainService.getPriceExplainByCity(request);
     }
 }
