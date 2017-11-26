@@ -67,7 +67,7 @@
     <select id="selectFriendExpress" parameterType="java.lang.String" resultType="com.sftc.web.model.dto.OrderExpressDTO">
         SELECT *
         FROM sftc_order_express
-        WHERE order_id = #{id} AND ship_name IS NOT NULL OR ship_name != ''
+        WHERE order_id = #{id} AND ship_name IS NOT NULL
     </select>
 
     <select id="selectGiftCard" parameterType="int" resultType="com.sftc.web.model.entity.GiftCard">
