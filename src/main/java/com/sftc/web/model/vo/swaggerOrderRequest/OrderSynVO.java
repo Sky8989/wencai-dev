@@ -1,5 +1,7 @@
 package com.sftc.web.model.vo.swaggerOrderRequest;
 
+import net.sf.json.JSONObject;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -16,7 +18,7 @@ public class OrderSynVO {
     private String status;
     private boolean payed;
     //错误信息
-    private String attributes;
+    private JSONObject attributes;
     // private String INIT = "下单";
     // private String PAYING = "支付中";
     // private String WAIT_HAND_OVER = "待揽件";
@@ -93,11 +95,11 @@ public class OrderSynVO {
         this.payed = payed;
     }
 
-    public String getAttributes() {
+    public JSONObject getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(String attributes) {
+    public void setAttributes(JSONObject attributes) {
         this.attributes = attributes;
     }
 }

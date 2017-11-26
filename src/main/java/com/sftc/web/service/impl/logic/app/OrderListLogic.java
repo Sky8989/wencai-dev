@@ -277,7 +277,7 @@ public class OrderListLogic {
                 tempOrderSynVO.setStatus(jsonObject.getString("status"));
                 tempOrderSynVO.setPayed(jsonObject.getBoolean("payed"));
                 JSONObject attributes = jsonObject.getJSONObject("attributes");
-                tempOrderSynVO.setAttributes(attributes.toString());
+                tempOrderSynVO.setAttributes(attributes);
                 orderSynVOList.add(tempOrderSynVO);
             }
         }
@@ -308,7 +308,25 @@ public class OrderListLogic {
             if (!status.equals("CANCELED")) pay_state = orderSynVO.isPayed() ? "ALREADY_PAY" : "WAIT_PAY";
 
             //存在锁的问题，修改语句改为一条
-            String attributes = orderSynVO.getAttributes();
+            JSONObject attributesOBJ = orderSynVO.getAttributes();
+            if (attributesOBJ.containsKey("abnormal_option")) {
+                String abNormalError = attributesOBJ.getString("abnormal_option");
+                if (abNormalError != null && abNormalError.equals("CUSTOMER_CANCEL") ||
+                        abNormalError.equals("CONTACT_CUSTOMER_FAILURE") || abNormalError.equals("ERROR_CUSTOMER_ADDRESS") ||
+                        abNormalError.equals("CONFORM_TO_ORDER_FAILURE") || abNormalError.equals("PICK_UP_OTHERS") ||
+                        abNormalError.equals("DISPATCH_TIME_OUT")) {
+                    status = "CANCELED";
+                }else if(abNormalError != null && abNormalError.equals("CUSTOMER_REJECTION") ||
+                        abNormalError.equals("CONTACT_COURIER_FAILURE") || abNormalError.equals("CONTACT_RECEIVER_FAILURE") ||
+                        abNormalError.equals("ERROR_RECEIVER_ADDRESS") || abNormalError.equals("TO_DROP_OFF_OTHERS") ||
+                        abNormalError.equals("PAY_FAILURE")||abNormalError.equals("VERIFY_FAILURE")){
+                    status = "DELIVERING";
+                }else if(abNormalError != null && abNormalError.equals("UNABLE_TO_PICK_UP") ||
+                        abNormalError.equals("DISPATCH_FAILED") || abNormalError.equals("DISCARD_TRIP_GROUP")){
+                    status = "WAIT_HAND_OVER";
+                }
+            }
+            String attributes = attributesOBJ.toString();
             orderExpressMapper.updateAttributesAndStatusByUUID(orderSynVO.getUuid(), attributes, status, pay_state);
         }
 
