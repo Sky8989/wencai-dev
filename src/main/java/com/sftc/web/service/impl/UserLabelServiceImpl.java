@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.sftc.web.model.dto.SystemLabelDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +22,6 @@ import com.sftc.web.dao.jpa.UserContactLabelDao;
 import com.sftc.web.dao.mybatis.UserLabelMapper;
 import com.sftc.web.dao.redis.UserLabelsRedisDao;
 import com.sftc.web.model.dto.LabelDTO;
-import com.sftc.web.model.dto.SystemLabelDTO;
 import com.sftc.web.model.entity.Label;
 import com.sftc.web.model.entity.SystemLabel;
 import com.sftc.web.model.entity.UserContactLabel;
