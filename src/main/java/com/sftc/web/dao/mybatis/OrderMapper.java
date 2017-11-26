@@ -40,6 +40,11 @@ public interface OrderMapper {
     OrderDTO selectOrderDetailByOrderId(String order_id);
 
     /**
+     * 好友单包裹直返回已填写包裹
+     */
+    OrderDTO selectOrderAlreadyFill(String order_id);
+
+    /**
      * 添加了行级锁和排他锁的订单详情查询
      */
     OrderDTO selectOrderDetailByOrderIdForUpdate(String order_id);

@@ -31,10 +31,43 @@
         </collection>
     </resultMap>
 
+    <resultMap id="friendOrderMap" type="com.sftc.web.model.dto.OrderDTO">
+        <id property="id" column="id"/>
+        <result property="order_type" column="order_type"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="sender_user_id" column="sender_user_id"/>
+        <result property="sender_mobile" column="sender_mobile"/>
+        <result property="sender_name" column="sender_name"/>
+        <result property="sender_province" column="sender_province"/>
+        <result property="sender_city" column="sender_city"/>
+        <result property="sender_area" column="sender_area"/>
+        <result property="sender_addr" column="sender_addr"/>
+        <result property="voice" column="voice"/>
+        <result property="image" column="image"/>
+        <result property="word_message" column="word_message"/>
+        <result property="pay_method" column="pay_method"/>
+        <result property="distribution_method" column="distribution_method"/>
+        <result property="gift_card_id" column="gift_card_id"/>
+        <result property="voice_time" column="voice_time"/>
+        <result property="create_time" column="create_time"/>
+        <association property="giftCard" select="selectGiftCard" column="gift_card_id">
+        </association>
+        <collection property="orderExpressList" ofType="com.sftc.web.model.dto.OrderExpressDTO" select="selectFriendExpress"
+                    column="id">
+        </collection>
+    </resultMap>
+
     <select id="selectExpressList" parameterType="java.lang.String" resultType="com.sftc.web.model.dto.OrderExpressDTO">
         SELECT *
         FROM sftc_order_express
         WHERE order_id = #{id}
+    </select>
+
+    <select id="selectFriendExpress" parameterType="java.lang.String" resultType="com.sftc.web.model.dto.OrderExpressDTO">
+        SELECT *
+        FROM sftc_order_express
+        WHERE order_id = #{id} AND ship_name IS NOT NULL OR ship_name != ''
     </select>
 
     <select id="selectGiftCard" parameterType="int" resultType="com.sftc.web.model.entity.GiftCard">
@@ -71,6 +104,12 @@
     </select>
 
     <select id="selectOrderDetailByOrderId" resultMap="orderMap" parameterType="java.lang.String">
+        SELECT *
+        FROM sftc_order
+        WHERE id = #{order_id}
+    </select>
+
+    <select id="selectOrderAlreadyFill" resultMap="friendOrderMap" parameterType="java.lang.String">
         SELECT *
         FROM sftc_order
         WHERE id = #{order_id}
