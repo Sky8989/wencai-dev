@@ -187,11 +187,26 @@ public class OrderListLogic {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
                 int user_contact_id = 0;//好友圈也需要好友关系id
                 UserContact userContact = null;
+                String sender_wx_name = null;
+                String ship_wx_name = null;
                 if (orderDTO.getSender_user_id() != 0 && oe.getShip_user_id() != 0) {
                     if (user_id == orderDTO.getSender_user_id()) {//如果为寄件方
                         userContact = userContactMapper.friendDetail(orderDTO.getSender_user_id(), oe.getShip_user_id());
+                        if (userContact != null) {
+                            User friend_info = userContact.getFriend_info();
+                            if (friend_info != null) {
+                                sender_wx_name = friend_info.getName();
+                            }
+                        }
+
                     } else {//如果为收件方
                         userContact = userContactMapper.friendDetail(oe.getShip_user_id(), orderDTO.getSender_user_id());
+                        if (userContact != null) {
+                            User friend_info = userContact.getFriend_info();
+                            if (friend_info != null) {
+                                ship_wx_name = friend_info.getName();
+                            }
+                        }
                     }
                     if (userContact == null) user_contact_id = 0;
                     else user_contact_id = userContact.getId();
@@ -210,6 +225,8 @@ public class OrderListLogic {
                 express.setReserve_time(oe.getReserve_time());
                 express.setPackage_type(oe.getPackage_type());
                 express.setUser_contact_id(user_contact_id);
+                express.setShip_wx_name(ship_wx_name);
+                express.setSender_wx_name(sender_wx_name);
                 //如果有异常信息，则添加异常信息
                 if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
                     express.setAttributes((oe.getAttributes()));
