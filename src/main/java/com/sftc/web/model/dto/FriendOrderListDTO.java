@@ -49,6 +49,8 @@ public class FriendOrderListDTO {
         @Setter   @Getter
         private String ship_name;
         @Setter   @Getter
+        private String order_number;
+        @Setter   @Getter
         private String ship_avatar;
         @Setter   @Getter
         private int ship_user_id;

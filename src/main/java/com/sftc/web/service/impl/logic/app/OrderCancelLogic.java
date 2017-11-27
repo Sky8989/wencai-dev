@@ -1,6 +1,7 @@
 package com.sftc.web.service.impl.logic.app;
 
 
+import com.github.pagehelper.util.StringUtil;
 import com.sftc.tools.api.*;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.web.dao.jpa.OrderCancelDao;
@@ -11,6 +12,7 @@ import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderCancel;
 import com.sftc.web.model.entity.OrderExpress;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,7 +93,7 @@ public class OrderCancelLogic {
             StringBuilder stringBuilder = new StringBuilder();
             //遍历所有的快递列表
             for (OrderExpress eachOrderExpress : arrayList) {
-                if (eachOrderExpress.getUuid() != null && !"".equals(eachOrderExpress.getUuid())) {
+                if (StringUtils.isNotBlank(eachOrderExpress.getOrder_number()) && eachOrderExpress.getUuid() != null && !"".equals(eachOrderExpress.getUuid())) {
                     stringBuilder.append(eachOrderExpress.getUuid());
                     stringBuilder.append(",");
                 }

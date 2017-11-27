@@ -192,31 +192,38 @@ public class OrderListLogic {
                     if (userContact == null) user_contact_id = 0;
                     else user_contact_id = userContact.getId();
                 }
-               if(StringUtils.isNotBlank(oe.getShip_name())){ //未填写的包裹不用列表展示
-                   FriendOrderListDTO.OrderFriendCallbackExpress express = new FriendOrderListDTO().new OrderFriendCallbackExpress();
-                   express.setId(oe.getId());
-                   express.setShip_user_id(oe.getShip_user_id());
-                   express.setUuid(oe.getUuid());
-                   express.setRoute_state(oe.getRoute_state());
-                   express.setPay_state(oe.getPay_state());
-                   express.setShip_name(oe.getShip_name());
-                   express.setWeight(oe.getWeight());  //增加包裹类型的三个字段
-                   express.setObject_type(oe.getObject_type());
-                   express.setPackage_comments(oe.getPackage_comments());
-                   express.setReserve_time(oe.getReserve_time());
-                   express.setPackage_type(oe.getPackage_type());
-                   express.setUser_contact_id(user_contact_id);
-                   //如果有异常信息，则添加异常信息
-                   if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
-                       express.setAttributes((oe.getAttributes()));
-                   if (receiver != null && receiver.getAvatar() != null)
-                       express.setShip_avatar(receiver.getAvatar());
-                   expressList.add(express);
-               }
+                if (StringUtils.isNotBlank(oe.getShip_name())) { //未填写的包裹不用列表展示
+                    FriendOrderListDTO.OrderFriendCallbackExpress express = new FriendOrderListDTO().new OrderFriendCallbackExpress();
+                    express.setId(oe.getId());
+                    express.setShip_user_id(oe.getShip_user_id());
+                    express.setUuid(oe.getUuid());
+                    express.setOrder_number(oe.getOrder_number());
+                    express.setRoute_state(oe.getRoute_state());
+                    express.setPay_state(oe.getPay_state());
+                    express.setShip_name(oe.getShip_name());
+                    express.setWeight(oe.getWeight());  //增加包裹类型的三个字段
+                    express.setObject_type(oe.getObject_type());
+                    express.setPackage_comments(oe.getPackage_comments());
+                    express.setReserve_time(oe.getReserve_time());
+                    express.setPackage_type(oe.getPackage_type());
+                    express.setUser_contact_id(user_contact_id);
+                    //如果有异常信息，则添加异常信息
+                    if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
+                        express.setAttributes((oe.getAttributes()));
+                    if (receiver != null && receiver.getAvatar() != null)
+                        express.setShip_avatar(receiver.getAvatar());
+                    expressList.add(express);
+                }
                 // 检查快递是否评价过
                 List<Evaluate> evaluateList = evaluateMapper.selectByUuid(oe.getUuid());
                 // 如果被评价过，且有评价信息，则返回1 如果无评价信息 则返回0
                 flagSetIsEvaluated.add((evaluateList.size() == 0) ? 0 : 1);
+            }
+            if (expressList.size() >= 2 && StringUtils.isNotBlank(expressList.get(0).getOrder_number())
+                    && StringUtils.isBlank(expressList.get(1).getOrder_number())) {
+                FriendOrderListDTO.OrderFriendCallbackExpress orderFriendCallbackExpress = expressList.get(0);
+                expressList.clear();
+                expressList.add(orderFriendCallbackExpress);
             }
             callback.setExpressList(expressList);
             callback.setIs_evaluated(flagSetIsEvaluated.contains(1));
