@@ -57,6 +57,28 @@ public class OrderCancelLogic {
     }
 
     /**
+     * 根据uuid取消订单
+     *
+     * @param request
+     * @return
+     */
+    @Transactional
+    public APIResponse cancelOrderByUuid(APIRequest request) {
+        JSONObject paramJsonObject = JSONObject.fromObject(request.getRequestParam());
+        //获取订单id，便于后续取消订单操作的取用
+        String uuid = paramJsonObject.getString("uuid");
+        paramJsonObject.remove("uuid");
+        String access_token = SFTokenHelper.COMMON_ACCESSTOKEN;
+        //对重复取消订单的情况进行处理
+        OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
+        if (orderExpress == null)
+            return APIUtil.selectErrorResponse("订单不存在", null);
+
+        // 同城是硬取消
+        return cancelSAMEOrderByUuid(uuid, access_token);
+    }
+
+    /**
      * 取消同城超时订单
      */
     public void cancelSameUnCommitOrder(String order_id, long timeOutInterval) {
@@ -88,44 +110,81 @@ public class OrderCancelLogic {
         if (order == null)
             return APIUtil.selectErrorResponse("订单不存在", null);
         OrderExpress firstExpress = arrayList.get(0);
-        boolean isDidCommitToSF = firstExpress.getOrder_number() != null && !(firstExpress.getOrder_number().equals(""));
-        if (isDidCommitToSF) { // 已经提交到顺丰，需要先从顺丰取消
-            StringBuilder stringBuilder = new StringBuilder();
-            //遍历所有的快递列表
-            for (OrderExpress eachOrderExpress : arrayList) {
+        StringBuilder stringBuilder = new StringBuilder();
+        //遍历所有的快递列表
+        for (OrderExpress eachOrderExpress : arrayList) {
+            boolean isDidCommitToSF = eachOrderExpress.getOrder_number() != null && !(firstExpress.getOrder_number().equals(""));
+            if (isDidCommitToSF) { // 已经提交到顺丰，需要先从顺丰取消
                 if (StringUtils.isNotBlank(eachOrderExpress.getOrder_number()) && eachOrderExpress.getUuid() != null && !"".equals(eachOrderExpress.getUuid())) {
                     stringBuilder.append(eachOrderExpress.getUuid());
                     stringBuilder.append(",");
-                }
-            }
-            //这是订单已经提交付款了的操作
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+                    //这是订单已经提交付款了的操作
+                    stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 
+                    // 下面是 顺丰方面取消订单的逻辑
+                    String str = "{\"event\":{\"type\":\"CANCEL\",\"source\":\"MERCHANT\"}}";
+                    String myUrl = SF_REQUEST_URL + "/" + stringBuilder.toString() + "/events";
+                    HttpPost post = new HttpPost(myUrl);
+                    post.addHeader("PushEnvelope-Device-Token", access_token);
+                    String res = APIPostUtil.post(str, post);
+                    JSONObject resJSONObject = JSONObject.fromObject(res);
+                    if (resJSONObject.containsKey("error") || resJSONObject.containsKey("errors") || !resJSONObject.containsKey("requests")) {
+                        return APIUtil.submitErrorResponse("订单取消失败", resJSONObject);
+                    } else {
+                        eachOrderExpress.setRoute_state("CANCELED");
+                        eachOrderExpress.setPay_state("WAIT_PAY");
+                        orderExpressDao.save(eachOrderExpress);
+                        orderMapper.updateCancelOrderById(order_id);
+                    }
+                }
+            } else {
+                eachOrderExpress.setRoute_state("CANCELED");
+                eachOrderExpress.setPay_state("WAIT_PAY");
+                orderExpressDao.save(eachOrderExpress);
+            }
+            // 添加订单取消记录
+            addCancelRecord(order_id, isDidCommitToSF ? "主动取消" : "主动软取消", "同城");
+        }
+        return APIUtil.getResponse(APIStatus.SUCCESS, null);
+    }
+
+    /**
+     * 根据uuid取消订单
+     * @param uuid
+     * @param access_token
+     * @return
+     */
+    private APIResponse cancelSAMEOrderByUuid(String uuid, String access_token) {
+        OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
+        boolean isDidCommitToSF = orderExpress.getOrder_number() != null && !(orderExpress.getOrder_number().equals(""));
+        if (isDidCommitToSF) { // 已经提交到顺丰，需要先从顺丰取消
             // 下面是 顺丰方面取消订单的逻辑
             String str = "{\"event\":{\"type\":\"CANCEL\",\"source\":\"MERCHANT\"}}";
-            String myUrl = SF_REQUEST_URL + "/" + stringBuilder.toString() + "/events";
+            String myUrl = SF_REQUEST_URL + "/" + uuid + "/events";
             HttpPost post = new HttpPost(myUrl);
             post.addHeader("PushEnvelope-Device-Token", access_token);
             String res = APIPostUtil.post(str, post);
             JSONObject resJSONObject = JSONObject.fromObject(res);
             if (resJSONObject.containsKey("error") || resJSONObject.containsKey("errors") || !resJSONObject.containsKey("requests")) {
                 return APIUtil.submitErrorResponse("订单取消失败", resJSONObject);
+            } else {
+                orderExpress.setRoute_state("CANCELED");
+                orderExpress.setPay_state("WAIT_PAY");
+                orderExpressDao.save(orderExpress);
+                orderMapper.updateCancelOrderById(orderExpress.getOrder_id());
             }
-        }
 
-        orderMapper.updateCancelOrderById(order_id); //事务问题,先存在查的改为统一使用Mybatis
-        List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
-        for (OrderExpress orderExpress1 : orderExpress) {
-            orderExpress1.setRoute_state("CANCELED");
-            orderExpress1.setPay_state("WAIT_PAY");
-            orderExpressDao.save(orderExpress1);
+        } else {
+            orderExpress.setRoute_state("CANCELED");
+            orderExpress.setPay_state("WAIT_PAY");
+            orderExpressDao.save(orderExpress);
+            orderMapper.updateCancelOrderById(orderExpress.getOrder_id());
         }
-
         // 添加订单取消记录
-        addCancelRecord(order_id, isDidCommitToSF ? "主动取消" : "主动软取消", "同城");
-
+        addCancelRecord(orderExpress.getOrder_id(), isDidCommitToSF ? "主动取消" : "主动软取消", "同城");
         return APIUtil.getResponse(APIStatus.SUCCESS, null);
     }
+
 
     private void addCancelRecord(String order_id, String reason, String question_describe) {
         OrderCancel orderCancel = new OrderCancel();
