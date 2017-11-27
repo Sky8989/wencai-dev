@@ -10,15 +10,11 @@ import java.util.Map;
 @Repository
 public interface AddressMapper {
 
-    /**
-     * 添加地址
-     * @param address
-     */
     void addAddress(Address address);
 
-    /**
-     * 删除地址
-     * @param id
-     */
+    void editeAddress(Address address);
+
+    List<Address> addressDetail(int id);
+
     void deleteAddress(int id);
 }

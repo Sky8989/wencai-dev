@@ -48,6 +48,53 @@ public class AddressServiceImpl implements AddressService {
         return APIUtil.getResponse(status, null);
     }
 
+    public APIResponse consigneeAddress(APIRequest request) {
+        APIStatus status = APIStatus.SELECT_FAIL;
+        int id = TokenUtils.getInstance().getUserId();
+        List<Address> addressList = new ArrayList<Address>();
+        if (id != 0) {
+            try {
+                addressList = addressMapper.addressDetail(id);
+                if(addressList == null) return APIUtil.selectErrorResponse("该用户暂无地址信息",null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            status = SUCCESS;
+        }
+        return APIUtil.getResponse(status, addressList);
+    }
+
+    public APIResponse editAddress(APIRequest request) {
+        APIStatus status = SUCCESS;
+        JSONObject paramOBJ = JSONObject.fromObject(request.getRequestParam());
+        Address address = (Address) JSONObject.toBean(paramOBJ,Address.class);
+        try {
+            Integer user_id = TokenUtils.getInstance().getUserId();
+            address.setUser_id(user_id);
+            address.setCreate_time(Long.toString(System.currentTimeMillis()));
+            addressMapper.editeAddress(address);
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = APIStatus.SUBMIT_FAIL;
+        }
+        return APIUtil.getResponse(status, null);
+    }
+
+    public APIResponse deleteAddress(APIRequest request) {
+        APIStatus status = SUCCESS;
+        String id = request.getParameter("id").toString();
+        if (id != null) {
+            try {
+                addressMapper.deleteAddress(Integer.parseInt(id));
+            } catch (Exception e) {
+                e.printStackTrace();
+                status = APIStatus.SUBMIT_FAIL;
+            }
+        }
+        return APIUtil.getResponse(status, null);
+    }
+
+
     public APIResponse addAddress(Object object) {
         return null;
     }
@@ -103,6 +150,40 @@ public class AddressServiceImpl implements AddressService {
         }
 
         return APIUtil.getResponse(status, resultJsonObject);
+    }
+
+    public APIResponse getAddressDistance2(APIRequest request) {
+
+        Object object = request.getRequestParam();
+        JSONObject requestObject = JSONObject.fromObject(object);
+
+        JSONObject sourceObject = requestObject.getJSONObject("source");
+        JSONObject targetObject = requestObject.getJSONObject("target");
+        double senderLong = sourceObject.getDouble("longitude");
+        double senderLat = sourceObject.getDouble("latitude");
+        double receiverLong = targetObject.getDouble("longitude");
+        double receiverLat = targetObject.getDouble("latitude");
+
+        if (senderLong == 0 || receiverLong == 0 || senderLat == 0 || receiverLat == 0)
+            return APIUtil.paramErrorResponse("请求体不完整");
+
+        String from = senderLat + ";" + senderLong;
+        String to = receiverLat + ";" + receiverLong;
+
+        String url = MAP_ADDRESS_DISTANCE_URL.replace("{from}", from).replace("{to}", to);
+        String result = APIGetUtil.get(new HttpGet(url));
+        JSONObject resultObject = JSONObject.fromObject(result);
+
+        if ((Integer) resultObject.get("status") != 0)
+            return APIUtil.selectErrorResponse((String) resultObject.get("message"), null);
+
+        JSONArray elementObjects = resultObject.getJSONObject("result").getJSONArray("elements");
+        JSONObject elementObject = (JSONObject) elementObjects.get(0);
+        double distance = (Double) elementObject.get("distance");
+
+        Map<String, Double> resultMap = new HashMap<String, Double>();
+        resultMap.put("distance", distance);
+        return APIUtil.getResponse(SUCCESS, resultMap);
     }
 
     public APIResponse getAddressDistance(APIRequest request) {

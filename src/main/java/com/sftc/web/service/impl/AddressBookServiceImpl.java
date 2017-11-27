@@ -194,7 +194,6 @@ public class AddressBookServiceImpl implements AddressBookService {
         return APIUtil.getResponse(SUCCESS, null);
     }
 
-
     public APIResponse selectAddressBookList(APIRequest apiRequest) {
         /// 处理参数
         HttpServletRequest httpServletRequest = apiRequest.getRequest();

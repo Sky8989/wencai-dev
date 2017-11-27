@@ -28,6 +28,32 @@ public class AddressController {
     @Resource
     private AddressService addressService;
 
+    @ApiOperation(value = "地址添加",httpMethod = "POST")
+    @RequestMapping(method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse addAddress(@RequestBody Address address) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(address);
+        return addressService.addAddress(request);
+    }
+
+    @ApiOperation(value = "我的收件人地址",httpMethod = "GET")
+    @RequestMapping(method = RequestMethod.GET)
+    public @ResponseBody
+    APIResponse consigneeAddress(HttpServletRequest request) throws Exception {
+        return addressService.consigneeAddress(new APIRequest(request));
+    }
+
+    @ApiOperation(value = "修改收件人地址",httpMethod = "PUT")
+    @RequestMapping(method = RequestMethod.PUT ,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody
+    APIResponse editAddress(@RequestBody Address address) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(address);
+        return addressService.editAddress(request);
+    }
+
     @ApiOperation(value = "地址解析",httpMethod = "GET",notes = "地址解析接口，地址转坐标",response = GeocoderAddressRespVO.class)
     @ApiImplicitParam(name = "address",value = "详细地址",paramType = "query",defaultValue = "深圳龙岗区花样年龙城广场",required = true)
     @RequestMapping(value = "/geocoder", method = RequestMethod.GET)
