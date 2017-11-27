@@ -1,6 +1,7 @@
 package com.sftc.web.dao.mybatis;
 
 import com.sftc.web.model.dto.FriendRecordDTO;
+import com.sftc.web.model.dto.WxNameDTO;
 import com.sftc.web.model.vo.swaggerRequest.FriendListVO;
 import com.sftc.web.model.entity.UserContact;
 import com.sftc.web.model.entity.UserContactNew;
@@ -22,6 +23,13 @@ public interface UserContactMapper {
     void addFriend(UserContactParamVO userContactParamVO);
 
     void updateFriend(UserContact userContact);
+
+    /**
+     * 通过订单id获取收件人寄件人微信名
+     * @param order_id
+     * @return
+     */
+    WxNameDTO selectWxNameByOrderId(String uuid);
 
     UserContact friendDetail(@Param("user_id") int user_id, @Param("friend_id") int friend);
 
