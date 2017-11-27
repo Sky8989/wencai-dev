@@ -57,12 +57,14 @@ public class OrderListLogic {
 
         if (myOrderParamVO.getKeyword() != null && !myOrderParamVO.getKeyword().equals("")) {
             boolean flag = true;
+            boolean other = false;
             // 访问 状态模糊关键字 字典 匹配到对应关键字
             Map<String, String> map = SFOrderHelper.getKeywordMap();
             for (Map.Entry entry : map.entrySet()) {
                 if (myOrderParamVO.getKeyword().equals(entry.getKey())) {
                     myOrderParamVO.setKeyword_state((String) entry.getValue());
                     flag = false;
+                    other = true;
                 }
             }
 
@@ -79,7 +81,12 @@ public class OrderListLogic {
                 //两种状态值二选一
                 myOrderParamVO.setKeyword(null);
             }
+            if (!other && flag) {
+                myOrderParamVO.setKeyword(null);
+                myOrderParamVO.setKeyword_state(null);
+            }
         }
+
 
         // pageNum -> startIndex
         myOrderParamVO.setPageNum((myOrderParamVO.getPageNum() - 1) * myOrderParamVO.getPageSize());
@@ -250,7 +257,7 @@ public class OrderListLogic {
                     uuidSB.append(",");
                 }
                 if (oe.getOrder_number() == null || oe.getOrder_number().equals("")) {
-                    orderExpressMapper.updatePayState("WAIT_PAY",oe.getUuid());
+                    orderExpressMapper.updatePayState("WAIT_PAY", oe.getUuid());
                 }
             }
         }
