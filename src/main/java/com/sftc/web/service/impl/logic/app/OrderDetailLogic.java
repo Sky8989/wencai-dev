@@ -60,7 +60,6 @@ public class OrderDetailLogic {
         if (apiResponse != null) return apiResponse;
 
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
-        setPackageType(orderDTO); //获取包裹信息
         JSONObject respObject = new JSONObject();
         if (orderDTO == null) return APIUtil.getResponse(SUCCESS, null);
         List<OrderExpressDTO> orderExpress = orderDTO.getOrderExpressList();
@@ -79,6 +78,7 @@ public class OrderDetailLogic {
         }
 
         OrderDTO orderDTO2 = orderMapper.selectOrderDetailByOrderId(order_id);
+        setPackageType(orderDTO2); //获取包裹信息
         // order
         GsonBuilder gb = new GsonBuilder();
         Gson g = gb.create();
@@ -148,7 +148,6 @@ public class OrderDetailLogic {
         if (apiResponse != null) return apiResponse;
         order = orderMapper.selectOrderDetailByUuid(uuid);
         setPackageType(order);//获取包裹信息
-
 
         respObject.put("order", order);
 
