@@ -71,26 +71,18 @@ public class OrderDetailLogic {
                 orderExpressDTO.setShip_avatar(receiver.getAvatar());
             }
         }
-        //多包裹小哥端取消已下单包裹修改未填写收件人包裹的路由状态
-        if(orderDTO.getOrderExpressList().size()>0){
-            if(orderDTO.getOrderExpressList().get(0).getRoute_state().equals("CANCELED")){
-                orderExpressMapper.updateRouteStateByOrderId(order_id,"CANCELED");
-            }
-        }
-
-        OrderDTO orderDTO2 = orderMapper.selectOrderDetailByOrderId(order_id);
-        setPackageType(orderDTO2); //获取包裹信息
+        setPackageType(orderDTO); //获取包裹信息
         // order
         GsonBuilder gb = new GsonBuilder();
         Gson g = gb.create();
-        String resultJson = new Gson().toJson(orderDTO2);
+        String resultJson = new Gson().toJson(orderDTO);
         Map<String, Object> orderMap = g.fromJson(resultJson, new TypeToken<Map<String, Object>>() {
         }.getType());
-        User sender = userMapper.selectUserByUserId(orderDTO2.getSender_user_id());
+        User sender = userMapper.selectUserByUserId(orderDTO.getSender_user_id());
         orderMap.put("sender_avatar", sender.getAvatar());
 
         // giftCard
-        GiftCard giftCard = giftCardMapper.selectGiftCardById(orderDTO2.getGift_card_id());
+        GiftCard giftCard = giftCardMapper.selectGiftCardById(orderDTO.getGift_card_id());
         respObject.put("order", orderMap);
         respObject.put("giftCard", giftCard);
 
@@ -251,7 +243,7 @@ public class OrderDetailLogic {
                 uuids = uuids + oe.getUuid() + ",";
             }
             if (oe.getOrder_number() == null || oe.getOrder_number().equals("")) {
-                orderExpressMapper.updatePayState("WAIT_PAY",oe.getUuid());
+                orderExpressMapper.updatePayState("WAIT_PAY", oe.getUuid());
             }
         }
 
@@ -282,8 +274,8 @@ public class OrderDetailLogic {
                 Order order = orderMapper.selectOrderDetailByUuid(orderSynVO.getUuid());
                 String order_status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") &&
                         order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
-                if(order.getPay_method().equals("FREIGHT_COLLECT")){ //到付订单的状态处理
-                    order_status = (orderSynVO.getStatus().equals("PAYING") || orderSynVO.getStatus().equals("INIT"))? "DELIVERING" : orderSynVO.getStatus();
+                if (order.getPay_method().equals("FREIGHT_COLLECT")) { //到付订单的状态处理
+                    order_status = (orderSynVO.getStatus().equals("PAYING")) ? "DELIVERING" : orderSynVO.getStatus();
                 }
                 String pay_state = orderSynVO.isPayed() ? "ALREADY_PAY" : "WAIT_PAY";
                 //存在锁的问题，修改语句改为一条
@@ -295,13 +287,13 @@ public class OrderDetailLogic {
                             abNormalError.equals("CONFORM_TO_ORDER_FAILURE") || abNormalError.equals("PICK_UP_OTHERS") ||
                             abNormalError.equals("DISPATCH_TIME_OUT")) {
                         order_status = "CANCELED";
-                    }else if(abNormalError != null && abNormalError.equals("CUSTOMER_REJECTION") ||
+                    } else if (abNormalError != null && abNormalError.equals("CUSTOMER_REJECTION") ||
                             abNormalError.equals("CONTACT_COURIER_FAILURE") || abNormalError.equals("CONTACT_RECEIVER_FAILURE") ||
                             abNormalError.equals("ERROR_RECEIVER_ADDRESS") || abNormalError.equals("TO_DROP_OFF_OTHERS") ||
-                            abNormalError.equals("PAY_FAILURE")||abNormalError.equals("VERIFY_FAILURE")){
+                            abNormalError.equals("PAY_FAILURE") || abNormalError.equals("VERIFY_FAILURE")) {
                         order_status = "DELIVERING";
-                    }else if(abNormalError != null && abNormalError.equals("UNABLE_TO_PICK_UP") ||
-                            abNormalError.equals("DISPATCH_FAILED") || abNormalError.equals("DISCARD_TRIP_GROUP")){
+                    } else if (abNormalError != null && abNormalError.equals("UNABLE_TO_PICK_UP") ||
+                            abNormalError.equals("DISPATCH_FAILED") || abNormalError.equals("DISCARD_TRIP_GROUP")) {
                         order_status = "WAIT_HAND_OVER";
                     }
                 }

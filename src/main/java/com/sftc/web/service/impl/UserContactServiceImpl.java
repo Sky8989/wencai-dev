@@ -185,7 +185,7 @@ public class UserContactServiceImpl implements UserContactService {
                 String order_status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") &&
                         order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
                 if (order.getPay_method().equals("FREIGHT_COLLECT")) { //到付订单的状态处理
-                    order_status = (orderSynVO.getStatus().equals("PAYING") || orderSynVO.getStatus().equals("INIT")) ? "DELIVERING" : orderSynVO.getStatus();
+                    order_status = (orderSynVO.getStatus().equals("PAYING")) ? "DELIVERING" : orderSynVO.getStatus();
                 }
                 String pay_state = orderSynVO.isPayed() ? "ALREADY_PAY" : "WAIT_PAY";
                 //存在锁的问题，修改语句改为一条
