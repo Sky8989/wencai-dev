@@ -81,6 +81,11 @@ public interface OrderService {
     APIResponse cancelOrder(APIRequest request);
 
     /**
+     * 根据uuid取消订单
+     */
+    APIResponse cancelOrderByUuid(APIRequest request);
+
+    /**
      * 时间规则
      */
     APIResponse timeConstants(APIRequest request);
