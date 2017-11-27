@@ -112,13 +112,7 @@ public class OrderDetailLogic {
             return APIUtil.selectErrorResponse("订单不存在", null);
 
         JSONObject respObject = new JSONObject();
-        OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
-        if(StringUtils.isBlank(orderExpress.getOrder_number())){
-            order = orderMapper.selectOrderDetailByUuid(uuid);
-            setPackageType(order);//获取包裹信息
-            respObject.put("order", order);
-            return APIUtil.getResponse(SUCCESS, respObject);
-        }
+
         // 同城订单需要access_token
         String access_token = COMMON_ACCESSTOKEN;
         respObject = SFExpressHelper.getExpressDetail(uuid, access_token);
@@ -291,16 +285,7 @@ public class OrderDetailLogic {
                 if(order.getPay_method().equals("FREIGHT_COLLECT")){ //到付订单的状态处理
                     order_status = (orderSynVO.getStatus().equals("PAYING") || orderSynVO.getStatus().equals("INIT"))? "DELIVERING" : orderSynVO.getStatus();
                 }
-                String pay_state = "WAIT_PAY";
-                if (orderSynVO.getStatus().equals("WAIT_REFUND")) { //待退款、已退款路由状态合并为已取消
-                    order_status = "CANCELED";
-                    pay_state = "WAIT_REFUND";
-                }
-                if (orderSynVO.getStatus().equals("REFUNDED")) { //待退款、已退款路由状态合并为已取消
-                    order_status = "CANCELED";
-                    pay_state = "REFUNDED";
-                }
-                if (!order_status.equals("CANCELED")) pay_state = orderSynVO.isPayed() ? "ALREADY_PAY" : "WAIT_PAY";
+                String pay_state = orderSynVO.isPayed() ? "ALREADY_PAY" : "WAIT_PAY";
                 //存在锁的问题，修改语句改为一条
                 JSONObject attributesOBJ = orderSynVO.getAttributes();
                 if (attributesOBJ.containsKey("abnormal_option")) {
