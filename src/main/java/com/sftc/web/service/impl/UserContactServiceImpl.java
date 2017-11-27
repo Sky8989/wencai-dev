@@ -155,7 +155,7 @@ public class UserContactServiceImpl implements UserContactService {
                 uuids = uuids + oe.getUuid() + ",";
             }
             if (oe.getOrder_number() == null || oe.getOrder_number().equals("")) {
-                orderExpressMapper.updatePayState("WAIT_PAY",oe.getUuid());
+                orderExpressMapper.updatePayState("WAIT_PAY", oe.getUuid());
             }
         }
 
@@ -184,19 +184,10 @@ public class UserContactServiceImpl implements UserContactService {
                 Order order = orderMapper.selectOrderDetailByUuid(orderSynVO.getUuid());
                 String order_status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") &&
                         order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
-                if(order.getPay_method().equals("FREIGHT_COLLECT")){ //到付订单的状态处理
-                    order_status = (orderSynVO.getStatus().equals("PAYING") || orderSynVO.getStatus().equals("INIT"))? "DELIVERING" : orderSynVO.getStatus();
+                if (order.getPay_method().equals("FREIGHT_COLLECT")) { //到付订单的状态处理
+                    order_status = (orderSynVO.getStatus().equals("PAYING") || orderSynVO.getStatus().equals("INIT")) ? "DELIVERING" : orderSynVO.getStatus();
                 }
-                String pay_state = "WAIT_PAY";
-                if (orderSynVO.getStatus().equals("WAIT_REFUND")) { //待退款、已退款路由状态合并为已取消
-                    order_status = "CANCELED";
-                    pay_state = "WAIT_REFUND";
-                }
-                if (orderSynVO.getStatus().equals("REFUNDED")) { //待退款、已退款路由状态合并为已取消
-                    order_status = "CANCELED";
-                    pay_state = "REFUNDED";
-                }
-                if(!order_status.equals("CANCELED")) pay_state = orderSynVO.isPayed()?"ALREADY_PAY" : "WAIT_PAY";
+                String pay_state = orderSynVO.isPayed() ? "ALREADY_PAY" : "WAIT_PAY";
                 //存在锁的问题，修改语句改为一条
                 JSONObject attributesOBJ = orderSynVO.getAttributes();
                 if (attributesOBJ.containsKey("abnormal_option")) {
@@ -206,18 +197,18 @@ public class UserContactServiceImpl implements UserContactService {
                             abNormalError.equals("CONFORM_TO_ORDER_FAILURE") || abNormalError.equals("PICK_UP_OTHERS") ||
                             abNormalError.equals("DISPATCH_TIME_OUT")) {
                         order_status = "CANCELED";
-                    }else if(abNormalError != null && abNormalError.equals("CUSTOMER_REJECTION") ||
+                    } else if (abNormalError != null && abNormalError.equals("CUSTOMER_REJECTION") ||
                             abNormalError.equals("CONTACT_COURIER_FAILURE") || abNormalError.equals("CONTACT_RECEIVER_FAILURE") ||
                             abNormalError.equals("ERROR_RECEIVER_ADDRESS") || abNormalError.equals("TO_DROP_OFF_OTHERS") ||
-                            abNormalError.equals("PAY_FAILURE")||abNormalError.equals("VERIFY_FAILURE")){
+                            abNormalError.equals("PAY_FAILURE") || abNormalError.equals("VERIFY_FAILURE")) {
                         order_status = "DELIVERING";
-                    }else if(abNormalError != null && abNormalError.equals("UNABLE_TO_PICK_UP") ||
-                            abNormalError.equals("DISPATCH_FAILED") || abNormalError.equals("DISCARD_TRIP_GROUP")){
+                    } else if (abNormalError != null && abNormalError.equals("UNABLE_TO_PICK_UP") ||
+                            abNormalError.equals("DISPATCH_FAILED") || abNormalError.equals("DISCARD_TRIP_GROUP")) {
                         order_status = "WAIT_HAND_OVER";
                     }
                 }
                 String attributes = attributesOBJ.toString();
-                orderExpressMapper.updateAttributesAndStatusByUUID(uuid, attributes,order_status,pay_state);
+                orderExpressMapper.updateAttributesAndStatusByUUID(uuid, attributes, order_status, pay_state);
             }
         }
         return null;
