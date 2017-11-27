@@ -130,9 +130,9 @@
     </update>
 
 
-    <select id="quaryIsPlaceOrderOrderId" resultType="java.lang.String">
-        SELECT order_number
-        FROM sftc_order_express
+    <select id="quaryIsPlaceOrderOrderId" resultType="com.sftc.web.model.dto.MultipleGroupUUIDDTO">
+        SELECT se.order_number,so.group_uuid
+        FROM sftc_order_express se JOIN  sftc_order so ON se.order_id = so.id
         WHERE order_id = #{orderId} AND ship_name IS NOT NULL AND ship_mobile IS NOT NULL
         LIMIT 1
     </select>

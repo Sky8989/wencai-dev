@@ -10,6 +10,7 @@ import com.sftc.tools.constant.OrderConstant;
 import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.mybatis.MultiplePackageMapper;
+import com.sftc.web.model.dto.MultipleGroupUUIDDTO;
 import com.sftc.web.model.dto.MultiplePackageDTO;
 import com.sftc.web.model.vo.swaggerOrderRequest.BatchPackagesVO;
 import com.sftc.web.model.vo.swaggerOrderRequest.MultiplePackagePayVO;
@@ -169,9 +170,18 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         //获取orderID
         String orderID = requestPOJO.getOrder_id();
         //判断是否已经下过单
-        String isPlaceOrder = multiplePackageMapper.quaryIsPlaceOrderOrderId(orderID);
-        if (StringUtils.isNotBlank(isPlaceOrder)) {
-            return APIUtil.submitErrorResponse("请勿重复提交订单", null);
+        MultipleGroupUUIDDTO isPlaceOrder = multiplePackageMapper.quaryIsPlaceOrderOrderId(orderID);
+        if (isPlaceOrder!=null){
+            String orderNumber = isPlaceOrder.getOrder_number();
+            if (StringUtils.isNotBlank(orderNumber)) {
+                String group_uuid = isPlaceOrder.getGroup_uuid();
+                if (StringUtils.isBlank(group_uuid)){
+                    return APIUtil.logicErrorResponse("系统错误",null);
+                }
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("group_uuid",group_uuid);
+                return APIUtil.submitErrorResponse("请勿重复提交订单", jsonObject);
+            }
         }
          /*---------------------------------------------------------------- 查询数据库获取收件人和寄件人信息 --------------------------------------------------------------------------------*/
 
