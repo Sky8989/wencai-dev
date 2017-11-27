@@ -41,6 +41,8 @@ public class OrderDetailLogic {
     private GiftCardMapper giftCardMapper;
     @Resource
     private MessageMapper messageMapper;
+    @Resource
+    private OrderExpressTransformMapper orderExpressTransformMapper;
 
     private static final String CONSTANTS_STR = "BASICDATA";
 
@@ -141,6 +143,8 @@ public class OrderDetailLogic {
         if (apiResponse != null) return apiResponse;
         order = orderMapper.selectOrderDetailByUuid(uuid);
         setPackageType(order);//获取包裹信息
+        OrderExpressTransform orderExpressTransform = orderExpressTransformMapper.selectExpressTransformByUUID(uuid);
+        respObject.put("transform", orderExpressTransform);
 
         respObject.put("order", order);
 
