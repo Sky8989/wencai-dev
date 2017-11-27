@@ -113,11 +113,6 @@ public class OrderCancelLogic {
             }
         }
 
-        // 订单还未提交给顺丰的情况，只更新order的信息即可
-        // 订单已提交，仍然需要更新
-//        Order order1 = orderDao.findOne(order_id);
-//        order1.setIs_cancel(1);
-//        orderDao.save(order1);
         orderMapper.updateCancelOrderById(order_id); //事务问题,先存在查的改为统一使用Mybatis
         List<OrderExpress> orderExpress = orderExpressMapper.findAllOrderExpressByOrderId(order_id);
         for (OrderExpress orderExpress1 : orderExpress) {
