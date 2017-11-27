@@ -17,6 +17,7 @@ import com.sftc.web.model.vo.swaggerOrderRequest.MyOrderParamVO;
 import com.sftc.web.model.vo.swaggerOrderRequest.OrderSynVO;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Component;
 
@@ -105,23 +106,25 @@ public class OrderListLogic {
             List<MyOrderListDTO.OrderCallbackExpress> expressList = new ArrayList<MyOrderListDTO.OrderCallbackExpress>();
             HashSet flagSetIsEvaluated = new HashSet();
             for (OrderExpress oe : orderDTO.getOrderExpressList()) {
-                MyOrderListDTO.OrderCallbackExpress express = new MyOrderListDTO().new OrderCallbackExpress();
-                express.setUuid(oe.getUuid());
-                express.setRoute_state(oe.getRoute_state());
-                express.setPay_state(oe.getPay_state());
-                express.setShip_name(oe.getShip_name());
-                express.setShip_addr(oe.getShip_addr());
-                express.setOrder_number(oe.getOrder_number());
-                express.setWeight(oe.getWeight());  //增加包裹类型的三个字段
-                express.setObject_type(oe.getObject_type());
-                express.setPackage_comments(oe.getPackage_comments());
-                express.setReserve_time(oe.getReserve_time());
-                express.setDirected_code(oe.getDirected_code());
-                express.setPackage_type(oe.getPackage_type());
-                //如果有异常信息，则添加异常信息
-                if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
-                    express.setAttributes((oe.getAttributes()));
-                expressList.add(express);
+                if (StringUtils.isNotBlank(oe.getShip_name())) { //未填写的包裹不用列表展示
+                    MyOrderListDTO.OrderCallbackExpress express = new MyOrderListDTO().new OrderCallbackExpress();
+                    express.setUuid(oe.getUuid());
+                    express.setRoute_state(oe.getRoute_state());
+                    express.setPay_state(oe.getPay_state());
+                    express.setShip_name(oe.getShip_name());
+                    express.setShip_addr(oe.getShip_addr());
+                    express.setOrder_number(oe.getOrder_number());
+                    express.setWeight(oe.getWeight());  //增加包裹类型的三个字段
+                    express.setObject_type(oe.getObject_type());
+                    express.setPackage_comments(oe.getPackage_comments());
+                    express.setReserve_time(oe.getReserve_time());
+                    express.setDirected_code(oe.getDirected_code());
+                    express.setPackage_type(oe.getPackage_type());
+                    //如果有异常信息，则添加异常信息
+                    if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
+                        express.setAttributes((oe.getAttributes()));
+                    expressList.add(express);
+                }
                 // 检查快递是否评价过
                 List<Evaluate> evaluateList = evaluateMapper.selectByUuid(oe.getUuid());
                 // 如果被评价过，且有评价信息，则返回1 如果无评价信息 则返回0
@@ -189,25 +192,27 @@ public class OrderListLogic {
                     if (userContact == null) user_contact_id = 0;
                     else user_contact_id = userContact.getId();
                 }
-                FriendOrderListDTO.OrderFriendCallbackExpress express = new FriendOrderListDTO().new OrderFriendCallbackExpress();
-                express.setId(oe.getId());
-                express.setShip_user_id(oe.getShip_user_id());
-                express.setUuid(oe.getUuid());
-                express.setRoute_state(oe.getRoute_state());
-                express.setPay_state(oe.getPay_state());
-                express.setShip_name(oe.getShip_name());
-                express.setWeight(oe.getWeight());  //增加包裹类型的三个字段
-                express.setObject_type(oe.getObject_type());
-                express.setPackage_comments(oe.getPackage_comments());
-                express.setReserve_time(oe.getReserve_time());
-                express.setPackage_type(oe.getPackage_type());
-                express.setUser_contact_id(user_contact_id);
-                //如果有异常信息，则添加异常信息
-                if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
-                    express.setAttributes((oe.getAttributes()));
-                if (receiver != null && receiver.getAvatar() != null)
-                    express.setShip_avatar(receiver.getAvatar());
-                expressList.add(express);
+               if(StringUtils.isNotBlank(oe.getShip_name())){ //未填写的包裹不用列表展示
+                   FriendOrderListDTO.OrderFriendCallbackExpress express = new FriendOrderListDTO().new OrderFriendCallbackExpress();
+                   express.setId(oe.getId());
+                   express.setShip_user_id(oe.getShip_user_id());
+                   express.setUuid(oe.getUuid());
+                   express.setRoute_state(oe.getRoute_state());
+                   express.setPay_state(oe.getPay_state());
+                   express.setShip_name(oe.getShip_name());
+                   express.setWeight(oe.getWeight());  //增加包裹类型的三个字段
+                   express.setObject_type(oe.getObject_type());
+                   express.setPackage_comments(oe.getPackage_comments());
+                   express.setReserve_time(oe.getReserve_time());
+                   express.setPackage_type(oe.getPackage_type());
+                   express.setUser_contact_id(user_contact_id);
+                   //如果有异常信息，则添加异常信息
+                   if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
+                       express.setAttributes((oe.getAttributes()));
+                   if (receiver != null && receiver.getAvatar() != null)
+                       express.setShip_avatar(receiver.getAvatar());
+                   expressList.add(express);
+               }
                 // 检查快递是否评价过
                 List<Evaluate> evaluateList = evaluateMapper.selectByUuid(oe.getUuid());
                 // 如果被评价过，且有评价信息，则返回1 如果无评价信息 则返回0
@@ -250,7 +255,7 @@ public class OrderListLogic {
                     uuidSB.append(",");
                 }
                 if (oe.getOrder_number() == null || oe.getOrder_number().equals("")) {
-                    orderExpressMapper.updatePayState("WAIT_PAY",oe.getUuid());
+                    orderExpressMapper.updatePayState("WAIT_PAY", oe.getUuid());
                 }
             }
         }
@@ -293,8 +298,8 @@ public class OrderListLogic {
             //这个status的改动是因为是预约单 预约单支付后，派单前都是PAYING
             Order order = orderMapper.selectOrderDetailByUuid(orderSynVO.getUuid());
             String status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
-            if(order.getPay_method().equals("FREIGHT_COLLECT")){ //到付订单的状态处理
-                status = (orderSynVO.getStatus().equals("PAYING") || orderSynVO.getStatus().equals("INIT"))? "DELIVERING" : orderSynVO.getStatus();
+            if (order.getPay_method().equals("FREIGHT_COLLECT")) { //到付订单的状态处理
+                status = (orderSynVO.getStatus().equals("PAYING") || orderSynVO.getStatus().equals("INIT")) ? "DELIVERING" : orderSynVO.getStatus();
             }
             String pay_state = "WAIT_PAY";
             if (orderSynVO.getStatus().equals("WAIT_REFUND")) { //待退款、已退款路由状态合并为已取消
@@ -316,13 +321,13 @@ public class OrderListLogic {
                         abNormalError.equals("CONFORM_TO_ORDER_FAILURE") || abNormalError.equals("PICK_UP_OTHERS") ||
                         abNormalError.equals("DISPATCH_TIME_OUT")) {
                     status = "CANCELED";
-                }else if(abNormalError != null && abNormalError.equals("CUSTOMER_REJECTION") ||
+                } else if (abNormalError != null && abNormalError.equals("CUSTOMER_REJECTION") ||
                         abNormalError.equals("CONTACT_COURIER_FAILURE") || abNormalError.equals("CONTACT_RECEIVER_FAILURE") ||
                         abNormalError.equals("ERROR_RECEIVER_ADDRESS") || abNormalError.equals("TO_DROP_OFF_OTHERS") ||
-                        abNormalError.equals("PAY_FAILURE")||abNormalError.equals("VERIFY_FAILURE")){
+                        abNormalError.equals("PAY_FAILURE") || abNormalError.equals("VERIFY_FAILURE")) {
                     status = "DELIVERING";
-                }else if(abNormalError != null && abNormalError.equals("UNABLE_TO_PICK_UP") ||
-                        abNormalError.equals("DISPATCH_FAILED") || abNormalError.equals("DISCARD_TRIP_GROUP")){
+                } else if (abNormalError != null && abNormalError.equals("UNABLE_TO_PICK_UP") ||
+                        abNormalError.equals("DISPATCH_FAILED") || abNormalError.equals("DISCARD_TRIP_GROUP")) {
                     status = "WAIT_HAND_OVER";
                 }
             }
