@@ -105,6 +105,11 @@ public class OrderServiceImpl implements OrderService {
         return orderCancelLogic.cancelOrder(request);
     }
 
+    //根据uuid取消订单
+    public APIResponse cancelOrderByUuid(APIRequest request) {
+        return orderCancelLogic.cancelOrderByUuid(request);
+    }
+
     public APIResponse timeConstants(APIRequest request) {
         return orderOtherLogic.timeConstants(request);
     }

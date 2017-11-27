@@ -33,7 +33,8 @@
         <result column="package_comments" property="package_comments"/>
         <result column="uuid" property="uuid"/>
         <result column="pay_method" property="pay_method"/>
-        <collection property="orderExpressList" ofType="com.sftc.web.model.entity.OrderExpress" select="selectExpressList"
+        <collection property="orderExpressList" ofType="com.sftc.web.model.entity.OrderExpress"
+                    select="selectExpressList"
                     column="uuid">
         </collection>
     </resultMap>
@@ -45,7 +46,13 @@
     </select>
 
     <select id="selectUser" parameterType="int" resultType="com.sftc.web.model.entity.User">
-        SELECT id,avatar,name,create_time FROM sftc_user WHERE id = #{friend_id}
+        SELECT
+            id,
+            avatar,
+            name,
+            create_time
+        FROM sftc_user
+        WHERE id = #{friend_id}
     </select>
 
     <!-- 好友列表 -->

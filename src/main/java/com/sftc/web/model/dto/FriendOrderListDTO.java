@@ -55,6 +55,10 @@ public class FriendOrderListDTO {
         @Setter   @Getter
         private int ship_user_id;
         @Setter   @Getter
+        private String ship_wx_name;
+        @Setter   @Getter
+        private String sender_wx_name;
+        @Setter   @Getter
         private String uuid;
         @Setter   @Getter
         private String route_state;

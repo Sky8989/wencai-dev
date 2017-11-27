@@ -183,6 +183,15 @@ public class OrderController extends BaseController {
         return orderService.cancelOrder(request);
     }
 
+    @ApiOperation(value = "根据uuid取消订单", httpMethod = "POST")
+    @RequestMapping(value = "/cancel/uuid", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse cancelOrder(@RequestBody OrderCancelVO2 orderCancelVO) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(orderCancelVO);
+        return orderService.cancelOrderByUuid(request);
+    }
+
     @ApiOperation(value = "获取订单基础数据", httpMethod = "POST")
     @RequestMapping(value = "/constants", method = RequestMethod.POST)
     public @ResponseBody
