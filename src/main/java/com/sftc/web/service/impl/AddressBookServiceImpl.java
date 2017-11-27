@@ -9,9 +9,12 @@ import com.sftc.web.dao.jpa.AddressBookDao;
 import com.sftc.web.dao.jpa.AddressDao;
 import com.sftc.web.dao.mybatis.AddressBookMapper;
 import com.sftc.web.dao.mybatis.AddressMapper;
+import com.sftc.web.dao.mybatis.UserMapper;
 import com.sftc.web.model.dto.AddressBookDTO;
+import com.sftc.web.model.dto.AddressDTO;
 import com.sftc.web.model.entity.Address;
 import com.sftc.web.model.entity.AddressBook;
+import com.sftc.web.model.entity.User;
 import com.sftc.web.service.AddressBookService;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
@@ -23,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
 
 @Transactional
 @Service("addressBookService")
@@ -36,7 +40,8 @@ public class AddressBookServiceImpl implements AddressBookService {
     private AddressBookDao addressBookDao;
     @Resource
     private AddressDao addressDao;
-
+    @Resource
+    private UserMapper userMapper;
     private Gson gson = new Gson();
 
     public APIResponse addAddressBook(APIRequest apiRequest) {
@@ -209,9 +214,40 @@ public class AddressBookServiceImpl implements AddressBookService {
         }
     }
 
-    @Override
+    /**
+     * 查询历史地址
+     *
+     * @param request
+     * @return 地址簿中address
+     */
     public APIResponse selectAddressHistory(APIRequest request) {
-        return null;
+        // Param
+        String page = (String) request.getParameter("pageNum");
+        String size = (String) request.getParameter("pageSize");
+        if (page == null || page.equals("")) return APIUtil.paramErrorResponse("pageNum不能为空");
+        if (size == null || size.equals("")) return APIUtil.paramErrorResponse("pageSize不能为空");
+        Integer user_id = TokenUtils.getInstance().getUserId();
+        int pageNum = Integer.parseInt(page);
+        int pageSzie = Integer.parseInt(size);
+        if (user_id < 1) return APIUtil.paramErrorResponse("user_id不正确");
+        if (pageNum < 1 || pageSzie < 1) return APIUtil.paramErrorResponse("分页参数无效");
+
+        // Handle avatar
+        List<AddressBookDTO> addressBookDTOList = addressBookMapper.selectAddressHistoryListByUserId(user_id, (pageNum - 1) * pageSzie, pageSzie);
+        if (addressBookDTOList == null) return APIUtil.selectErrorResponse("暂无历史地址", null);
+        for (AddressBookDTO ab : addressBookDTOList) {
+            Address address = ab.getAddress();
+            User user = userMapper.selectUserByUserId(address.getUser_id());
+            AddressDTO addressDTO = gson.fromJson(gson.toJson(address), AddressDTO.class);
+            String avatar = (user == null || user.getAvatar() == null) ? DK_USER_AVATAR_DEFAULT : user.getAvatar();
+            addressDTO.setAvatar(avatar);
+            // handle wechatname by hxy
+            String wechatname = (user == null || user.getName() == null) ? "default_name" : user.getName();
+            ab.setShip_wechatname(wechatname);
+            ab.setAddressDTO(addressDTO);
+        }
+
+        return APIUtil.getResponse(SUCCESS, addressBookDTOList);
     }
 
 
