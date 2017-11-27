@@ -362,7 +362,7 @@ public class MessageServiceImpl implements MessageService {
 
                             // 注册失败 匹配error
                             if (registerResp.containsKey("error")) {
-                                return APIUtil.submitErrorResponse("注册失败", registerResp);
+                                return APIUtil.submitErrorResponse("验证码错误", registerResp);
                             } else {
                                 // 注册成功 获取邀请信息
                                 JSONObject merchantJSONObject = registerResp.getJSONObject("merchant");

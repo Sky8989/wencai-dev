@@ -93,4 +93,6 @@ public interface OrderExpressMapper {
 
     List<OrderExpress> selectOrderExpressByPage(OrderExpress orderExpress);
 
+    void updateRouteStateByOrderId(@Param("order_id") String order_id,
+                                   @Param("route_state")String route_state);
 }
