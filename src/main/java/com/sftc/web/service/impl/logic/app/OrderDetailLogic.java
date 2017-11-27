@@ -14,6 +14,7 @@ import com.sftc.web.model.dto.PackageMessageDTO;
 import com.sftc.web.model.vo.swaggerOrderRequest.OrderSynVO;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Component;
 
@@ -60,7 +61,6 @@ public class OrderDetailLogic {
         if (apiResponse != null) return apiResponse;
 
         OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
-        setPackageType(orderDTO); //获取包裹信息
         JSONObject respObject = new JSONObject();
         if (orderDTO == null) return APIUtil.getResponse(SUCCESS, null);
         List<OrderExpressDTO> orderExpress = orderDTO.getOrderExpressList();
@@ -79,6 +79,7 @@ public class OrderDetailLogic {
         }
 
         OrderDTO orderDTO2 = orderMapper.selectOrderDetailByOrderId(order_id);
+        setPackageType(orderDTO2); //获取包裹信息
         // order
         GsonBuilder gb = new GsonBuilder();
         Gson g = gb.create();
@@ -148,7 +149,6 @@ public class OrderDetailLogic {
         if (apiResponse != null) return apiResponse;
         order = orderMapper.selectOrderDetailByUuid(uuid);
         setPackageType(order);//获取包裹信息
-
 
         respObject.put("order", order);
 
@@ -285,16 +285,7 @@ public class OrderDetailLogic {
                 if(order.getPay_method().equals("FREIGHT_COLLECT")){ //到付订单的状态处理
                     order_status = (orderSynVO.getStatus().equals("PAYING") || orderSynVO.getStatus().equals("INIT"))? "DELIVERING" : orderSynVO.getStatus();
                 }
-                String pay_state = "WAIT_PAY";
-                if (orderSynVO.getStatus().equals("WAIT_REFUND")) { //待退款、已退款路由状态合并为已取消
-                    order_status = "CANCELED";
-                    pay_state = "WAIT_REFUND";
-                }
-                if (orderSynVO.getStatus().equals("REFUNDED")) { //待退款、已退款路由状态合并为已取消
-                    order_status = "CANCELED";
-                    pay_state = "REFUNDED";
-                }
-                if (!order_status.equals("CANCELED")) pay_state = orderSynVO.isPayed() ? "ALREADY_PAY" : "WAIT_PAY";
+                String pay_state = orderSynVO.isPayed() ? "ALREADY_PAY" : "WAIT_PAY";
                 //存在锁的问题，修改语句改为一条
                 JSONObject attributesOBJ = orderSynVO.getAttributes();
                 if (attributesOBJ.containsKey("abnormal_option")) {
