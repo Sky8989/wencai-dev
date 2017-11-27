@@ -192,6 +192,26 @@ public class OrderController extends BaseController {
         return orderService.cancelOrderByUuid(request);
     }
 
+    @IgnoreToken
+    @ApiOperation(value = "快递小哥30分钟未揽件自动取消(给顺丰调用)", httpMethod = "POST")
+    @RequestMapping(value = "/transform", method = RequestMethod.POST)
+    public @ResponseBody
+    APIResponse transformOrder(@RequestBody OrderTransform orderTransform) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(orderTransform);
+        return orderService.transformOrderFromSameToNation(request);
+    }
+
+    @IgnoreToken
+    @ApiOperation(value = "设置兜底记录已读", httpMethod = "PUT")
+    @RequestMapping(value = "/transform", method = RequestMethod.PUT)
+    public @ResponseBody
+    APIResponse readExpressTransform(@RequestBody OrderTransformIsReadVO orderTransformIsReadVO) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(orderTransformIsReadVO);
+        return orderService.readExpressTransform(request);
+    }
+
     @ApiOperation(value = "获取订单基础数据", httpMethod = "POST")
     @RequestMapping(value = "/constants", method = RequestMethod.POST)
     public @ResponseBody

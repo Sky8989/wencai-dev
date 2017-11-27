@@ -86,6 +86,17 @@ public interface OrderService {
     APIResponse cancelOrderByUuid(APIRequest request);
 
     /**
+     * 兜底
+     * 小哥30分钟未揽件，自动取消订单
+     */
+    APIResponse transformOrderFromSameToNation(APIRequest request);
+
+    /**
+     * 设置兜底记录已读
+     */
+    APIResponse readExpressTransform(APIRequest request);
+
+    /**
      * 时间规则
      */
     APIResponse timeConstants(APIRequest request);

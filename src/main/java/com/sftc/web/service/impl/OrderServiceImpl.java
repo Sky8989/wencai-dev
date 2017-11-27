@@ -32,6 +32,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderStatusLogic orderStatusLogic;
     @Resource
     private OrderOtherLogic orderOtherLogic;
+    @Resource
+    private OrderTransformLogic orderTransformLogic;
 
     @Resource
     private CMSOrderListLogic cmsOrderListLogic;
@@ -108,6 +110,14 @@ public class OrderServiceImpl implements OrderService {
     //根据uuid取消订单
     public APIResponse cancelOrderByUuid(APIRequest request) {
         return orderCancelLogic.cancelOrderByUuid(request);
+    }
+
+    public APIResponse transformOrderFromSameToNation(APIRequest request) {
+        return orderTransformLogic.transformOrderFromSameToNation(request);
+    }
+
+    public APIResponse readExpressTransform(APIRequest request) {
+        return orderTransformLogic.readExpressTransform(request);
     }
 
     public APIResponse timeConstants(APIRequest request) {
