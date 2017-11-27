@@ -14,6 +14,7 @@ import com.sftc.web.model.dto.PackageMessageDTO;
 import com.sftc.web.model.vo.swaggerOrderRequest.OrderSynVO;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Component;
 
@@ -111,7 +112,13 @@ public class OrderDetailLogic {
             return APIUtil.selectErrorResponse("订单不存在", null);
 
         JSONObject respObject = new JSONObject();
-
+        OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
+        if(StringUtils.isBlank(orderExpress.getOrder_number())){
+            order = orderMapper.selectOrderDetailByUuid(uuid);
+            setPackageType(order);//获取包裹信息
+            respObject.put("order", order);
+            return APIUtil.getResponse(SUCCESS, respObject);
+        }
         // 同城订单需要access_token
         String access_token = COMMON_ACCESSTOKEN;
         respObject = SFExpressHelper.getExpressDetail(uuid, access_token);
