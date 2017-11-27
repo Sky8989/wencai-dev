@@ -71,26 +71,18 @@ public class OrderDetailLogic {
                 orderExpressDTO.setShip_avatar(receiver.getAvatar());
             }
         }
-        //多包裹小哥端取消已下单包裹修改未填写收件人包裹的路由状态
-        if(orderDTO.getOrderExpressList().size()>0){
-            if(orderDTO.getOrderExpressList().get(0).getRoute_state().equals("CANCELED")){
-                orderExpressMapper.updateRouteStateByOrderId(order_id,"CANCELED");
-            }
-        }
-
-        OrderDTO orderDTO2 = orderMapper.selectOrderDetailByOrderId(order_id);
-        setPackageType(orderDTO2); //获取包裹信息
+        setPackageType(orderDTO); //获取包裹信息
         // order
         GsonBuilder gb = new GsonBuilder();
         Gson g = gb.create();
-        String resultJson = new Gson().toJson(orderDTO2);
+        String resultJson = new Gson().toJson(orderDTO);
         Map<String, Object> orderMap = g.fromJson(resultJson, new TypeToken<Map<String, Object>>() {
         }.getType());
-        User sender = userMapper.selectUserByUserId(orderDTO2.getSender_user_id());
+        User sender = userMapper.selectUserByUserId(orderDTO.getSender_user_id());
         orderMap.put("sender_avatar", sender.getAvatar());
 
         // giftCard
-        GiftCard giftCard = giftCardMapper.selectGiftCardById(orderDTO2.getGift_card_id());
+        GiftCard giftCard = giftCardMapper.selectGiftCardById(orderDTO.getGift_card_id());
         respObject.put("order", orderMap);
         respObject.put("giftCard", giftCard);
 
