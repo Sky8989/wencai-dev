@@ -184,7 +184,7 @@ public class OrderController extends BaseController {
     }
 
     @ApiOperation(value = "根据uuid取消订单", httpMethod = "POST")
-    @RequestMapping(value = "/cancel/uuid", method = RequestMethod.POST)
+    @RequestMapping(value = "/express/cancel", method = RequestMethod.POST)
     public @ResponseBody
     APIResponse cancelOrder(@RequestBody OrderCancelVO2 orderCancelVO) throws Exception {
         APIRequest request = new APIRequest();
