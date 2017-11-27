@@ -151,25 +151,7 @@ public class Order extends Object {
         this.order_type = orderParamVO.getOrder_type();
     }
 
-    /**
-     * 基于HttpServletRequest作为参数的构造方法 用于cms
-     * 后期便于应用扩展工厂模式 将此参数抽出
-     */
-    public Order(HttpServletRequest request) {
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
-            this.id = request.getParameter("id");
-        }
-        if (request.getParameter("order_type") != null && !"".equals(request.getParameter("order_type"))) {
-            this.order_type = request.getParameter("order_type");
-        }
-        if (request.getParameter("sender_mobile") != null && !"".equals(request.getParameter("sender_mobile"))) {
-            this.sender_mobile = request.getParameter("sender_mobile");
-        }
-    }
-
-    public int getIs_cancel() {
-        return is_cancel;
-    }
+    public int getIs_cancel() {return is_cancel;}
 
     public void setIs_cancel(int is_cancel) {
         this.is_cancel = is_cancel;

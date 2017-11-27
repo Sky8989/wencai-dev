@@ -244,21 +244,6 @@ public class OrderExpress extends Object {
         this.object_type = (String) request.getParameter("object_type");
     }
 
-    // cms 通过
-    public OrderExpress(HttpServletRequest request) {
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
-            this.id = Integer.parseInt(request.getParameter("id"));
-        }
-        if (request.getParameter("uuid") != null && !"".equals(request.getParameter("uuid"))) {
-            this.uuid = request.getParameter("uuid");
-        }
-        if (request.getParameter("ship_mobile") != null && !"".equals(request.getParameter("ship_mobile"))) {
-            this.ship_mobile = request.getParameter("ship_mobile");
-        }
-        if (request.getParameter("order_id") != null && !"".equals(request.getParameter("order_id"))) {
-            this.order_id = request.getParameter("order_id");
-        }
-    }
     public int getIs_directed() {return is_directed;}
 
     public void setIs_directed(int is_directed) {

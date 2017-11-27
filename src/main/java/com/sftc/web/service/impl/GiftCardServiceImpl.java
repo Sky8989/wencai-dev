@@ -8,6 +8,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import com.sftc.web.dao.mybatis.GiftCardMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +20,6 @@ import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIStatus;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.web.dao.jpa.GiftCardDao;
-import com.sftc.web.dao.mybatis.GiftCardMapper;
 import com.sftc.web.model.entity.GiftCard;
 import com.sftc.web.model.dto.GiftCardListDTO;
 import com.sftc.web.model.vo.swaggerRequest.DeleteGiftCardVO;
@@ -30,12 +30,6 @@ import com.sftc.web.service.QiniuService;
 public class GiftCardServiceImpl implements GiftCardService {
 	@Resource
 	private GiftCardMapper giftCardMapper;
-	@Resource
-	private QiniuService qiniuService;
-	@Resource
-	private QiniuServiceImpl qiniuServiceImpl;
-	@Resource
-	private GiftCardDao giftCardDao;
 
 	public APIResponse getGiftCardList(APIRequest request) {
 
@@ -67,109 +61,4 @@ public class GiftCardServiceImpl implements GiftCardService {
 
 		return APIUtil.getResponse(SUCCESS, giftCardLists);
 	}
-
-	/**
-	 * CMS 系统 获取礼品卡列表 条件查询+分页
-	 */
-	public APIResponse selectList(APIRequest apiRequest) throws Exception {
-
-		// 此处封装了 User的构造方法
-		HttpServletRequest httpServletRequest = apiRequest.getRequest();
-		GiftCard giftCard = new GiftCard(httpServletRequest);
-		int pageNumKey = Integer.parseInt(httpServletRequest.getParameter("pageNumKey"));
-		int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
-		PageHelper.startPage(pageNumKey, pageSizeKey);
-		List<GiftCard> giftCardList = giftCardMapper.selectByPage(giftCard);
-		// 使用lambab表达式 配合pageHelper实现对用户列表和查询相关信息的统一查询
-		PageInfo<Object> pageInfo = PageHelper.startPage(pageNumKey, pageSizeKey)
-				.doSelectPageInfo(() -> giftCardMapper.selectByPage(giftCard));
-		// 处理结果
-		if (pageInfo.getList().size() == 0) {
-			return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
-		} else {
-			return APIUtil.getResponse(SUCCESS, pageInfo);
-		}
-	}
-
-	/**
-	 * CMS 系统 添加礼品卡信息
-	 */
-	public APIResponse addGiftCard(GiftCard giftCard) throws Exception {
-		giftCard.setCreate_time(Long.toString(System.currentTimeMillis()));
-		giftCardMapper.insertGiftCard(giftCard);
-		return APIUtil.getResponse(SUCCESS, giftCard);
-	}
-
-	/**
-	 * CMS 系统 修改礼品卡信息
-	 */
-	public APIResponse updateGiftCard(GiftCard giftCard) throws Exception {
-		if(giftCardMapper.updateGiftCard(giftCard) > 0 )
-		return APIUtil.getResponse(SUCCESS, giftCard);
-		
-		return APIUtil.getResponse(APIStatus.PARAM_ERROR, "修改失败，不存在id=" + giftCard.getId());
-	}
-
-	/**
-	 * CMS 系统 删除礼品卡信息
-	 */
-	public APIResponse deleteGiftCard(int id) {
-		giftCardMapper.deleteGiftCard(id);
-		return APIUtil.getResponse(SUCCESS, id);
-	}
-	
-	public APIResponse deleteGiftCard(APIRequest apiRequest) {
-		 DeleteGiftCardVO giftCard = (DeleteGiftCardVO) apiRequest.getRequestParam();
-		if(giftCard != null && giftCardMapper.deleteGiftCard(giftCard.getId()) > 0)
-		return APIUtil.getResponse(SUCCESS, giftCard);
-		
-		return APIUtil.getResponse(APIStatus.PARAM_ERROR, "删除失败 "+giftCard);
-	}
-	
-
-	/**
-	 * 礼品卡保存操作， 当礼品卡id为0时 为新增礼品卡操作  礼品卡id 非0为修改操作
-	 * @throws Exception 
-	 */
-	@Override
-	public APIResponse save(APIRequest apiRequest) throws Exception {
-		GiftCard giftCard = (GiftCard) apiRequest.getRequestParam();
-		if (giftCard == null) {
-			return APIUtil.getResponse(APIStatus.PARAM_ERROR, "save失败，传入对象为 =" + giftCard);
-		}
-		if (StringUtil.isNotEmpty(giftCard.getIcon())) {
-			// 将已base64格式的图片路径 上传到七牛
-			String imgPath = uploadImageWithBase64(giftCard.getIcon());
-
-			if (imgPath == null)
-				return APIUtil.getResponse(APIStatus.PARAM_ERROR, "上传图片失败，传入对象为 =" + giftCard);
-
-			giftCard.setIcon(imgPath);
-			
-			if (giftCard.getId() != 0){
-				return updateGiftCard(giftCard);
-			}
-			giftCard.setCreate_time(Long.toString(System.currentTimeMillis()));
-			giftCardDao.save(giftCard);
-			return APIUtil.getResponse(SUCCESS, giftCard);
-		}
-		return APIUtil.getResponse(APIStatus.PARAM_ERROR, "save失败，传入对象为 =" + giftCard);
-	}
-
-	/**
-	 * 上传图片已base64的形式上传
-	 * 
-	 * @param base64Img
-	 *            图片路径转换成base64格式的字符串
-	 * @return
-	 */
-	public String uploadImageWithBase64(String base64Img) {
-		try {
-			return qiniuServiceImpl.putImage(base64Img, "giftCard/" + System.currentTimeMillis() + ".png");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 }

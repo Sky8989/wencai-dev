@@ -9,15 +9,9 @@ import java.util.List;
 @Repository
 public interface OrderExpressMapper {
 
-    List<OrderExpress> selectExpressForId(int id);
-
     void addOrderExpress2(OrderExpress orderExpress);//多增加门牌号信息
 
-    void updateOrderExpressForSF(OrderExpress orderExpress);
-
     void updateOrderExpressUuidAndReserveTimeById(@Param("id") int id, @Param("uuid") String uuid, @Param("reserve_time") String reserve_time);
-
-    void updateOrderExpressUuidAndOrderNumberWithId(@Param("id") int id, @Param("uuid") String uuid, @Param("order_number") String order_number);
 
     /**
      * 根据id更改快递状态
@@ -38,15 +32,6 @@ public interface OrderExpressMapper {
     //根据 uuid 更改订单的 Attributes 和状态
     void updateAttributesAndStatusByUUID(@Param("uuid") String uuid,@Param("attributes") String attributes,
                                          @Param("status") String status,@Param("pay_state") String pay_state);
-
-    // 更改 快递状态 为 取消 CANCELED
-//    void updateOrderExpressCanceled(String order_id);
-
-    // 更改 快递状态 为 超时 OVERTIME
-//    void updateOrderExpressOvertime(String order_id);
-
-    // 更新快递信息，by 快递id，用于好友填写订单时回填信息
-//    void updateOrderExpressByOrderExpressId(OrderExpress orderExpress);
 
     List<OrderExpress> findAllOrderExpressByOrderId(String order_id);
 
@@ -77,9 +62,6 @@ public interface OrderExpressMapper {
     //查询 来往记录所需的快递
     List<OrderExpress> selectExpressForContactInfo(@Param("sender_user_id") int sender_user_id, @Param("ship_user_id") int ship_user_id);
 
-    //获取快递信息
-//    OrderExpress selectOrderExpress(String orderId);
-
     /**
      * 批量查询快递信息
      *
@@ -88,11 +70,4 @@ public interface OrderExpressMapper {
      */
     List<OrderExpress> selectExpressForsyncSFExpressStatus(List<Integer> orderIdList);
 
-
-    ////////////////////下面是cms系统用到的mapper//////////////////////////
-
-    List<OrderExpress> selectOrderExpressByPage(OrderExpress orderExpress);
-
-    void updateRouteStateByOrderId(@Param("order_id") String order_id,
-                                   @Param("route_state")String route_state);
 }

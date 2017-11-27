@@ -10,22 +10,15 @@ import java.util.Map;
 @Repository
 public interface AddressMapper {
 
+    /**
+     * 添加地址
+     * @param address
+     */
     void addAddress(Address address);
 
-    void editeAddress(Address address);
-
-    List<Address> addressDetail(int id);
-
-    List<Address> addressList(Map<String, Integer> params);
-
-    void deleteAddress(int id);
-
-    void updateByPrimaryKey(Address address);
-
-    void deleteAddressById(@Param("id") int id);
-
     /**
-     * 根据手机号码和经纬度查询地址
+     * 删除地址
+     * @param id
      */
-    List<Address> selectAddressByPhoneAndLongitudeAndLatitude(@Param("phone") String phone, @Param("longitude") double longitude, @Param("latitude") double latitude);
+    void deleteAddress(int id);
 }

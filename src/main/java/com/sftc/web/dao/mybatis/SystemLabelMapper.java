@@ -10,11 +10,6 @@ import com.sftc.web.model.entity.SystemLabel;
 @Repository
 public interface SystemLabelMapper {
 
-	int deleteSystemLable(int id);
-
-	int updateSystemLabel(SystemLabel systemLabel);
-
 	List<SystemLabel> getSystemLabelList(SystemLabel systemLabel);
-
 
 }

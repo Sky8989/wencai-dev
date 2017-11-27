@@ -87,7 +87,7 @@ public class OrderListLogic {
         myOrderParamVO.setPageNum((myOrderParamVO.getPageNum() - 1) * myOrderParamVO.getPageSize());
         // select
 //        List<OrderDTO> orderList = orderMapper.selectMyOrderList(myOrderParamVO);
-        List<OrderDTO> orderDTOList = orderMapper.selectMyOrderList2(myOrderParamVO);
+        List<OrderDTO> orderDTOList = orderMapper.selectMyOrderList(myOrderParamVO);
         if (orderDTOList.size() == 0)
             return APIUtil.selectErrorResponse("您还未创建订单", null);
         List<MyOrderListDTO> myOrderListDTOS = new ArrayList<MyOrderListDTO>();

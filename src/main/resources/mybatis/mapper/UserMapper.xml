@@ -92,13 +92,4 @@
         </trim>
         WHERE id=#{id}
     </update>
-
-    <!--下面是cms系统用到的mapper-->
-    <select id="selectByPage" resultType="com.sftc.web.model.entity.User" parameterType="com.sftc.web.model.entity.User">
-        SELECT * FROM sftc_user
-        <where>
-            <if test="id != 0">and id = #{id}</if>
-            <if test="name != null">and name LIKE '%${name}%'</if>
-        </where>
-    </select>
 </mapper>

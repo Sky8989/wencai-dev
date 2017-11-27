@@ -111,25 +111,6 @@ public interface OrderService {
      */
     APIResponse screenShot(APIRequest request);
 
-    //面对面取件
-//    APIResponse faceOrdered(APIRequest request);
-
-
-    //////////////// CMS ////////////////
-
-    /**
-     * 获取 订单列表 支持分页查询 和 条件查询
-     */
-    APIResponse selectOrderListByPage(APIRequest request);
-
-    /**
-     * 查询已取消的订单
-     *
-     * @param request 通用请求参数
-     * @return 返回APIResponse
-     */
-     APIResponse selectCanceledOrderList(APIRequest request);
-
     /**
      * 根据地址经纬度判断是否可同城下单
      */

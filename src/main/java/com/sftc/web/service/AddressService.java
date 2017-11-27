@@ -10,29 +10,9 @@ import com.sftc.web.model.entity.Address;
 public interface AddressService {
 
     /**
-     * 新增地址
-     */
-    APIResponse addAddress(Object object);
-
-    /**
      * 新增新地址
      */
     APIResponse addAddress(APIRequest request);
-
-    /**
-     * 我的收件人地址
-     */
-    APIResponse consigneeAddress(APIRequest request);
-
-    /**
-     * 修改收件人地址
-     */
-    APIResponse editAddress(APIRequest request);
-
-    /**
-     * 删除收件人地址
-     */
-    APIResponse deleteAddress(APIRequest request);
 
     /**
      * 地址解析(地址转坐标)

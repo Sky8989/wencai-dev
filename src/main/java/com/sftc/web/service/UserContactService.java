@@ -31,10 +31,4 @@ public interface UserContactService {
      * 修改 好友图片与备注
      */
     APIResponse updateNotesAndPicture(APIRequest request);
-
-
-    /**
-     * CMS 获取好友列表 分页+条件
-     */
-    APIResponse selectUserContactListByPage(APIRequest request);
 }

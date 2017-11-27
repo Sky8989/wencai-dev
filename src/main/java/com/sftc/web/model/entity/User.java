@@ -78,17 +78,6 @@ public class User extends Object {
 
     public User() {}
 
-    /**
-     * 基于HttpServletRequest作为参数的构造方法 用于cms
-     * 后期便于应用扩展工厂模式 将此参数抽出
-     */
-    public User(HttpServletRequest request) {
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id")))
-        {this.id = Integer.parseInt(request.getParameter("id"));}
-        if (request.getParameter("name") != null && !"".equals(request.getParameter("name")))
-        {this.name = request.getParameter("name");}
-    }
-
     @Override
     public String toString() {
         return "User{" +

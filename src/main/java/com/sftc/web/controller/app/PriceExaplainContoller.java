@@ -19,42 +19,19 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "CMS价格说明")
+@Api(description = "顺丰同城价格说明")
 @RestController
 @RequestMapping(value = "price")
 public class PriceExaplainContoller {
     @Autowired
     private PriceExaplainService priceExaplainService;
-    @ApiOperation(value = "CMS根据城市获取价格说明", httpMethod = "POST")
-    @PostMapping(value = "get")
-    public APIResponse getPriceExplainByCity(@RequestBody PriceExaplainVO priceExaplainVO) {
-        APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(priceExaplainVO);
-        return priceExaplainService.getPriceExplainByCity(apiRequest);
-    }
-    
-    @ApiOperation(value = "CMS保存价格说明 id为0新增，id不为0修改", httpMethod = "POST")
-    @RequestMapping(value="save",method = RequestMethod.POST)
+
+    @ApiOperation(value = "根据城市查询价格说明", httpMethod = "GET")
+    @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
-    APIResponse save(@RequestBody PriceExplain priceExplain) throws Exception {
-    	APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(priceExplain);
-         return priceExaplainService.save(apiRequest);	
-    }
-    
-    @ApiOperation(value = "CMS删除价格说明", httpMethod = "DELETE")
-    @RequestMapping(method = RequestMethod.DELETE)
-    public @ResponseBody
-    APIResponse deletePriceExplain(@RequestBody DeletePriceExplain priceExplain) throws Exception {
-    	APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(priceExplain);
-    		return priceExaplainService.deletePriceExplain(apiRequest);
-    	}
-    
-    @ApiOperation(value = "CMS查询价格说明List", httpMethod = "GET")
-    @RequestMapping(value="list",method = RequestMethod.GET)
-    public @ResponseBody
-    APIResponse findPriceExplainList() throws Exception {
-    	return priceExaplainService.findPriceExplainList();	
+    APIResponse getPriceExplainByCity(@RequestBody PriceExaplainVO priceExaplainVO) throws Exception {
+        APIRequest request = new APIRequest();
+        request.setRequestParam(priceExaplainVO);
+        return priceExaplainService.getPriceExplainByCity(request);
     }
 }

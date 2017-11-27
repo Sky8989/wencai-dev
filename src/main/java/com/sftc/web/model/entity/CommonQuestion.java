@@ -34,17 +34,4 @@ public class CommonQuestion extends Object {
 
     public CommonQuestion() {
     }
-
-    /**
-     * 基于HttpServletRequest作为参数的构造方法 用于cms
-     * 后期便于应用扩展工厂模式 将此参数抽出
-     */
-    public CommonQuestion(HttpServletRequest request) {
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
-            this.id = Integer.parseInt(request.getParameter("id"));
-        }
-        if (request.getParameter("title") != null && !"".equals(request.getParameter("title"))) {
-            this.title = request.getParameter("title");
-        }
-    }
 }

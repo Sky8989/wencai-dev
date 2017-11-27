@@ -36,4 +36,5 @@ public interface AddressBookService {
      */
     APIResponse selectAddressBookList(APIRequest apiRequest);
 
+    APIResponse selectAddressHistory(APIRequest request);
 }

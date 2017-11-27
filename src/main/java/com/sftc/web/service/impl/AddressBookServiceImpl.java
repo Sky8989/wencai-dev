@@ -210,5 +210,10 @@ public class AddressBookServiceImpl implements AddressBookService {
         }
     }
 
+    @Override
+    public APIResponse selectAddressHistory(APIRequest request) {
+        return null;
+    }
+
 
 }

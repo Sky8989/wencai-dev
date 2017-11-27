@@ -28,8 +28,6 @@ import static com.sftc.tools.api.APIStatus.SUCCESS;
 public class PriceExaplainServiceImpl implements PriceExaplainService {
     @Resource
     private PriceExaplainMapper priceExaplainMapper;
-    @Resource
-    private PriceExplainDao priceExplainDao;
 
     @Resource
     private PriceExplainRedisDao priceExplainRedisDao;
@@ -82,67 +80,4 @@ public class PriceExaplainServiceImpl implements PriceExaplainService {
         return APIUtil.getResponse(SUCCESS, responeJSON);
 
     }
-
-    /**
-     * 价格说明 通过id删除
-     */
-    @Override
-    public APIResponse deletePriceExplain(APIRequest apiRequest) {
-        DeletePriceExplain priceExplain = (DeletePriceExplain) apiRequest.getRequestParam();
-        if (priceExplain != null && priceExaplainMapper.deletePriceExplain(priceExplain.getId()) > 0) {
-            return APIUtil.getResponse(APIStatus.SUCCESS, priceExplain);
-        } else {
-            return APIUtil.getResponse(APIStatus.PARAM_ERROR, "删除失败 " + priceExplain);
-        }
-    }
-
-    /**
-     * 新增价格说明
-     */
-    @Override
-    public APIResponse addPriceExplain(PriceExplain priceExplain) {
-        priceExplain.setCreate_time(Long.toString(System.currentTimeMillis()));
-        priceExplain.setUpdate_time(Long.toString(System.currentTimeMillis()));
-        priceExplainDao.save(priceExplain);
-        return APIUtil.getResponse(APIStatus.SUCCESS, priceExplain);
-    }
-
-    /**
-     * 修改价格说明
-     */
-    @Override
-    public APIResponse updatePriceExplain(PriceExplain priceExplain) {
-        priceExplain.setUpdate_time(Long.toString(System.currentTimeMillis()));
-        if (priceExaplainMapper.updatePriceExplain(priceExplain) > 0) {
-            return APIUtil.getResponse(APIStatus.SUCCESS, priceExplain);
-        } else {
-            return APIUtil.getResponse(APIStatus.PARAM_ERROR, "修改失败,不存在id=" + priceExplain.getId());
-        }
-    }
-
-    /**
-     * id为0时 为新增操作  id 非0为修改操作
-     */
-    @Override
-    public APIResponse save(APIRequest apiRequest) {
-        PriceExplain priceExplain = (PriceExplain) apiRequest.getRequestParam();
-        if (priceExplain == null) {
-            return APIUtil.getResponse(APIStatus.PARAM_ERROR, "save失败，传入对象为 =" + priceExplain);
-        }
-        if (priceExplain.getId() != 0)
-            return updatePriceExplain(priceExplain);
-
-        return addPriceExplain(priceExplain);
-    }
-
-    /**
-     * CMS获取 价格说明List
-     */
-    @Override
-    public APIResponse findPriceExplainList() {
-        List<PriceExplain> priceExplainList = (List<PriceExplain>) priceExplainDao.findAll();
-        return APIUtil.getResponse(APIStatus.SUCCESS, priceExplainList);
-    }
-
-
 }

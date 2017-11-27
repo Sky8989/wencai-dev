@@ -10,7 +10,6 @@ import com.sftc.tools.sf.SFTokenHelper;
 import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
-import com.sftc.web.model.entity.Token;
 import com.sftc.web.model.entity.User;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;

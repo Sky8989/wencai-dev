@@ -45,8 +45,4 @@ public interface UserService {
      */
     APIResponse checkBindStatus() throws Exception;
 
-    /**
-     * 下面是CMS后台所使用的接口
-     */
-    APIResponse selectUserListByPage(APIRequest request) throws Exception;
 }

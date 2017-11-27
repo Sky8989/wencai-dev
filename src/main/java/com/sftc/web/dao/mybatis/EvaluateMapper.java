@@ -14,7 +14,4 @@ public interface EvaluateMapper {
 
     // 查找 评价信息 by订单id
     List<Evaluate> selectByUuid(@Param("uuid") String uuid);
-
-    // 下面是cms系统用到的mapper
-    List<Evaluate> selectByPage(Evaluate evaluate);
 }

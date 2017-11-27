@@ -17,12 +17,6 @@ public interface TokenMapper {
 
     Token getTokenById(int user_id);
 
-    Token getTokenByMobile(String mobile);
-
-    Token selectUserIdByToken(@Param("token") String token);
-
-    List<Token> getTokenList(Token token);
-
     User tokenInterceptor(String token);
 
     Integer getUserIdByLocalToken(String token);

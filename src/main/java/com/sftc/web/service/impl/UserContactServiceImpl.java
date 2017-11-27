@@ -260,23 +260,4 @@ public class UserContactServiceImpl implements UserContactService {
         String resultStr = user_contact_id + " notes:" + notes + "mobile:" + mobile + "picture：" + picture_address;
         return APIUtil.getResponse(SUCCESS, resultStr);
     }
-
-    /**
-     * CMS 获取好友列表 分页+条件
-     */
-    public APIResponse selectUserContactListByPage(APIRequest request) {
-
-        HttpServletRequest httpServletRequest = request.getRequest();
-        // 此处封装了 UserContact的构造方法
-        UserContactNew userContactNew = new UserContactNew(httpServletRequest);
-        int pageNumKey = Integer.parseInt(httpServletRequest.getParameter("pageNumKey"));
-        int pageSizeKey = Integer.parseInt(httpServletRequest.getParameter("pageSizeKey"));
-        PageHelper.startPage(pageNumKey, pageSizeKey);
-        List<UserContactNew> userContactNewList = userContactMapper.selectByPage(userContactNew);
-        if (userContactNewList.size() == 0) {
-            return APIUtil.selectErrorResponse("搜索到的结果数为0，请检查查询条件", null);
-        } else {
-            return APIUtil.getResponse(SUCCESS, userContactNewList);
-        }
-    }
 }

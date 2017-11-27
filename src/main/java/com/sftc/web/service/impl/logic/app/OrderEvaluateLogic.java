@@ -10,7 +10,6 @@ import com.sftc.web.dao.mybatis.EvaluateMapper;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.model.entity.Evaluate;
-import com.sftc.web.model.entity.Order;
 import com.sftc.web.model.entity.OrderExpress;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.HttpPut;

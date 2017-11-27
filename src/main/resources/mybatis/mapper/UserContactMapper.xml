@@ -63,29 +63,6 @@
         LIMIT #{pageNum}, #{pageSize}
     </select>
 
-    <select id="selectFriendCount" resultType="int">
-        SELECT count(*)
-        FROM sftc_user_contact
-        WHERE user_id = #{user_id}
-    </select>
-
-    <insert id="addFriend" parameterType="com.sftc.web.model.vo.swaggerRequest.UserContactParamVO">
-        INSERT INTO sftc_user_contact
-        (user_id, friend_id, create_time)
-        VALUES
-            (#{user_id}, #{friend_id}, #{create_time})
-    </insert>
-
-    <!-- 编辑好友  -->
-    <update id="updateFriend" parameterType="com.sftc.web.model.entity.UserContact">
-        update sftc_user_contact
-        <trim prefix="set" suffixOverrides=",">
-            <if test="name!=null">name=#{name},</if>
-            <if test="phone!=null">phone=#{phone},</if>
-        </trim>
-        WHERE id=#{id}
-    </update>
-
     <!-- 星标好友 -->
     <update id="starFriend" parameterType="int">
         UPDATE sftc_user_contact
@@ -133,33 +110,9 @@
         WHERE id = #{id}
     </update>
 
-    <update id="updateNotes">
-        UPDATE sftc_user_contact
-        SET notes = #{notes}
-        WHERE id = #{id}
-    </update>
-
-    <update id="updatePicture">
-        UPDATE sftc_user_contact
-        SET picture_address = #{picture_address}
-        WHERE id = #{id}
-    </update>
-
     <update id="updateNotesPictureMobile">
         UPDATE sftc_user_contact
         SET notes = #{notes}, picture_address = #{picture_address}, mobile = #{mobile}
         WHERE id = #{id}
     </update>
-
-
-    <!--下面是cms系统用到的mapper-->
-    <select id="selectByPage" resultType="com.sftc.web.model.entity.UserContactNew"
-            parameterType="com.sftc.web.model.entity.UserContactNew">
-        SELECT * FROM sftc_user_contact
-        <where>
-            <if test="user_id != 0">and user_id = #{user_id}</if>
-            <if test="id != 0">and id = #{id}</if>
-        </where>
-    </select>
-
 </mapper>

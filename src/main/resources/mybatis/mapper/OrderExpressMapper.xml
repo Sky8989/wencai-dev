@@ -20,12 +20,6 @@
         <result column="is_use" property="is_use"/>
     </resultMap>
 
-    <select id="selectExpressForId" parameterType="int" resultType="com.sftc.web.model.entity.OrderExpress">
-        SELECT *
-        FROM sftc_order_express
-        WHERE (sender_user_id = #{id} OR ship_user_id = #{id})
-    </select>
-
     <!-- 根据order_id-->
     <select id="findAllOrderExpressByOrderId" resultType="com.sftc.web.model.entity.OrderExpress"
             parameterType="java.lang.String">
@@ -71,37 +65,11 @@
         )
     </insert>
 
-    <!--更新快递信息，by 快递id，用于好友填写订单时回填信息-->
-    <update id="updateOrderExpressByOrderExpressId" parameterType="com.sftc.web.model.entity.OrderExpress">
-        UPDATE sftc_order_express
-        SET
-            ship_name          = #{ship_name, jdbcType=VARCHAR},
-            ship_mobile        = #{ship_mobile, jdbcType=VARCHAR},
-            ship_province      = #{ship_province, jdbcType=VARCHAR},
-            ship_city          = #{ship_city, jdbcType=VARCHAR},
-            ship_area          = #{ship_area, jdbcType=VARCHAR},
-            ship_addr          = #{ship_addr, jdbcType=VARCHAR},
-            supplementary_info = #{supplementary_info, jdbcType=VARCHAR},
-            route_state        = #{route_state, jdbcType=VARCHAR},
-            longitude          = #{longitude, jdbcType=DOUBLE},
-            latitude           = #{latitude, jdbcType=DOUBLE},
-            is_use             = 1,
-            ship_user_id       = #{ship_user_id, jdbcType=INTEGER},
-            receive_time       = #{receive_time, jdbcType=VARCHAR}
-        WHERE id = #{id}
-    </update>
-
     <update id="updateOrderExpressStatus">
         UPDATE sftc_order_express
         SET route_state = #{status, jdbcType=VARCHAR},
             pay_state   = #{pay_state,jdbcType=VARCHAR}
         WHERE id = #{express_id}
-    </update>
-
-    <update id="updateRouteStateByOrderId">
-        UPDATE sftc_order_express
-        SET route_state = #{route_state, jdbcType=VARCHAR}
-        WHERE order_id = #{order_id} AND ship_name IS NULL
     </update>
 
     <update id="updatePayState">
@@ -135,40 +103,11 @@
         WHERE uuid = #{uuid}
     </update>
 
-    <update id="updateOrderExpressCanceled" parameterType="java.lang.String">
-        UPDATE sftc_order_express
-        SET route_state = 'CANCELED'
-        WHERE order_id = #{order_id}
-    </update>
-
-    <update id="updateOrderExpressOvertime" parameterType="java.lang.String">
-        UPDATE sftc_order_express
-        SET route_state = 'OVERTIME'
-        WHERE order_id = #{order_id}
-    </update>
-
-    <update id="updateOrderExpressForSF" parameterType="com.sftc.web.model.entity.OrderExpress">
-        update sftc_order_express
-        set
-        route_state=#{state, jdbcType=VARCHAR}
-        <if test="attributes != null and attributes != ''">,attributes=#{attributes, jdbcType=VARCHAR}</if>
-        WHERE uuid=#{uuid}
-    </update>
-
     <update id="updateOrderExpressUuidAndReserveTimeById">
         update sftc_order_express
         set
         <if test="uuid != null">uuid=#{uuid, jdbcType=VARCHAR},</if>
         <if test="reserve_time != null">reserve_time=#{reserve_time, jdbcType=VARCHAR},</if>
-        route_state='WAIT_HAND_OVER'
-        WHERE id=#{id}
-    </update>
-
-    <update id="updateOrderExpressUuidAndOrderNumberWithId">
-        update sftc_order_express
-        set
-        <if test="uuid != null">uuid=#{uuid, jdbcType=VARCHAR},</if>
-        <if test="order_number != null">order_number=#{order_number, jdbcType=VARCHAR},</if>
         route_state='WAIT_HAND_OVER'
         WHERE id=#{id}
     </update>
@@ -193,18 +132,6 @@
         SET order_number = #{order_number}
         WHERE id = #{id}
     </update>
-
-    <!--下面是cms系统用到的mapper-->
-    <select id="selectOrderExpressByPage" resultType="com.sftc.web.model.entity.OrderExpress"
-            parameterType="com.sftc.web.model.entity.OrderExpress">
-        SELECT * FROM sftc_order_express
-        <where>
-            <if test="id != 0">and id = #{id}</if>
-            <if test="order_id != null">and order_id = #{order_id}</if>
-            <if test="ship_mobile != null">and ship_mobile = #{ship_mobile}</if>
-            <if test="uuid != null">and uuid = #{uuid}</if>
-        </where>
-    </select>
 
     <select id="selectOrderIdForsyncSFExpressStatus" parameterType="int" resultType="java.lang.String">
         SELECT *

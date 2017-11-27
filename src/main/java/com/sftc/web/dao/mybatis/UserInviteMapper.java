@@ -6,8 +6,4 @@ import org.springframework.stereotype.Repository;
 public interface UserInviteMapper {
 
     Integer save(UserInvite userInvite);
-
-
-
-
 }
