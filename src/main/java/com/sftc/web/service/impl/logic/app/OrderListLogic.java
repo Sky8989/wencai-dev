@@ -10,6 +10,7 @@ import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.dto.OrderDTO;
+import com.sftc.web.model.dto.WxNameDTO;
 import com.sftc.web.model.entity.*;
 import com.sftc.web.model.dto.FriendOrderListDTO;
 import com.sftc.web.model.dto.MyOrderListDTO;
@@ -187,11 +188,21 @@ public class OrderListLogic {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
                 int user_contact_id = 0;//好友圈也需要好友关系id
                 UserContact userContact = null;
+                String sender_wx_name = null;
+                String ship_wx_name = null;
                 if (orderDTO.getSender_user_id() != 0 && oe.getShip_user_id() != 0) {
                     if (user_id == orderDTO.getSender_user_id()) {//如果为寄件方
                         userContact = userContactMapper.friendDetail(orderDTO.getSender_user_id(), oe.getShip_user_id());
                     } else {//如果为收件方
                         userContact = userContactMapper.friendDetail(oe.getShip_user_id(), orderDTO.getSender_user_id());
+                    }
+                    User senderName = userMapper.selectUserByUserId(oe.getSender_user_id());
+                    User receiverName = userMapper.selectUserByUserId(oe.getShip_user_id());
+                    if (sender != null) {
+                        sender_wx_name = senderName.getName();
+                    }
+                    if (receiver != null) {
+                        ship_wx_name = receiverName.getName();
                     }
                     if (userContact == null) user_contact_id = 0;
                     else user_contact_id = userContact.getId();
@@ -210,6 +221,8 @@ public class OrderListLogic {
                 express.setReserve_time(oe.getReserve_time());
                 express.setPackage_type(oe.getPackage_type());
                 express.setUser_contact_id(user_contact_id);
+                express.setShip_wx_name(sender_wx_name);
+                express.setSender_wx_name(ship_wx_name);
                 //如果有异常信息，则添加异常信息
                 if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
                     express.setAttributes((oe.getAttributes()));

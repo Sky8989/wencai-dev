@@ -1,6 +1,7 @@
 package com.sftc.web.dao.mybatis;
 
 import com.sftc.web.model.dto.FriendRecordDTO;
+import com.sftc.web.model.dto.WxNameDTO;
 import com.sftc.web.model.vo.swaggerRequest.FriendListVO;
 import com.sftc.web.model.entity.UserContact;
 import com.sftc.web.model.entity.UserContactNew;
