@@ -101,7 +101,7 @@
     <update id="updateRouteStateByOrderId">
         UPDATE sftc_order_express
         SET route_state = #{route_state, jdbcType=VARCHAR}
-        WHERE order_id = #{order_id}
+        WHERE order_id = #{order_id} AND ship_name IS NOT NULL
     </update>
 
     <update id="updatePayState">
