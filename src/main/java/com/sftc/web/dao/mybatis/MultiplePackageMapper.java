@@ -1,5 +1,6 @@
 package com.sftc.web.dao.mybatis;
 
+import com.sftc.web.model.dto.MultipleGroupUUIDDTO;
 import com.sftc.web.model.dto.MultiplePackageDTO;
 import org.apache.ibatis.annotations.Param;
 
@@ -30,5 +31,5 @@ public interface MultiplePackageMapper {
 
     void updateRouteStateByGroupID(@Param(value = "routeState") String routeState,@Param(value = "groupUUId")String groupUUId);
 
-    String quaryIsPlaceOrderOrderId(String orderId);
+    MultipleGroupUUIDDTO quaryIsPlaceOrderOrderId(String orderId);
 }
