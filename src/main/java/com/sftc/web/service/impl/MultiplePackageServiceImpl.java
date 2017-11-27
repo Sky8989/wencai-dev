@@ -459,6 +459,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         requestJson.put("merchant", merchantJson);
         //获取预约时间处理
         String reserveTime = requestPOJO.getReserve_time();
+        String oldReserveTime = reserveTime;
         //订单类型为：预约
         if (!StringUtils.isBlank(reserveTime)) {
             reserveTime = DateUtils.iSO8601DateWithTimeStampAndFormat(reserveTime, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
@@ -471,7 +472,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         //默认为普通
         requestJson.put("type", "NORMAL");
         sfRequestJson.put("request", requestJson);
-        return reserveTime;
+        return oldReserveTime;
     }
 
     /**
