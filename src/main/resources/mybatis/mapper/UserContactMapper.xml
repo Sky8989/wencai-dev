@@ -55,14 +55,6 @@
         WHERE id = #{friend_id}
     </select>
 
-    <select id="selectWxNameByOrderId" parameterType="java.lang.String" resultType="com.sftc.web.model.dto.WxNameDTO">
-        SELECT se.name AS sender_wx_name, sh.name AS ship_wx_name
-        FROM sftc_order_express so
-            JOIN sftc_user se ON so.sender_user_id = se.id
-            JOIN sftc_user sh ON so.ship_user_id = sh.id
-        WHERE so.uuid = #{uuid}
-    </select>
-
     <!-- 好友列表 -->
     <select id="friendList" parameterType="com.sftc.web.model.vo.swaggerRequest.FriendListVO" resultMap="friendMap">
         SELECT *

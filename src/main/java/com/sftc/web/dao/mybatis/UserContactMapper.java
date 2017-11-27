@@ -24,13 +24,6 @@ public interface UserContactMapper {
 
     void updateFriend(UserContact userContact);
 
-    /**
-     * 通过订单id获取收件人寄件人微信名
-     * @param order_id
-     * @return
-     */
-    WxNameDTO selectWxNameByOrderId(String uuid);
-
     UserContact friendDetail(@Param("user_id") int user_id, @Param("friend_id") int friend);
 
     List<FriendRecordDTO> selectCirclesContact(UserContactParamVO userContactParamVO);
