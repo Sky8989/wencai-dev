@@ -176,6 +176,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
             if (StringUtils.isNotBlank(orderNumber)) {
                 String group_uuid = isPlaceOrder.getGroup_uuid();
                 if (StringUtils.isBlank(group_uuid)){
+                    LoggerFactory.getLogger(this.getClass().getName()).error("group_uuid为空！！！");
                     return APIUtil.logicErrorResponse("系统错误",null);
                 }
                 JSONObject jsonObject = new JSONObject();
@@ -312,6 +313,7 @@ public class MultiplePackageServiceImpl implements MultiplePackageService {
         /*-------------------------------------------------- 修改数据库表sftc_order--------------------------------------------------------*/
         JSONObject requestGroupJson = sfResponeObject.getJSONObject("requestgroup");
         String groupUUId = requestGroupJson.getString("uuid");
+        LoggerFactory.getLogger(this.getClass().getName()).info("目睹sf响应体-groupUUId真实值："+groupUUId);
         String orderId = sourceInfo.getOrderId();
         multiplePackageMapper.updateorderById(orderId, groupUUId);
 
