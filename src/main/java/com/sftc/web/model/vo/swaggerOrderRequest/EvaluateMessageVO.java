@@ -16,10 +16,6 @@ public class EvaluateMessageVO {
     private EvaluateAttributesVO attributes;
 
     @Getter @Setter
-    @ApiModelProperty(name = "user_id",value = "用户id",example = "10093",required = true)
-    private String user_id;
-
-    @Getter @Setter
     @ApiModelProperty(name = "uuid",value = "快递uuid",example = "2c9a85895f24480d015f299b99c4588a",required = true)
     private String uuid;
 

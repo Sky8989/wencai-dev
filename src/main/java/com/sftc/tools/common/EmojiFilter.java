@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 /**
  * Emoji过滤器
  * Created by huxingyue on 2017/8/16.
+ *
+ * @author Administrator
  */
 
 public class EmojiFilter {
@@ -101,11 +103,11 @@ public class EmojiFilter {
         Matcher matcher = pattern.matcher(str);
 
         StringBuffer sb = new StringBuffer();
-        while(matcher.find()) {
+        while (matcher.find()) {
             try {
                 matcher.appendReplacement(sb,
                         URLDecoder.decode(matcher.group(1), "UTF-8"));
-            } catch(UnsupportedEncodingException e) {
+            } catch (UnsupportedEncodingException e) {
                 throw e;
             }
         }
@@ -114,9 +116,9 @@ public class EmojiFilter {
     }
 
     public static String replaceEmoji(String source) {
-        if(StringUtils.isNotBlank(source)){
+        if (StringUtils.isNotBlank(source)) {
             return source.replaceAll("[\\ud800\\udc00-\\udbff\\udfff\\ud800-\\udfff]", "*");
-        }else{
+        } else {
             return source;
         }
     }

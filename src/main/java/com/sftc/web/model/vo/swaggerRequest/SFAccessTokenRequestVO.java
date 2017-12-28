@@ -1,5 +1,6 @@
 package com.sftc.web.model.vo.swaggerRequest;
 
+import com.sftc.web.model.vo.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -7,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
  * Created by xf on 2017/10/23.
  */
 @ApiModel(value = "设置顺丰公共token请求包装类")
-public class SFAccessTokenRequestVO {
+public class SFAccessTokenRequestVO extends BaseVO {
     @ApiModelProperty(name = "access_token",value = "顺丰access_token",example = "EyMivbd44I124lcddrBG",required = true)
     private String access_token;
 

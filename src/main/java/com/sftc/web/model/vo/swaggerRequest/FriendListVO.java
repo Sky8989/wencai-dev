@@ -1,22 +1,26 @@
 package com.sftc.web.model.vo.swaggerRequest;
 
 
+import com.sftc.web.model.vo.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 @ApiModel(value = "好友列表请求类")
-public class FriendListVO {
-    @ApiModelProperty(name = "user_id",value = "用户id",example = "10028",required = true,hidden = true)
-    private int user_id;
+public class FriendListVO extends BaseVO {
+    @ApiModelProperty(name = "user_uuid",value = "用户uuid",example = "10028",required = true,hidden = true)
+    private String user_uuid;
     @ApiModelProperty(name = "pageNum",value = "页数",example = "1",required = true)
     private int pageNum;
     @ApiModelProperty(name = "pageSize",value = "每页数量",example = "10",required = true)
     private int pageSize;
 
-    public int getUser_id() {
-        return user_id;
+    public String getUser_uuid() {
+        return user_uuid;
     }
 
-    public void setUser_id(int user_id) {this.user_id = user_id;}
+    public void setUser_uuid(String user_uuid) {
+        this.user_uuid = user_uuid;
+    }
 
     public int getPageNum() {
         return pageNum;

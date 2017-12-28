@@ -1,5 +1,6 @@
 package com.sftc.web.model.vo.swaggerRequest;
 
+import com.sftc.web.model.vo.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import lombok.Setter;
  * @Time 下午3:52
  */
 @ApiModel(value = "优惠券兑换")
-public class CouPonPromoVO {
+public class CouPonPromoVO extends BaseVO {
 
     @Getter @Setter
     @ApiModelProperty(name = "promo_code",value = "兑换密语",example = "1",required = true)

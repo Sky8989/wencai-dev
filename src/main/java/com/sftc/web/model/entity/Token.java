@@ -4,8 +4,6 @@ import com.sftc.web.model.others.Object;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Created by IntelliJ IDEA.
  *
@@ -48,50 +46,36 @@ public class Token extends Object {
     private String refresh_token;
 
     @Setter @Getter
-    private int user_id;
+    private String user_uuid;
 
     public Token() {}
 
-    /**
-     * CMS使用的构造方法
-     *
-     * @param request
-     */
-    public Token(HttpServletRequest request) {
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
-            this.id = Integer.parseInt(request.getParameter("id"));
-        }
-        if (request.getParameter("user_id") != null && !"".equals(request.getParameter("user_id"))) {
-            this.user_id = Integer.parseInt(request.getParameter("user_id"));
-        }
-    }
-
-    public Token(int user_id, String token) {
-        this.user_id = user_id;
+    public Token(String user_uuid, String token) {
+        this.user_uuid = user_uuid;
         this.local_token = token;
         this.create_time = Long.toString(System.currentTimeMillis());
         this.gmt_modified = Long.toString(System.currentTimeMillis());
         this.gmt_expiry = (Long.parseLong(gmt_modified) + 2592000000L) + "";
     }
 
-    public Token(String create_time, int is_logout, String gmt_modified, String gmt_expiry, int user_id) {
+    public Token(String create_time, int is_logout, String gmt_modified, String gmt_expiry, String user_uuid) {
         this.create_time = create_time;
         this.is_logout = is_logout;
         this.gmt_modified = gmt_modified;
         this.gmt_expiry = gmt_expiry;
-        this.user_id = user_id;
+        this.user_uuid = user_uuid;
     }
 
 
     public Token(String create_time,int is_logout, String gmt_modified, String gmt_expiry,
-                 String access_token, String refresh_token, int user_id) {
+                 String access_token, String refresh_token, String user_uuid) {
         this.create_time = create_time;
         this.is_logout = is_logout;
         this.gmt_modified = gmt_modified;
         this.gmt_expiry = gmt_expiry;
         this.access_token = access_token;
         this.refresh_token = refresh_token;
-        this.user_id = user_id;
+        this.user_uuid = user_uuid;
     }
 
     public int getIs_logout() {return is_logout;}

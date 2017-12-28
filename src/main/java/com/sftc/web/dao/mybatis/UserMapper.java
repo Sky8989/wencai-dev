@@ -10,15 +10,11 @@ public interface UserMapper {
 
     User selectUserByPhone(String user_phone);
 
-    List<User> selectUserByOpenid(String open_id);
+    List<User> selectUserByOpenid(String openId);
 
-    List<User> findUserByMobile(String mobile);
-
-    User selectUserByUserId(int user_id);
+    User selectUserByUserUUId(String userUUId);
 
     void insertOpenid(User user);
-
-    void addMerchant(User merchant);
 
     User getUuidAndtoken(String order_id);
 
@@ -28,7 +24,4 @@ public interface UserMapper {
 
     // 动态插入
     void updateUser(User user);
-
-    /// 下面是cms系统用到的mapper
-    List<User> selectByPage(User user);
 }

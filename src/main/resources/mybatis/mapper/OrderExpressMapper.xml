@@ -20,28 +20,22 @@
         <result column="is_use" property="is_use"/>
     </resultMap>
 
-    <select id="selectExpressForId" parameterType="int" resultType="com.sftc.web.model.entity.OrderExpress">
-        SELECT *
-        FROM sftc_order_express
-        WHERE (sender_user_id = #{id} OR ship_user_id = #{id})
-    </select>
-
     <!-- 根据order_id-->
     <select id="findAllOrderExpressByOrderId" resultType="com.sftc.web.model.entity.OrderExpress"
             parameterType="java.lang.String">
         SELECT *
-        FROM sftc_order_express
+        FROM c_order_express
         WHERE order_id = #{order_id}
     </select>
 
     <!-- 普通下单 -->
     <insert id="addOrderExpress2" parameterType="com.sftc.web.model.entity.OrderExpress" useGeneratedKeys="true"
             keyProperty="id">
-        INSERT INTO sftc_order_express
+        INSERT INTO c_order_express
         (ship_name, ship_mobile, ship_province, ship_city, ship_area,
          ship_addr, supplementary_info, order_number, package_type, object_type, package_comments, create_time,
-         sender_user_id, order_id, route_state, uuid, longitude, latitude, reserve_time, order_time, directed_code,
-         attributes, is_directed, weight, pay_state)
+         sender_user_uuid, order_id, route_state, uuid, longitude, latitude, reserve_time, order_time, directed_code,
+         attributes, is_directed, weight, pay_state,quote_uuid)
         VALUES (
             #{ship_name, jdbcType=VARCHAR},
             #{ship_mobile, jdbcType=VARCHAR},
@@ -55,7 +49,7 @@
             #{object_type, jdbcType=VARCHAR},
             #{package_comments, jdbcType=VARCHAR},
             #{create_time, jdbcType=VARCHAR},
-            #{sender_user_id, jdbcType=INTEGER},
+            #{sender_user_uuid, jdbcType=INTEGER},
             #{order_id, jdbcType=INTEGER},
             #{route_state, jdbcType=VARCHAR},
             #{uuid, jdbcType=VARCHAR},
@@ -67,58 +61,47 @@
             #{attributes, jdbcType=VARCHAR},
             #{is_directed, jdbcType=VARCHAR},
             #{weight, jdbcType=VARCHAR},
-            #{pay_state,jdbcType=VARCHAR}
+            #{pay_state,jdbcType=VARCHAR},
+            #{quote_uuid,jdbcType=VARCHAR}
         )
     </insert>
 
-    <!--更新快递信息，by 快递id，用于好友填写订单时回填信息-->
-    <update id="updateOrderExpressByOrderExpressId" parameterType="com.sftc.web.model.entity.OrderExpress">
-        UPDATE sftc_order_express
-        SET
-            ship_name          = #{ship_name, jdbcType=VARCHAR},
-            ship_mobile        = #{ship_mobile, jdbcType=VARCHAR},
-            ship_province      = #{ship_province, jdbcType=VARCHAR},
-            ship_city          = #{ship_city, jdbcType=VARCHAR},
-            ship_area          = #{ship_area, jdbcType=VARCHAR},
-            ship_addr          = #{ship_addr, jdbcType=VARCHAR},
-            supplementary_info = #{supplementary_info, jdbcType=VARCHAR},
-            route_state        = #{route_state, jdbcType=VARCHAR},
-            longitude          = #{longitude, jdbcType=DOUBLE},
-            latitude           = #{latitude, jdbcType=DOUBLE},
-            is_use             = 1,
-            ship_user_id       = #{ship_user_id, jdbcType=INTEGER},
-            receive_time       = #{receive_time, jdbcType=VARCHAR}
-        WHERE id = #{id}
+    <!-- 更改快递表directed_code和is_directed字段 -->
+    <update id="updateDirectedMessage">
+        UPDATE c_order_express
+        SET directed_code = #{directed_code},
+            is_directed   = #{is_directed}
+        WHERE uuid = #{uuid}
     </update>
 
     <update id="updateOrderExpressStatus">
-        UPDATE sftc_order_express
+        UPDATE c_order_express
         SET route_state = #{status, jdbcType=VARCHAR},
             pay_state   = #{pay_state,jdbcType=VARCHAR}
         WHERE id = #{express_id}
     </update>
 
-    <update id="updateRouteStateByOrderId">
-        UPDATE sftc_order_express
-        SET route_state = #{route_state, jdbcType=VARCHAR}
-        WHERE order_id = #{order_id} AND ship_name IS NULL
-    </update>
-
     <update id="updatePayState">
-        UPDATE sftc_order_express
+        UPDATE c_order_express
         SET pay_state = #{pay_state, jdbcType=VARCHAR}
         WHERE uuid = #{uuid}
     </update>
 
+    <update id="updateRouteState">
+        UPDATE c_order_express
+        SET route_state = #{route_state, jdbcType=VARCHAR}
+        WHERE uuid = #{uuid}
+    </update>
+
     <update id="updateOrderExpressStatusByUUID">
-        UPDATE sftc_order_express
+        UPDATE c_order_express
         SET route_state = #{route_state, jdbcType=VARCHAR},
         <if test="pay_state != null">pay_state = #{pay_state}</if>
         WHERE uuid = #{uuid}
     </update>
 
     <update id="updateExpressDirectedByUUID">
-        UPDATE sftc_order_express
+        UPDATE c_order_express
         set
         <if test="status != null">route_state = #{status},</if>
         <if test="directed_code != null">directed_code = #{directed_code},</if>
@@ -127,7 +110,7 @@
     </update>
 
     <update id="updateAttributesAndStatusByUUID">
-        UPDATE sftc_order_express
+        UPDATE c_order_express
         set
         <if test="attributes != null">attributes = #{attributes},</if>
         route_state = #{status},
@@ -135,28 +118,8 @@
         WHERE uuid = #{uuid}
     </update>
 
-    <update id="updateOrderExpressCanceled" parameterType="java.lang.String">
-        UPDATE sftc_order_express
-        SET route_state = 'CANCELED'
-        WHERE order_id = #{order_id}
-    </update>
-
-    <update id="updateOrderExpressOvertime" parameterType="java.lang.String">
-        UPDATE sftc_order_express
-        SET route_state = 'OVERTIME'
-        WHERE order_id = #{order_id}
-    </update>
-
-    <update id="updateOrderExpressForSF" parameterType="com.sftc.web.model.entity.OrderExpress">
-        update sftc_order_express
-        set
-        route_state=#{state, jdbcType=VARCHAR}
-        <if test="attributes != null and attributes != ''">,attributes=#{attributes, jdbcType=VARCHAR}</if>
-        WHERE uuid=#{uuid}
-    </update>
-
     <update id="updateOrderExpressUuidAndReserveTimeById">
-        update sftc_order_express
+        update c_order_express
         set
         <if test="uuid != null">uuid=#{uuid, jdbcType=VARCHAR},</if>
         <if test="reserve_time != null">reserve_time=#{reserve_time, jdbcType=VARCHAR},</if>
@@ -164,74 +127,56 @@
         WHERE id=#{id}
     </update>
 
-    <update id="updateOrderExpressUuidAndOrderNumberWithId">
-        update sftc_order_express
-        set
-        <if test="uuid != null">uuid=#{uuid, jdbcType=VARCHAR},</if>
-        <if test="order_number != null">order_number=#{order_number, jdbcType=VARCHAR},</if>
-        route_state='WAIT_HAND_OVER'
-        WHERE id=#{id}
-    </update>
-
     <!-- 根据uuid查询快递 -->
-    <select id="selectExpressByUuid" resultType="com.sftc.web.model.entity.OrderExpress" parameterType="String">
+    <select id="selectExpressByUuid" resultType="com.sftc.web.model.entity.OrderExpress"
+            parameterType="java.lang.String">
         SELECT *
-        FROM sftc_order_express
+        FROM c_order_express
         WHERE uuid = #{uuid}
     </select>
 
     <update id="updateOrderTime">
-        UPDATE sftc_order_express
+        UPDATE c_order_express
         SET
-            order_time = #{order_time, jdbcType=VARCHAR}
+            order_time = #{order_time, jdbcType=VARCHAR},
+            quote_uuid = #{quote_uuid, jdbcType=VARCHAR}
         WHERE uuid = #{uuid}
     </update>
 
     <!--更新订单的order_number为sf好友同城下单接口返回值-->
     <update id="updateOrderNumber">
-        UPDATE sftc_order_express
+        UPDATE c_order_express
         SET order_number = #{order_number}
         WHERE id = #{id}
     </update>
 
-    <!--下面是cms系统用到的mapper-->
-    <select id="selectOrderExpressByPage" resultType="com.sftc.web.model.entity.OrderExpress"
-            parameterType="com.sftc.web.model.entity.OrderExpress">
-        SELECT * FROM sftc_order_express
-        <where>
-            <if test="id != 0">and id = #{id}</if>
-            <if test="order_id != null">and order_id = #{order_id}</if>
-            <if test="ship_mobile != null">and ship_mobile = #{ship_mobile}</if>
-            <if test="uuid != null">and uuid = #{uuid}</if>
-        </where>
-    </select>
-
-    <select id="selectOrderIdForsyncSFExpressStatus" parameterType="int" resultType="java.lang.String">
+    <select id="selectOrderIdForsyncSFExpressStatus" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT *
-        FROM sftc_order o
+        FROM c_order o
         WHERE id IN (
             SELECT t.order_id
             FROM (
                      SELECT DISTINCT oe.order_id
-                     FROM sftc_order_express oe
-                     WHERE (oe.sender_user_id = #{id} OR oe.ship_user_id = #{id})
+                     FROM c_order_express oe
+                     WHERE (oe.sender_user_uuid = #{userUUId} OR oe.ship_user_uuid = #{userUUId})
                  ) AS t
         )
         ORDER BY o.create_time DESC
     </select>
 
     <select id="selectExpressForsyncSFExpressStatus" resultType="com.sftc.web.model.entity.OrderExpress">
-        SELECT * FROM sftc_order_express oe WHERE oe.order_id
+        SELECT * FROM c_order_express oe WHERE oe.order_id
         IN
         <foreach collection="list" item="order_id" open="(" close=")" separator=",">
             #{order_id}
         </foreach>
     </select>
 
-    <select id="selectExpressForContactInfo" parameterType="int" resultType="com.sftc.web.model.entity.OrderExpress">
+    <select id="selectExpressForContactInfo"
+            resultType="com.sftc.web.model.entity.OrderExpress">
         SELECT *
-        FROM sftc_order_express
-        WHERE (sender_user_id = #{sender_user_id} AND ship_user_id = #{ship_user_id})
-              OR (sender_user_id = #{ship_user_id} AND ship_user_id = #{sender_user_id})
+        FROM c_order_express
+        WHERE (sender_user_uuid = #{sender_user_uuid} AND ship_user_uuid = #{ship_user_uuid})
+              OR (sender_user_uuid = #{ship_user_uuid} AND ship_user_uuid = #{sender_user_uuid})
     </select>
 </mapper>

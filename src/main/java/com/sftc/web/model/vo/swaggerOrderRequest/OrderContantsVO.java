@@ -1,5 +1,6 @@
 package com.sftc.web.model.vo.swaggerOrderRequest;
 
+import com.sftc.web.model.vo.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import lombok.Setter;
  * Created by xf on 2017/10/21.
  */
 @ApiModel(value = "订单时间规则包装类")
-public class OrderContantsVO {
+public class OrderContantsVO extends BaseVO {
 
     @Getter @Setter
     @ApiModelProperty(name = "longitude",value = "经度",example = "113.947074",required = true,dataType = "double")

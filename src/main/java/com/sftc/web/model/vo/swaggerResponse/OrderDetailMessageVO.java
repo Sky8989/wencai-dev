@@ -12,7 +12,7 @@ import java.util.List;
  * Created by xf on 2017/11/17.
  */
 @ApiModel(value = "订单详情快递信息")
-public class OrderDetailMessageVO extends Order{
+public class OrderDetailMessageVO extends Order {
 
     @Getter @Setter
     @ApiModelProperty(name = "orderExpressList",value = "快递数组")

@@ -1,15 +1,14 @@
 package com.sftc.web.model.entity;
 
-import com.sftc.tools.api.APIRequest;
+import com.sftc.tools.api.ApiRequest;
 import com.sftc.web.model.others.Object;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpServletRequest;
 
 @Entity
-@Table(name = "sftc_order_express")
+@Table(name = "c_order_express")
 public class OrderExpress extends Object {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,6 +54,9 @@ public class OrderExpress extends Object {
     private String weight;
 
     @Setter @Getter
+    private Float deliver_progress;
+
+    @Setter @Getter
     private String package_type;// 包裹类型
 
     @Setter @Getter
@@ -73,7 +75,7 @@ public class OrderExpress extends Object {
     private int is_use;// 是否已经填写
 
     @Setter @Getter
-    private int sender_user_id;
+    private String sender_user_uuid;
 
     @Setter @Getter
     private String reserve_time; //预约时间
@@ -85,7 +87,13 @@ public class OrderExpress extends Object {
     private String order_time;// 下单到顺丰的时间 用于记录下单成功时的时间
 
     @Setter @Getter
-    private int ship_user_id;// 收件人id(根据用户表id)
+    private String ship_user_uuid;// 收件人uuid(根据用户表uuid)
+
+    @Setter @Getter
+    // 收件人uuid(根据用户表uuid)
+    private String quote_uuid;
+
+
 
     @Setter @Getter
     private Double latitude;
@@ -109,8 +117,8 @@ public class OrderExpress extends Object {
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String supplementary_info, String weight, String object_type,
-                        String package_comments, String route_state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,
-                        String directed_code, String attributes, int is_directed,String package_type,String pay_state) {
+                        String package_comments, String route_state, String sender_user_uuid, String order_id, String uuid, Double latitude, Double longitude,
+                        String directed_code, String attributes, int is_directed,String package_type,String pay_state,String quoteUuid) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -123,9 +131,10 @@ public class OrderExpress extends Object {
         this.supplementary_info = supplementary_info;
         this.weight = weight;
         this.object_type = object_type;
-        this.package_comments = package_comments;//增加快递描述
+        //增加快递描述
+        this.package_comments = package_comments;
         this.route_state = route_state;
-        this.sender_user_id = sender_user_id;
+        this.sender_user_uuid = sender_user_uuid;
         this.order_id = order_id;
         this.uuid = uuid;
         this.latitude = latitude;
@@ -135,11 +144,12 @@ public class OrderExpress extends Object {
         this.is_directed = is_directed;
         this.package_type = package_type;
         this.pay_state = pay_state;
+        this.quote_uuid = quoteUuid;
     }
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String supplementary_info, String weight, String object_type,
-                        String package_comments, String route_state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,String package_type) {
+                        String package_comments, String route_state, String sender_user_uuid, String order_id, String uuid, Double latitude, Double longitude,String package_type) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -154,7 +164,7 @@ public class OrderExpress extends Object {
         this.object_type = object_type;
         this.package_comments = package_comments;//增加快递描述
         this.route_state = route_state;
-        this.sender_user_id = sender_user_id;
+        this.sender_user_uuid = sender_user_uuid;
         this.order_id = order_id;
         this.uuid = uuid;
         this.latitude = latitude;
@@ -164,7 +174,7 @@ public class OrderExpress extends Object {
 
     public OrderExpress(String order_time, String create_time, String order_number, String ship_name, String ship_mobile, String ship_province,
                         String ship_city, String ship_area, String ship_addr, String weight, String object_type,
-                        String route_state, int sender_user_id, String order_id, String uuid, Double latitude, Double longitude,String package_type) {
+                        String route_state, String sender_user_uuid, String order_id, String uuid, Double latitude, Double longitude,String package_type) {
         this.order_time = order_time;
         this.create_time = create_time;
         this.order_number = order_number;
@@ -177,7 +187,7 @@ public class OrderExpress extends Object {
         this.weight = weight;
         this.object_type = object_type;
         this.route_state = route_state;
-        this.sender_user_id = sender_user_id;
+        this.sender_user_uuid = sender_user_uuid;
         this.order_id = order_id;
         this.uuid = uuid;
         this.latitude = latitude;
@@ -205,23 +215,21 @@ public class OrderExpress extends Object {
     }
 
     public OrderExpress(String order_number, String package_type, String object_type,
-                        String order_id, String create_time, int is_use, String route_state, String uuid, int sender_user_id, String reserve_time,String weight) {
+                        String order_id, String create_time, int is_use, String route_state, String uuid, String sender_user_uuid, String reserve_time,String weight) {
         this.order_number = order_number;
         this.package_type = package_type;
         this.object_type = object_type;
-        this.sender_user_id = sender_user_id;
-        this.ship_user_id = ship_user_id;
         this.create_time = create_time;
         this.is_use = is_use;
         this.order_id = order_id;
         this.route_state = route_state;
         this.uuid = uuid;
         this.reserve_time = reserve_time;
-        this.sender_user_id = sender_user_id;
+        this.sender_user_uuid = sender_user_uuid;
         this.weight = weight;
     }
 
-    public OrderExpress(APIRequest request) {
+    public OrderExpress(ApiRequest request) {
         this.id = Integer.parseInt((String) request.getParameter("id"));
         this.ship_name = (String) request.getParameter("ship_name");
         this.ship_mobile = (String) request.getParameter("ship_mobile");
@@ -231,7 +239,7 @@ public class OrderExpress extends Object {
         this.ship_addr = (String) request.getParameter("ship_addr");
     }
 
-    public OrderExpress(APIRequest request, String order_number) {
+    public OrderExpress(ApiRequest request, String order_number) {
         this.create_time = Long.toString(System.currentTimeMillis());
         this.order_number = order_number;
         this.ship_name = (String) request.getParameter("ship_name");
@@ -244,21 +252,6 @@ public class OrderExpress extends Object {
         this.object_type = (String) request.getParameter("object_type");
     }
 
-    // cms 通过
-    public OrderExpress(HttpServletRequest request) {
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
-            this.id = Integer.parseInt(request.getParameter("id"));
-        }
-        if (request.getParameter("uuid") != null && !"".equals(request.getParameter("uuid"))) {
-            this.uuid = request.getParameter("uuid");
-        }
-        if (request.getParameter("ship_mobile") != null && !"".equals(request.getParameter("ship_mobile"))) {
-            this.ship_mobile = request.getParameter("ship_mobile");
-        }
-        if (request.getParameter("order_id") != null && !"".equals(request.getParameter("order_id"))) {
-            this.order_id = request.getParameter("order_id");
-        }
-    }
     public int getIs_directed() {return is_directed;}
 
     public void setIs_directed(int is_directed) {

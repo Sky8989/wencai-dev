@@ -2,16 +2,19 @@ package com.sftc.web.model.vo.swaggerOrderRequest;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
-/**
- * Created by xf on 2017/10/21.
- */
-@ApiModel(value = "验证uuid")
+@ApiModel(value = "计价信息")
 public class QuoteVO {
-    @ApiModelProperty(name = "uuid",example = "2c9a85895d97c789015d982f0b28023a",required = true)
+
+    @Getter
+    @Setter
+    @ApiModelProperty(name = "uuid", value = "计价信息uuid", example = "2c9a85895d97c789015d982f0b28023a", required = true)
     private String uuid;
 
-    public String getUuid() {return uuid;}
-
-    public void setUuid(String uuid) {this.uuid = uuid;}
+    @Getter
+    @Setter
+    @ApiModelProperty(name = "coupon", value = "优惠券")
+    private CouponVO coupon;
 }

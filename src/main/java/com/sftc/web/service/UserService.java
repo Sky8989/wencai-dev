@@ -1,52 +1,46 @@
 package com.sftc.web.service;
 
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.ApiResponse;
 import com.sftc.web.model.entity.Token;
+import com.sftc.web.model.vo.swaggerRequest.UserMerchantsRequestVO;
+import com.sftc.web.model.vo.swaggerRequest.UserParamVO;
 
 public interface UserService {
 
     /**
      * 普通登陆
+     * @param body
      */
-    APIResponse login(APIRequest request) throws Exception;
+    ApiResponse login(UserParamVO body) throws Exception;
 
     /**
      * 超级登陆 自动刷新token
+     * @param body
      */
-    APIResponse superLogin(APIRequest request) throws Exception;
+    ApiResponse superLogin(UserParamVO body) throws Exception;
 
     /**
      * 获取token的公用方法
      */
     Token getToken(int id);
-
-//    /**
-//     * 解除绑定操作，原微信号，解除原有手机号
-//     */
-//    APIResponse deleteMobile(APIRequest request) throws Exception;
-//
-//    /**
-//     * 修改手机号码 即重新绑定新手机号
-//     */
-//    APIResponse updateMobile(APIRequest apiRequest) throws Exception;
-
     /**
      * 更新商户信息
+     * @param body
      */
-
-    APIResponse updateMobile(APIRequest apiRequest) throws Exception;
-
-    //更新个人信息 作为中控给顺丰验证和更新个人信息
-    APIResponse updatePersonMessage(APIRequest apiRequest) throws Exception;
+    ApiResponse updatePersonMessage(UserMerchantsRequestVO body) throws Exception;
 
     /**
      * 检查账号是否已经绑定手机号
      */
-    APIResponse checkBindStatus() throws Exception;
+    ApiResponse checkBindStatus() throws Exception;
 
     /**
-     * 下面是CMS后台所使用的接口
+     * 获取用户钱包
      */
-    APIResponse selectUserListByPage(APIRequest request) throws Exception;
+    ApiResponse obtainUserWallets(int type);
+
+    /**
+     * 获取余额明细
+     */
+    ApiResponse obtainBalanceDetailed(int limit, int offset);
 }

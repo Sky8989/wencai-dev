@@ -1,20 +1,22 @@
 package com.sftc.web.service.impl.logic.app;
 
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIUtil;
-import com.sftc.web.dao.jpa.OrderExpressDao;
+
+import com.sftc.tools.api.ApiResponse;
+import com.sftc.tools.api.ApiUtil;
 import com.sftc.web.dao.mybatis.OrderExpressMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
 import com.sftc.web.model.entity.OrderExpress;
-import net.sf.json.JSONObject;
+import com.sftc.web.model.vo.swaggerOrderRequest.OrderExpressStatusVO;
+import com.sftc.web.model.vo.swaggerOrderRequest.OrderStatusVO;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.api.ApiStatus.SUCCESS;
 
 @Component
 public class OrderStatusLogic {
@@ -23,96 +25,92 @@ public class OrderStatusLogic {
     private OrderMapper orderMapper;
     @Resource
     private OrderExpressMapper orderExpressMapper;
-    @Resource
-    private OrderExpressDao orderExpressDao;
 
     //////////////////// Public Method ////////////////////
 
     /**
      * 更改订单状态
      */
-    public APIResponse updateOrderStatus(APIRequest request) {
-        JSONObject requestObject = JSONObject.fromObject(request.getRequestParam());
+    public ApiResponse updateOrderStatus(OrderStatusVO orderStatusVO) {
         // Param
-        String order_id = requestObject.getString("order_id");
-        String route_state = requestObject.getString("route_state");
-        String pay_state = requestObject.getString("pay_state");
+        String orderId = orderStatusVO.getOrder_id();
+        String routeState = orderStatusVO.getRoute_state();
+        String payState = orderStatusVO.getPay_state();
 
-        if (order_id == null || order_id.equals(""))
-            return APIUtil.paramErrorResponse("参数order_id不能为空");
-        String statusError = verifyParamStatus(request);
-        if (statusError != null)
-            return APIUtil.paramErrorResponse(statusError);
+        String statusError = verifyParamStatus(routeState, payState);
+        if (statusError != null) {
+            return ApiUtil.error(HttpStatus.BAD_REQUEST.value(), statusError);
+        }
 
-        OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
-        if (orderDTO == null)
-            return APIUtil.submitErrorResponse("订单不存在", null);
+        OrderDTO orderDTO = orderMapper.selectOrderDetailByOrderId(orderId);
+        if (orderDTO == null) {
+            return ApiUtil.error(HttpStatus.BAD_REQUEST.value(), "订单不存在");
+        }
 
-        // update
         for (OrderExpressDTO oe : orderDTO.getOrderExpressList()) {
-            if (oe.getRoute_state().equals("ALREADY_FILL")) {
+            if ("ALREADY_FILL".equals(oe.getRoute_state())) {
                 String uuid = oe.getUuid();
                 //事务问题,先存在查的改为统一使用Mybatis
-                orderExpressMapper.updateOrderExpressStatusByUUID(uuid, route_state, pay_state);
+                orderExpressMapper.updateOrderExpressStatusByUUID(uuid, routeState, payState);
             }
         }
-        orderDTO = orderMapper.selectOrderDetailByOrderId(order_id);
-        return APIUtil.getResponse(SUCCESS, orderDTO);
+        orderDTO = orderMapper.selectOrderDetailByOrderId(orderId);
+        return ApiUtil.getResponse(SUCCESS, orderDTO);
     }
 
     /**
      * 更改订单快递状态
      */
-    public APIResponse updateOrderExpressStatus(APIRequest request) {
-        JSONObject requestObject = JSONObject.fromObject(request.getRequestParam());
-        // Param
-        String uuid = requestObject.getString("uuid");
-        String route_state = requestObject.getString("route_state");
-        String pay_state = requestObject.getString("pay_state");
+    public ApiResponse updateOrderExpressStatus(OrderExpressStatusVO orderExpressStatusVO) {
 
-        if (uuid == null || uuid.equals(""))
-            return APIUtil.paramErrorResponse("参数uuid不能为空");
-        String statusError = verifyParamStatus(request);
-        if (statusError != null)
-            return APIUtil.paramErrorResponse(statusError);
+        String uuid = orderExpressStatusVO.getUuid();
+        String routeState = orderExpressStatusVO.getRoute_state();
+        String payState = orderExpressStatusVO.getPay_state();
 
+        if (StringUtils.isBlank(uuid)) {
+            return ApiUtil.error(HttpStatus.BAD_REQUEST.value(), "参数uuid不能为空");
+        }
+        String statusError = verifyParamStatus(routeState, payState);
+        if (statusError != null) {
+            return ApiUtil.error(HttpStatus.BAD_REQUEST.value(), statusError);
+        }
         OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(uuid + "");
-        if (orderExpress == null)
-            return APIUtil.submitErrorResponse("订单快递不存在", null);
+        if (orderExpress == null) {
+            return ApiUtil.error(HttpStatus.BAD_REQUEST.value(), "订单快递不存在");
+        }
 
-        // update
-//        orderExpress.setState(status);
-//        orderExpressDao.save(orderExpress);
-        //事务问题,先存在查的改为统一使用Mybatis
-        orderExpressMapper.updateOrderExpressStatusByUUID(uuid, route_state, pay_state);
+        orderExpressMapper.updateOrderExpressStatusByUUID(uuid, routeState, payState);
         orderExpress = orderExpressMapper.selectExpressByUuid(uuid);
-        return APIUtil.getResponse(SUCCESS, orderExpress);
+        return ApiUtil.getResponse(SUCCESS, orderExpress);
     }
 
     //////////////////// Private Method ////////////////////
 
-    // 验证参数
-    private String verifyParamStatus(APIRequest request) {
-        JSONObject requestObject = JSONObject.fromObject(request.getRequestParam());
-        String route_state = requestObject.getString("route_state");
-        String pay_state = requestObject.getString("pay_state");
-        if (route_state == null || route_state.equals("") || pay_state == null || pay_state.equals(""))
+    /**
+     * 验证参数
+     */
+    private String verifyParamStatus(String routeState, String payState) {
+
+        if (StringUtils.isBlank(routeState) || StringUtils.isBlank(payState)) {
             return "参数status不能为空";
-        if (!(route_state.equals("WAIT_FILL") ||
-                route_state.equals("ALREADY_FILL") ||
-                route_state.equals("INIT") ||
-                route_state.equals("PAYING") ||
-                route_state.equals("WAIT_HAND_OVER") ||
-                route_state.equals("DELIVERING") ||
-                route_state.equals("FINISHED") ||
-                route_state.equals("ABNORMAL") ||
-                route_state.equals("CANCELED") ||
-                route_state.equals("REFUNDING") ||
-                pay_state.equals("WAIT_PAY") ||
-                pay_state.equals("ALREADY_PAY") ||
-                pay_state.equals("WAIT_REFUND") ||
-                pay_state.equals("REFUNDED")))
+        }
+        String waitFill = "WAIT_FILL";
+        if (!(waitFill.equals(routeState) ||
+                "ALREADY_FILL".equals(routeState) ||
+                "INIT".equals(routeState) ||
+                "PAYING".equals(routeState) ||
+                "WAIT_HAND_OVER".equals(routeState) ||
+                "DELIVERING".equals(routeState) ||
+                "FINISHED".equals(routeState) ||
+                "ABNORMAL".equals(routeState) ||
+                "CANCELED".equals(routeState) ||
+                "REFUNDING".equals(routeState) ||
+                "WAIT_PAY".equals(payState) ||
+                "ALREADY_PAY".equals(payState) ||
+                "WAIT_REFUND".equals(payState) ||
+                "REFUNDED".equals(payState))) {
             return "参数status不正确";
+        }
 
         return null;
     }

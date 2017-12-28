@@ -3,6 +3,7 @@ package com.sftc.web.dao.mybatis;
 import com.sftc.web.model.dto.MultipleGroupUUIDDTO;
 import com.sftc.web.model.dto.MultiplePackageDTO;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.Map;
  * @author ： CatalpaFlat
  * @date ：Create in 14:14 2017/11/17
  */
+@Repository
 public interface MultiplePackageMapper {
     MultiplePackageDTO querySourceOrderInfoByOrderID(String orderId);
 
@@ -23,13 +25,13 @@ public interface MultiplePackageMapper {
 
     void updateOrderExpressById(Map<String, Object> map);
 
-    void updateorderById(@Param(value = "orderId")String orderId,@Param(value = "groupUUId") String groupUUId);
+    void updateorderById(@Param(value = "orderId") String orderId, @Param(value = "groupUUId") String groupUUId);
 
     String queryUserOpenIDByGroupUUId(String groupUUId);
 
     void updatePayStatuByGroupID(String orderId);
 
-    void updateRouteStateByGroupID(@Param(value = "routeState") String routeState,@Param(value = "groupUUId")String groupUUId);
+    void updateRouteStateByGroupID(@Param(value = "routeState") String routeState, @Param(value = "groupUUId") String groupUUId);
 
     MultipleGroupUUIDDTO quaryIsPlaceOrderOrderId(String orderId);
 }

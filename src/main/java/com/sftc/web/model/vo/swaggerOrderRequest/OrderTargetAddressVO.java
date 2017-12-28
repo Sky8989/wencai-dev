@@ -18,10 +18,10 @@ public class OrderTargetAddressVO {
     @ApiModelProperty(value = "城市",example = "深圳",required = true)
     private String city;
 
-    @ApiModelProperty(value = "区域",example = "龙岗区",required = true)
+    @ApiModelProperty(value = "区域",example = "南山区",required = true)
     private String region;
 
-    @ApiModelProperty(value = "详细地址",example = "龙城广场地铁站",required = true)
+    @ApiModelProperty(value = "详细地址",example = "软件产业基地",required = true)
     private String street;
 
     @ApiModelProperty(value = "补充地址",example = "118号收件")

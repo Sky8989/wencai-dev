@@ -1,7 +1,9 @@
 package com.sftc.web.service;
 
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.ApiResponse;
+import com.sftc.web.model.vo.swaggerRequest.FriendListVO;
+import com.sftc.web.model.vo.swaggerRequest.FriendStarVO;
+import com.sftc.web.model.vo.swaggerRequest.UserContactParamVO;
 
 
 public interface UserContactService {
@@ -9,32 +11,22 @@ public interface UserContactService {
     /**
      * 获取好友信息
      */
-    APIResponse getFriendDetail(APIRequest request);
+    ApiResponse getFriendDetail(String friendUUId);
 
     /**
      * 获取用户的所有好友
      */
-    APIResponse getFriendList(APIRequest request);
+    ApiResponse getFriendList(FriendListVO body);
 
     /**
      * 好友圈来往记录
      */
-    APIResponse getContactInfo(APIRequest request);
+    ApiResponse getContactInfo(UserContactParamVO body);
 
     /**
      * 星标/取消星标好友
      */
-    APIResponse starFriend(APIRequest request);
+    ApiResponse starFriend(FriendStarVO body);
 
 
-    /**
-     * 修改 好友图片与备注
-     */
-    APIResponse updateNotesAndPicture(APIRequest request);
-
-
-    /**
-     * CMS 获取好友列表 分页+条件
-     */
-    APIResponse selectUserContactListByPage(APIRequest request);
 }

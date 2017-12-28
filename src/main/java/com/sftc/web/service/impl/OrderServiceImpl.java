@@ -1,10 +1,9 @@
 package com.sftc.web.service.impl;
 
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.ApiResponse;
+import com.sftc.web.model.vo.swaggerOrderRequest.*;
 import com.sftc.web.service.OrderService;
 import com.sftc.web.service.impl.logic.app.*;
-import com.sftc.web.service.impl.logic.cms.CMSOrderListLogic;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -16,8 +15,6 @@ public class OrderServiceImpl implements OrderService {
     private OrderCreateLogic orderCreateLogic;
     @Resource
     private OrderCommitLogic orderCommitLogic;
-    @Resource
-    private OrderTimerLogic orderTimerLogic;
     @Resource
     private OrderCancelLogic orderCancelLogic;
     @Resource
@@ -35,107 +32,112 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private OrderTransformLogic orderTransformLogic;
 
-    @Resource
-    private CMSOrderListLogic cmsOrderListLogic;
-
-    public APIResponse addNormalOrderCommit(APIRequest request) {
-        return orderCommitLogic.normalOrderCommit(request);
+    @Override
+    public ApiResponse addNormalOrderCommit(OrderRequestVO orderRequestVO) {
+        return orderCommitLogic.normalOrderCommit(orderRequestVO);
     }
 
-    public APIResponse addFriendOrderCommit(APIRequest request) {
-        return orderCommitLogic.friendOrderCommit(request);
+    @Override
+    public ApiResponse addFriendOrderCommit(FriendOrderRequestVO friendOrderRequestVO) {
+        return orderCommitLogic.friendOrderCommit(friendOrderRequestVO);
     }
 
-    public APIResponse setupCancelSameOrderTimer(APIRequest request) {
-        return orderTimerLogic.setupCancelSameOrderTimer(request);
-    }
-    public APIResponse countPrice(APIRequest request) {
-        return orderPayLogic.countPrice(request);
+    @Override
+    public ApiResponse countPrice(PriceRequestVO priceRequestVO) {
+        return orderPayLogic.countPrice(priceRequestVO);
     }
 
-    public APIResponse payOrder(APIRequest request) {
-        return orderPayLogic.payOrder(request);
+    @Override
+    public ApiResponse payOrder(OrderPayVO orderPayVO) {
+        return orderPayLogic.payOrder(orderPayVO);
     }
 
-    public APIResponse friendPlaceOrder(APIRequest request) {
-        return orderCreateLogic.friendPlaceOrder(request);
+    @Override
+    public ApiResponse friendPlaceOrder(OrderParamVO orderParamVO) {
+        return orderCreateLogic.friendPlaceOrder(orderParamVO);
     }
 
-    public synchronized APIResponse friendFillOrder(APIRequest request) {
-        return orderCreateLogic.friendFillOrder(request);
-    }
-    public APIResponse selectOrderDetail(APIRequest request) {
-        return orderDetailLogic.selectOrderDetail(request);
+    @Override
+    public synchronized ApiResponse friendFillOrder(FriendFillVO friendFillVO) {
+        return orderCreateLogic.friendFillOrder(friendFillVO);
     }
 
-    public APIResponse selectExpressDetail(APIRequest request) {
-        return orderDetailLogic.selectExpressDetail(request);
+    @Override
+    public ApiResponse selectOrderDetail(String orderId) {
+        return orderDetailLogic.selectOrderDetail(orderId);
     }
 
-    public APIResponse selectSameExpressDetail(APIRequest request) {
-        return orderDetailLogic.selectSameExpressDetail(request);
+    @Override
+    public ApiResponse selectExpressDetail(String uuid) {
+        return orderDetailLogic.selectExpressDetail(uuid);
     }
 
-    public APIResponse updateOrderStatus(APIRequest request) {
-        return orderStatusLogic.updateOrderStatus(request);
+    @Override
+    public ApiResponse selectSameExpressDetail(String uuid) {
+        return orderDetailLogic.selectSameExpressDetail(uuid);
     }
 
-    public APIResponse updateOrderExpressStatus(APIRequest request) {
-        return orderStatusLogic.updateOrderExpressStatus(request);
+    @Override
+    public ApiResponse updateOrderStatus(OrderStatusVO orderStatusVO) {
+        return orderStatusLogic.updateOrderStatus(orderStatusVO);
     }
 
-    public APIResponse getMyOrderList(APIRequest request) {
-        return orderListLogic.getMyOrderList(request);
+    @Override
+    public ApiResponse updateOrderExpressStatus(OrderExpressStatusVO orderExpressStatusVO) {
+        return orderStatusLogic.updateOrderExpressStatus(orderExpressStatusVO);
     }
 
-    public APIResponse getMyFriendCircleOrderList(APIRequest request) {
-        return orderListLogic.getMyFriendCircleOrderList(request);
+    @Override
+    public ApiResponse getMyOrderList(MyOrderParamVO myOrderParamVO) {
+        return orderListLogic.getMyOrderList(myOrderParamVO);
     }
 
-    public APIResponse screenShot(APIRequest request) {
-        return orderOtherLogic.screenShot(request);
+    @Override
+    public ApiResponse getMyFriendCircleOrderList(MyOrderParamVO myOrderParamVO) {
+        return orderListLogic.getMyFriendCircleOrderList(myOrderParamVO);
     }
 
-    //面对面下单
-//    public APIResponse faceOrdered(APIRequest request) {return orderCommitLogic.faceOrdered(request);}
-
-    public APIResponse evaluateSingle(APIRequest request) {
-        return orderEvaluateLogic.evaluateSingle(request);
+    @Override
+    public ApiResponse screenShot(OrderPictureVO orderPictureVO) {
+        return orderOtherLogic.screenShot(orderPictureVO);
     }
 
-    public APIResponse cancelOrder(APIRequest request) {
-        return orderCancelLogic.cancelOrder(request);
+    @Override
+    public ApiResponse evaluateSingle(EvaluateRequestVO evaluateRequestVO) {
+        return orderEvaluateLogic.evaluateSingle(evaluateRequestVO);
     }
 
-    //根据uuid取消订单
-    public APIResponse cancelOrderByUuid(APIRequest request) {
-        return orderCancelLogic.cancelOrderByUuid(request);
+    @Override
+    public ApiResponse cancelOrder(OrderCancelVO orderCancelVO) {
+        return orderCancelLogic.cancelOrder(orderCancelVO);
     }
 
-    public APIResponse transformOrderFromSameToNation(APIRequest request) {
-        return orderTransformLogic.transformOrderFromSameToNation(request);
+    /**
+     * 根据uuid取消订单
+     */
+    @Override
+    public ApiResponse cancelOrderByUuid(ExpressCancelVO expressCancelVO) {
+        return orderCancelLogic.cancelOrderByUuid(expressCancelVO);
     }
 
-    public APIResponse readExpressTransform(APIRequest request) {
-        return orderTransformLogic.readExpressTransform(request);
+    @Override
+    public ApiResponse transformOrderFromSameToNation(OrderTransform orderTransform) {
+        return orderTransformLogic.transformOrderFromSameToNation(orderTransform);
     }
 
-    public APIResponse timeConstants(APIRequest request) {
-        return orderOtherLogic.timeConstants(request);
+    @Override
+    public ApiResponse readExpressTransform(OrderTransformIsReadVO orderTransformIsReadVO) {
+        return orderTransformLogic.readExpressTransform(orderTransformIsReadVO);
     }
 
-    //////////////// CMS ////////////////
-
-    public APIResponse selectOrderListByPage(APIRequest request) {
-        return cmsOrderListLogic.selectOrderListByPage(request);
+    @Override
+    public ApiResponse timeConstants(OrderContantsVO orderContantsVO) {
+        return orderOtherLogic.timeConstants(orderContantsVO);
     }
 
-    public APIResponse selectCanceledOrderList(APIRequest request) {
-        return cmsOrderListLogic.selectCanceledOrderList(request);
-    }
-
-    public APIResponse determineOrderAddress(APIRequest request) {
-        return orderOtherLogic.determineOrderAddress(request);
+    @Override
+    public ApiResponse determineOrderAddress(OrderAddressDetermineVO orderAddressDetermineVO) {
+        return orderOtherLogic.determineOrderAddress(orderAddressDetermineVO);
     }
 
 

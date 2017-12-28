@@ -9,19 +9,19 @@
             id,
             system_label_ids,
             custom_labels
-        FROM sftc_user_contact_label
+        FROM c_user_contact_label
         WHERE user_contact_id = #{user_contact_id}
     </select>
 
     <insert id="insertLabelByUCID">
-        INSERT sftc_user_contact_label
+        INSERT c_user_contact_label
         (system_label_ids, user_contact_id, custom_labels, create_time)
         VALUES
             (#{system_label_ids}, #{user_contact_id}, #{custom_labels}, UNIX_TIMESTAMP(NOW()) * 1000)
     </insert>
 
     <update id="updateLabelByUCID">
-        UPDATE sftc_user_contact_label
+        UPDATE c_user_contact_label
         SET
             system_label_ids = #{system_label_ids},
             custom_labels    = #{custom_labels},
@@ -33,14 +33,6 @@
         SELECT
             id,
             system_label
-        FROM sftc_system_label
+        FROM c_system_label
     </select>
-    
-    <delete id="deleteUserContactLabels" parameterType="java.lang.Integer">
-    delete from  sftc_user_contact_label where id = #{id}
-    <!-- where>
-    		<if test="id != 0">and id = #{id}</if>
-    		 <if test="user_contact_id != 0"> and user_contact_id = #{user_contact_id}</if> 
-    	</where> -->
-    </delete>
 </mapper>

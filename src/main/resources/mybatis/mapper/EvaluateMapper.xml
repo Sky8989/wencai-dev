@@ -5,27 +5,17 @@
 <mapper namespace="com.sftc.web.dao.mybatis.EvaluateMapper">
     <!-- 添加 订单评价信息-->
     <insert id="addEvaluate" parameterType="com.sftc.web.model.entity.Evaluate">
-        INSERT INTO sftc_evaluate
-        (merchant_comments, merchant_score, merchant_tags, uuid, orderExpress_id, user_id, create_time)
+        INSERT INTO c_evaluate
+        (merchant_comments, merchant_score, merchant_tags, uuid, orderExpress_id, user_uuid, create_time)
         VALUES
-            (#{merchant_comments}, #{merchant_score}, #{merchant_tags}, #{uuid}, #{orderExpress_id}, #{user_id},
+            (#{merchant_comments}, #{merchant_score}, #{merchant_tags}, #{uuid}, #{orderExpress_id}, #{user_uuid},
              #{create_time})
     </insert>
 
     <!-- 查找 评价信息 by uuid-->
     <select id="selectByUuid" resultType="com.sftc.web.model.entity.Evaluate">
         SELECT *
-        FROM sftc_evaluate
+        FROM c_evaluate
         WHERE uuid = #{uuid}
-    </select>
-
-    <!--CMS -->
-    <select id="selectByPage" resultType="com.sftc.web.model.entity.Evaluate">
-        SELECT * FROM sftc_evaluate
-        <where>
-            <if test="id != 0">and id = #{id}</if>
-            <if test="user_id != 0">and user_id = #{user_id}</if>
-            <if test="uuid != null">and uuid = #{uuid}</if>
-        </where>
     </select>
 </mapper>

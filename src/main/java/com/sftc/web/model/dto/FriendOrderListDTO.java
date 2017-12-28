@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+
 /**
  * 好友圈订单列表信息
  */
@@ -20,7 +21,10 @@ public class FriendOrderListDTO {
     private String sender_name;
 
     @Setter   @Getter
-    private int sender_user_id;
+    private String sender_wx_name;
+
+    @Setter   @Getter
+    private String sender_user_uuid;
 
     @Setter   @Getter
     private String object_type; // 物品类型
@@ -53,11 +57,9 @@ public class FriendOrderListDTO {
         @Setter   @Getter
         private String ship_avatar;
         @Setter   @Getter
-        private int ship_user_id;
+        private String ship_user_uuid;
         @Setter   @Getter
         private String ship_wx_name;
-        @Setter   @Getter
-        private String sender_wx_name;
         @Setter   @Getter
         private String uuid;
         @Setter   @Getter

@@ -57,16 +57,16 @@ public class OrderDetailExpressVO {
     public int is_use;
 
     @Getter @Setter
-    @ApiModelProperty(name = "sender_user_id",value = "寄件人id",example = "10142",dataType = "int")
-    public int sender_user_id;
+    @ApiModelProperty(name = "sender_user_uuid",value = "寄件人uuid",example = "10142",dataType = "int")
+    public String sender_user_uuid;
 
     @Getter @Setter
     @ApiModelProperty(name = "reserve_time",value = "预约时间")
     public String reserve_time;
 
     @Getter @Setter
-    @ApiModelProperty(name = "ship_user_id",value = "收件人id",example = "10085",dataType = "int")
-    public int ship_user_id;
+    @ApiModelProperty(name = "ship_user_uuid",value = "收件人uuid",example = "10085",dataType = "int")
+    public String ship_user_uuid;
 
     @Getter @Setter
     @ApiModelProperty(name = "order_id",value = "订单编号",example = "C1508130348092UT")

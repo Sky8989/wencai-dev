@@ -12,7 +12,7 @@ import javax.persistence.*;
  * Created by huxingyue on 2017/7/26.
  */
 @Entity
-@Table(name = "sftc_address_book")
+@Table(name = "c_address_book")
 @ApiModel(value = "地址簿")
 public class AddressBook {
     @Id
@@ -21,21 +21,21 @@ public class AddressBook {
     @Setter @Getter
     private Long id;
 
-    @ApiModelProperty("用户id")
+    @ApiModelProperty("用户uuid")
     @Setter @Getter
-    private int user_id;
+    private String user_uuid;
 
     @ApiModelProperty("地址id")
     @Setter @Getter
-    private int address_id;
+    private Integer address_id;
 
     @ApiModelProperty("是否删除")
     @Setter @Getter
-    private int is_delete;
+    private Integer is_delete;
 
     @ApiModelProperty("是否神秘[废弃]")
     @Setter @Getter
-    private int is_mystery;
+    private Integer is_mystery;
 
     @ApiModelProperty("地址类型 address_history/address_book")
     @Setter @Getter
@@ -51,8 +51,8 @@ public class AddressBook {
 
     public AddressBook(){}
 
-    public AddressBook(int user_id, int address_id, int is_delete, int is_mystery, String address_type, String address_book_type, String create_time) {
-        this.user_id = user_id;
+    public AddressBook(String user_uuid, Integer address_id, Integer is_delete, Integer is_mystery, String address_type, String address_book_type, String create_time) {
+        this.user_uuid = user_uuid;
         this.address_id = address_id;
         this.is_delete = is_delete;
         this.is_mystery = is_mystery;

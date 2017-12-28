@@ -3,17 +3,9 @@ package com.sftc.web.model.entity;
 import com.sftc.web.model.others.Object;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.servlet.http.HttpServletRequest;
-
-import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
+import net.sf.json.JSONObject;
 
 public class User extends Object {
-    @Setter @Getter
-    private int id;
-
-    @Setter @Getter
-    private int invite_id;//邀请表id
 
     @Setter @Getter
     private String uuid;
@@ -28,16 +20,25 @@ public class User extends Object {
     private String avatar;//用户头像
 
     @Setter @Getter
-    private String user_password;//用户密码
+    private String email;//用户邮箱
 
     @Setter @Getter
-    private String open_id;
+    private String type;//用户类型
 
     @Setter @Getter
-    private String session_key;
+    private String status;//状态
 
     @Setter @Getter
-    private String create_time;
+    private String status_code;//记录是否被禁用或删除
+
+    @Setter @Getter
+    private String account_type;//账户类型
+
+    @Setter @Getter
+    private String password;//用户密码
+
+    @Setter @Getter
+    private String create_at;
 
     @Setter @Getter
     private String js_code;
@@ -46,10 +47,7 @@ public class User extends Object {
     private Object summary;
 
     @Setter @Getter
-    private Object attributes;
-
-    @Setter @Getter
-    private Object tags;
+    private String attributes;
 
     @Setter @Getter
     private Token token;
@@ -60,55 +58,40 @@ public class User extends Object {
     @Setter @Getter
     private Integer pageSizeKey;
 
-    public User(String user_password, String open_id, String create_time) {
-        this.user_password = user_password;
-        this.open_id = open_id;
-        this.create_time = create_time;
+    private String openId;
+
+    public User(String password, String attributes, String createAt) {
+        this.password = password;
+        this.attributes = attributes;
+        this.create_at = createAt;
     }
 
+    public String getOpenId() {
+        JSONObject jsonObject = JSONObject.fromObject(attributes);
+        String openId = null;
+        if(jsonObject.containsKey("c_wxopenid")) {
+            openId = jsonObject.getString("c_wxopenid");
+        }
+        return openId;
+    }
 
-    public User(String uuid, String name, String mobile, String avatar, String create_time) {
+    public void setOpenId(String attributes) {
+        JSONObject jsonObject = JSONObject.fromObject(attributes);
+        String openId = null;
+        if(jsonObject.containsKey("c_wxopenid")) {
+            openId = jsonObject.getString("c_wxopenid");
+        }
+        this.openId = openId;
+    }
+
+    public User(String uuid, String name, String mobile, String avatar, String createAt) {
         this.uuid = uuid;
         this.name = name;
         this.mobile = mobile;
         this.avatar = avatar;
 
-        this.create_time = create_time;
+        this.create_at = createAt;
     }
 
     public User() {}
-
-    /**
-     * 基于HttpServletRequest作为参数的构造方法 用于cms
-     * 后期便于应用扩展工厂模式 将此参数抽出
-     */
-    public User(HttpServletRequest request) {
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id")))
-        {this.id = Integer.parseInt(request.getParameter("id"));}
-        if (request.getParameter("name") != null && !"".equals(request.getParameter("name")))
-        {this.name = request.getParameter("name");}
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", invite_id=" + invite_id +
-                ", uuid='" + uuid + '\'' +
-                ", name='" + name + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", user_password='" + user_password + '\'' +
-                ", open_id='" + open_id + '\'' +
-                ", session_key='" + session_key + '\'' +
-                ", create_time='" + create_time + '\'' +
-                ", js_code='" + js_code + '\'' +
-                ", summary=" + summary +
-                ", attributes=" + attributes +
-                ", tags=" + tags +
-                ", token=" + token +
-                ", pageNumKey=" + pageNumKey +
-                ", pageSizeKey=" + pageSizeKey +
-                '}';
-    }
 }

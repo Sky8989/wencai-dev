@@ -4,7 +4,7 @@ import com.sftc.web.model.entity.Address;
 import lombok.Getter;
 import lombok.Setter;
 
-public class AddressDTO extends Address{
+public class AddressDTO extends Address {
 
     @Getter
     @Setter

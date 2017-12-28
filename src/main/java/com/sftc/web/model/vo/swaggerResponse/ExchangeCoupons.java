@@ -1,6 +1,5 @@
 package com.sftc.web.model.vo.swaggerResponse;
 
-import com.sftc.web.model.others.CouponAttributes;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

@@ -1,16 +1,17 @@
 package com.sftc.web.model.vo.swaggerOrderRequest;
 
+import com.sftc.web.model.vo.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 @ApiModel(value = "我的订单列表请求包装类")
-public class MyOrderParamVO {
+public class MyOrderParamVO extends BaseVO {
 
     @Getter @Setter
-    @ApiModelProperty(name = "id",value = "用户id",example = "10093",hidden = true)
-    private int id;
+    @ApiModelProperty(name = "userUuid",value = "用户uuid",example = "10093",hidden = true)
+    private String userUuid;
 
     @Getter @Setter
     @ApiModelProperty(name = "token",value = "用户access_token",example = "EyMivbd44I124lcddrBG",hidden = true)

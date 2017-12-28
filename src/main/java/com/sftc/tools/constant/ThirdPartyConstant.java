@@ -2,6 +2,8 @@ package com.sftc.tools.constant;
 
 /**
  * 第三方平台常量
+ *
+ * @author Administrator
  */
 public class ThirdPartyConstant {
 

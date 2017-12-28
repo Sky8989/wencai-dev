@@ -1,0 +1,53 @@
+#服务配置
+server:
+  port: 8080
+  context-path: /sftc
+
+#spring配置
+spring:
+#druid数据源
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://db:3306/sftc?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    username: dankal
+    password: 0D9F8640-3FB1-4A56-9E26-646F71EE2E45
+  session:
+    store-type: none
+
+#redis配置
+  redis:
+    database: 0
+    host: 192.168.137.111
+    port: 6379
+#    password: dankal123
+    timeout: 100000
+    pool:
+      max-active: 1024
+      max-idle: 200
+      min-idle: 50
+      max-wait: 1000
+
+#jpa配置
+  jpa:
+    database: mysql
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        strategy: org.hibernate.cfg.ImprovedNamingStrategy
+
+  jackson:
+    default-property-inclusion: non_null
+
+
+
+#mybatis配置
+mybatis:
+  type-aliases-package: com.sftc.web.model.dto
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  configLocation: classpath:mybatis/mybatis-config.xml
+
+
+

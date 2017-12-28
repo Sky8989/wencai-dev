@@ -3,8 +3,6 @@ package com.sftc.web.model.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Created by huxingyue on 2017/6/25.
  */
@@ -19,10 +17,10 @@ public class UserContactNew {
     private int id;// 用户id
 
     @Setter @Getter
-    private int user_id; // 好友id
+    private String user_uuid; // 好友id
 
     @Setter @Getter
-    private int friend_id;
+    private String friend_uuid;
 
     private int is_tag_star;// 是否星标好友
 
@@ -45,8 +43,8 @@ public class UserContactNew {
     public String toString() {
         return "UserContactNew{" +
                 "id=" + id +
-                ", user_id=" + user_id +
-                ", friend_id=" + friend_id +
+                ", user_uuid=" + user_uuid +
+                ", friend_uuid=" + friend_uuid +
                 ", is_tag_star=" + is_tag_star +
                 ", lntimacy=" + lntimacy +
                 ", create_time='" + create_time + '\'' +
@@ -54,19 +52,6 @@ public class UserContactNew {
     }
 
     public UserContactNew() {}
-
-    /**
-     * 基于HttpServletRequest作为参数的构造方法 用于cms
-     * 后期便于应用扩展工厂模式 将此参数抽出
-     */
-    public UserContactNew(HttpServletRequest request) {
-        if (request.getParameter("user_id") != null && !"".equals(request.getParameter("user_id"))) {
-            this.user_id = Integer.parseInt(request.getParameter("user_id"));
-        }
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
-            this.id = Integer.parseInt(request.getParameter("id"));
-        }
-    }
 
     public int getIs_tag_star() {return is_tag_star;}
 

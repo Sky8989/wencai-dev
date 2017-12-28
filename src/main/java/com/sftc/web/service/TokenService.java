@@ -1,7 +1,7 @@
 package com.sftc.web.service;
 
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.ApiResponse;
+import com.sftc.web.model.vo.swaggerRequest.DeleteTokenVO;
 
 /**
  * Author:hxy starmoon1994
@@ -10,13 +10,5 @@ import com.sftc.tools.api.APIResponse;
  */
 public interface TokenService {
 
-    /**
-     * 为CMS提供token列表查询接口
-     * @param apiRequest
-     * @return
-     * @throws Exception
-     */
-    APIResponse getTokenList(APIRequest apiRequest) throws Exception;
-
-	APIResponse deleteToken(APIRequest apiRequest) throws Exception;
+	ApiResponse deleteToken(DeleteTokenVO body) throws Exception;
 }

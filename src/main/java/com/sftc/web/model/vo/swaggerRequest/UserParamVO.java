@@ -1,5 +1,6 @@
 package com.sftc.web.model.vo.swaggerRequest;
 
+import com.sftc.web.model.vo.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -14,7 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @Time 上午10:10
  */
 @ApiModel(value = "用户信息请求包装类")
-public class UserParamVO {
+public class UserParamVO extends BaseVO {
     @ApiModelProperty(name = "bespoken_time",value = "用户id",example = "10093",hidden = true)
     private int id;
     @ApiModelProperty(name = "js_code",value = "用户id",example = "041u1Eid1d3bbv0nFyld1FSjid1u1EiW")

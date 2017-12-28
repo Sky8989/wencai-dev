@@ -12,10 +12,14 @@ import lombok.Setter;
 public class DetermineSourceVO {
 
     @Getter @Setter
-    @ApiModelProperty(name = "longitude",value = "经度",example = "114.260976",dataType = "double",required = true)
+    @ApiModelProperty(name = "longitude",value = "经度",example = "113.9369366556",dataType = "double",required = true)
     private double longitude;
 
     @Getter @Setter
-    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.723223",dataType = "double",required = true)
+    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.5389728649",dataType = "double",required = true)
     private double latitude;
+
+    @Getter @Setter
+    @ApiModelProperty(name = "coordinate",value = "经纬度对象",hidden = true)
+    private CoordinateVO coordinate;
 }

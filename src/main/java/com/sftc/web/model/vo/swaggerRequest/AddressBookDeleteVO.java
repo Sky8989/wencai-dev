@@ -1,5 +1,6 @@
 package com.sftc.web.model.vo.swaggerRequest;
 
+import com.sftc.web.model.vo.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @ApiIgnore
 @ApiModel(value = "地址簿删除包装类")
-public class AddressBookDeleteVO {
+public class AddressBookDeleteVO extends BaseVO {
 
     @Getter @Setter
     @ApiModelProperty(name = "addressBook_id",value = "地址簿id",example = "924",required = true)

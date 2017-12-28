@@ -1,7 +1,6 @@
 package com.sftc.web.model.vo.swaggerResponse;
 
-import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.dto.AddressBookDTO;
+import com.sftc.tools.api.ApiResponse;
 import com.sftc.web.model.entity.CommonQuestion;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,7 +13,7 @@ import java.util.List;
  * Created by xf on 2017/11/17.
  */
 @ApiModel(value = "常见问题列表响应")
-public class CommonQuestionListVO extends APIResponse{
+public class CommonQuestionListVO extends ApiResponse {
 
     @Getter @Setter
     @ApiModelProperty(name = "CommonQuestion",value = "常见问题列表")

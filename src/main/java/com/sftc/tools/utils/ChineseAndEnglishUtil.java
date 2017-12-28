@@ -15,8 +15,7 @@ public class ChineseAndEnglishUtil {
     /**
      * 是否是中文
      */
-
-    public static boolean isChinese(char c) {
+    private static boolean isChinese(char c) {
 
         Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
 
@@ -26,7 +25,7 @@ public class ChineseAndEnglishUtil {
 
         // HALFWIDTH_AND_FULLWIDTH_FORMS 判断中文的，号
 
-        if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+        return ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
 
                 || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
 
@@ -36,10 +35,7 @@ public class ChineseAndEnglishUtil {
 
                 || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
 
-                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS) {
-            return true;
-        }
-        return false;
+                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS;
 
     }
 
@@ -60,23 +56,7 @@ public class ChineseAndEnglishUtil {
 
         Matcher m = p.matcher(str);
 
-        if (m.find()) {
-            return true;
-        } else {
-            return false;
-        }
+        return m.find();
 
-    }
-
-
-    public static void main(String[] args) {
-
-        System.out.println(isChinese('员'));
-
-        System.out.println(isChinese('s'));
-
-        System.out.println(isEnglish("程序员"));
-
-        System.out.println(isEnglish("chen"));
     }
 }

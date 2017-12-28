@@ -1,72 +1,86 @@
 package com.sftc.web.service.impl;
 
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.api.ApiResponse;
+import com.sftc.tools.api.ApiUtil;
+import com.sftc.tools.constant.CustomConstant;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.redis.UserUnpackingRedisDao;
-import com.sftc.web.model.vo.swaggerRequest.UserUnpackingVO;
 import com.sftc.web.model.entity.User;
+import com.sftc.web.model.vo.swaggerRequest.UserUnpackingVO;
 import com.sftc.web.service.UserUnpackingService;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
-import static com.sftc.tools.api.APIStatus.*;
+import static com.sftc.tools.api.ApiStatus.SUCCESS;
 
 @Service
 public class UserUnpackingServiceImpl implements UserUnpackingService {
 
-    @Resource
-    private UserUnpackingRedisDao userUnpackingRedis;
+    private static final String DELIMITER = "_";
+
     @Resource
     private TokenMapper tokenMapper;
-
-    private static final String  DELIMITER = "_";
-    private static final String HEARD_TOKEN = "token";
+    @Resource
+    private UserUnpackingRedisDao userUnpackingRedis;
 
     @Override
-    public APIResponse unpacking(APIRequest apiRequest) {
-        UserUnpackingVO userUnpackingVO = (UserUnpackingVO) apiRequest.getRequestParam();
+    public ApiResponse unpacking(UserUnpackingVO userUnpackingVO, HttpServletRequest request) {
 
-        Map header = apiRequest.getHeader();
-        String token = null;
-        if (header.size()!=0)
-             token = (String) header.get(HEARD_TOKEN);
-
+        String token = request.getHeader(CustomConstant.HEARD_TOKEN);
+        if (StringUtils.isBlank(token)) {
+            return ApiUtil.error(HttpStatus.UNAUTHORIZED.value(), "token is null");
+        }
         User user = tokenMapper.tokenInterceptor(token);
-        if (user==null){
-            return APIUtil.paramErrorResponse(SELECT_FAIL.getMessage());
+        if (user == null) {
+            return ApiUtil.error(HttpStatus.BAD_REQUEST.value(), "user does not exist");
         }
-        if(userUnpackingVO==null){
-            return APIUtil.paramErrorResponse(PARAM_ERROR.getMessage());
+        if (userUnpackingVO == null) {
+            return ApiUtil.error(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "the request body is empty");
         }
-        int user_id = user.getId();
-        String order_id = userUnpackingVO.getOrder_id();
+        String userUUId = user.getUuid();
+        String orderId = userUnpackingVO.getOrder_id();
         int type = userUnpackingVO.getType();
-        String key = this.mosaicKey(order_id, user_id);
-        String userUnpacking = userUnpackingRedis.getUserUnpacking(key);
-        JSONObject json = new JSONObject();
+        String value = this.mosaicKey(orderId, userUUId);
 
-        if (userUnpacking==null){
-            if (type==0)
-                json.put("is_pack",false);
-            else {
-                userUnpackingRedis.setUserUnpacking(key,"true");
-                json.put("pack",true);
+        JSONArray packArray = userUnpackingRedis.getUserUnpacking();
+
+        JSONObject responseJson = new JSONObject();
+        if (CollectionUtils.isNotEmpty(packArray)) {
+            if (!packArray.contains(value)) {
+                if (type == 0) {
+                    responseJson.put("is_pack", false);
+                } else {
+                    //进行拆包
+                    packArray.add(value);
+                    userUnpackingRedis.setUserUnpacking(packArray);
+                    responseJson.put("pack", true);
+                }
+            } else {
+                responseJson.put("is_pack", true);
             }
-        }else
-            json.put("is_pack",true);
-        return APIUtil.getResponse(SUCCESS, json);
+        } else {
+            userUnpackingRedis.setDefaultUserUnpackingValue();
+            responseJson.put("is_pack", false);
+        }
+
+        return ApiUtil.getResponse(SUCCESS, responseJson);
     }
-    /**拼接redis键值对*/
-    private String mosaicKey(String order_id, int user_id){
+
+    /**
+     * 拼接redis键值对
+     */
+    private String mosaicKey(String orderId, String userUUId) {
         StringBuilder sb = new StringBuilder();
-        sb.append(order_id);
+        sb.append(orderId);
         sb.append(DELIMITER);
-        sb.append(user_id);
+        sb.append(userUUId);
         return sb.toString();
     }
 }

@@ -2,7 +2,7 @@ package com.sftc.web.enumeration.address;
 
 
 /**
- * sftc_address_book 
+ * c_address_book
  *  address_type地址类型
  * @author wencai
  *

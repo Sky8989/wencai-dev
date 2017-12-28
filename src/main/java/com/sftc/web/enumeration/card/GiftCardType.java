@@ -1,6 +1,6 @@
 package com.sftc.web.enumeration.card;
 /**
- * sftc_gift_card 
+ * c_gift_card
  * type礼品卡类型
  * @author wencai
  */

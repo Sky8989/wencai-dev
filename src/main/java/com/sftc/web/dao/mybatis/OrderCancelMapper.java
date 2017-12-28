@@ -22,4 +22,8 @@ public interface OrderCancelMapper {
      * @return 返回包含OrderCancel的list
      */
     List<OrderCancel> selectCanceledOrderList(OrderCancel orderCancel);
+
+
+    List<Integer> selectCanceleOrderByExpressId(int expressId);
+
 }

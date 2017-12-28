@@ -1,16 +1,18 @@
 package com.sftc.web.model.vo.swaggerRequest;
 
+import com.sftc.web.model.vo.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 @ApiModel(value = "来往记录请求类")
-public class UserContactParamVO {
+public class UserContactParamVO extends BaseVO {
 
     @ApiModelProperty(name = "access_token",value = "顺丰access_token",required = true,hidden = true)
     private String access_token;
-    @ApiModelProperty(name = "user_id",value = "用户id",example = "10093",required = true,hidden = true)
-    private int user_id;
-    @ApiModelProperty(name = "friend_id",value = "好友id",example = "10085",required = true)
-    private int friend_id;
+    @ApiModelProperty(name = "user_uuid",value = "用户uuid",example = "10093",required = true,hidden = true)
+    private String user_uuid;
+    @ApiModelProperty(name = "friend_uuid",value = "好友uuid",example = "2c9a85895fddad58015fdde9f78d005a",required = true)
+    private String friend_uuid;
     @ApiModelProperty(name = "pageNum",value = "页码",example = "1",required = true)
     private int pageNum;
     @ApiModelProperty(name = "pageSize",value = "每页条数",example = "10",required = true)
@@ -30,20 +32,18 @@ public class UserContactParamVO {
         this.access_token = access_token;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public String getUser_uuid() {return user_uuid;}
+
+    public void setUser_uuid(String user_uuid) {
+        this.user_uuid = user_uuid;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public String getFriend_uuid() {
+        return friend_uuid;
     }
 
-    public int getFriend_id() {
-        return friend_id;
-    }
-
-    public void setFriend_id(int friend_id) {
-        this.friend_id = friend_id;
+    public void setFriend_uuid(String friend_uuid) {
+        this.friend_uuid = friend_uuid;
     }
 
     public int getPageNum() {

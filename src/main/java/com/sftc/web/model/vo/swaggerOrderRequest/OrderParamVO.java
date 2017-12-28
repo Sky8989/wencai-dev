@@ -1,10 +1,11 @@
 package com.sftc.web.model.vo.swaggerOrderRequest;
 
+import com.sftc.web.model.vo.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(value = "寄件人订单填写包装类")
-public class OrderParamVO {
+public class OrderParamVO extends BaseVO {
 
     @ApiModelProperty(name = "ship_name",value = "寄件人姓名",example = "Joel测试订单1",required = true)
     private String sender_name;
@@ -36,8 +37,8 @@ public class OrderParamVO {
     private String word_message;
     @ApiModelProperty(name = "package_count",value = "包裹数量",example = "1",required = true)
     private int package_count;
-    @ApiModelProperty(name = "sender_user_id",value = "寄件人id",example = "10028",required = true)
-    private int sender_user_id;
+    @ApiModelProperty(name = "sender_user_uuid",value = "寄件人uuid",example = "10028",hidden = true)
+    private String sender_user_uuid;
     @ApiModelProperty(name = "gift_card_id",value = "贺卡id",example = "1")
     private int gift_card_id;
     @ApiModelProperty(name = "voice_time",value = "语音时长",example = "10")
@@ -169,13 +170,9 @@ public class OrderParamVO {
         this.package_count = package_count;
     }
 
-    public int getSender_user_id() {
-        return sender_user_id;
-    }
+    public String getSender_user_uuid() {return sender_user_uuid;}
 
-    public void setSender_user_id(int sender_user_id) {
-        this.sender_user_id = sender_user_id;
-    }
+    public void setSender_user_uuid(String sender_user_uuid) {this.sender_user_uuid = sender_user_uuid;}
 
     public int getGift_card_id() {
         return gift_card_id;

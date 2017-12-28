@@ -5,15 +5,11 @@
 <mapper namespace="com.sftc.web.dao.mybatis.UserInviteMapper">
 
 
+    <insert id="save" parameterType="com.sftc.web.model.entity.UserInvite" useGeneratedKeys="true" keyProperty="id">
 
-    <insert id="save" parameterType="com.sftc.web.model.entity.UserInvite" useGeneratedKeys="true" keyProperty="id" >
-
-        INSERT INTO sftc_user_invite (user_id,city,invite_channel,invite_code,create_time)
+        INSERT INTO c_user_invite (user_uuid, city, invite_channel, invite_code, create_time)
         VALUES
-            (#{user_id},#{city},#{invite_channel}, #{invite_code}, #{create_time})
+            (#{user_uuid}, #{city}, #{invite_channel}, #{invite_code}, #{create_time})
     </insert>
-
-
-
 
 </mapper>

@@ -10,7 +10,7 @@ import lombok.Setter;
 public class MultiplePackageAddressDTO {
     @Getter
     @Setter
-    private String userId;
+    private String userUUId;
     @Getter
     @Setter
     private String province;

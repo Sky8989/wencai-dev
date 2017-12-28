@@ -1,13 +1,16 @@
 package com.sftc.tools.screenshot;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
-import static com.sftc.web.config.PhantomJSConfig.JS_PATH;
-import static com.sftc.web.config.PhantomJSConfig.OUTPUT_PATH;
-import static com.sftc.web.config.PhantomJSConfig.SHELL_PATH;
+import static com.sftc.web.config.PhantomJSConfig.*;
 
 /**
  * HTML页面截屏工具类
+ *
+ * @author Administrator
  */
 public class HtmlScreenShotUtil {
 

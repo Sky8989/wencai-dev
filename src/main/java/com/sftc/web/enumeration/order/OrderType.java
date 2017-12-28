@@ -2,7 +2,7 @@ package com.sftc.web.enumeration.order;
 
 
 /**
- * sftc_order
+ * c_order
  * @author wencai
  *
  */

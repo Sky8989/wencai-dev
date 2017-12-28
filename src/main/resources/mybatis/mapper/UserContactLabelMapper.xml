@@ -12,22 +12,21 @@
 
     <!-- 添加标签   -->
     <insert id="addLabel" parameterType="com.sftc.web.model.entity.UserContactLabel" useGeneratedKeys="true">
-        INSERT INTO sftc_user_contact_label (label, user_contact_id, create_time) VALUES
+        INSERT INTO c_user_contact_label (label, user_contact_id, create_time) VALUES
             (#{label}, #{user_contact_id}, #{create_time})
     </insert>
 
     <!-- 获取好友标签列表*  -->
     <select id="getFriendLabelList" parameterType="int" resultMap="friendLabelList">
         SELECT *
-        FROM sftc_user_contact_label
-        WHERE user_contact_id = #{id}
+        FROM c_user_contact_label
+        WHERE user_contact_id = #{user_contact_id}
     </select>
 
     <!-- 删除好友标签  -->
     <delete id="deleteFriendLabel" parameterType="int">
-        DELETE FROM sftc_user_contact_label
+        DELETE FROM c_user_contact_label
         WHERE id = #{id}
     </delete>
-
 
 </mapper>

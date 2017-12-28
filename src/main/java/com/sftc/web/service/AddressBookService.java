@@ -1,39 +1,51 @@
 package com.sftc.web.service;
 
 
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.ApiResponse;
+import com.sftc.web.model.vo.swaggerRequest.AddressBookDeleteVO;
+import com.sftc.web.model.vo.swaggerRequest.AddressBookRequestVO;
+import com.sftc.web.model.vo.swaggerRequest.AddressBookUpdateVO;
 
-
+/**
+ * 
+ * @author Administrator
+ *
+ */
 public interface AddressBookService {
 
     /**
      * 新增地址条目
      */
-    APIResponse addAddressBook(APIRequest apiRequest);
+    ApiResponse addAddressBook(AddressBookRequestVO body);
 
     /**
      * 删除地址条目
      *
-     * @param apiRequest
+     * @param body
      * @return
      */
-    APIResponse deleteAddressBook(APIRequest apiRequest);
+    ApiResponse deleteAddressBook(AddressBookDeleteVO body);
 
     /**
      * 修改地址条目
      *
-     * @param apiRequest
+     * @param body
      * @return
      */
-    APIResponse updateAddressBook(APIRequest apiRequest);
+    ApiResponse updateAddressBook(AddressBookUpdateVO body);
 
     /**
      * 获取 地址簿列表 根据时间戳降序排列 大的时间戳在上面
      *
-     * @param apiRequest
+     * @param addressBookType
      * @return
      */
-    APIResponse selectAddressBookList(APIRequest apiRequest);
-
+    ApiResponse selectAddressBookList(String addressBookType);
+    /**
+     * 查询历史地址
+     * @param pageNum 当前页
+     * @param pageSize 每页显示个数
+     * @return
+     */
+    ApiResponse selectAddressHistory(Integer pageNum, Integer pageSize);
 }

@@ -1,5 +1,6 @@
 package com.sftc.web.model.vo.swaggerOrderRequest;
 
+import com.sftc.web.model.vo.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import lombok.Setter;
  * Created by xf on 2017/10/21.
  */
 @ApiModel(value = "好友订单填写包装类")
-public class FriendFillVO {
+public class FriendFillVO extends BaseVO {
 
     @Getter @Setter
     @ApiModelProperty(name = "ship_name",value = "收件人姓名",example = "庄槟豪测试订单",required = true)
@@ -42,10 +43,6 @@ public class FriendFillVO {
     @Getter @Setter
     @ApiModelProperty(name = "order_id",value = "订单id",example = "C1508415669414OY",required = true)
     private String order_id;
-
-    @Getter @Setter
-    @ApiModelProperty(name = "ship_user_id",value = "收件人id",example = "10087",required = true)
-    private String ship_user_id;
 
     @Getter @Setter
     @ApiModelProperty(name = "longitude",value = "经度",example = "113.9466987556842",dataType = "double",required = true)

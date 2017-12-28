@@ -1,18 +1,20 @@
 package com.sftc.web.service;
 
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.ApiResponse;
+import com.sftc.web.model.vo.swaggerOrderRequest.MultiplePackagePayVO;
+import com.sftc.web.model.vo.swaggerOrderRequest.MultiplePackageVO;
 
 /**
+ * 好友多包裹
+ *
  * @author ： CatalpaFlat
- * @date ：Create in 14:13 2017/11/17
  */
 public interface MultiplePackageService {
-    APIResponse batchValuation(APIRequest request);
+    ApiResponse batchValuation(MultiplePackageVO request);
 
-    APIResponse batchPlaceOrder(APIRequest request);
+    ApiResponse batchPlaceOrder(MultiplePackageVO body);
 
-    APIResponse batchPay(APIRequest request);
+    ApiResponse batchPay(MultiplePackagePayVO body);
 
-    APIResponse isPay(APIRequest request);
+    ApiResponse isPay(MultiplePackagePayVO body);
 }

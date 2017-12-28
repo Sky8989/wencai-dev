@@ -1,20 +1,14 @@
 package com.sftc.web.dao.mybatis;
 
-import java.util.List;
-
+import com.sftc.web.model.entity.SystemLabel;
 import org.springframework.stereotype.Repository;
 
-import com.sftc.web.model.entity.SystemLabel;
+import java.util.List;
 
 
 @Repository
 public interface SystemLabelMapper {
 
-	int deleteSystemLable(int id);
-
-	int updateSystemLabel(SystemLabel systemLabel);
-
 	List<SystemLabel> getSystemLabelList(SystemLabel systemLabel);
-
 
 }

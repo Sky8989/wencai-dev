@@ -11,94 +11,73 @@
         </association>
     </resultMap>
 
-    <select id="selectUserByLogin" parameterType="com.sftc.web.model.entity.User" resultType="com.sftc.web.model.entity.User">
-        select * from sftc_user
-        where
-        <if test="mobile!=null">
-            mobile=#{mobile}
-        </if>
-        <if test="open_id!=null">
-            open_id=#{open_id}
-        </if>
-    </select>
-
     <select id="selectUserByPhone" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.User">
         SELECT *
-        FROM sftc_user
+        FROM users
         WHERE mobile = #{mobile}
     </select>
 
     <select id="selectUserByOpenid" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.User">
         SELECT *
-        FROM sftc_user
-        WHERE open_id = #{open_id}
+        FROM users
+        WHERE JSON_EXTRACT(attributes, '$.c_wxopenid') = #{openId}
     </select>
 
     <select id="findUserByMobile" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.User">
         SELECT *
-        FROM sftc_user
+        FROM users
         WHERE mobile = #{mobile}
     </select>
-    <select id="selectUserByUserId" parameterType="int" resultType="com.sftc.web.model.entity.User">
+    <select id="selectUserByUserUUId" parameterType="string" resultType="com.sftc.web.model.entity.User">
         SELECT *
-        FROM sftc_user
-        WHERE id = #{user_id}
+        FROM users
+        WHERE uuid = #{userUUId}
     </select>
 
     <insert id="insertOpenid" parameterType="com.sftc.web.model.entity.User" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO sftc_user (open_id, create_time, session_key)
+        INSERT INTO users (attributes, created_at)
         VALUES
-        (#{open_id}, #{create_time}, #{session_key})
+            (#{attributes}, now())
     </insert>
 
     <insert id="insertWithAvatarAndName" parameterType="com.sftc.web.model.entity.User" useGeneratedKeys="true"
             keyProperty="id">
-        INSERT INTO sftc_user (open_id, create_time, session_key, avatar, name)
+        INSERT INTO users (attributes, created_at, avatar, name)
         VALUES
-        (#{open_id}, #{create_time}, #{session_key}, #{avatar}, #{name})
+            (#{attributes},now(), #{avatar}, #{name})
     </insert>
 
-    <!--添加顺丰传过来的Merchant信息-->
-    <insert id="addMerchant" parameterType="com.sftc.web.model.entity.User" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO sftc_user (mobile, user_password, open_id, create_time, avatar, uuid, name) VALUES
-        (#{mobile}, #{user_password}, #{open_id}, #{create_time}, #{avatar}, #{uuid}, #{name})
-    </insert>
+    <!--&lt;!&ndash;添加顺丰传过来的Merchant信息&ndash;&gt;-->
+    <!--<insert id="addMerchant" parameterType="com.sftc.web.model.entity.User" useGeneratedKeys="true" keyProperty="id">-->
+        <!--INSERT INTO users (mobile, user_password, open_id, created_at, avatar, uuid, name) VALUES-->
+            <!--(#{mobile}, #{user_password}, #{open_id}, now(), #{avatar}, #{uuid}, #{name})-->
+    <!--</insert>-->
 
-    <select id="getUuidAndtoken" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.User" resultMap="User">
+    <select id="getUuidAndtoken" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.User"
+            resultMap="User">
         SELECT
-        u.uuid,
-        t.access_token
-        FROM sftc_user u, sftc_token t, sftc_order o
+            u.uuid,
+            t.access_token
+        FROM users u, c_token t, c_order o
         WHERE
-        u.id = o.sender_user_id AND u.id = t.user_id AND o.id = #{id}
+            u.uuid = o.sender_user_uuid AND u.uuid = t.user_uuid AND o.id = #{order_id}
     </select>
 
     <update id="updateUserOfAvatar" parameterType="com.sftc.web.model.entity.User">
-        UPDATE sftc_user
+        UPDATE users
         <trim prefix="set" suffixOverrides=",">
             <if test="avatar!=null">avatar=#{avatar},</if>
             <if test="name!=null">name=#{name},</if>
-            <if test="session_key!=null">session_key=#{session_key},</if>
         </trim>
-        WHERE open_id = #{open_id}
+        WHERE JSON_EXTRACT(attributes, '$.c_wxopenid') = #{openId}
     </update>
 
     <update id="updateUser" parameterType="com.sftc.web.model.entity.User">
-        update sftc_user
+        update users
         <trim prefix="set" suffixOverrides=",">
             <if test="uuid!=null">uuid=#{uuid},</if>
             <if test="mobile!=null">mobile=#{mobile},</if>
-            <if test="invite_id!=null">invite_id=#{invite_id},</if>
         </trim>
-        WHERE id=#{id}
+        WHERE uuid=#{uuid}
     </update>
-
-    <!--下面是cms系统用到的mapper-->
-    <select id="selectByPage" resultType="com.sftc.web.model.entity.User" parameterType="com.sftc.web.model.entity.User">
-        SELECT * FROM sftc_user
-        <where>
-            <if test="id != 0">and id = #{id}</if>
-            <if test="name != null">and name LIKE '%${name}%'</if>
-        </where>
-    </select>
 </mapper>

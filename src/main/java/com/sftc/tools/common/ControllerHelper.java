@@ -1,12 +1,14 @@
 package com.sftc.tools.common;
 
-import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 /**
  * 控制层的相关工具
  * Created by bingo on 2017/8/9.
+ *
+ * @author Administrator
  */
 public class ControllerHelper {
 
@@ -16,7 +18,7 @@ public class ControllerHelper {
      * @param apiResponse 统一返回值
      * @return ResponseEntity
      */
-    public static ResponseEntity<APIResponse> responseEntityBuilder(APIResponse apiResponse) {
+    static ResponseEntity<ApiResponse> responseEntityBuilder(ApiResponse apiResponse) {
 
         switch (apiResponse.getState()) {
             case 200:

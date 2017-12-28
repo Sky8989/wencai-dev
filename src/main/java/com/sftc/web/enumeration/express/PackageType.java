@@ -2,7 +2,7 @@ package com.sftc.web.enumeration.express;
 
 
 /**
- * sftc_order_express 
+ * c_order_express
  *  package_type包裹类型
  * @author wencai
  *

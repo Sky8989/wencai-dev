@@ -1,5 +1,6 @@
 package com.sftc.web.model.vo.swaggerRequest;
 
+import com.sftc.web.model.vo.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -7,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
  * Created by xf on 2017/10/23.
  */
 @ApiModel(value = "注册用户邀请码")
-public class RegisterRequestVO {
+public class RegisterRequestVO extends BaseVO {
     @ApiModelProperty(name = "merchant",required = true)
     private RegisterMerchantVO merchant;
     @ApiModelProperty(name = "message",required = true)

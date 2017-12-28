@@ -5,6 +5,9 @@ import sun.misc.BASE64Encoder;
 
 import java.io.UnsupportedEncodingException;
 
+/**
+ * @author Administrator
+ */
 public class Base64Util {
 
     /**
@@ -13,6 +16,7 @@ public class Base64Util {
      * @param string 明文
      * @return 密文
      */
+    @SuppressWarnings("restriction")
     public static String getBase64(String string) {
         byte[] b = null;
         String s = null;
@@ -33,7 +37,8 @@ public class Base64Util {
      * @param string 密文
      * @return 明文
      */
-    public static String getFromBase64(String string) {
+    @SuppressWarnings("restriction")
+    static String getFromBase64(String string) {
         byte[] b;
         String result = null;
         if (string != null) {

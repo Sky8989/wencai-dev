@@ -1,6 +1,6 @@
 package com.sftc.web.enumeration.order;
 /**
- * sftc_order
+ * c_order
  *  pay_method支付方式
  * @author wencai
  *

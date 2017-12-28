@@ -12,10 +12,10 @@ public class UserContact extends Object {
     private int id;
 
     @Setter @Getter
-    private int user_id;
+    private String user_uuid;
 
     @Setter @Getter
-    private int friend_id;
+    private String friend_uuid;
 
     @Setter @Getter
     private String create_time;// 创建时间

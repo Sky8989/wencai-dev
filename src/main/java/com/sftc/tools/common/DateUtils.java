@@ -5,6 +5,9 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * @author Administrator
+ */
 public class DateUtils {
     private static Locale locale = Locale.CHINA;
 

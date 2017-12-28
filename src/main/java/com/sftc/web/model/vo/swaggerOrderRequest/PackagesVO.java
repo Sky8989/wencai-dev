@@ -2,6 +2,7 @@ package com.sftc.web.model.vo.swaggerOrderRequest;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * Created by xf on 2017/10/21.
@@ -9,11 +10,17 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "包裹类型")
 public class PackagesVO {
     @ApiModelProperty(name = "type",value = "包裹类型",example = "FILE")
+    @NotBlank(message = "type参数不能为空")
     private String type;
+
     @ApiModelProperty(name = "weight",value = "包裹重量",example = "3")
+    @NotBlank(message = "weight参数不能为空")
     private String weight;
+
     @ApiModelProperty(name = "package_type",value = "包裹大小类型",example = "0")
+    @NotBlank(message = "package_type参数不能为空")
     private String package_type;
+
     @ApiModelProperty(name = "comments",value = "包裹描述",example = "大家电测试包裹描述")
     private String comments;
 

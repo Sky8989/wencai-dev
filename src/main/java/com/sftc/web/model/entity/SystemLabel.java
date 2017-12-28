@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "sftc_system_label")
+@Table(name = "c_system_label")
 @ApiModel(value = "系统标签 新增不用传id，修改时传id")
 public class SystemLabel extends Object{
 

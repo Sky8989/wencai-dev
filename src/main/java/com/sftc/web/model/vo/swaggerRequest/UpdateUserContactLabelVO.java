@@ -2,13 +2,14 @@ package com.sftc.web.model.vo.swaggerRequest;
 
 
 import com.sftc.web.model.dto.LabelDTO;
+import com.sftc.web.model.vo.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 
 @ApiModel(value = "用户标签存储")
-public class UpdateUserContactLabelVO {
+public class UpdateUserContactLabelVO extends BaseVO {
 
     @ApiModelProperty(value = "用户好友关系id", example = "156", required = true)
     private int user_contact_id;

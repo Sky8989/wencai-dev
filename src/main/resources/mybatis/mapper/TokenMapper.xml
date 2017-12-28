@@ -5,7 +5,7 @@
 <mapper namespace="com.sftc.web.dao.mybatis.TokenMapper">
 
     <update id="updateToken" parameterType="com.sftc.web.model.entity.Token">
-        update sftc_token
+        update c_token
         <trim prefix="set" suffixOverrides=",">
             <if test="gmt_modified!=null">gmt_modified=#{gmt_modified},</if>
             <if test="gmt_expiry!=null">gmt_expiry=#{gmt_expiry},</if>
@@ -13,70 +13,49 @@
             <if test="access_token!=null">access_token=#{access_token},</if>
             <if test="refresh_token!=null">refresh_token=#{refresh_token},</if>
         </trim>
-        WHERE user_id=#{user_id}
+        WHERE user_uuid=#{user_uuid}
     </update>
 
     <insert id="addToken" parameterType="com.sftc.web.model.entity.Token">
-        INSERT INTO sftc_token
-        (create_time, is_logout, gmt_modified, gmt_expiry, local_token, user_id)
+        INSERT INTO c_token
+        (create_time, is_logout, gmt_modified, gmt_expiry, local_token, user_uuid)
         VALUES
-        (#{create_time}, #{is_logout}, #{gmt_modified}, #{gmt_expiry}, #{local_token}, #{user_id})
+            (#{create_time}, #{is_logout}, #{gmt_modified}, #{gmt_expiry}, #{local_token}, #{user_uuid})
     </insert>
 
     <select id="getToken" parameterType="int" resultType="com.sftc.web.model.entity.Token" resultMap="getToken">
         SELECT
-        u.name,
-        t.access_token
-        FROM sftc_order o, sftc_user u, sftc_token t
-        WHERE u.id = o.sender_user_id AND u.id = t.user_id AND o.id = #{id}
+            u.name,
+            t.access_token
+        FROM c_order o, users u, c_token t
+        WHERE u.uuid = o.sender_user_uuid AND u.uuid = t.user_uuid AND o.id = #{order_id}
     </select>
 
-    <select id="getTokenById" parameterType="int" resultType="com.sftc.web.model.entity.Token">
+    <select id="getTokenByUUId" parameterType="string" resultType="com.sftc.web.model.entity.Token">
         SELECT *
-        FROM sftc_token
-        WHERE user_id = #{user_id}
+        FROM c_token
+        WHERE user_uuid = #{user_uuid}
     </select>
-
     <resultMap id="getToken" type="com.sftc.web.model.entity.Token">
         <result property="access_token" column="access_token"/>
     </resultMap>
 
     <select id="tokenInterceptor" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.User">
-        SELECT sftc_user.*
-        FROM sftc_token, sftc_user
+        SELECT users.*
+        FROM c_token, users
         WHERE
-        sftc_user.id = sftc_token.user_id AND sftc_token.local_token = #{token}
+            users.uuid = c_token.user_uuid AND c_token.local_token = #{token}
     </select>
 
-    <select id="getTokenByMobile" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.Token">
-        SELECT t.access_token
-        FROM sftc_user u, sftc_token t
-        WHERE u.id = t.user_id AND u.mobile = #{mobile}
-    </select>
-
-    <select id="selectUserIdByToken" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.Token">
-        SELECT *
-        FROM sftc_token
+    <select id="getUserIdByLocalToken" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT user_uuid
+        FROM c_token
         WHERE local_token = #{token}
     </select>
 
-    <select id="getTokenList" parameterType="com.sftc.web.model.entity.Token" resultType="com.sftc.web.model.entity.Token">
-        select * from sftc_token
-        <where>
-            <if test="id != 0">and id = #{id}</if>
-            <if test="user_id != null">and user_id LIKE '%${user_id}%'</if>
-        </where>
-    </select>
-
-
-    <select id="getUserIdByLocalToken" parameterType="java.lang.String" resultType="java.lang.Integer">
-        SELECT user_id
-        FROM sftc_token
-        WHERE local_token = #{token}
-    </select>
-
-	<delete id="deleteTokenByUserId" parameterType="java.lang.Integer">
-	DELETE  from sftc_token where user_id = #{user_id}
-	</delete>
+    <delete id="deleteTokenByUserId" parameterType="java.lang.String">
+        DELETE FROM c_token
+        WHERE user_uuid = #{user_uuid}
+    </delete>
 
 </mapper>

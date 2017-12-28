@@ -5,6 +5,8 @@
 <configuration>
 
     <settings>
+        <!-- 打印语句 -->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
         <!-- 开启驼峰命名法 -->
         <setting name="mapUnderscoreToCamelCase" value="false"/>
         <!-- 获取数据库自增主键值 -->
@@ -12,23 +14,6 @@
         <!-- 使用别名替换列名 -->
         <setting name="useColumnLabel" value="false"/>
     </settings>
-
-    <typeHandlers>
-        <!--枚举-->
-     	<typeHandler handler="org.apache.ibatis.type.EnumTypeHandler" javaType="com.sftc.web.enumeration.address.AddressType"/>
-     	<typeHandler handler="org.apache.ibatis.type.EnumTypeHandler" javaType="com.sftc.web.enumeration.address.AddressBookType"/>
-     	<typeHandler handler="org.apache.ibatis.type.EnumTypeHandler" javaType="com.sftc.web.enumeration.order.PayMethod"/>
-     	<typeHandler handler="org.apache.ibatis.type.EnumTypeHandler" javaType="com.sftc.web.enumeration.order.OrderType"/>
-     	<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.sftc.web.enumeration.order.DistributionMethod"/>
-     	
-     	
-     	
-        <typeHandler javaType="String" jdbcType="VARCHAR" handler="com.sftc.tools.typeHandler.NullStringHandler"/>
-        <typeHandler javaType="Integer" jdbcType="INTEGER" handler="com.sftc.tools.typeHandler.NullIntegerHandler"/>
-        <typeHandler javaType="Double" jdbcType="DOUBLE" handler="com.sftc.tools.typeHandler.NullDoubleHandler"/>
-        
-    </typeHandlers>
-     
 
     <plugins>
         <!-- com.github.pagehelper为PageHelper类所在包名 -->
@@ -40,5 +25,4 @@
             <property name="pageSizeZero" value="true"/>
         </plugin>
     </plugins>
-
 </configuration>

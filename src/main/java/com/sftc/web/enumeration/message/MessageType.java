@@ -1,7 +1,7 @@
 package com.sftc.web.enumeration.message;
 
 /**
- * sftc_message 
+ * c_message
  *  message_type消息类型 
  * @author wencai
  *

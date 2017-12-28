@@ -1,13 +1,12 @@
 package com.sftc.web.model.entity;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 兜底记录表，记录从同城单转下到大网的订单信息
  */
 @Entity
-@Table(name = "sftc_order_no_driver")
+@Table(name = "c_order_no_driver")
 public class OrderExpressTransform {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

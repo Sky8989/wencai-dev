@@ -9,8 +9,9 @@ import javax.persistence.Table;
 import com.sftc.web.model.others.Object;
 import lombok.Getter;
 import lombok.Setter;
+
 @Entity
-@Table(name = "sftc_user_contact_label")
+@Table(name = "c_user_contact_label")
 public class UserContactLabel extends Object {
 
 	@Id

@@ -12,7 +12,7 @@ public interface UserContactLabelMapper {
     void addLabel(UserContactLabel label);
 
     //获取好友标签列表
-    List<UserContactLabel> getFriendLabelList(int id);
+    List<UserContactLabel> getFriendLabelList(int user_contact_id);
 
     //删除好友标签
     void deleteFriendLabel(int id);

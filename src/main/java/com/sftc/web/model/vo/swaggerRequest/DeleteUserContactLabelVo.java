@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.servlet.http.HttpServletRequest;
-
 @ApiModel(value = "删除用户标签")
 public class DeleteUserContactLabelVo{
 

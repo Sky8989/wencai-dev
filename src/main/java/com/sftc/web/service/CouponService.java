@@ -1,7 +1,8 @@
 package com.sftc.web.service;
 
-import com.sftc.tools.api.APIRequest;
-import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.ApiResponse;
+import com.sftc.web.model.vo.swaggerRequest.CouPonPromoVO;
+import com.sftc.web.model.vo.swaggerRequest.CouponRequestVO;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,16 +19,16 @@ public interface CouponService {
     /**
      * 根据用户查询优惠券
      *
-     * @param apiRequest
+     * @param body
      * @return
      */
-    APIResponse getUserCouponList(APIRequest apiRequest) throws Exception;
+    ApiResponse getUserCouponList(CouponRequestVO body) throws Exception;
 
     /**
      * 根据密语和token兑换优惠券
      *
-     * @param apiRequest
+     * @param body
      * @return
      */
-    APIResponse exchangeCoupon(APIRequest apiRequest) throws Exception;
+    ApiResponse exchangeCoupon(CouPonPromoVO body) throws Exception;
 }

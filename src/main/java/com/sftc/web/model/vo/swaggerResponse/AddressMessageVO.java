@@ -14,9 +14,9 @@ public class AddressMessageVO extends Address {
 
     @ApiModelProperty(name = "id",value = "主键",example = "2304",dataType = "int")
     @Setter @Getter
-    private int id;
+    private Integer id;
 
-    @ApiModelProperty(name = "user_id",value = "用户id",example = "10084",dataType = "int")
+    @ApiModelProperty(name = "user_uuid",value = "用户uuid",example = "10084",dataType = "int")
     @Setter @Getter
-    private int user_id;
+    private String user_uuid;
 }

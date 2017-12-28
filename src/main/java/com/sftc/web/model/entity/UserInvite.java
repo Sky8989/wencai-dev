@@ -9,7 +9,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "sftc_user_invite")
+@Table(name = "c_user_invite")
 @ApiModel(value = "用户邀请")
 public class UserInvite extends Object {
 
@@ -19,9 +19,9 @@ public class UserInvite extends Object {
     @Setter @Getter
     private int id;
 
-    @ApiModelProperty(value = "用户id")
+    @ApiModelProperty(value = "用户uuid")
     @Setter @Getter
-    private int user_id;
+    private String user_uuid;
 
     @ApiModelProperty(value = "邀请渠道")
     @Setter @Getter
@@ -47,7 +47,7 @@ public class UserInvite extends Object {
     public String toString() {
         return "UserInvite{" +
                 "id=" + id +
-                ", user_id=" + user_id +
+                ", user_uuid=" + user_uuid +
                 ", invite_channel=" + invite_channel +
                 ", city='" + city + '\'' +
                 ", invite_code='" + invite_code + '\'' +

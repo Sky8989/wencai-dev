@@ -4,14 +4,13 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @ApiModel(value = "用户标签")
 @Entity
-@Table(name = "sftc_user_contact_label")
+@Table(name = "c_user_contact_label")
 public class Label implements Serializable {
 
     @Id

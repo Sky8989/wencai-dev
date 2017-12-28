@@ -4,8 +4,6 @@ import com.sftc.web.model.others.Object;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
 *@Author:hxy starmoon1994
 *@Description:
@@ -29,7 +27,7 @@ public class Evaluate extends Object {
     private int order_id;   // 订单id
 
     @Setter @Getter
-    private long user_id; // 评价人的用户id
+    private String user_uuid; // 评价人的用户id
 
     @Setter @Getter
     private int orderExpress_id; // 快递的id orderExpress_id
@@ -44,15 +42,4 @@ public class Evaluate extends Object {
         super();
     }
 
-    public Evaluate(HttpServletRequest request) {
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
-            this.id = Integer.parseInt(request.getParameter("id"));
-        }
-        if (request.getParameter("uuid") != null && !"".equals(request.getParameter("uuid"))) {
-            this.uuid = request.getParameter("uuid");
-        }
-        if (request.getParameter("user_id") != null && !"".equals(request.getParameter("user_id"))) {
-            this.user_id = Integer.parseInt(request.getParameter("user_id"));
-        }
-    }
 }

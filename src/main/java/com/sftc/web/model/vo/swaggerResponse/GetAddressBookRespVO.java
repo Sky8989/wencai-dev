@@ -1,6 +1,6 @@
 package com.sftc.web.model.vo.swaggerResponse;
 
-import com.sftc.tools.api.APIResponse;
+import com.sftc.tools.api.ApiResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import java.util.List;
  * Created by xf on 2017/11/17.
  */
 @ApiModel(value = "添加地址簿响应对象")
-public class GetAddressBookRespVO extends APIResponse{
+public class GetAddressBookRespVO extends ApiResponse {
 
     @Getter @Setter
     @ApiModelProperty(name = "AddressBookResp",value = "地址簿信息")

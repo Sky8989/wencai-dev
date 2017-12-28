@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+
 /**
  * 来往记录
  */
@@ -16,7 +17,7 @@ public class FriendRecordDTO {
     private String sender_name;// 寄件人姓名
 
     @Setter @Getter
-    private int sender_user_id; // 寄件人的用户id
+    private String sender_user_uuid; // 寄件人的用户uuid
 
     @Setter @Getter
     private String sender_icon;   // 寄件人的头像
@@ -25,7 +26,7 @@ public class FriendRecordDTO {
     private String ship_name;  // 收件人的姓名
 
     @Setter @Getter
-    private int ship_user_id;  // 收件人的用户id
+    private String ship_user_uuid;  // 收件人的用户uuid
 
     @Setter @Getter
     private String ship_icon;    // 收件人的头像

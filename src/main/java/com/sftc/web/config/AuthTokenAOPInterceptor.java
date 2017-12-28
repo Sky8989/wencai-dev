@@ -1,11 +1,17 @@
 package com.sftc.web.config;
 
-import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIUtil;
+import com.sftc.tools.api.ApiResponse;
+import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.model.entity.User;
+import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -16,11 +22,20 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-//全局token验证
+/**
+ * 全局token验证
+ */
+@Component
+@Aspect
 public class AuthTokenAOPInterceptor {
     @Resource
     private TokenMapper tokenMapper;
 
+    @Pointcut("execution(* com.sftc.web.controller.*Controller.*(..))")
+    private void pointcut() {
+    }
+
+    @Around("pointcut()")
     public Object before(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         //获取 request response 对象
         ServletRequestAttributes res = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -34,13 +49,16 @@ public class AuthTokenAOPInterceptor {
             //只需要过滤登录即可，所以考虑在登录方法上加上注解，存在注解的就不验证token，不存在注解的需要验证
             return proceedingJoinPoint.proceed();
         } else {
-            Map<String, String> map = new HashMap<>(); //map构建返回对象
-            if (token != null && !token.equals("")) { //校验用户
-                APIResponse error;
-                error = authTokenCheck(token);
+            //map构建返回对象
+            Map<String, String> map = new HashMap<>(1, 1);
+            //校验用户
+            if (StringUtils.isNotBlank(token)) {
+                ApiResponse error = authTokenCheck(token);
                 if (error != null) {
                     map.put("reason", "数据库中找不到此token");
-                    return APIUtil.submitErrorResponse("网络繁忙，请稍后", map);
+                    res.getResponse().setStatus(HttpStatus.UNAUTHORIZED.value());
+                    error.setError(map);
+                    return error;
                 }
 
                 //验证成功返回null
@@ -56,19 +74,31 @@ public class AuthTokenAOPInterceptor {
 
                 };
                 handlerInterceptorAdapter.preHandle(request, response, proceedingJoinPoint);
-                map.put("resson", "Authtoken is unavailable");
-                return APIUtil.submitErrorResponse("token验证失败", map);
+                map.put("reason", "AuthToken is unavailable");
+
+                ApiResponse result = new ApiResponse();
+                result.setState(null);
+                result.setMessage("token验证失败");
+                result.setError(map);
+                res.getResponse().setStatus(HttpStatus.UNAUTHORIZED.value());
+                return result;
             }
         }
     }
 
-    //普通全局token验证方法
-    private APIResponse authTokenCheck(String token) throws Exception {
+    /**
+     * 普通全局token验证方法
+     */
+    private ApiResponse authTokenCheck(String token) throws Exception {
         User user = tokenMapper.tokenInterceptor(token);
-        if (user != null) { //此验证只需要找到用户即视为通过
+        //此验证只需要找到用户即视为通过
+        if (user != null) {
             return null;
         } else {
-            return APIUtil.submitErrorResponse("token验证失败", null);
+            ApiResponse result = new ApiResponse();
+            result.setState(null);
+            result.setMessage("token验证失败");
+            return result;
         }
     }
 }

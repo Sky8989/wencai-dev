@@ -1,6 +1,6 @@
 package com.sftc.web.model.entity;
 
-import com.sftc.tools.sf.SFOrderHelper;
+import com.sftc.tools.sf.SfOrderHelper;
 import com.sftc.web.model.others.Object;
 import com.sftc.web.model.vo.swaggerOrderRequest.OrderParamVO;
 import io.swagger.annotations.ApiModel;
@@ -8,10 +8,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpServletRequest;
 
 @Entity
-@Table(name = "sftc_order")
+@Table(name = "c_order")
 @ApiModel(value = "订单实体类")
 public class Order extends Object {
     @Id
@@ -67,7 +66,7 @@ public class Order extends Object {
     private double latitude;// 纬度
 
     @Setter @Getter
-    private int sender_user_id;
+    private String sender_user_uuid;
 
     @Setter @Getter
     private int gift_card_id;
@@ -92,7 +91,7 @@ public class Order extends Object {
     public Order(String create_time, String id,String pay_method,
                  String distribution_method, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,String supplementary_info,
-                 double longitude, double latitude, String order_type, int sender_user_id) {
+                 double longitude, double latitude, String order_type, String sender_user_uuid) {
         this.create_time = create_time;
         this.id = id;
         this.pay_method = pay_method;
@@ -107,12 +106,12 @@ public class Order extends Object {
         this.longitude = longitude;
         this.latitude = latitude;
         this.order_type = order_type;
-        this.sender_user_id = sender_user_id;
+        this.sender_user_uuid = sender_user_uuid;
     }
     public Order(String create_time, String pay_method,
                  String distribution_method, String sender_name, String sender_mobile, String sender_province,
                  String sender_city, String sender_area, String sender_addr,
-                 double longitude, double latitude, String order_type, int sender_user_id) {
+                 double longitude, double latitude, String order_type, String sender_user_uuid) {
         this.create_time = create_time;
         this.pay_method = pay_method;
         this.distribution_method = distribution_method;
@@ -125,12 +124,12 @@ public class Order extends Object {
         this.longitude = longitude;
         this.latitude = latitude;
         this.order_type = order_type;
-        this.sender_user_id = sender_user_id;
+        this.sender_user_uuid = sender_user_uuid;
     }
 
     public Order(OrderParamVO orderParamVO) {
         this.create_time = Long.toString(System.currentTimeMillis());
-        this.id = SFOrderHelper.getOrderId();
+        this.id = SfOrderHelper.getOrderId();
         this.pay_method = orderParamVO.getPay_method();
         this.distribution_method = orderParamVO.getDistribution_method();
         this.sender_name = orderParamVO.getSender_name();
@@ -146,30 +145,12 @@ public class Order extends Object {
         this.longitude = orderParamVO.getLongitude();
         this.latitude = orderParamVO.getLatitude();
         this.voice_time = orderParamVO.getVoice_time();
-        this.sender_user_id = orderParamVO.getSender_user_id();
+        this.sender_user_uuid = orderParamVO.getSender_user_uuid();
         this.gift_card_id = orderParamVO.getGift_card_id();
         this.order_type = orderParamVO.getOrder_type();
     }
 
-    /**
-     * 基于HttpServletRequest作为参数的构造方法 用于cms
-     * 后期便于应用扩展工厂模式 将此参数抽出
-     */
-    public Order(HttpServletRequest request) {
-        if (request.getParameter("id") != null && !"".equals(request.getParameter("id"))) {
-            this.id = request.getParameter("id");
-        }
-        if (request.getParameter("order_type") != null && !"".equals(request.getParameter("order_type"))) {
-            this.order_type = request.getParameter("order_type");
-        }
-        if (request.getParameter("sender_mobile") != null && !"".equals(request.getParameter("sender_mobile"))) {
-            this.sender_mobile = request.getParameter("sender_mobile");
-        }
-    }
-
-    public int getIs_cancel() {
-        return is_cancel;
-    }
+    public int getIs_cancel() {return is_cancel;}
 
     public void setIs_cancel(int is_cancel) {
         this.is_cancel = is_cancel;

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * Created by xf on 2017/10/21.
@@ -12,11 +13,8 @@ import lombok.Setter;
 public class OrderMessageVO {
 
     @Getter @Setter
-    @ApiModelProperty(name = "sender_user_id",value = "寄件人id",example = "10028",required = true)
-    private String sender_user_id;
-
-    @Getter @Setter
     @ApiModelProperty(name = "gift_card_id",value = "礼品卡id",example = "1")
+    @NotBlank(message = "gift_card_id参数不能为空")
     private String gift_card_id;
 
     @Getter @Setter

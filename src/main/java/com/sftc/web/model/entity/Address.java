@@ -1,6 +1,7 @@
 package com.sftc.web.model.entity;
 
 import com.sftc.web.model.others.Object;
+import com.sftc.web.model.vo.BaseVO;
 import com.sftc.web.model.vo.swaggerOrderRequest.OrderParamVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,19 +11,19 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "sftc_address")
+@Table(name = "c_address")
 @ApiModel(value = "地址")
-public class Address extends Object {
+public class Address extends BaseVO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "主键",hidden = true)
     @Setter @Getter
-    private int id;
+    private Integer id;
 
-    @ApiModelProperty(value = "用户id",hidden = true)
+    @ApiModelProperty(value = "用户uudi",hidden = true)
     @Setter @Getter
-    private int user_id;
+    private String user_uuid;
 
     @ApiModelProperty(value = "地址名称",example = "悟空测试订单",required = true)
     @Setter @Getter
@@ -54,11 +55,11 @@ public class Address extends Object {
 
     @ApiModelProperty(value = "经度",example = "114.260976",required = true,dataType = "double")
     @Setter @Getter
-    private double longitude;
+    private Double longitude;
 
     @ApiModelProperty(value = "纬度",example = "22.723223",required = true,dataType = "double")
     @Setter @Getter
-    private double latitude;
+    private Double latitude;
 
     @ApiModelProperty(value = "创建时间",hidden = true)
     @Setter @Getter
@@ -66,9 +67,9 @@ public class Address extends Object {
 
     public Address(){}
 
-    public Address(int id, int user_id, String name, String phone, String province, String city, String area, String address, String create_time) {
+    public Address(Integer id, String user_uuid, String name, String phone, String province, String city, String area, String address, String create_time) {
         this.id = id;
-        this.user_id = user_id;
+        this.user_uuid = user_uuid;
         this.name = name;
         this.phone = phone;
         this.province = province;
@@ -79,7 +80,6 @@ public class Address extends Object {
     }
 
     public Address(OrderParamVO orderParamVO) {
-        this.setUser_id(orderParamVO.getSender_user_id());
         this.setName(orderParamVO.getSender_name());
         this.setPhone(orderParamVO.getSender_mobile());
         this.setProvince(orderParamVO.getSender_province());
@@ -94,7 +94,6 @@ public class Address extends Object {
     }
 
     public Address(OrderExpress oe) {
-        this.setUser_id(oe.getShip_user_id());
         this.setName(oe.getShip_name());
         this.setPhone(oe.getShip_mobile());
         this.setProvince(oe.getShip_province());
@@ -107,8 +106,8 @@ public class Address extends Object {
         this.setCreate_time(Long.toString(System.currentTimeMillis()));
     }
 
-    public Address(int user_id, String name, String phone, String province, String city, String area, String address, String supplementary_info, double longitude, double latitude, String create_time) {
-        this.user_id = user_id;
+    public Address(String user_uuid, String name, String phone, String province, String city, String area, String address, String supplementary_info, Double longitude, Double latitude, String create_time) {
+        this.user_uuid = user_uuid;
         this.name = name;
         this.phone = phone;
         this.province = province;

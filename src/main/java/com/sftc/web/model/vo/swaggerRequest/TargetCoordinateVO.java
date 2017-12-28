@@ -12,10 +12,10 @@ import lombok.Setter;
 public class TargetCoordinateVO {
 
     @Getter @Setter
-    @ApiModelProperty(name = "longitude",value = "经度",example = "114.25885",dataType = "double",required = true)
+    @ApiModelProperty(name = "longitude",value = "经度",example = "113.9387000000",dataType = "double",required = true)
     private double longitude;
 
     @Getter @Setter
-    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.72007",dataType = "double",required = true)
+    @ApiModelProperty(name = "latitude",value = "纬度",example = "22.5248300000",dataType = "double",required = true)
     private double latitude;
 }

@@ -1,5 +1,6 @@
 package com.sftc.web.model.vo.swaggerOrderRequest;
 
+import com.sftc.web.model.vo.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import java.util.List;
  * @date ：Create in 13:38 2017/11/20
  */
 @ApiModel(description = "多包裹请求属性基类")
-public class MultiplePackageVO {
+public class MultiplePackageVO extends BaseVO {
     @Getter
     @Setter
     @ApiModelProperty(name = "order_id", value = "订单id", example = "C1509504431473V4", required = true)

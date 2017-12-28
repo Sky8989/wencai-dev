@@ -2,30 +2,36 @@ package com.sftc.web.service.impl;
 
 import com.qiniu.util.Auth;
 import com.qiniu.util.UrlSafeBase64;
-import com.sftc.tools.sf.SFOrderHelper;
+import com.sftc.tools.api.ApiResponse;
+import com.sftc.tools.api.ApiStatus;
+import com.sftc.tools.api.ApiUtil;
+import com.sftc.tools.sf.SfOrderHelper;
 import com.sftc.web.service.QiniuService;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.sftc.tools.constant.ThirdPartyConstant.*;
+import static com.sftc.tools.constant.ThirdPartyConstant.QN_DOMAIN;
 
 @Service
 public class QiniuServiceImpl implements QiniuService {
-
-    public Map<String, String> returnUptoken() {
-        Map<String, String> map = new HashMap<String, String>();
+    @Override
+    public ApiResponse returnUptoken() {
+        Map<String, String> map = new HashMap<String, String>(2);
         map.put("uptoken", getUpToken());
-        return map;
+        return ApiUtil.getResponse(ApiStatus.SUCCESS,map);
     }
 
+    @Override
     public String uploadImageWithBase64(String base64Img) {
         try {
-            return putImage(base64Img, "share/" + System.currentTimeMillis() + SFOrderHelper.getRandomString(6) + ".jpg");
+            return putImage(base64Img, "share/" + System.currentTimeMillis() + SfOrderHelper.getRandomString(6) + ".jpg");
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -37,8 +43,10 @@ public class QiniuServiceImpl implements QiniuService {
         return auth.uploadToken(QN_BUCKET);
     }
 
-    // 上传图片到七牛云，返回图片全路径
-    public String putImage(String base64, String imgName) throws Exception {
+    /**
+     * 上传图片到七牛云，返回图片全路径
+     */
+    private String putImage(String base64, String imgName) throws Exception {
 
         String url = "https://up-z2.qbox.me/putb64/-1/key/" + UrlSafeBase64.encodeToString(imgName);
         RequestBody rb = RequestBody.create(null, base64);
@@ -49,7 +57,7 @@ public class QiniuServiceImpl implements QiniuService {
                 .post(rb).build();
         OkHttpClient client = new OkHttpClient();
         okhttp3.Response response = client.newCall(request).execute();
-        if (response.code() == 200) {
+        if (response.code() == HttpStatus.SC_OK) {
             return QN_DOMAIN + imgName;
         }
         return null;
