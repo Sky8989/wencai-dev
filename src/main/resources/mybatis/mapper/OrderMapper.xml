@@ -7,7 +7,6 @@
     <resultMap id="orderMap" type="com.sftc.web.model.dto.OrderDTO">
         <id property="id" column="id"/>
         <result property="order_type" column="order_type"/>
-        <result property="region_type" column="region_type"/>
         <result property="latitude" column="latitude"/>
         <result property="longitude" column="longitude"/>
         <result property="sender_user_id" column="sender_user_id"/>
@@ -32,36 +31,49 @@
         </collection>
     </resultMap>
 
+    <resultMap id="friendOrderMap" type="com.sftc.web.model.dto.OrderDTO">
+        <id property="id" column="id"/>
+        <result property="order_type" column="order_type"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="sender_user_id" column="sender_user_id"/>
+        <result property="sender_mobile" column="sender_mobile"/>
+        <result property="sender_name" column="sender_name"/>
+        <result property="sender_province" column="sender_province"/>
+        <result property="sender_city" column="sender_city"/>
+        <result property="sender_area" column="sender_area"/>
+        <result property="sender_addr" column="sender_addr"/>
+        <result property="voice" column="voice"/>
+        <result property="image" column="image"/>
+        <result property="word_message" column="word_message"/>
+        <result property="pay_method" column="pay_method"/>
+        <result property="distribution_method" column="distribution_method"/>
+        <result property="gift_card_id" column="gift_card_id"/>
+        <result property="voice_time" column="voice_time"/>
+        <result property="create_time" column="create_time"/>
+        <association property="giftCard" select="selectGiftCard" column="gift_card_id">
+        </association>
+        <collection property="orderExpressList" ofType="com.sftc.web.model.dto.OrderExpressDTO" select="selectFriendExpress"
+                    column="id">
+        </collection>
+    </resultMap>
+
     <select id="selectExpressList" parameterType="java.lang.String" resultType="com.sftc.web.model.dto.OrderExpressDTO">
         SELECT *
         FROM sftc_order_express
         WHERE order_id = #{id}
     </select>
 
-    <select id="selectGiftCard" parameterType="int" resultType="com.sftc.web.model.GiftCard">
+    <select id="selectFriendExpress" parameterType="java.lang.String" resultType="com.sftc.web.model.dto.OrderExpressDTO">
+        SELECT *
+        FROM sftc_order_express
+        WHERE order_id = #{id} AND ship_name IS NOT NULL
+    </select>
+
+    <select id="selectGiftCard" parameterType="int" resultType="com.sftc.web.model.entity.GiftCard">
         SELECT *
         FROM sftc_gift_card
         WHERE id = #{gift_card_id}
-    </select>
-
-    <select id="selectNationReserveOrders" resultType="java.lang.String">
-        SELECT DISTINCT oe.order_id
-        FROM sftc_order o, sftc_order_express oe
-        WHERE o.id = oe.order_id
-              AND o.region_type = 'REGION_NATION'
-              AND o.is_cancel = 0
-              AND oe.reserve_time IS NOT NULL
-              AND oe.reserve_time != ''
-              AND oe.state = 'WAIT_HAND_OVER'
-              AND (oe.order_number = '' OR oe.order_number IS NULL)
-    </select>
-
-    <!--抓取大网单-->
-    <select id="selectNationUnCommitOrders" resultType="java.lang.String">
-        SELECT DISTINCT oe.order_id
-        FROM sftc_order o, sftc_order_express oe
-        WHERE o.id = oe.order_id AND o.region_type = 'REGION_NATION' AND o.is_cancel = 0
-              AND (oe.state = 'WAIT_FILL' OR oe.state = 'ALREADY_FILL' OR oe.state = 'PAYING') AND receive_time IS NOT NULL
     </select>
 
     <!--抓取未提交的好友多包裹-->
@@ -71,7 +83,7 @@
         WHERE o.id = oe.order_id AND o.is_cancel = 0
               AND (SELECT COUNT(order_id)
                    FROM sftc_order_express
-                   WHERE order_id = o.id) > 1 AND region_type IS NULL
+                   WHERE oe.order_id = o.id) > 1 AND oe.order_number IS NULL OR oe.order_number = ''
     </select>
 
     <!--抓取同城单-->
@@ -85,13 +97,19 @@
                     WHERE order_id = o.id))
               AND o.is_cancel = 0
               AND (
-                  (oe.state = 'WAIT_FILL' OR oe.state = 'ALREADY_FILL')
+                  (oe.route_state = 'WAIT_FILL' OR oe.route_state = 'ALREADY_FILL')
                   OR
-                  (o.region_type = 'REGION_SAME' AND oe.state = 'PAYING')
+                  (oe.pay_state = 'WAIT_PAY'AND oe.order_number IS null OR oe.order_number = '')
               )
     </select>
 
     <select id="selectOrderDetailByOrderId" resultMap="orderMap" parameterType="java.lang.String">
+        SELECT *
+        FROM sftc_order
+        WHERE id = #{order_id}
+    </select>
+
+    <select id="selectOrderAlreadyFill" resultMap="friendOrderMap" parameterType="java.lang.String">
         SELECT *
         FROM sftc_order
         WHERE id = #{order_id}
@@ -113,13 +131,11 @@
     <!-- 添加订单 -->
     <insert id="addOrder" parameterType="com.sftc.web.model.entity.Order" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_order
-        (freight,
-         create_time, sender_province, sender_name, sender_mobile, sender_city,
+        (create_time, sender_province, sender_name, sender_mobile, sender_city,
          sender_area, sender_addr, word_message, image, voice,
          sender_user_id, gift_card_id, pay_method, distribution_method, longitude,
-         latitude, order_type, voice_time, region_type)
+         latitude, order_type, voice_time)
         VALUES (
-            #{freight, jdbcType=DOUBLE},
             #{create_time, jdbcType=VARCHAR},
             #{sender_province, jdbcType=VARCHAR},
             #{sender_name, jdbcType=VARCHAR},
@@ -137,21 +153,18 @@
             #{longitude, jdbcType=DOUBLE},
             #{latitude, jdbcType=DOUBLE},
             #{order_type, jdbcType=VARCHAR},
-            #{voice_time, jdbcType=INTEGER},
-            #{region_type, jdbcType=VARCHAR, javaType=String}
+            #{voice_time, jdbcType=INTEGER}
         )
     </insert>
 
     <!-- 添加订单 -->
     <insert id="addOrder2" parameterType="com.sftc.web.model.entity.Order" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_order
-        (freight,
-         create_time, sender_province, sender_name, sender_mobile, sender_city,
+        (create_time, sender_province, sender_name, sender_mobile, sender_city,
          sender_area, sender_addr, supplementary_info, word_message, image, voice,
          sender_user_id, gift_card_id, pay_method, distribution_method, longitude,
-         latitude, order_type, voice_time, region_type)
+         latitude, order_type, voice_time,id)
         VALUES (
-            #{freight, jdbcType=DOUBLE},
             #{create_time, jdbcType=VARCHAR},
             #{sender_province, jdbcType=VARCHAR},
             #{sender_name, jdbcType=VARCHAR},
@@ -171,18 +184,12 @@
             #{latitude, jdbcType=DOUBLE},
             #{order_type, jdbcType=VARCHAR},
             #{voice_time, jdbcType=INTEGER},
-            #{region_type, jdbcType=VARCHAR, javaType=String}
+            #{id, jdbcType=VARCHAR, javaType=String}
         )
     </insert>
 
-    <update id="updateOrderRegionType">
-        UPDATE sftc_order
-        SET region_type = #{region_type, jdbcType=VARCHAR}
-        WHERE id = #{id}
-    </update>
-
     <!-- 我的订单列表  -->
-    <select id="selectMyOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+    <select id="selectMyOrderList" parameterType="com.sftc.web.model.vo.swaggerOrderRequest.MyOrderParamVO"
             resultMap="orderMap">
         SELECT * FROM sftc_order
         WHERE id IN (
@@ -201,7 +208,7 @@
             oe.ship_city LIKE #{keyword} OR
             oe.ship_area LIKE #{keyword} OR
             oe.ship_addr LIKE #{keyword} OR
-            oe.state LIKE #{keyword}
+            oe.route_state LIKE #{keyword}
             )
         </if>
         )
@@ -209,14 +216,14 @@
         limit #{pageNum}, #{pageSize}
     </select>
     <!--解决多字段 转义的问题-->
-    <select id="selectMyOrderList2" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+    <select id="selectMyOrderList2" parameterType="com.sftc.web.model.vo.swaggerOrderRequest.MyOrderParamVO"
             resultMap="orderMap">
         SELECT * FROM sftc_order
         WHERE id IN (
         SELECT o.id FROM sftc_order o, sftc_order_express oe
         WHERE o.id=oe.order_id AND o.sender_user_id=#{id}
         <if test="keyword_state != null">
-            AND (oe.state REGEXP ${keyword_state} )
+            AND (oe.route_state REGEXP ${keyword_state} )
         </if>
         <if test="keyword!=null">
             AND (
@@ -240,7 +247,7 @@
 
 
     <!-- 我的好友订单列表  -->
-    <select id="selectMyFriendOrderList" parameterType="com.sftc.web.model.reqeustParam.MyOrderParam"
+    <select id="selectMyFriendOrderList" parameterType="com.sftc.web.model.vo.swaggerOrderRequest.MyOrderParamVO"
             resultMap="orderMap">
 
         SELECT *
@@ -264,7 +271,6 @@
         sftc_order.pay_time,
         sftc_order.pay_method,
         sftc_order.distribution_method,
-        sftc_order.freight,
         sftc_order.sender_name,
         sftc_order.sender_mobile,
         sftc_order.sender_province,
@@ -284,9 +290,10 @@
         sftc_order_express.ship_city,
         sftc_order_express.ship_area,
         sftc_order_express.ship_addr,
+        sftc_order_express.weight,
         sftc_order_express.package_type,
         sftc_order_express.object_type,
-        sftc_order_express.state,
+        sftc_order_express.route_state,
         sftc_order_express.is_use,
         sftc_order_express.sender_user_id,
         sftc_order_express.order_id,
@@ -299,7 +306,7 @@
         or
         sftc_order_express.ship_user_id=#{id})
         <if test="state!=null">
-            and sftc_order_express.state=#{state}
+            and sftc_order_express.route_state=#{state}
         </if>
     </select>
 
@@ -330,9 +337,8 @@
     <select id="selectOrderByPage" resultMap="orderMap" parameterType="com.sftc.web.model.entity.Order">
         SELECT * FROM sftc_order
         <where>
-            <if test="id != 0">and id = #{id}</if>
+            <if test="id != null">and id = #{id}</if>
             <if test="order_type != null">and order_type = #{order_type}</if>
-            <if test="region_type != null">and region_type = #{region_type}</if>
             <if test="sender_mobile != null">and sender_mobile = #{sender_mobile}</if>
         </where>
     </select>
