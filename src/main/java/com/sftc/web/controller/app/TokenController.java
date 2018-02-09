@@ -2,12 +2,12 @@ package com.sftc.web.controller.app;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.tools.api.APIUtil;
-import com.sftc.tools.common.ControllerHelper;
+import com.sftc.web.config.IgnoreToken;
 import com.sftc.web.controller.BaseController;
+import com.sftc.web.model.vo.swaggerRequest.DeleteTokenVO;
 import com.sftc.web.service.TokenService;
 import io.swagger.annotations.Api;
-import org.springframework.http.ResponseEntity;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,30 +16,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 
-@Controller
-@Api(description = "token")
 @RequestMapping("token")
+@Api(description = "token")
+@Controller
 public class TokenController extends BaseController {
     @Resource
     private TokenService tokenService;
-
-    @RequestMapping(value = "/token", method = RequestMethod.POST)
+    
+    @IgnoreToken
+    @ApiOperation(value = "删除token表整行数据/前端请除token使用", httpMethod = "DELETE")
+    @RequestMapping(method = RequestMethod.DELETE)
     public @ResponseBody
-    APIResponse login(@RequestBody Object object) throws Exception {
+    APIResponse deleteToken(@RequestBody DeleteTokenVO deleteTokenVO) throws Exception {
         APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(object);
-        return tokenService.token(apiRequest);
+        apiRequest.setRequestParam(deleteTokenVO);
+        return tokenService.deleteToken(apiRequest);
     }
-
-    @RequestMapping(value = "/token2", method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity<APIResponse> login2(@RequestBody Object object) throws Exception {
-        APIRequest apiRequest = new APIRequest();
-        apiRequest.setRequestParam(object);
-        APIResponse apiResponse = APIUtil.paramErrorResponse("测试错误");
-        int i = 1/0;
-        return ControllerHelper.responseEntityBuilder(apiResponse);
-
-    }
-
 }

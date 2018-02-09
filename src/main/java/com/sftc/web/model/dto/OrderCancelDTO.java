@@ -1,7 +1,9 @@
 package com.sftc.web.model.dto;
 
-import com.sftc.web.model.entity.OrderCancel;
 import com.sftc.web.model.entity.Order;
+import com.sftc.web.model.entity.OrderCancel;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,17 +16,9 @@ import com.sftc.web.model.entity.Order;
  */
 public class OrderCancelDTO extends OrderCancel {
 
-
-    // 取消的订单id
-    private Order order;
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
+    @Getter
+    @Setter
+    private Order order; // 取消的订单id
 
     public OrderCancelDTO() {}
 

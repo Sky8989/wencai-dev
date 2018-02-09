@@ -2,8 +2,6 @@ package com.sftc.web.service;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.reqeustParam.UserParam;
-import com.sftc.web.model.sfmodel.Promo;
 
 /**
  * Created by IntelliJ IDEA.

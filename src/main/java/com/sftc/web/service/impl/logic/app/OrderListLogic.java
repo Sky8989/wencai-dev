@@ -6,22 +6,19 @@ import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.sf.SFOrderHelper;
+import com.sftc.tools.token.TokenUtils;
 import com.sftc.web.dao.jpa.OrderExpressDao;
-import com.sftc.web.dao.mybatis.EvaluateMapper;
-import com.sftc.web.dao.mybatis.OrderExpressMapper;
-import com.sftc.web.dao.mybatis.OrderMapper;
-import com.sftc.web.dao.mybatis.UserMapper;
-import com.sftc.web.model.Evaluate;
+import com.sftc.web.dao.mybatis.*;
 import com.sftc.web.model.dto.OrderDTO;
-import com.sftc.web.model.entity.Order;
-import com.sftc.web.model.entity.OrderExpress;
-import com.sftc.web.model.User;
-import com.sftc.web.model.apiCallback.OrderCallback;
-import com.sftc.web.model.apiCallback.OrderFriendCallback;
-import com.sftc.web.model.reqeustParam.MyOrderParam;
-import com.sftc.web.model.sfmodel.Orders;
+import com.sftc.web.model.dto.WxNameDTO;
+import com.sftc.web.model.entity.*;
+import com.sftc.web.model.dto.FriendOrderListDTO;
+import com.sftc.web.model.dto.MyOrderListDTO;
+import com.sftc.web.model.vo.swaggerOrderRequest.MyOrderParamVO;
+import com.sftc.web.model.vo.swaggerOrderRequest.OrderSynVO;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Component;
 
@@ -40,6 +37,8 @@ public class OrderListLogic {
     @Resource
     private UserMapper userMapper;
     @Resource
+    private UserContactMapper userContactMapper;
+    @Resource
     private OrderExpressMapper orderExpressMapper;
     @Resource
     private EvaluateMapper evaluateMapper;
@@ -52,18 +51,19 @@ public class OrderListLogic {
      * 我的订单列表
      */
     public APIResponse getMyOrderList(APIRequest request) {
-        MyOrderParam myOrderParam = (MyOrderParam) request.getRequestParam();
-
-        APIResponse errorResponse = syncSFExpressStatus(myOrderParam);
+        Integer user_id = TokenUtils.getInstance().getUserId();
+        MyOrderParamVO myOrderParamVO = (MyOrderParamVO) request.getRequestParam();
+        myOrderParamVO.setId(user_id);
+        APIResponse errorResponse = syncSFExpressStatus(myOrderParamVO);
         if (errorResponse != null) return errorResponse;
 
-        if (myOrderParam.getKeyword() != null && !myOrderParam.getKeyword().equals("")) {
+        if (myOrderParamVO.getKeyword() != null && !myOrderParamVO.getKeyword().equals("")) {
             boolean flag = true;
             // 访问 状态模糊关键字 字典 匹配到对应关键字
             Map<String, String> map = SFOrderHelper.getKeywordMap();
             for (Map.Entry entry : map.entrySet()) {
-                if (myOrderParam.getKeyword().equals(entry.getKey())) {
-                    myOrderParam.setKeyword_state((String) entry.getValue());
+                if (myOrderParamVO.getKeyword().equals(entry.getKey())) {
+                    myOrderParamVO.setKeyword_state((String) entry.getValue());
                     flag = false;
                 }
             }
@@ -71,52 +71,55 @@ public class OrderListLogic {
             if (flag) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("%");
-                char keywords[] = myOrderParam.getKeyword().toCharArray();
+                char keywords[] = myOrderParamVO.getKeyword().toCharArray();
                 for (char key : keywords) {
                     sb.append(key);
                     sb.append("%");
                 }
-                myOrderParam.setKeyword(sb.toString());
+                myOrderParamVO.setKeyword(sb.toString());
             } else {
                 //两种状态值二选一
-                myOrderParam.setKeyword(null);
+                myOrderParamVO.setKeyword(null);
             }
         }
 
         // pageNum -> startIndex
-        myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());
+        myOrderParamVO.setPageNum((myOrderParamVO.getPageNum() - 1) * myOrderParamVO.getPageSize());
         // select
-//        List<OrderDTO> orderList = orderMapper.selectMyOrderList(myOrderParam);
-        List<OrderDTO> orderDTOList = orderMapper.selectMyOrderList2(myOrderParam);
-        List<OrderCallback> orderCallbacks = new ArrayList<OrderCallback>();
+//        List<OrderDTO> orderList = orderMapper.selectMyOrderList(myOrderParamVO);
+        List<OrderDTO> orderDTOList = orderMapper.selectMyOrderList2(myOrderParamVO);
+        if (orderDTOList.size() == 0)
+            return APIUtil.selectErrorResponse("您还未创建订单", null);
+        List<MyOrderListDTO> myOrderListDTOS = new ArrayList<MyOrderListDTO>();
         for (OrderDTO orderDTO : orderDTOList) {
-            OrderCallback callback = new OrderCallback();
+            MyOrderListDTO callback = new MyOrderListDTO();
             // order
             callback.setId(orderDTO.getId());
             callback.setSender_name(orderDTO.getSender_name());
             callback.setSender_addr(orderDTO.getSender_addr());
             callback.setOrder_type(orderDTO.getOrder_type());
-            callback.setRegion_type(orderDTO.getRegion_type());
             callback.setIs_gift(orderDTO.getGift_card_id() > 0);
             callback.setPay_method(orderDTO.getPay_method());
             if (orderDTO.getOrderExpressList().size() == 1) // 单包裹
                 callback.setOrder_number(orderDTO.getOrderExpressList().get(0).getOrder_number());
 
             // expressList
-            List<OrderCallback.OrderCallbackExpress> expressList = new ArrayList<OrderCallback.OrderCallbackExpress>();
+            List<MyOrderListDTO.OrderCallbackExpress> expressList = new ArrayList<MyOrderListDTO.OrderCallbackExpress>();
             HashSet flagSetIsEvaluated = new HashSet();
             for (OrderExpress oe : orderDTO.getOrderExpressList()) {
-                OrderCallback.OrderCallbackExpress express = new OrderCallback().new OrderCallbackExpress();
+                MyOrderListDTO.OrderCallbackExpress express = new MyOrderListDTO().new OrderCallbackExpress();
                 express.setUuid(oe.getUuid());
-                express.setState(oe.getState());
+                express.setRoute_state(oe.getRoute_state());
+                express.setPay_state(oe.getPay_state());
                 express.setShip_name(oe.getShip_name());
                 express.setShip_addr(oe.getShip_addr());
                 express.setOrder_number(oe.getOrder_number());
-                express.setPackage_type(oe.getPackage_type());  //增加包裹类型的三个字段
+                express.setWeight(oe.getWeight());  //增加包裹类型的三个字段
                 express.setObject_type(oe.getObject_type());
                 express.setPackage_comments(oe.getPackage_comments());
                 express.setReserve_time(oe.getReserve_time());
                 express.setDirected_code(oe.getDirected_code());
+                express.setPackage_type(oe.getPackage_type());
                 //如果有异常信息，则添加异常信息
                 if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
                     express.setAttributes((oe.getAttributes()));
@@ -126,31 +129,41 @@ public class OrderListLogic {
                 // 如果被评价过，且有评价信息，则返回1 如果无评价信息 则返回0
                 flagSetIsEvaluated.add((evaluateList.size() == 0) ? 0 : 1);
             }
+            if (expressList.size() >= 2 && StringUtils.isNotBlank(expressList.get(0).getOrder_number())
+                    && StringUtils.isBlank(expressList.get(1).getOrder_number())) {
+                MyOrderListDTO.OrderCallbackExpress orderCallbackExpress = expressList.get(0);
+                expressList.clear();
+                expressList.add(orderCallbackExpress);
+            }
             callback.setExpressList(expressList);
             callback.setIs_evaluated(flagSetIsEvaluated.contains(1));
 
-            orderCallbacks.add(callback);
+            myOrderListDTOS.add(callback);
         }
 
-        return APIUtil.getResponse(SUCCESS, orderCallbacks);
+        return APIUtil.getResponse(SUCCESS, myOrderListDTOS);
     }
 
     /**
      * 我的好友圈订单列表
      */
     public APIResponse getMyFriendCircleOrderList(APIRequest request) {
-        MyOrderParam myOrderParam = (MyOrderParam) request.getRequestParam();
+        Integer user_id = TokenUtils.getInstance().getUserId();
+        MyOrderParamVO myOrderParamVO = (MyOrderParamVO) request.getRequestParam();
+        myOrderParamVO.setId(user_id);
 
-        APIResponse errorResponse = syncSFExpressStatus(myOrderParam);
+        APIResponse errorResponse = syncSFExpressStatus(myOrderParamVO);
         if (errorResponse != null) return errorResponse;
 
         // pageNum -> startIndex
-        myOrderParam.setPageNum((myOrderParam.getPageNum() - 1) * myOrderParam.getPageSize());
+        myOrderParamVO.setPageNum((myOrderParamVO.getPageNum() - 1) * myOrderParamVO.getPageSize());
         // select
-        List<OrderDTO> orderDTOList = orderMapper.selectMyFriendOrderList(myOrderParam);
-        List<OrderFriendCallback> orderCallbacks = new ArrayList<OrderFriendCallback>();
+        List<OrderDTO> orderDTOList = orderMapper.selectMyFriendOrderList(myOrderParamVO);
+        if (orderDTOList.size() == 0)
+            return APIUtil.selectErrorResponse("暂无好友订单", null);
+        List<FriendOrderListDTO> orderCallbacks = new ArrayList<>();
         for (OrderDTO orderDTO : orderDTOList) {
-            OrderFriendCallback callback = new OrderFriendCallback();
+            FriendOrderListDTO callback = new FriendOrderListDTO();
             User sender = userMapper.selectUserByUserId(orderDTO.getSender_user_id());
             // order
             callback.setId(orderDTO.getId());
@@ -165,25 +178,51 @@ public class OrderListLogic {
             callback.setWord_message(orderDTO.getWord_message());
             callback.setImage(orderDTO.getImage());
             callback.setCreate_time(orderDTO.getCreate_time());
-            callback.setRegion_type(orderDTO.getRegion_type());
             callback.setIs_gift(orderDTO.getGift_card_id() > 0);
             //增加支付类型
             callback.setPay_method(orderDTO.getPay_method());
             // expressList
-            List<OrderFriendCallback.OrderFriendCallbackExpress> expressList = new ArrayList<OrderFriendCallback.OrderFriendCallbackExpress>();
+            List<FriendOrderListDTO.OrderFriendCallbackExpress> expressList = new ArrayList<>();
             HashSet flagSetIsEvaluated = new HashSet();
             for (OrderExpress oe : orderDTO.getOrderExpressList()) {
                 User receiver = userMapper.selectUserByUserId(oe.getShip_user_id());
-                OrderFriendCallback.OrderFriendCallbackExpress express = new OrderFriendCallback().new OrderFriendCallbackExpress();
+                int user_contact_id = 0;//好友圈也需要好友关系id
+                UserContact userContact = null;
+                String sender_wx_name = null;
+                String ship_wx_name = null;
+                if (orderDTO.getSender_user_id() != 0 && oe.getShip_user_id() != 0) {
+                    if (user_id == orderDTO.getSender_user_id()) {//如果为寄件方
+                        userContact = userContactMapper.friendDetail(orderDTO.getSender_user_id(), oe.getShip_user_id());
+                    } else {//如果为收件方
+                        userContact = userContactMapper.friendDetail(oe.getShip_user_id(), orderDTO.getSender_user_id());
+                    }
+                    User senderName = userMapper.selectUserByUserId(oe.getSender_user_id());
+                    User receiverName = userMapper.selectUserByUserId(oe.getShip_user_id());
+                    if (sender != null) {
+                        sender_wx_name = senderName.getName();
+                    }
+                    if (receiver != null) {
+                        ship_wx_name = receiverName.getName();
+                    }
+                    if (userContact == null) user_contact_id = 0;
+                    else user_contact_id = userContact.getId();
+                }
+                FriendOrderListDTO.OrderFriendCallbackExpress express = new FriendOrderListDTO().new OrderFriendCallbackExpress();
                 express.setId(oe.getId());
                 express.setShip_user_id(oe.getShip_user_id());
                 express.setUuid(oe.getUuid());
-                express.setState(oe.getState());
+                express.setOrder_number(oe.getOrder_number());
+                express.setRoute_state(oe.getRoute_state());
+                express.setPay_state(oe.getPay_state());
                 express.setShip_name(oe.getShip_name());
-                express.setPackage_type(oe.getPackage_type());  //增加包裹类型的三个字段
+                express.setWeight(oe.getWeight());  //增加包裹类型的三个字段
                 express.setObject_type(oe.getObject_type());
                 express.setPackage_comments(oe.getPackage_comments());
                 express.setReserve_time(oe.getReserve_time());
+                express.setPackage_type(oe.getPackage_type());
+                express.setUser_contact_id(user_contact_id);
+                express.setShip_wx_name(sender_wx_name);
+                express.setSender_wx_name(ship_wx_name);
                 //如果有异常信息，则添加异常信息
                 if (oe.getAttributes() != null && !"".equals(oe.getAttributes()))
                     express.setAttributes((oe.getAttributes()));
@@ -194,6 +233,12 @@ public class OrderListLogic {
                 List<Evaluate> evaluateList = evaluateMapper.selectByUuid(oe.getUuid());
                 // 如果被评价过，且有评价信息，则返回1 如果无评价信息 则返回0
                 flagSetIsEvaluated.add((evaluateList.size() == 0) ? 0 : 1);
+            }
+            if (expressList.size() >= 2 && StringUtils.isNotBlank(expressList.get(0).getOrder_number())
+                    && StringUtils.isBlank(expressList.get(1).getOrder_number())) {
+                FriendOrderListDTO.OrderFriendCallbackExpress orderFriendCallbackExpress = expressList.get(0);
+                expressList.clear();
+                expressList.add(orderFriendCallbackExpress);
             }
             callback.setExpressList(expressList);
             callback.setIs_evaluated(flagSetIsEvaluated.contains(1));
@@ -207,29 +252,32 @@ public class OrderListLogic {
     //////////////////// Private Method ////////////////////
 
     // 验参、同步顺丰快递订单状态
-    private APIResponse syncSFExpressStatus(MyOrderParam myOrderParam) {
+    private APIResponse syncSFExpressStatus(MyOrderParamVO myOrderParamVO) {
 
         // Verify params
-        if (myOrderParam.getToken().length() == 0) {
-            //内置token
-            myOrderParam.setToken(COMMON_ACCESSTOKEN);
-        } else if (myOrderParam.getId() == 0) {
+//        if (myOrderParamVO.getToken().length() == 0) {
+        //内置token
+        myOrderParamVO.setToken(COMMON_ACCESSTOKEN);
+        if (myOrderParamVO.getId() == 0) {
             return APIUtil.paramErrorResponse("用户id不能为空");
-        } else if (myOrderParam.getPageNum() < 1 || myOrderParam.getPageSize() < 1) {
+        } else if (myOrderParamVO.getPageNum() < 1 || myOrderParamVO.getPageSize() < 1) {
             return APIUtil.paramErrorResponse("分页参数无效");
         }
 
         /// handle SF orders url
         //更新用户的同城订单，更新sf状态的订单数 >= 接口查询的
-        List<OrderExpress> orderExpressList = selectOrderExpressListForStatusUpdate(myOrderParam);
+        List<OrderExpress> orderExpressList = selectOrderExpressListForStatusUpdate(myOrderParamVO);
         if (orderExpressList == null || orderExpressList.size() == 0) return null;
         StringBuilder uuidSB = new StringBuilder();
         for (OrderExpress oe : orderExpressList) {
             if (oe.getUuid() != null && oe.getUuid().length() != 0) {
                 Order order = orderMapper.selectOrderDetailByOrderId(oe.getOrder_id());
-                if (order != null && order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) { // 只有同城的订单能同步快递状态
+                if (order != null && oe.getOrder_number() != null && !oe.getOrder_number().equals("")) { // 只有同城的订单能同步快递状态
                     uuidSB.append(oe.getUuid());
                     uuidSB.append(",");
+                }
+                if (oe.getOrder_number() == null || oe.getOrder_number().equals("")) {
+                    orderExpressMapper.updatePayState("WAIT_PAY", oe.getUuid());
                 }
             }
         }
@@ -237,10 +285,10 @@ public class OrderListLogic {
         if (uuid.equals("")) return null;
 
         String ordersURL = SF_ORDER_SYNC_URL.replace("{uuid}", uuid.substring(0, uuid.length() - 1));
-        List<Orders> ordersList = new LinkedList<Orders>();
+        List<OrderSynVO> orderSynVOList = new LinkedList<OrderSynVO>();
         //post and fetch express status list
         HttpGet httpGet = new HttpGet(ordersURL);
-        httpGet.addHeader("PushEnvelope-Device-Token", myOrderParam.getToken());
+        httpGet.addHeader("PushEnvelope-Device-Token", myOrderParamVO.getToken());
         String resultStr = APIGetUtil.get(httpGet);
         JSONObject resultOBJ = JSONObject.fromObject(resultStr);
 
@@ -251,45 +299,65 @@ public class OrderListLogic {
             List list = jsonArray.subList(0, jsonArray.size());
             for (Object temp : list) {
                 JSONObject jsonObject = JSONObject.fromObject(temp);
-                Orders tempOrders = new Orders();
-                tempOrders.setUuid(jsonObject.getString("uuid"));
-                tempOrders.setStatus(jsonObject.getString("status"));
-                tempOrders.setPayed(jsonObject.getBoolean("payed"));
+                OrderSynVO tempOrderSynVO = new OrderSynVO();
+                tempOrderSynVO.setUuid(jsonObject.getString("uuid"));
+                tempOrderSynVO.setStatus(jsonObject.getString("status"));
+                tempOrderSynVO.setPayed(jsonObject.getBoolean("payed"));
                 JSONObject attributes = jsonObject.getJSONObject("attributes");
-                tempOrders.setAttributes(attributes.toString());
-                ordersList.add(tempOrders);
+                tempOrderSynVO.setAttributes(attributes);
+                orderSynVOList.add(tempOrderSynVO);
             }
         }
         // 单个uudi 返回request
         if (resultOBJ.containsKey("request")) {
-            ordersList.add((Orders) resultOBJ.get("request"));
+            orderSynVOList.add((OrderSynVO) resultOBJ.get("request"));
         }
 
 
         // Update Dankal express info
-        for (Orders orders : ordersList) {
+        for (OrderSynVO orderSynVO : orderSynVOList) {
             // 已支付的订单，如果status为PAYING，则要改为WAIT_HAND_OVER
             //这个status的改动是因为是预约单 预约单支付后，派单前都是PAYING
-            Order order = orderMapper.selectOrderDetailByUuid(orders.getUuid());
-            if (order.getRegion_type() != null && order.getRegion_type().equals("REGION_SAME")) {
-                String status = (orders.isPayed() && orders.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orders.getStatus();
-                OrderExpress orderExpress = orderExpressMapper.selectExpressByUuid(orders.getUuid());
-                orderExpress.setState(status);
-                if( orders.getAttributes()!=null){
-                    orderExpress.setAttributes(orders.getAttributes());
-                }
-                orderExpressDao.save(orderExpress);
+            Order order = orderMapper.selectOrderDetailByUuid(orderSynVO.getUuid());
+            String status = (orderSynVO.isPayed() && orderSynVO.getStatus().equals("PAYING") && order.getPay_method().equals("FREIGHT_PREPAID")) ? "WAIT_HAND_OVER" : orderSynVO.getStatus();
+            if (order.getPay_method().equals("FREIGHT_COLLECT")) { //到付订单的状态处理
+                status = (orderSynVO.getStatus().equals("PAYING")) ? "DELIVERING" : orderSynVO.getStatus();
             }
+            String pay_state = orderSynVO.isPayed() ? "ALREADY_PAY" : "WAIT_PAY";
+
+            //存在锁的问题，修改语句改为一条
+            JSONObject attributesOBJ = orderSynVO.getAttributes();
+            if (attributesOBJ.containsKey("abnormal_option")) {
+                String abNormalError = attributesOBJ.getString("abnormal_option");
+                if (status.equals("ABNORMAL")) {
+                    if (abNormalError != null && abNormalError.equals("CUSTOMER_CANCEL") ||
+                            abNormalError.equals("CONTACT_CUSTOMER_FAILURE") || abNormalError.equals("ERROR_CUSTOMER_ADDRESS") ||
+                            abNormalError.equals("CONFORM_TO_ORDER_FAILURE") || abNormalError.equals("PICK_UP_OTHERS") ||
+                            abNormalError.equals("DISPATCH_TIME_OUT")) {
+                        status = "CANCELED";
+                    } else if (abNormalError != null && abNormalError.equals("CUSTOMER_REJECTION") ||
+                            abNormalError.equals("CONTACT_COURIER_FAILURE") || abNormalError.equals("CONTACT_RECEIVER_FAILURE") ||
+                            abNormalError.equals("ERROR_RECEIVER_ADDRESS") || abNormalError.equals("TO_DROP_OFF_OTHERS") ||
+                            abNormalError.equals("PAY_FAILURE") || abNormalError.equals("VERIFY_FAILURE")) {
+                        status = "DELIVERING";
+                    } else if (abNormalError != null && abNormalError.equals("UNABLE_TO_PICK_UP") ||
+                            abNormalError.equals("DISPATCH_FAILED") || abNormalError.equals("DISCARD_TRIP_GROUP")) {
+                        status = "WAIT_HAND_OVER";
+                    }
+                }
+            }
+            String attributes = attributesOBJ.toString();
+            orderExpressMapper.updateAttributesAndStatusByUUID(orderSynVO.getUuid(), attributes, status, pay_state);
         }
 
         return null;
     }
 
     // 根据分页参数和用户id 去查查找该用户的相关快递信息
-    private List<OrderExpress> selectOrderExpressListForStatusUpdate(MyOrderParam myOrderParam) {
+    private List<OrderExpress> selectOrderExpressListForStatusUpdate(MyOrderParamVO myOrderParamVO) {
         // 查出该用户id相关的订单号 把同城的单抓出来
-        PageHelper.startPage(myOrderParam.getPageNum(), myOrderParam.getPageSize());
-        List<Integer> orderIdList = orderExpressMapper.selectOrderIdForsyncSFExpressStatus(myOrderParam.getId());
+        PageHelper.startPage(myOrderParamVO.getPageNum(), myOrderParamVO.getPageSize());
+        List<Integer> orderIdList = orderExpressMapper.selectOrderIdForsyncSFExpressStatus(myOrderParamVO.getId());
         if (orderIdList.size() == 0) return null;
         //使用mybatis的批量查询功能 将orderExpress查询出来
         List<OrderExpress> orderExpressList = orderExpressMapper.selectExpressForsyncSFExpressStatus(orderIdList);

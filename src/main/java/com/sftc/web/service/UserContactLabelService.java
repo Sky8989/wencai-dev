@@ -2,7 +2,6 @@ package com.sftc.web.service;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.UserContactLabel;
 
 public interface UserContactLabelService {
 
@@ -11,7 +10,7 @@ public interface UserContactLabelService {
      * @param userContactLabel
      * @return
      */
-    APIResponse addLabelForFriend(UserContactLabel userContactLabel);
+    APIResponse addLabelForFriend(APIRequest request);
 
     /**
      * 删除好友的标签

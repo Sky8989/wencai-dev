@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.dao.mybatis.EvaluateMapper">
     <!-- 添加 订单评价信息-->
-    <insert id="addEvaluate" parameterType="com.sftc.web.model.Evaluate">
+    <insert id="addEvaluate" parameterType="com.sftc.web.model.entity.Evaluate">
         INSERT INTO sftc_evaluate
         (merchant_comments, merchant_score, merchant_tags, uuid, orderExpress_id, user_id, create_time)
         VALUES
@@ -13,14 +13,14 @@
     </insert>
 
     <!-- 查找 评价信息 by uuid-->
-    <select id="selectByUuid" resultType="com.sftc.web.model.Evaluate">
+    <select id="selectByUuid" resultType="com.sftc.web.model.entity.Evaluate">
         SELECT *
         FROM sftc_evaluate
         WHERE uuid = #{uuid}
     </select>
 
     <!--CMS -->
-    <select id="selectByPage" resultType="com.sftc.web.model.Evaluate">
+    <select id="selectByPage" resultType="com.sftc.web.model.entity.Evaluate">
         SELECT * FROM sftc_evaluate
         <where>
             <if test="id != 0">and id = #{id}</if>

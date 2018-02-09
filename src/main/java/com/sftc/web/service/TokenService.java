@@ -11,19 +11,12 @@ import com.sftc.tools.api.APIResponse;
 public interface TokenService {
 
     /**
-     * 提供token的获取和刷新功能
-     *
-     * @param apiRequest
-     * @return
-     * @throws Exception
-     */
-    APIResponse token(APIRequest apiRequest) throws Exception;
-
-    /**
      * 为CMS提供token列表查询接口
      * @param apiRequest
      * @return
      * @throws Exception
      */
     APIResponse getTokenList(APIRequest apiRequest) throws Exception;
+
+	APIResponse deleteToken(APIRequest apiRequest) throws Exception;
 }

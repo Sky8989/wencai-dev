@@ -3,11 +3,6 @@ package com.sftc.web.service;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 
-import com.sftc.web.model.Result;
-import org.codehaus.jackson.map.util.JSONPObject;
-
-import java.util.Map;
-
 
 public interface MessageService {
 
@@ -22,6 +17,8 @@ public interface MessageService {
 
     APIResponse sfLogin(APIRequest apiRequest);
 
+    APIResponse messageCheck(APIRequest apiRequest);
+
     /**
      * 发送微信模板消息的方法 下单成功后
      *
@@ -29,7 +26,7 @@ public interface MessageService {
      * @param messageArr 消息内容数据的数组
      * @param pagePath   跳转页面的路径
      */
-    void sendWXTemplateMessage(int touser_id, String[] messageArr, String pagePath, String form_id, String template_id);
+   void sendWXTemplateMessage(int touser_id, String[] messageArr, String pagePath, String form_id, String template_id);
 
     /**
      * 获取图片验证码

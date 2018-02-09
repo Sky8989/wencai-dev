@@ -1,6 +1,5 @@
 package com.sftc.web.service.impl;
 
-import com.sftc.web.model.CommonQuestion;
 import com.sftc.web.service.CommonQuestionService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,10 +17,10 @@ public class CommonQuestionServiceImplTest {
 
     @Test
     public void addCommonQuestion() throws Exception {
-        CommonQuestion commonQuestion = new CommonQuestion();
-        commonQuestion.setTitle("title");
-        commonQuestion.setContent("content");
-        commonQuestionService.addCommonQuestion(commonQuestion);
+//        CommonQuestion commonQuestion = new CommonQuestion();
+//        commonQuestion.setTitle("title");
+//        commonQuestion.setContent("content");
+//        commonQuestionService.addCommonQuestion(commonQuestion);
     }
 
 }

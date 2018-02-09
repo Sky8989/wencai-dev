@@ -4,16 +4,12 @@ import com.sftc.tools.api.*;
 import com.sftc.tools.constant.LLConstant;
 import com.sftc.web.service.LatitudeLongitudeService;
 import net.sf.json.JSONObject;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
-import static com.sftc.tools.constant.ThirdPartyConstant.MAP_REGEOCODER_URL;
 
 /**
  * 随机获取经纬度

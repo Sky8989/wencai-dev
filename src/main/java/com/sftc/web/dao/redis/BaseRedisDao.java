@@ -24,7 +24,7 @@ public class BaseRedisDao {
 
     protected String getCache(String key) {
         boolean broken = false;
-        Jedis jedis;
+        Jedis jedis = null;
         JedisPool jedisPool = jedisTemplate.getJedisPool();
         String value = null;
         try {
@@ -36,14 +36,15 @@ public class BaseRedisDao {
             logger.error(e.getMessage(), e);
             broken = true;
         } finally {
-            jedisTemplate.closeResource(broken);
+            if (jedis!=null)
+                jedisTemplate.closeResource(jedis,broken);
         }
         return value;
     }
 
     protected void setCache(String key, String value) {
         boolean broken = false;
-        Jedis jedis;
+        Jedis jedis = null;
         JedisPool jedisPool = jedisTemplate.getJedisPool();
         try {
             jedis = jedisPool.getResource();
@@ -54,13 +55,14 @@ public class BaseRedisDao {
             logger.error(e.getMessage(), e);
             broken = true;
         } finally {
-            jedisTemplate.closeResource(broken);
+            if (jedis!=null)
+                 jedisTemplate.closeResource(jedis,broken);
         }
     }
 
     protected void clearCache(String key) {
         boolean broken = false;
-        Jedis jedis;
+        Jedis jedis = null;
         JedisPool jedisPool = jedisTemplate.getJedisPool();
         try {
             jedis = jedisPool.getResource();
@@ -71,7 +73,8 @@ public class BaseRedisDao {
             logger.error(e.getMessage(), e);
             broken = true;
         } finally {
-            jedisTemplate.closeResource(broken);
+            if (jedis!=null)
+                jedisTemplate.closeResource(jedis,broken);
         }
     }
 

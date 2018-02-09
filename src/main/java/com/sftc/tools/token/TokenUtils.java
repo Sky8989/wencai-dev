@@ -2,6 +2,8 @@ package com.sftc.tools.token;
 
 import com.sftc.tools.spring.SpringContextHolder;
 import com.sftc.web.dao.mybatis.TokenMapper;
+import com.sftc.web.model.entity.Token;
+import com.sftc.web.model.entity.User;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -16,6 +18,32 @@ public class TokenUtils {
 
     private TokenUtils() {
 
+    }
+
+    /**
+     * 获取用户access_token
+     *
+     * @return access_token
+     */
+    public String getAccess_token() {
+        Token token = tokenMapper.getTokenById(getUserId());
+        if (token != null)
+            return token.getAccess_token();
+        else
+            return null;
+    }
+
+    /**
+     * 获取用户uuid
+     *
+     * @return uuid
+     */
+    public String getUserUUID() {
+        User user = tokenMapper.tokenInterceptor(getToken());
+        if (user != null)
+            return user.getUuid();
+        else
+            return null;
     }
 
     /**
@@ -57,4 +85,6 @@ public class TokenUtils {
     private static class TokenUtilsHolder {
         private final static TokenUtils instance = new TokenUtils();
     }
+
+
 }
