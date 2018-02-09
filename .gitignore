@@ -8,6 +8,9 @@
 # *.war
 *.ear
 *.idea
+*.classpath
+*.project
+*.settings/
 
 target
 
