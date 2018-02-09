@@ -1,8 +1,8 @@
 var config_url = {
-    dev_hostAddress: 'https://sftc.dankal.cn/sftc',
+    dev_hostAddress: 'https://sftc.dankal.cn/wxc',
     localhost_hostAddress: 'http://localhost:8080/sftc/',
     product_hostAddress:'http://api-wxc.sf-rush.com/sftc/',
-    dev_qiniu_getToken: 'https://sftc.dankal.cn/sftc/qiniu/uptoken',
+    dev_qiniu_getToken: 'https://sftc.dankal.cn/wxc/qiniu/uptoken',
     localhost_qiniu_getToken: 'http://localhost:8080/sftc/qiniu/uptoken',
     product_qiniu_getToken:'http://api-wxc.sf-rush.com/sftc/qiniu/uptoken'
 };
@@ -10,7 +10,7 @@ var config_url = {
 var config = {
 
     hostAddress: config_url.dev_hostAddress,
-    qiniu_getToken: config_url.dev_hostAddress,
+    qiniu_getToken: config_url.dev_qiniu_getToken,
     pageSizeKey:10
 };
 

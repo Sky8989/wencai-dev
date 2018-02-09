@@ -16,6 +16,7 @@ public interface AddressBookMapper {
     AddressBookDTO selectByPrimaryKey(Long id);
 //
 //    void updateByPrimaryKeySelective(AddressBookDTO record);
+    void deleteAddressBookById(@Param("id") long id);
 //
 //    void updateByCreatetime(@Param("id") int id, @Param("create_time") String create_time);
 //

@@ -43,7 +43,6 @@ public class SFConstant {
      */
     public static String SF_TAKE_CAPTCHAS_MESSAGE_URL = SF_SAME_DOMAIN + "captchas";
 
-
     /**
      * 获取token
      */
@@ -68,6 +67,14 @@ public class SFConstant {
      */
     public static String SF_QUOTES_URL = SF_SAME_DOMAIN + "quotes";
     /**
+     * 多包裹计价
+     */
+    public static String SF_Multiple_QUOTES_URL = SF_QUOTES_URL + "/in_group";
+    /**
+     * 多包裹支付
+     */
+    public static String SF_Multiple_PAY_URL = SF_SAME_DOMAIN + "request_groups";
+    /**
      * 优惠券获取
      */
     public static String SF_COUPON_LIST_URL = SF_SAME_DOMAIN + "coupons/by_user/{user_uuid}?status={status}&limit={limit}&offset={offset}";
@@ -79,6 +86,14 @@ public class SFConstant {
      * 通用订单请求地址
      */
     public static String SF_REQUEST_URL = SF_SAME_DOMAIN + "requests";
+    /**
+     * 判断是否可同城
+     */
+    public static String SF_DETERMINE_URL = SF_SAME_DOMAIN + "/requests/coordinates/valid";
+    /**
+     * 多包裹订单请求地址
+     */
+    public static String SF_Multiple_REQUEST_URL = SF_REQUEST_URL + "/in_group";
     /**
      * 获取常量
      */

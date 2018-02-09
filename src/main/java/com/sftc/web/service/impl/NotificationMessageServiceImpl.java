@@ -1,32 +1,28 @@
 package com.sftc.web.service.impl;
 
-import static com.sftc.tools.api.APIStatus.SUCCESS;
-import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
+import com.google.gson.Gson;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.tools.api.APIUtil;
 import com.sftc.tools.token.TokenUtils;
-import com.sftc.web.dao.jpa.OrderDao;
-import com.sftc.web.dao.jpa.OrderExpressDao;
 import com.sftc.web.dao.mybatis.MessageMapper;
 import com.sftc.web.dao.mybatis.OrderMapper;
-import com.sftc.web.dao.mybatis.TokenMapper;
 import com.sftc.web.dao.mybatis.UserMapper;
-import com.sftc.web.model.User;
-import com.sftc.web.model.Converter.MessageFactory;
+import com.sftc.web.model.entity.User;
 import com.sftc.web.model.dto.MessageDTO;
 import com.sftc.web.model.dto.OrderDTO;
 import com.sftc.web.model.dto.OrderExpressDTO;
 import com.sftc.web.model.entity.Message;
 import com.sftc.web.service.NotificationMessageService;
+import net.sf.json.JSONObject;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.sftc.tools.api.APIStatus.SUCCESS;
+import static com.sftc.tools.constant.DKConstant.DK_USER_AVATAR_DEFAULT;
 
 @Service
 public class NotificationMessageServiceImpl implements NotificationMessageService {
@@ -38,6 +34,8 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
 
     @Resource
     private UserMapper userMapper;
+
+    private Gson gson = new Gson();
 
     public APIResponse getMessage(APIRequest request) {
 
@@ -66,11 +64,11 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
 
             if (message.getMessage_type().equals("RECEIVE_ADDRESS")) {
                 // 只有"收到地址"的消息才需要订单数据
-                MessageDTO messageDTO = MessageFactory.entityToDTO(message);
+                MessageDTO messageDTO = gson.fromJson(gson.toJson(message), MessageDTO.class);
                 messageDTO.setOrder(orderDTO);
                 messageList.add(messageDTO);
             } else {
-                MessageDTO messageDTO = MessageFactory.entityToDTO(message);
+                MessageDTO messageDTO = gson.fromJson(gson.toJson(message), MessageDTO.class);
                 messageList.add(messageDTO);
             }
         }
@@ -78,7 +76,9 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
         return APIUtil.getResponse(SUCCESS, messageList);
     }
 
-    public APIResponse updateMessage(int id) {
+    public APIResponse updateMessage(APIRequest apiRequest) {
+        JSONObject messageOBJ = JSONObject.fromObject(apiRequest.getRequestParam());
+        int id = messageOBJ.getInt("message_id");
         messageMapper.updateIsRead(id);
         return APIUtil.getResponse(SUCCESS, null);
     }

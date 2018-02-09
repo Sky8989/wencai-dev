@@ -1,7 +1,6 @@
 package com.sftc.web.dao.mybatis;
 
 import com.sftc.web.model.entity.OrderExpress;
-import com.sftc.web.model.entity.OrderExpressTransform;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -12,9 +11,7 @@ public interface OrderExpressMapper {
 
     List<OrderExpress> selectExpressForId(int id);
 
-//    void addOrderExpress(OrderExpress orderExpress);
-
-//    void addOrderExpress2(OrderExpress orderExpress);//多增加门牌号信息
+    void addOrderExpress2(OrderExpress orderExpress);//多增加门牌号信息
 
     void updateOrderExpressForSF(OrderExpress orderExpress);
 
@@ -25,12 +22,22 @@ public interface OrderExpressMapper {
     /**
      * 根据id更改快递状态
      */
-    void updateOrderExpressStatus(@Param("express_id") int express_id, @Param("status") String status);
+    void updateOrderExpressStatus(@Param("express_id") int express_id, @Param("status") String status,@Param("pay_state") String pay_state);
 
     /**
      * 根据uuid更改订单状态
      */
-    void updateOrderExpressStatusByUUID(@Param("uuid") String uuid, @Param("status") String status);
+    void updateOrderExpressStatusByUUID(@Param("uuid") String uuid,
+                                        @Param("route_state") String route_state,
+                                        @Param("pay_state")String pay_state);
+
+    //根据uuid更改订单的状态和取件码以及取件码的状态
+    void updateExpressDirectedByUUID(@Param("uuid") String uuid, @Param("status") String status,
+                                     @Param("directed_code") String directed_code, @Param("is_directed") int is_directed);
+
+    //根据 uuid 更改订单的 Attributes 和状态
+    void updateAttributesAndStatusByUUID(@Param("uuid") String uuid,@Param("attributes") String attributes,
+                                         @Param("status") String status,@Param("pay_state") String pay_state);
 
     // 更改 快递状态 为 取消 CANCELED
 //    void updateOrderExpressCanceled(String order_id);
@@ -42,6 +49,9 @@ public interface OrderExpressMapper {
 //    void updateOrderExpressByOrderExpressId(OrderExpress orderExpress);
 
     List<OrderExpress> findAllOrderExpressByOrderId(String order_id);
+
+    void updatePayState (@Param("pay_state")String pay_state,
+                         @Param("uuid")String uuid);
 
     /**
      * 根据uuid查询快递
@@ -83,13 +93,6 @@ public interface OrderExpressMapper {
 
     List<OrderExpress> selectOrderExpressByPage(OrderExpress orderExpress);
 
-    /**
-     * 获取大网兜底单列表
-     *
-     * @param orderExpressTransform 转单快递的模型
-     * @return 返回的是orderExpressTransform
-     */
-    List<OrderExpressTransform> selectOrderExpressTransformList(OrderExpressTransform orderExpressTransform);
-
-
+    void updateRouteStateByOrderId(@Param("order_id") String order_id,
+                                   @Param("route_state")String route_state);
 }

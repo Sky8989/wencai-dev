@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
  * 兜底记录表，记录从同城单转下到大网的订单信息
  */
 @Entity
-@Table(name = "sftc_order_express_transform")
+@Table(name = "sftc_order_no_driver")
 public class OrderExpressTransform {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +22,6 @@ public class OrderExpressTransform {
      * 同城uuid（转换前）
      */
     private String same_uuid;
-
-    /**
-     * 大网uuid（转换后）
-     */
-    private String nation_uuid;
 
     /**
      * 是否已读
@@ -62,14 +57,6 @@ public class OrderExpressTransform {
         this.same_uuid = same_uuid;
     }
 
-    public String getNation_uuid() {
-        return nation_uuid;
-    }
-
-    public void setNation_uuid(String nation_uuid) {
-        this.nation_uuid = nation_uuid;
-    }
-
     public int getIs_read() {
         return is_read;
     }
@@ -88,20 +75,4 @@ public class OrderExpressTransform {
 
     public OrderExpressTransform() {
     }
-
-    public OrderExpressTransform(HttpServletRequest request) {
-
-        if (request.getParameter("express_id") != null && !"".equals(request.getParameter("express_id"))) {
-            this.express_id = Integer.parseInt(request.getParameter("express_id"));
-        }
-        if (request.getParameter("same_uuid") != null && !"".equals(request.getParameter("same_uuid"))) {
-            this.same_uuid = request.getParameter("same_uuid");
-        }
-        if (request.getParameter("nation_uuid") != null && !"".equals(request.getParameter("nation_uuid"))) {
-            this.nation_uuid = request.getParameter("nation_uuid");
-        }
-
-    }
-
-
 }

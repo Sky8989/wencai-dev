@@ -17,7 +17,7 @@ public interface AddressService {
     /**
      * 新增新地址
      */
-    APIResponse addAddress(Address address);
+    APIResponse addAddress(APIRequest request);
 
     /**
      * 我的收件人地址
@@ -27,7 +27,7 @@ public interface AddressService {
     /**
      * 修改收件人地址
      */
-    APIResponse editAddress(Address address);
+    APIResponse editAddress(APIRequest request);
 
     /**
      * 删除收件人地址

@@ -57,7 +57,7 @@
         <property name="hostName" value="${redis.host}"/>
         <property name="port" value="${redis.port}"/>
         <property name="timeout" value="${redis.timeout}"/>
-        <property name="password" value="${redis.pass}"/>
+       <property name="password" value="${redis.pass}"/>
     </bean>
 
     <!-- Redis Template模板配置 -->

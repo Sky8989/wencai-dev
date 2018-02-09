@@ -100,6 +100,10 @@
         </trim>
     </insert>
 
+    <delete id="deleteAddressBookById" parameterType="long">
+        DELETE FROM sftc_address_book WHERE id = #{id}
+    </delete>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.sftc.web.model.dto.AddressBookDTO">
         update sftc_address_book
         <set>

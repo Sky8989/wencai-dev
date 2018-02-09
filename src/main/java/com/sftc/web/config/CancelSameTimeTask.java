@@ -2,7 +2,6 @@ package com.sftc.web.config;
 
 import com.sftc.web.dao.mybatis.OrderMapper;
 import com.sftc.web.service.impl.logic.app.OrderCancelLogic;
-import com.sftc.web.service.impl.logic.app.OrderCommitLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -56,6 +55,11 @@ public class CancelSameTimeTask extends TimerTask implements InitializingBean{
         //抓取同城未提交订单和超时订单
         List<String> orderIds = orderMapper.selectSameUnCommitOrders();
         for (String order_id : orderIds) {
+            orderCancelLogic.cancelSameUnCommitOrder(order_id, timeOutIntervalForSame);
+        }
+        //好友多包裹的订单 超时更新为DANKAL_OVERTIME 而不是CANCELED
+        List<String> orderIds2 = orderMapper.selectMutilExpressOrders();
+        for (String order_id : orderIds2) {
             orderCancelLogic.cancelSameUnCommitOrder(order_id, timeOutIntervalForSame);
         }
     }

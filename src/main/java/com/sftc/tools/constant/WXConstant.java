@@ -23,7 +23,7 @@ public class WXConstant {
     ///////////////////秘钥相关/////////////////
     /**
      * ACCESS_TOKEN
-     * 发送模板消息所需要是用的token，每两个小时刷新一次
+     * 发送模板消息所需要是用的token，每10分钟刷新一次
      * 暂时不设置成final
      */
     public static String WX_ACCESS_TOKEN = "Jyi6Ntprm38nI6n1heGjwXyQmzie8ZjY7l9Cq_Je";
@@ -68,7 +68,7 @@ public class WXConstant {
     ///////////////////自动刷新/////////////////
     static {
         long delay = 0;
-        long period = 7200;
+        long period = 600;
         final TimerTask refreshAccessTokenTask = new TimerTask() {
             @Override
             public void run() {

@@ -1,9 +1,10 @@
 package com.sftc.web.dao.mybatis;
 
-import com.sftc.web.model.CommonQuestion;
+import com.sftc.web.model.entity.CommonQuestion;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 
 @Repository
 public interface CommonQuestionMapper {
@@ -29,10 +30,10 @@ public interface CommonQuestionMapper {
     /**
      * CMS 系统 修改常用问题
      */
-    void updateCommonQuestion(CommonQuestion commonQuestion);
+    int updateCommonQuestion(CommonQuestion commonQuestion);
 
     /**
      * CMS 系统 删除常用问题
      */
-    void deleteCommonQuestion(int id);
+    int deleteCommonQuestion(int id);
 }

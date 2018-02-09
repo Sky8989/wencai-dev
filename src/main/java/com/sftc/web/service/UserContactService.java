@@ -2,7 +2,6 @@ package com.sftc.web.service;
 
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
-import com.sftc.web.model.reqeustParam.UserContactParam;
 
 
 public interface UserContactService {
@@ -20,7 +19,7 @@ public interface UserContactService {
     /**
      * 好友圈来往记录
      */
-    APIResponse getContactInfo(UserContactParam userContactParam);
+    APIResponse getContactInfo(APIRequest request);
 
     /**
      * 星标/取消星标好友

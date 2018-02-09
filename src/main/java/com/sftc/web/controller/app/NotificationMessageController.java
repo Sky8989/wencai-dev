@@ -4,13 +4,13 @@ package com.sftc.web.controller.app;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 import com.sftc.web.controller.BaseController;
+import com.sftc.web.model.vo.swaggerRequest.UpdateIsReadVO;
+import com.sftc.web.model.vo.swaggerResponse.NotificaionMessageListVO;
+import com.sftc.web.model.vo.swaggerResponse.ResponseMessageVO;
 import com.sftc.web.service.NotificationMessageService;
 import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -22,22 +22,20 @@ public class NotificationMessageController extends BaseController {
     @Resource
     private NotificationMessageService notificationMessageService;
 
-    @ApiOperation(value = "获取通知信息",httpMethod = "GET")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "user_id",value = "用户id",paramType = "query",defaultValue = "10028")
-    })
-    @RequestMapping(value = "/getMessage", method = RequestMethod.GET)
+    @ApiOperation(value = "未读通知列表",httpMethod = "GET",notes = "一是作为寄件人，好友填了包裹地址时收到的，包含订单信息；\n" +
+            "二是作为收件人，收到他人寄的包裹时收到的。",response = NotificaionMessageListVO.class)
+    @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     APIResponse placeOrder(HttpServletRequest request) throws Exception {
         return notificationMessageService.getMessage(new APIRequest(request));
     }
 
-    @ApiOperation(value = "更新通知消息( is_read 字段)",httpMethod = "GET")
-    @RequestMapping(value = "/updateIsRead", method = RequestMethod.GET)
+    @ApiOperation(value = "更新通知消息读取状态",httpMethod = "PUT",response = ResponseMessageVO.class)
+    @RequestMapping(method = RequestMethod.PUT)
     public @ResponseBody()
-    APIResponse updateIsRead(
-            @ApiParam(name = "message_id",value = "消息id",required = true,defaultValue = "141")
-            @RequestParam("message_id") int id) throws Exception {
-        return notificationMessageService.updateMessage(id);
+    APIResponse updateIsRead(@RequestBody UpdateIsReadVO updateIsReadVO) throws Exception {
+        APIRequest apiRequest = new APIRequest();
+        apiRequest.setRequestParam(updateIsReadVO);
+        return notificationMessageService.updateMessage(apiRequest);
     }
 }

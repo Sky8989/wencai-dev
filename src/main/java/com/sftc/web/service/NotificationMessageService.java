@@ -13,5 +13,5 @@ public interface NotificationMessageService {
     //获取 通知信息
     APIResponse getMessage(APIRequest apiRequest);
     //更新 通知信息 用户点击通知信息后，更改is_read状态
-    APIResponse updateMessage(int id);
+    APIResponse updateMessage(APIRequest request);
 }

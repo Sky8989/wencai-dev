@@ -4,14 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sftc.web.dao.mybatis.UserMapper">
 
-    <resultMap id="User" type="com.sftc.web.model.User">
+    <resultMap id="User" type="com.sftc.web.model.entity.User">
         <result column="uuid" property="uuid"/>
-        <association property="token" javaType="com.sftc.web.model.Token">
+        <association property="token" javaType="com.sftc.web.model.entity.Token">
             <result property="access_token" column="access_token"/>
         </association>
     </resultMap>
 
-    <select id="selectUserByLogin" parameterType="com.sftc.web.model.User" resultType="com.sftc.web.model.User">
+    <select id="selectUserByLogin" parameterType="com.sftc.web.model.entity.User" resultType="com.sftc.web.model.entity.User">
         select * from sftc_user
         where
         <if test="mobile!=null">
@@ -22,36 +22,36 @@
         </if>
     </select>
 
-    <select id="selectUserByPhone" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
+    <select id="selectUserByPhone" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.User">
         SELECT *
         FROM sftc_user
         WHERE mobile = #{mobile}
     </select>
 
-    <select id="selectUserByOpenid" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
+    <select id="selectUserByOpenid" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.User">
         SELECT *
         FROM sftc_user
         WHERE open_id = #{open_id}
     </select>
 
-    <select id="findUserByMobile" parameterType="java.lang.String" resultType="com.sftc.web.model.User">
+    <select id="findUserByMobile" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.User">
         SELECT *
         FROM sftc_user
         WHERE mobile = #{mobile}
     </select>
-    <select id="selectUserByUserId" parameterType="int" resultType="com.sftc.web.model.User">
+    <select id="selectUserByUserId" parameterType="int" resultType="com.sftc.web.model.entity.User">
         SELECT *
         FROM sftc_user
         WHERE id = #{user_id}
     </select>
 
-    <insert id="insertOpenid" parameterType="com.sftc.web.model.User" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertOpenid" parameterType="com.sftc.web.model.entity.User" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_user (open_id, create_time, session_key)
         VALUES
         (#{open_id}, #{create_time}, #{session_key})
     </insert>
 
-    <insert id="insertWithAvatarAndName" parameterType="com.sftc.web.model.User" useGeneratedKeys="true"
+    <insert id="insertWithAvatarAndName" parameterType="com.sftc.web.model.entity.User" useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO sftc_user (open_id, create_time, session_key, avatar, name)
         VALUES
@@ -59,12 +59,12 @@
     </insert>
 
     <!--添加顺丰传过来的Merchant信息-->
-    <insert id="addMerchant" parameterType="com.sftc.web.model.User" useGeneratedKeys="true" keyProperty="id">
+    <insert id="addMerchant" parameterType="com.sftc.web.model.entity.User" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sftc_user (mobile, user_password, open_id, create_time, avatar, uuid, name) VALUES
         (#{mobile}, #{user_password}, #{open_id}, #{create_time}, #{avatar}, #{uuid}, #{name})
     </insert>
 
-    <select id="getUuidAndtoken" parameterType="java.lang.String" resultType="com.sftc.web.model.User" resultMap="User">
+    <select id="getUuidAndtoken" parameterType="java.lang.String" resultType="com.sftc.web.model.entity.User" resultMap="User">
         SELECT
         u.uuid,
         t.access_token
@@ -73,7 +73,7 @@
         u.id = o.sender_user_id AND u.id = t.user_id AND o.id = #{id}
     </select>
 
-    <update id="updateUserOfAvatar" parameterType="com.sftc.web.model.User">
+    <update id="updateUserOfAvatar" parameterType="com.sftc.web.model.entity.User">
         UPDATE sftc_user
         <trim prefix="set" suffixOverrides=",">
             <if test="avatar!=null">avatar=#{avatar},</if>
@@ -83,7 +83,7 @@
         WHERE open_id = #{open_id}
     </update>
 
-    <update id="updateUser" parameterType="com.sftc.web.model.User">
+    <update id="updateUser" parameterType="com.sftc.web.model.entity.User">
         update sftc_user
         <trim prefix="set" suffixOverrides=",">
             <if test="uuid!=null">uuid=#{uuid},</if>
@@ -94,7 +94,7 @@
     </update>
 
     <!--下面是cms系统用到的mapper-->
-    <select id="selectByPage" resultType="com.sftc.web.model.User" parameterType="com.sftc.web.model.User">
+    <select id="selectByPage" resultType="com.sftc.web.model.entity.User" parameterType="com.sftc.web.model.entity.User">
         SELECT * FROM sftc_user
         <where>
             <if test="id != 0">and id = #{id}</if>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sftc.web.dao.mybatis.MultiplePackageMapper">
+
+    <resultMap id="sourceOrderInfo" type="com.sftc.web.model.dto.MultiplePackageDTO">
+        <result property="orderId" column="id"/>
+        <result property="multiplePackageAddressDTO.userId" column="sender_user_id"/>
+        <result property="multiplePackageAddressDTO.province" column="sender_province"/>
+        <result property="multiplePackageAddressDTO.city" column="sender_city"/>
+        <result property="multiplePackageAddressDTO.region" column="sender_area"/>
+        <result property="multiplePackageAddressDTO.street" column="sender_addr"/>
+        <result property="multiplePackageAddressDTO.detail" column="supplementary_info"/>
+        <result property="multiplePackageAddressDTO.receiver" column="sender_name"/>
+        <result property="multiplePackageAddressDTO.mobile" column="sender_mobile"/>
+        <result property="multiplePackageLLDTO.longitude" column="longitude"/>
+        <result property="multiplePackageLLDTO.latitude" column="latitude"/>
+    </resultMap>
+
+    <resultMap id="targetsOrderInfo" type="com.sftc.web.model.dto.MultiplePackageDTO">
+        <result property="orderExpressId" column="id"/>
+        <result property="quoteUUId" column="quote_uuid"/>
+        <result property="orderId" column="order_id"/>
+        <result property="multiplePackageAddressDTO.userId" column="ship_user_id"/>
+        <result property="multiplePackageAddressDTO.province" column="ship_province"/>
+        <result property="multiplePackageAddressDTO.city" column="ship_city"/>
+        <result property="multiplePackageAddressDTO.region" column="ship_area"/>
+        <result property="multiplePackageAddressDTO.street" column="ship_addr"/>
+        <result property="multiplePackageAddressDTO.detail" column="supplementary_info"/>
+        <result property="multiplePackageAddressDTO.receiver" column="ship_name"/>
+        <result property="multiplePackageAddressDTO.mobile" column="ship_mobile"/>
+        <result property="multiplePackageLLDTO.longitude" column="longitude"/>
+        <result property="multiplePackageLLDTO.latitude" column="latitude"/>
+    </resultMap>
+
+    <select id="querySourceOrderInfoByOrderID" resultMap="sourceOrderInfo"
+            parameterType="java.lang.String">
+        SELECT
+            id,
+            sender_user_id,
+            sender_province,
+            sender_city,
+            sender_area,
+            sender_addr,
+            supplementary_info,
+            sender_name,
+            sender_mobile,
+            longitude,
+            latitude
+        FROM sftc_order
+        WHERE id = #{orderId}
+    </select>
+
+    <select id="queryTargetsOrderInfoByOrderID" resultMap="targetsOrderInfo"
+            parameterType="java.lang.String">
+        SELECT
+            id,
+            ship_user_id,
+            ship_province,
+            ship_city,
+            ship_area,
+            ship_addr,
+            supplementary_info,
+            ship_name,
+            ship_mobile,
+            longitude,
+            latitude,
+            order_id,
+            quote_uuid
+        FROM sftc_order_express
+        WHERE order_id = #{orderId} AND ship_name IS NOT NULL
+        ORDER BY id
+    </select>
+    <update id="updateQuotesUUidById">
+        UPDATE sftc_order_express
+        SET quote_uuid = #{quotesUuid}
+        WHERE id = #{orderExpressId}
+    </update>
+
+    <update id="updateOrderExpressById" parameterType="java.util.Map">
+        UPDATE sftc_order_express
+        <trim prefix="set" suffixOverrides="," suffix=" where id = #{orderExpressId} ">
+            <if test='uuid != null and uuid!="" '>
+                uuid = #{uuid},
+            </if>
+            <if test='requestNum != null and requestNum!="" '>
+                order_number = #{requestNum},
+            </if>
+            <if test='status != null and status!="" '>
+                route_state = #{status},
+            </if>
+            <if test='orderTime != null and orderTime!="" '>
+                order_time = #{orderTime},
+            </if>
+            <if test='reserveTime != null and reserveTime!="" '>
+                reserve_time = #{reserveTime}
+            </if>
+        </trim>
+    </update>
+
+    <update id="updateorderById">
+        UPDATE sftc_order
+        SET group_uuid = #{groupUUId}
+        WHERE id = #{orderId}
+    </update>
+
+    <select id="queryUserOpenIDByGroupUUId" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT open_id
+        FROM sftc_order so
+            JOIN sftc_user su ON so.sender_user_id = su.id
+        WHERE so.group_uuid = #{groupUUId}
+    </select>
+
+
+    <update id="updatePayStatuByGroupID" parameterType="java.lang.String">
+        UPDATE sftc_order_express
+        SET pay_state = 'ALREADY_PAY'
+        WHERE order_id = #{orderId} AND ship_name IS NOT NULL AND ship_mobile IS NOT NULL
+    </update>
+
+
+    <update id="updateRouteStateByGroupID" parameterType="java.lang.String">
+        UPDATE sftc_order_express
+        SET route_state = #{routeState}
+        WHERE order_id = (
+            SELECT id
+            FROM sftc_order
+            WHERE group_uuid = #{groupUUId}
+        )
+              AND ship_name IS NOT NULL AND ship_mobile IS NOT NULL
+    </update>
+
+
+    <select id="quaryIsPlaceOrderOrderId" resultType="com.sftc.web.model.dto.MultipleGroupUUIDDTO">
+        SELECT se.order_number,so.group_uuid
+        FROM sftc_order_express se JOIN  sftc_order so ON se.order_id = so.id
+        WHERE order_id = #{orderId} AND ship_name IS NOT NULL AND ship_mobile IS NOT NULL
+        LIMIT 1
+    </select>
+</mapper>

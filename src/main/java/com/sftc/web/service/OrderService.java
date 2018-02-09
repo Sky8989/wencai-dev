@@ -3,9 +3,6 @@ package com.sftc.web.service;
 import com.sftc.tools.api.APIRequest;
 import com.sftc.tools.api.APIResponse;
 
-import java.util.Map;
-
-
 public interface OrderService {
 
     /**
@@ -31,12 +28,12 @@ public interface OrderService {
     /**
      * 好友填写寄件订单
      */
-    APIResponse friendFillOrder(Map rowData);
+    APIResponse friendFillOrder(APIRequest request);
 
     /**
      * 计价
      */
-    APIResponse countPrice(Object object);
+    APIResponse countPrice(APIRequest request);
 
     /**
      * 获取订单详情
@@ -69,14 +66,35 @@ public interface OrderService {
     APIResponse selectExpressDetail(APIRequest request);
 
     /**
+     * 纯走B端的同城快递详情查询
+     */
+    APIResponse selectSameExpressDetail(APIRequest request);
+
+    /**
      * 评价某个订单的单一包裹
      */
-    APIResponse evaluateSingle(Object object);
+    APIResponse evaluateSingle(APIRequest request);
 
     /**
      * 取消订单
      */
-    APIResponse cancelOrder(Object object);
+    APIResponse cancelOrder(APIRequest request);
+
+    /**
+     * 根据uuid取消订单
+     */
+    APIResponse cancelOrderByUuid(APIRequest request);
+
+    /**
+     * 兜底
+     * 小哥30分钟未揽件，自动取消订单
+     */
+    APIResponse transformOrderFromSameToNation(APIRequest request);
+
+    /**
+     * 设置兜底记录已读
+     */
+    APIResponse readExpressTransform(APIRequest request);
 
     /**
      * 时间规则
@@ -84,30 +102,9 @@ public interface OrderService {
     APIResponse timeConstants(APIRequest request);
 
     /**
-     * 兜底
-     * 根据同城订单的uuid，把原本同城的单下到大网
-     */
-    APIResponse transformOrderFromSameToNation(APIRequest request);
-
-    /**
-     * 设置大网预约单定时器开关
-     */
-    APIResponse setupReserveNationOrderCommitTimer(APIRequest request);
-
-    /**
-     * 设置大网取消超时订单定时器开关
-     */
-    APIResponse setupCancelNationOrderTimer(APIRequest request);
-
-    /**
-     * 设置大网取消超时订单定时器开关
+     * 设置同城取消超时订单定时器开关
      */
     APIResponse setupCancelSameOrderTimer(APIRequest request);
-
-    /**
-     * 设置兜底记录已读
-     */
-    APIResponse readExpressTransform(APIRequest request);
 
     /**
      * 订单分享界面截图
@@ -132,5 +129,10 @@ public interface OrderService {
      * @return 返回APIResponse
      */
      APIResponse selectCanceledOrderList(APIRequest request);
+
+    /**
+     * 根据地址经纬度判断是否可同城下单
+     */
+    APIResponse determineOrderAddress(APIRequest request);
 }
 

@@ -2,8 +2,8 @@ package com.sftc.tools.api;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
-import com.sftc.web.model.sfmodel.Orders;
-import com.sftc.web.model.wechat.WXUser;
+import com.sftc.web.model.vo.swaggerOrderRequest.OrderSynVO;
+import com.sftc.web.model.others.WXUser;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 
@@ -22,7 +22,7 @@ public class APIResolve {
         return new Gson().fromJson(json, WXUser.class);
     }
 
-    public static List<Orders> getOrderStatusWithUrl(String apiUrl, String token) throws Exception {
+    public static List<OrderSynVO> getOrderStatusWithUrl(String apiUrl, String token) throws Exception {
 
         URL url = new URL(apiUrl);
         HttpURLConnection connection;
@@ -32,6 +32,6 @@ public class APIResolve {
         String json = IOUtils.toString(inputStream);
         JSONObject jsonObject = JSONObject.fromObject(json);
 
-        return JSON.parseArray(jsonObject.get("requests").toString(), Orders.class);
+        return JSON.parseArray(jsonObject.get("requests").toString(), OrderSynVO.class);
     }
 }

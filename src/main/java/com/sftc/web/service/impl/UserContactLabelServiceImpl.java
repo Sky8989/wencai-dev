@@ -2,7 +2,7 @@ package com.sftc.web.service.impl;
 
 import com.sftc.tools.api.*;
 import com.sftc.web.dao.mybatis.UserContactLabelMapper;
-import com.sftc.web.model.UserContactLabel;
+import com.sftc.web.model.entity.UserContactLabel;
 import com.sftc.web.service.UserContactLabelService;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,8 @@ public class UserContactLabelServiceImpl implements UserContactLabelService {
     private UserContactLabelMapper userContactLabelMapper;
 
     // 添加好友普通标签
-    public APIResponse addLabelForFriend(UserContactLabel userContactLabel) {
+    public APIResponse addLabelForFriend(APIRequest request) {
+        UserContactLabel userContactLabel = (UserContactLabel) request.getRequestParam();
         APIStatus status = APIStatus.SUCCESS;
         userContactLabel.setCreate_time(Long.toString(System.currentTimeMillis()));
         userContactLabelMapper.addLabel(userContactLabel);

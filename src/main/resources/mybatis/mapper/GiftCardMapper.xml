@@ -7,27 +7,27 @@
     <resultMap type="com.sftc.web.model.entity.Order" id="OrderResultMap">
         <result column="image" property="image"/>
         <result column="voice" property="voice"/>
-        <association property="giftCard" javaType="com.sftc.web.model.GiftCard">
+        <association property="giftCard" javaType="com.sftc.web.model.entity.GiftCard">
             <result column="icon" property="icon"/>
         </association>
-        <association property="user" javaType="com.sftc.web.model.User">
+        <association property="user" javaType="com.sftc.web.model.entity.User">
             <result column="head_portrait" property="head_portrait"/>
         </association>
     </resultMap>
 
-    <select id="giftCardList" resultType="com.sftc.web.model.GiftCard">
+    <select id="giftCardList" resultType="com.sftc.web.model.entity.GiftCard">
         SELECT *
         FROM sftc_gift_card
     </select>
 
-    <select id="selectGiftCardById" parameterType="int" resultType="com.sftc.web.model.GiftCard">
+    <select id="selectGiftCardById" parameterType="int" resultType="com.sftc.web.model.entity.GiftCard">
         SELECT *
         FROM sftc_gift_card
         WHERE id = #{giftCardId}
     </select>
 
-    <select id="selectByPage" parameterType="com.sftc.web.model.GiftCard"
-            resultType="com.sftc.web.model.GiftCard">
+    <select id="selectByPage" parameterType="com.sftc.web.model.entity.GiftCard"
+            resultType="com.sftc.web.model.entity.GiftCard">
         SELECT * FROM sftc_gift_card
         <where>
             <if test="id != 0">and id = #{id}</if>
@@ -36,17 +36,17 @@
         </where>
     </select>
 
-    <insert id="insertGiftCard" parameterType="com.sftc.web.model.GiftCard" useGeneratedKeys="true">
+    <insert id="insertGiftCard" parameterType="com.sftc.web.model.entity.GiftCard" useGeneratedKeys="true">
         INSERT INTO sftc_gift_card (NAME, icon, TYPE, create_time)
         VALUES (#{name}, #{icon}, #{type}, #{create_time})
     </insert>
 
-    <update id="updateGiftCard" parameterType="com.sftc.web.model.GiftCard">
+    <update id="updateGiftCard" parameterType="com.sftc.web.model.entity.GiftCard">
         UPDATE sftc_gift_card
-        <trim prefix="set" suffixOverrides=",">
-            <if test="name != null and name != ''">name = #{name}</if>
-            <if test="icon != null and icon != ''">icon = #{icon}</if>
-            <if test="type != null and type != ''">type = #{type}</if>
+       <trim prefix="set" suffixOverrides=",">
+            <if test="name != null and name != '' ">name = #{name},</if>
+            <if test="icon != null and icon != '' ">icon = #{icon},</if>
+            <if test="type != null and type != '' ">type = #{type},</if>
         </trim>
         WHERE id = #{id}
     </update>
