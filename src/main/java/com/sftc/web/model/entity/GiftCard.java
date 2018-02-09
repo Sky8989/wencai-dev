@@ -7,7 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.servlet.http.HttpServletRequest;
 
-import com.sftc.web.model.others.Object;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,7 +26,7 @@ import lombok.Setter;
 @Entity
 @ApiModel(value = "礼品卡(id为0时新增礼品卡，id不为0时修改礼品卡)")
 @Table(name = "sftc_gift_card")
-public class GiftCard extends Object {
+public class GiftCard  {
     
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
